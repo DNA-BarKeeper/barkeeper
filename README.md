@@ -1,7 +1,7 @@
 Gbolapp
 =========
 
-Changes in RubyMine on iMac:
+Changes in RubyMine on MacBook:
 
 
 Diagnostics
