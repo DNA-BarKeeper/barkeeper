@@ -1,6 +1,6 @@
 GBOLapp::Application.routes.draw do
 
-  #stupid comment from MacBook
+  #stupid comment -- added on iMac
 
   root :to => "home#about"
 
