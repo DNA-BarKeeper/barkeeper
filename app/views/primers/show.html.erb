@@ -1,0 +1,24 @@
+
+
+<p>
+  <strong>Name:</strong>
+  <%= @primer.name %>
+</p>
+
+<p>
+  <strong>Sequence:</strong>
+  <%= @primer.sequence %>
+</p>
+
+<p>
+  <strong>Reverse:</strong>
+  <%= @primer.reverse %>
+</p>
+
+<p>
+  <strong>Marker:</strong>
+  <%= @primer.marker.name if @primer.marker %>
+</p>
+
+<%= link_to 'Edit', edit_primer_path(@primer) %> |
+<%= link_to 'Back', primers_path %>

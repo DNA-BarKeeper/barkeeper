@@ -1,0 +1,22 @@
+<%= show_val_errors(@primer_pos_on_genome)%>
+
+<div class="authform">
+  <h4>(Position id <%= @primer_pos_on_genome.id%>)</h4>
+
+<%= form_for(@primer_pos_on_genome) do |f| %>
+
+
+      <div class="form-group">
+        <%= f.label :position %>
+        <%= f.number_field :position, :autofocus => true, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :note %>
+        <%= f.text_area :name, :autofocus => true, class: 'form-control' %>
+      </div>
+
+      <%= f.submit 'Update', :class => 'button right' %>
+
+<% end %>
+</div>

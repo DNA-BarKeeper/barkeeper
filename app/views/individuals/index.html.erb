@@ -1,0 +1,150 @@
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Individuals</h3>
+  </div>
+
+
+  <div class="panel-body">
+
+    <div class="wideTable"><table id="individuals">
+
+
+      <thead>
+      <tr>
+
+        <!--0 t.string   "specimen_id"-->
+        <th>Specimen ID</th>
+
+        <!--2 t.integer  "species_id"-->
+        <th>Species</th>
+
+        <th>Family</th>
+        <!--4 t.string   "voucher"-->
+        <th>Herbarium</th>
+
+        <!--5 t.string   "country"-->
+        <th>Country</th>
+
+        <!--6 t.string   "state_province"-->
+        <th>State/Province</th>
+        <!--7 t.text     "locality"-->
+        <th>Locality</th>
+        <!--8 t.string   "latitude"-->
+        <th>Latitude</th>
+        <!--9 t.string   "longitude"-->
+        <th>Longitude</th>
+        <!--10 t.string   "elevation"-->
+        <th>Elevation</th>
+        <!--11 t.string   "exposition"-->
+        <th>Exposition</th>
+        <!--12 t.text     "habitat"-->
+        <th>Habitat</th>
+        <!--13 t.string   "substrate"-->
+        <th>Substrate</th>
+        <!--14 t.string   "life_form"-->
+        <th>Life form</th>
+
+        <!--15 t.string   "collector"-->
+        <th>Collector</th>
+
+        <!--16 t.string   "collection_nr"-->
+        <th>Collection Nr</th>
+        <!--17 t.string   "collection_date"-->
+        <th>Collection Date</th>
+        <!--18 t.string   "determination"-->
+        <th>Determination</th>
+        <!--19 t.string   "revision"-->
+        <th>Revision</th>
+        <!--20 t.string   "confirmation"-->
+        <th>Confirmation</th>
+        <!--21 t.text     "comments"-->
+        <th>Comments</th>
+        <!--22 - reverse sort by this-->
+        <th>Last updated</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @individuals.each do |individual| %>
+          <tr>
+            <td><%= link_to individual.specimen_id, edit_individual_path(individual) %></td>
+
+            <!--t.integer  "species_id"-->
+            <td><% if individual.species %>
+                  <%= link_to individual.species.name_for_display, edit_species_path(individual.species) %>
+              <% end %></td>
+
+            <td><% if individual.species and individual.species.family %>
+                  <%= link_to individual.species.family.name, edit_family_path(individual.species.family) %>
+              <% end %></td>
+
+            <!--t.string   "herbarium"-->
+            <td><%= individual.herbarium %></td>
+
+
+            <!--t.string   "country"-->
+            <td><%= individual.country %></td>
+
+            <!--t.string   "state_province"-->
+            <td><%= individual.state_province %></td>
+
+            <!--t.text     "locality"-->
+            <td><%= individual.locality_for_display %></td>
+
+            <!--t.string   "latitude"-->
+            <td><%= individual.latitude %></td>
+
+            <!--t.string   "longitude"-->
+            <td><%= individual.longitude %></td>
+
+            <!--t.string   "elevation"-->
+            <td><%= individual.elevation %></td>
+
+            <!--t.string   "exposition"-->
+            <td><%= individual.exposition %></td>
+
+            <!--t.text     "habitat"-->
+            <td><%= individual.habitat_for_display %></td>
+
+            <!--t.string   "substrate"-->
+            <td><%= individual.substrate %></td>
+
+            <!--t.string   "life_form"-->
+            <td><%= individual.life_form %></td>
+
+            <!--t.string   "collector"-->
+            <td><%= individual.collector %></td>
+
+            <!--t.string   "collection_nr"-->
+            <td><%= individual.collection_nr %></td>
+
+            <!--t.string   "collection_date"-->
+            <td><%= individual.collection_date %></td>
+
+            <!--t.string   "determination"-->
+            <td><%= individual.determination %></td>
+
+
+            <!--t.string   "revision"-->
+            <td><%= individual.revision %></td>
+
+            <!--t.string   "confirmation"-->
+            <td><%= individual.confirmation %></td>
+
+            <!--t.text     "comments"-->
+            <td><%= individual.comments_for_display %></td>
+
+            <td><%= individual.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td><%= link_to 'Delete', individual, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table></div>
+
+  </div>
+</div>
+
+<%= link_to 'New Individual', new_individual_path %>
+

@@ -1,0 +1,98 @@
+<%= show_val_errors(@species)%>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= @species.composed_name %></h3>
+  </div>
+
+  <div class="row">
+
+    <!--left-->
+    <div class="col-md-4">
+      <div class="panel-body">
+
+        <%= form_for(@species) do |f| %>
+
+            <div class="form-group">
+              <%= f.label 'Genus' %>
+              <%= f.text_field :genus_name, class: 'form-control' %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label 'Species' %>
+              <%= f.text_field :species_epithet, class: 'form-control' %>
+            </div>
+
+
+            <div class="form-group">
+              <%= f.label 'Author' %>
+
+              <%= f.text_field :author, class: 'form-control' %>
+
+            </div>
+
+            <div class="form-group">
+              <%= f.label 'Subspecies' %>
+
+              <%= f.text_field :infraspecific, class: 'form-control' %>
+
+            </div>
+
+            <div class="form-group">
+              <%= f.label 'Author' %>
+              <%= f.text_field :author_infra, class: 'form-control' %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label 'Family' %>
+              <% if @species.family %>
+                  <%= link_to '', edit_family_path(@species.family), :class => "glyphicon glyphicon-share-alt" %>
+              <% end %>
+              <%= f.text_field :family_name , data: {autocomplete_source: filter_families_path} , class: 'form-control'%>
+            </div>
+
+            <div class="form-group">
+              <%= f.label 'German name' %>
+
+              <%= f.text_field :german_name, class: 'form-control' %>
+
+            </div>
+
+            <div class="form-group">
+              <%= f.label 'Comment' %>
+
+              <%= f.text_area :comment, class: 'form-control' %>
+
+            </div>
+
+            <%= f.submit 'Update', :class =>  'btn btn-primary'%>
+
+        <% end %>
+
+      </div>
+    </div>
+
+    <!--right-->
+    <div class="col-md-8">
+
+      <!--http://de.wikipedia.org/wiki/Asplenium_cuneifolium-->
+      <% url="http://de.m.wikipedia.org/wiki/#{@species.composed_name}" %>
+
+      <!--wiki display -->
+      <div>
+        <object type="text/html" data=<%= url %> width="800px" height="600px" style="overflow:auto">
+        </object>
+      </div>
+
+      <br>
+      <!--search google-->
+      <% url="http://www.google.com/search?q=#{@species.genus_name}+#{@species.species_epithet}" %>
+
+      <div>
+        <a target=”_blank” href=<%=url %>>Search Google</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>

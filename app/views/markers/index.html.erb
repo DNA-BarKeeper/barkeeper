@@ -1,0 +1,37 @@
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Markers</h3>
+  </div>
+
+  <div class="panel-body">
+    <table id="markers">
+
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>GBOL marker</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @markers.each do |marker| %>
+          <tr>
+            <td><%= link_to marker.name, edit_marker_path(marker) %></td>
+            <td>
+              <% if marker.is_gbol %>
+                  <span class="glyphicon glyphicon-ok"></span>
+              <% end %>
+            </td>
+            <td><%= link_to 'Delete', marker, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table></div>
+
+</div>
+
+<%= link_to 'New Marker', new_marker_path %>
+
+

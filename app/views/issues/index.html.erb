@@ -1,0 +1,38 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Issues</h3>
+  </div>
+  <div class="panel-body">
+
+    <table id="issues">
+
+
+      <thead>
+      <tr>
+        <th>Title</th>
+        <th>Primer Read</th>
+        <th>Contig</th>
+        <th>Added</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @issues.each do |issue| %>
+          <tr>
+            <td><%= link_to issue.title, edit_issue_path(issue) %></td>
+            <td><%= link_to issue.primer_read.name, edit_primer_read_path(issue.primer_read) if issue.primer_read %></td>
+            <td><%= link_to issue.contig.name, edit_contig_path(issue.contig) if issue.contig %></td>
+            <td><%= issue.updated_at.in_time_zone("CET") %></td>
+            <td><%= link_to 'Delete', issue, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+
+<%= link_to 'New Issue', new_issue_path %>
+

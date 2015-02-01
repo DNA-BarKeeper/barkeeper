@@ -1,0 +1,44 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Contigs</h3>
+  </div>
+  <div class="panel-body">
+    <table id="contigs">
+
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Assembly complete?</th>
+        <td>Last updated</td>
+        <td></td>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @contigs.each do |contig| %>
+          <tr>
+            <td><%= link_to contig.name, edit_contig_path(contig) %></td>
+            <td>
+              <% if contig.assembled  %>
+                  Yes
+              <% else %>
+                  No
+              <% end %>
+            </td>
+            <td><%= contig.updated_at.in_time_zone("CET") %></td>
+            <td><%= link_to 'Delete', contig, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          </tr>
+      <% end %>
+      </tbody>
+
+    </table>
+  </div>
+</div>
+
+<p>
+ Assembly complete for <%= Contig.where(:assembled => true).count %> contigs.
+</p>
+
+<%= link_to 'Perform read assembly for all contigs with incomplete assembly', assemble_contigs_path %><br>
+<%= link_to 'Download pde files for all', pde_all_contigs_path %><br>
+<%= link_to 'New Contig', new_contig_path %>

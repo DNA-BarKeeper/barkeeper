@@ -1,0 +1,2 @@
+module IsolatesHelper
+end

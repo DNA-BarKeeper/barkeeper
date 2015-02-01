@@ -1,0 +1,30 @@
+<<div class="panel panel-default">
+  <div class="panel-heading"><h4>Primer position in genomes</h4></div>
+
+  <table class="table">
+
+
+  <thead>
+    <tr>
+      <th>Note</th>
+      <th>Position</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @primer_pos_on_genomes.each do |primer_pos_on_genome| %>
+      <tr>
+        <td><%= primer_pos_on_genome.note %></td>
+        <td><%= primer_pos_on_genome.position %></td>
+        <td><%= link_to 'Show', primer_pos_on_genome %></td>
+        <td><%= link_to 'Edit', edit_primer_pos_on_genome_path(primer_pos_on_genome) %></td>
+        <td><%= link_to 'Delete', primer_pos_on_genome, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+</div>
+
+<%= link_to 'New Primer position', new_primer_pos_on_genome_path %>

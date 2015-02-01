@@ -1,0 +1,53 @@
+<%= show_val_errors(@primer)%>
+
+<div class="authform">
+<%= form_for(@primer) do |f| %>
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label 'Alternative name' %>
+        <%= f.text_field :alt_name,  class: 'form-control' %>
+      </div>
+
+      <div >
+        <%= f.label 'Reverse' %>
+        <%= f.check_box :reverse  %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label 'Marker' %>
+        <%= f.collection_select(:marker_id, Marker.all, :id, :name, include_blank: true) %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label 'Position' %>
+        <%= f.text_field :position,  class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :sequence %>
+        <%= f.text_field :sequence,  class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :author %>
+        <%= f.text_field :author,  class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label 'TM' %>
+        <%= f.text_field :tm,  class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label 'Target group' %>
+        <%= f.text_field :target_group,  class: 'form-control' %>
+      </div>
+
+
+      <%= f.submit 'Update', :class => 'button right' %>
+<% end %>
+</div>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="Rails gbol5: development" uuid="c6cfe0b3-6314-407b-a9f3-40eb70e6dc77">
+      <user-name>kai</user-name>
+      <schema-pattern>gbol_development.pg_catalog gbol_development.public</schema-pattern>
+      <default-schemas>gbol_development.pg_catalog gbol_development.public</default-schemas>
+    </data-source>
+    <data-source name="Rails gbol5: test" uuid="20b1aecc-8628-4eb3-b031-bce31707a049">
+      <user-name>kai</user-name>
+      <schema-pattern>gbol_test.pg_catalog gbol_test.public</schema-pattern>
+      <default-schemas>gbol_test.pg_catalog gbol_test.public</default-schemas>
+    </data-source>
+    <data-source name="Rails gbol5: production" uuid="ea77d10f-e74b-4c8e-9e0c-18b3f19522ac">
+      <first-sync>true</first-sync>
+    </data-source>
+    <data-source name="Rails gbol5: cucumber" uuid="0237df9a-d576-4b5c-84b7-a342867d9a44">
+      <user-name>kaimueller</user-name>
+      <schema-pattern>gbol_test.pg_catalog gbol_test.public</schema-pattern>
+      <default-schemas>gbol_test.pg_catalog gbol_test.public</default-schemas>
+    </data-source>
+  </component>
+</project>

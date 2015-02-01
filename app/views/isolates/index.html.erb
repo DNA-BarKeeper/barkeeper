@@ -1,0 +1,54 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Isolates</h3>
+  </div>
+  <div class="panel-body">
+
+    <div class="well">
+      Import Isolates / Specimen (Individuals) from Excel file:<p></p>
+      <%= form_tag import_isolates_path, multipart: true do %>
+          <%= file_field_tag :file %>
+          <br>
+          <%= submit_tag "Import" %>
+      <% end %>
+    </div>
+
+    <table id="isolates">
+
+      <thead>
+      <tr>
+        <th>Isolation number</th>
+        <th>DNA Bank id</th>
+        <th>Species</th>
+        <th>Individual: Specimen/Voucher id</th>
+        <th>Well pos plant plate</th>
+        <th>Micronic tube</th>
+        <th>Well pos micronic plate</th>
+        <th>Concentration</th>
+        <th>Last updated</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @isolates.each do |isolate| %>
+          <tr>
+            <td><%= link_to isolate.lab_nr, edit_isolate_path(isolate) if isolate.lab_nr %></td>
+            <td><%= link_to isolate.dna_bank_id, edit_isolate_path(isolate) if isolate.dna_bank_id %></td>
+            <td><%= link_to isolate.individual.species.composed_name, edit_species_path(isolate.individual.species) if isolate.individual and isolate.individual.species %></td>
+            <td><%= link_to isolate.individual.specimen_id, edit_individual_path(isolate.individual) if isolate.individual and isolate.individual.specimen_id!=nil %></td>
+            <td><%= isolate.well_pos_plant_plate %></td>
+            <td><%= isolate.micronic_tube_id %></td>
+            <td><%= isolate.well_pos_micronic_plate %></td>
+            <td><%= isolate.concentration %></td>
+            <td><%= isolate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td><%= link_to 'Delete', isolate, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<%= link_to 'New Isolate', new_isolate_path %>
+

@@ -1,0 +1,29 @@
+<div class="panel panel-default">
+  <div class="panel-heading"><h4>Freezers</h4></div>
+
+  <table class="table">
+
+
+  <thead>
+    <tr>
+      <th>Freezercode</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @freezers.each do |freezer| %>
+      <tr>
+        <td><%= freezer.freezercode %></td>
+        <td><%= link_to 'Show', freezer %></td>
+        <td><%= link_to 'Edit', edit_freezer_path(freezer) %></td>
+        <td><%= link_to 'Delete', freezer, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+</div>
+<%= link_to 'New Freezer', new_freezer_path %>
+

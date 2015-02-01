@@ -1,0 +1,21 @@
+<%= show_val_errors(@micronic_plate)%>
+
+<div class="authform">
+  <h4><%= @micronic_plate.name%></h4>
+
+<%= form_for(@micronic_plate) do |f| %>
+
+
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :location_in_rack %>
+        <%= f.text_field :location_in_rack, :autofocus => true, class: 'form-control' %>
+      </div>
+
+      <%= f.submit 'Update', :class => 'button right' %>
+<% end %>
+</div>

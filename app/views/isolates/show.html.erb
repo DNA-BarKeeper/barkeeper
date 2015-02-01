@@ -1,0 +1,44 @@
+
+
+<p>
+  <strong>Well pos plant plate:</strong>
+  <%= @isolate.well_pos_plant_plate %>
+</p>
+
+<p>
+  <strong>Lab nr:</strong>
+  <%= @isolate.lab_nr %>
+</p>
+
+<p>
+  <strong>Micronic tube:</strong>
+  <%= @isolate.micronic_tube_id %>
+</p>
+
+<p>
+  <strong>Well pos micronic plate:</strong>
+  <%= @isolate.well_pos_micronic_plate %>
+</p>
+
+<p>
+  <strong>Concentration:</strong>
+  <%= @isolate.concentration %>
+</p>
+
+<p>
+  <strong>Tissue:</strong>
+  <%= @isolate.tissue.name if @isolate.tissue %>
+</p>
+
+<p>
+  <strong>Plate (DNA):</strong>
+  <%= @isolate.micronic_plate.name if @isolate.micronic_plate %>
+</p>
+
+<p>
+  <strong>Plate (Tissue):</strong>
+  <%= @isolate.plant_plate.name if @isolate.plant_plate %>
+</p>
+
+<%= link_to 'Edit', edit_isolate_path(@isolate) %> |
+<%= link_to 'Back', isolates_path %>

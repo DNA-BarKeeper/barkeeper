@@ -1,0 +1,19 @@
+<%= show_val_errors(@freezer)%>
+<div class="authform">
+  <h4><%= @freezer.freezercode%></h4>
+
+<%= form_for(@freezer) do |f| %>
+
+      <div class="form-group">
+        <%= f.label :freezercode %>
+        <%= f.text_field :freezercode, :autofocus => true, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label 'Lab' %>
+        <%= f.collection_select(:lab_id, Lab.all, :id, :labcode) %>
+      </div>
+
+      <%= f.submit 'Update', :class => 'button right' %>
+<% end %>
+</div>

@@ -1,0 +1,18 @@
+
+<p>
+  <strong>Name:</strong>
+  <%= @order.name %>
+</p>
+
+<p>
+  <strong>Author:</strong>
+  <%= @order.author %>
+</p>
+
+<p>
+  <strong>Belongs to:</strong>
+  <%= @order.higher_order_taxon.name %>
+</p>
+
+<%= link_to 'Edit', edit_order_path(@order) %> |
+<%= link_to 'Back', orders_path %>

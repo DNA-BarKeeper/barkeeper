@@ -1,0 +1,52 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Primer Reads</h3>
+  </div>
+
+  <div class="panel-body">
+
+    <div class="well">
+
+      <table><tr>
+        <td><span class="glyphicon glyphicon-cloud-upload" style="font-size: large; width: 30px"></span></td>
+        <td title="Upload chromatograms"><%= form_for PrimerRead.new do |f| %>
+            <%= f.file_field :chromatogram, multiple: true, name: "primer_read[chromatogram]" %>
+        <% end %></td></tr></table>
+
+
+
+      <% # jquery upload template # %>
+      <script id="template-upload" type="text/x-tmpl">
+<div class="upload">
+  {%=o.name%}
+      <div class="progress">
+          <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%;">
+          </div>
+      </div>
+</div>
+</script>
+    </div>
+
+    <table id="primer_reads">
+
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Assembled?</th>
+        <th>Contig</th>
+        <td>Last updated</td>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody id="primer_read_list">
+
+        <%= render_primer_read_list(@primer_reads) %>
+
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+

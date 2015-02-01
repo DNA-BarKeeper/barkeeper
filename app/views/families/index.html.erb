@@ -1,0 +1,39 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Families</h3>
+  </div>
+  <div class="panel-body">
+
+
+    <table id="families">
+
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Order</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @families.each do |family| %>
+          <tr>
+            <td><%= link_to family.name, edit_family_path(family) %></td>
+            <td>
+            <% if family.order %>
+                <%= link_to family.order.name, edit_order_path(family.order)%>
+            <% end %>
+            </td>
+            <td><%= link_to 'Delete', family, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          </tr>
+      <% end %>
+      </tbody>
+
+    </table>
+  </div>
+
+</div>
+
+
+<%= link_to 'New Family', new_family_path %>
+

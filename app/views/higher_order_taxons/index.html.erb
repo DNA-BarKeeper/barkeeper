@@ -1,0 +1,33 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Higher-order Taxa</h3>
+  </div>
+  <div class="panel-body">
+
+
+    <table id="higher_order_taxa">
+
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Deutscher Trivialname</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @higher_order_taxons.each do |higher_order_taxon| %>
+          <tr>
+            <td><%= link_to higher_order_taxon.name, edit_higher_order_taxon_path(higher_order_taxon) %></span></td>
+            <td><%= higher_order_taxon.german_name %></td>
+            <td><%= link_to 'Delete', higher_order_taxon, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+<%= link_to 'New Higher order taxon', new_higher_order_taxon_path %>
+

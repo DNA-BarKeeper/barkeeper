@@ -1,0 +1,19 @@
+
+<p>
+  <strong>Name:</strong>
+  <%= @marker_sequence.name %>
+</p>
+
+<p>
+  <strong>Sequence:</strong>
+  <%= @marker_sequence.sequence %>
+</p>
+
+<p>
+  <strong>Isolate:</strong>
+  <%= @marker_sequence.isolate.lab_nr %>
+</p>
+
+<%= link_to 'Edit', edit_marker_sequence_path(@marker_sequence) %> |
+<%= link_to 'Back', marker_sequences_path %>
+

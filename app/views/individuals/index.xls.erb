@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:x="urn:schemas-microsoft-com:office:excel"
+          xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Sheet1">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">GBOL-Nr.</Data></Cell>
+        <Cell><Data ss:Type="String">Feldnummer</Data></Cell>
+        <Cell><Data ss:Type="String">Institut</Data></Cell>
+        <Cell><Data ss:Type="String">Sammlungs-Nr.</Data></Cell>
+        <Cell><Data ss:Type="String">Familie</Data></Cell>
+        <Cell><Data ss:Type="String">Taxon-Name</Data></Cell>
+        <Cell><Data ss:Type="String">Erstbeschreiber Jahr</Data></Cell>
+        <Cell><Data ss:Type="String">evtl. Bemerkung Taxonomie</Data></Cell>
+        <Cell><Data ss:Type="String">Name</Data></Cell>
+        <Cell><Data ss:Type="String">Datum</Data></Cell>
+        <Cell><Data ss:Type="String">Gewebetyp und Menge</Data></Cell>
+        <Cell><Data ss:Type="String">Anzahl Individuen</Data></Cell>
+        <Cell><Data ss:Type="String">Fixierungsmethode</Data></Cell>
+        <Cell><Data ss:Type="String">Entwicklungsstadium</Data></Cell>
+        <Cell><Data ss:Type="String">Sex</Data></Cell>
+        <Cell><Data ss:Type="String">evtl. Bemerkungen zur Probe</Data></Cell>
+        <Cell><Data ss:Type="String">Fundortbeschreibung</Data></Cell>
+        <Cell><Data ss:Type="String">Region</Data></Cell>
+        <Cell><Data ss:Type="String">Bundesland</Data></Cell>
+        <Cell><Data ss:Type="String">Land</Data></Cell>
+        <Cell><Data ss:Type="String">Datum</Data></Cell>
+        <Cell><Data ss:Type="String">Sammelmethode</Data></Cell>
+        <Cell><Data ss:Type="String">Breitengrad</Data></Cell>
+        <Cell><Data ss:Type="String">Längengrad</Data></Cell>
+        <Cell><Data ss:Type="String">Benutzte Methode</Data></Cell>
+        <Cell><Data ss:Type="String">Ungenauigkeitsangabe</Data></Cell>
+        <Cell><Data ss:Type="String">Höhe/Tiefe [m]</Data></Cell>
+        <Cell><Data ss:Type="String">Habitat</Data></Cell>
+        <Cell><Data ss:Type="String">Sammler</Data></Cell>
+        <Cell><Data ss:Type="String">Nummer</Data></Cell>
+        <Cell><Data ss:Type="String">Behörde</Data></Cell>
+      </Row>
+      <% @individuals.each do |individual| %>
+          <Row>
+            <Cell><Data ss:Type="String"><%= individual.isolates.first.lab_nr %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.collection_nr %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.herbarium %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.specimen_id %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.species.family.name %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.species.name_for_display %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.species.author %></Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.determination %></Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String">Blattmaterial</Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String">Silica gel</Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.comments %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.locality %></Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.state_province %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.country %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.collection_date %></Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.latitude %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.longitude %></Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.elevation %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.habitat %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.collector %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= individual.collection_nr %></Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+          </Row>
+      <% end %>
+    </Table>
+  </Worksheet>
+</Workbook>

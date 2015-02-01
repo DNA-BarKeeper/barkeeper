@@ -1,0 +1,30 @@
+<div class="panel panel-default">
+  <div class="panel-heading"><h4>Labs</h4></div>
+
+  <table class="table">
+
+
+  <thead>
+    <tr>
+      <th>Labcode</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @labs.each do |lab| %>
+      <tr>
+        <td><%= lab.labcode %></td>
+        <td><%= link_to 'Show', lab %></td>
+        <td><%= link_to 'Edit', edit_lab_path(lab) %></td>
+        <td><%= link_to 'Delete', lab, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+</div>
+
+<%= link_to 'New Lab', new_lab_path %>
+
+

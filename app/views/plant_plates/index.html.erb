@@ -1,0 +1,31 @@
+<div class="panel panel-default">
+  <div class="panel-heading"><h4>Plates (Tissue)</h4></div>
+
+  <table class="table">
+
+
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>How many</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @plant_plates.each do |plant_plate| %>
+      <tr>
+        <td><%= plant_plate.name %></td>
+        <td><%= plant_plate.how_many %></td>
+        <td><%= link_to 'Show', plant_plate %></td>
+        <td><%= link_to 'Edit', edit_plant_plate_path(plant_plate) %></td>
+        <td><%= link_to 'Delete', plant_plate, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+</div>
+
+<%= link_to 'New Plate (Tissue)', new_plant_plate_path %>
+

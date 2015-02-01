@@ -1,0 +1,13 @@
+<%= show_val_errors(@tissue)%>
+
+<div class="authform">
+  <h4><%= @tissue.name%></h4>
+
+<%= form_for(@tissue) do |f| %>
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
+      </div>
+      <%= f.submit 'Update', :class => 'button right' %>
+<% end %>
+</div>

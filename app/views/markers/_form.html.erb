@@ -1,0 +1,24 @@
+<%= show_val_errors(@marker)%>
+
+<div class="authform">
+  <h4><%= @marker.name%></h4>
+  <%= form_for(@marker) do |f| %>
+
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
+      </div>
+
+      <div class="field">
+        <%= f.label 'GBOL marker' %>
+        <%= f.check_box :is_gbol  %>
+        </div>
+
+      <div class="form-group">
+        <%= f.label 'Expected number of reads' %>
+        <%= f.select(:expected_reads, options_for_select([['1', 1], ['2', 2], ['3', 3], ['4', 4]], @marker.expected_reads)) %>
+      </div>
+
+      <%= f.submit 'Update', :class => 'button right' %>
+  <% end %>
+</div>

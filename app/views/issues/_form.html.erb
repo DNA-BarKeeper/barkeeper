@@ -1,0 +1,21 @@
+<%= show_val_errors(@issue)%>
+
+
+<div class="authform">
+  <h4><%= @issue.title%></h4>
+<%= form_for(@issue) do |f| %>
+
+      <div class="form-group">
+        <%= f.label :title %>
+        <%= f.text_field :title, :autofocus => true, class: 'form-control' %>
+      </div>
+
+
+      <div class="form-group">
+        <%= f.label :description %>
+        <%= f.text_area :description, :autofocus => true, class: 'form-control' %>
+      </div>
+
+      <%= f.submit 'Update', :class => 'button right' %>
+<% end %>
+</div>

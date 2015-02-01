@@ -1,0 +1,10 @@
+<% if @primer_read.new_record? %>
+alert("Failed to upload : <%= j @primer_read.errors.full_messages.join(', ').html_safe %>");
+<% else %>
+//Select all upload elements that contain the primer name & hide:
+$(".upload:contains(<%= @primer_read.name %>)").hide()
+
+
+$("#primer_read_list").prepend("<%= j render @primer_read %>");
+
+<% end %>

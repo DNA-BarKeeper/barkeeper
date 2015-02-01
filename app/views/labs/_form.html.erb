@@ -1,0 +1,16 @@
+<%= show_val_errors(@lab)%>
+
+
+<div class="authform">
+  <h4><%= @lab.labcode%></h4>
+<%= form_for(@lab) do |f| %>
+
+
+
+      <div class="form-group">
+        <%= f.label :labcode %>
+        <%= f.text_field :labcode, :autofocus => true, class: 'form-control' %>
+      </div>
+      <%= f.submit 'Update', :class => 'button right' %>
+<% end %>
+</div>

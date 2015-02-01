@@ -1,0 +1,26 @@
+<%= show_val_errors(@family)%>
+
+<div class="authform">
+
+  <h4><%= @family.name%></h4>
+
+  <%= form_for(@family) do |f| %>
+
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= f.label :author %>
+        <%= f.text_field :author, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label 'Order' %>
+        <%= f.collection_select(:order_id, Order.all, :id, :name) %>
+      </div>
+
+      <%= f.submit 'Update', :class => 'button right' %>
+
+  <% end %>
+</div>

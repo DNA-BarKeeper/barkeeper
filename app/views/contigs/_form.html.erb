@@ -1,0 +1,131 @@
+<%= show_val_errors(@contig)%>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Contig</h3>
+  </div>
+  <div class="panel-body">
+
+    <%= form_for(@contig) do |f| %>
+
+        <div class="col-md-12">
+          <div class="form-group">
+            <%= f.label :name %>
+            <%= f.text_field :name, class: 'form-control' %>
+          </div>
+        </div>
+
+
+        <div class="col-md-4">
+
+          <div class="form-group">
+            <%= f.label 'Isolate' %>
+            <% if @contig.isolate %>
+                <%= link_to '', edit_isolate_path(@contig.isolate), :class => "glyphicon glyphicon-share-alt" %>
+            <% end %>
+            <%= f.text_field :isolate_name , data: {autocomplete_source: filter_isolates_path} , class: 'form-control'%>
+          </div>
+
+          <div class="form-group">
+            <%= f.label 'Marker' %>
+
+            <%= f.collection_select(:marker_id, Marker.all, :id, :name, include_blank: true) %>
+            <% if @contig.marker %>
+                <%= link_to '', edit_marker_path(@contig.marker), :class => "glyphicon glyphicon-share-alt" %>
+            <% end %>
+          </div>
+
+          <span class="glyphicon glyphicon-align-center"></span> <%= link_to 'Assemble primer reads', overlap_contig_path %><p></p>
+
+          <div >
+            <%= f.label 'Assembly complete' %>
+            <%= f.check_box :assembled  %>
+          </div>
+
+          <p></p>
+          <% if @contig.overlaps %>
+              <%= @contig.overlaps %> read overlaps.
+          <% end%>
+          <% if @contig.assembled %>
+              Assembly should be complete.
+          <% end %>
+
+
+        </div>
+
+        <div class="col-md-4">
+
+          <!-- list/ling included reads -->
+          <% assembled=@contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, true) %>
+
+          <% if assembled.any? %>
+              <p></p>
+              <p>Included Reads:</p>
+              <% for i in 0...assembled.length %>
+                  <% pr= assembled[i] %>
+                  <%= link_to pr.name, edit_primer_read_path(pr) %><br>
+              <% end %>
+          <% end %>
+
+          <!-- to be used but not assembled-->
+
+          <% failures=@contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, false)%>
+
+          <% if failures.any? %>
+              <p></p>
+              <p>Assigned Reads not assembled:</p>
+              <% for i in 0...failures.length %>
+                  <% pr= failures[i] %>
+                  <%= link_to pr.name, edit_primer_read_path(pr) %><br>
+              <% end %>
+          <% end %>
+
+          <!-- not to be used -->
+          <% dontuse=@contig.primer_reads.where(:used_for_con => false) %>
+
+          <% if dontuse.any? %>
+              <p></p>
+              <p>Excluded Reads:</p>
+              <% for i in 0...dontuse.length %>
+                  <% pr= dontuse[i] %>
+                  <%= link_to pr.name, edit_primer_read_path(pr) %><br>
+              <% end %>
+          <% end %>
+        </div>
+
+        <div class="col-md-4">
+          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download aligned sequences as PDE file',  pde_contig_path %><br>
+          <span class="glyphicon glyphicon-arrow-down"></span><a id="download_as_img"> Download as image</a><br>
+          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download aligned sequences as Fasta file',  fasta_contig_path %><br>
+          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download trimmed sequences as Fasta file',  fasta_trimmed_contig_path %><br>
+          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download raw sequences as Fasta file',  fasta_raw_contig_path %><br>
+
+          <p></p>
+          <span class="pull-right"> <%= f.submit 'Update', :class =>  'btn btn-primary'%></span>
+
+        </div>
+
+    <% end %>
+
+
+
+
+    <div class="col-md-12">
+      <div class="alignment">
+
+        <%= content_tag "div", id: "contig", data: {url: @contig.partial_cons } do %>
+            <span id="loading">Loading contig ...</span>
+
+            <!--canvas-->
+            <canvas id="ContigCanvas">Your browser doesn't support canvas!</canvas>
+
+        <% end %>
+
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+</div>
+</div>

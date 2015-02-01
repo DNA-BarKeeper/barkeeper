@@ -1,0 +1,51 @@
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Marker Sequences</h3>
+  </div>
+
+  <div class="panel-body">
+
+  <table id="marker_sequences">
+
+
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Species</th>
+      <th>Marker</th>
+      <th>Length</th>
+      <th>Isolate</th>
+      <th>Genbank No.</th>
+      <th>Contig(s)</th>
+      <th>Last Updated</th>
+      <th></th>
+      <th></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <% @marker_sequences.each do |marker_sequence| %>
+        <tr>
+          <td><%= link_to marker_sequence.name, edit_marker_sequence_path(marker_sequence) %></td>
+          <td><%= link_to marker_sequence.isolate.individual.species.name_for_display, edit_species_path(marker_sequence.isolate.individual.species) if marker_sequence.isolate and marker_sequence.isolate.individual%></td>
+          <td><%= link_to marker_sequence.marker.name, edit_marker_path(marker_sequence.marker) if marker_sequence.marker %></td>
+          <td><%= link_to marker_sequence.sequence.length, edit_marker_sequence_path(marker_sequence) %></td>
+          <td><%= link_to marker_sequence.isolate.lab_nr, edit_isolate_path(marker_sequence.isolate) if  marker_sequence.isolate %></td>
+          <td><%= marker_sequence.genbank %></td>
+
+          <td><%= link_to marker_sequence.contigs.first.name, edit_contig_path(marker_sequence.contigs.first) if marker_sequence.contigs.any? %></td>
+          <td><%= marker_sequence.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
+
+          <td><%= link_to 'Edit', edit_marker_sequence_path(marker_sequence) %></td>
+          <td><%= link_to 'Delete', marker_sequence, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        </tr>
+    <% end %>
+    </tbody>
+  </table>
+  </div>
+
+</div>
+<%= link_to 'New Marker sequence', new_marker_sequence_path %>
+
+

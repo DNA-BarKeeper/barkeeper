@@ -1,0 +1,152 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+
+ *= require dataTables/jquery.dataTables
+ *= require_self
+ *= require_tree .
+ */
+
+
+#slider{
+  position: absolute;
+  height: 250px;
+  width: 10px;
+
+  input[type=range].vertical
+  {
+    writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+    width: 8px;
+    height: 250px;
+    padding: 0 5px;
+  }
+
+}
+
+.wideTable {
+  overflow-x: auto;
+}
+
+
+.alignment {
+  overflow-x: auto;
+
+  .pos {
+    font-family:'Courier New';
+    font-size: smaller;
+    color: gray;
+  }
+
+  td {
+    background-color: #ffffff;
+  }
+
+  .read_name {
+    font-family:'Courier New';
+    font-size: medium;
+  }
+  .sequence {
+    margin: 0px;
+    padding: 0px;
+    font-family:'Courier New';
+    font-size: medium;
+//    background-color: white;
+    letter-spacing: -5px;
+
+    .consensus {
+      font-weight: bolder;
+    }
+
+    .A {
+      color: red;
+    }
+    .B {
+      color: #0000FF;
+    }
+    .C {
+      color: blue;
+    }
+    .D {
+      color: #0033FF;
+    }
+    .E {
+      color: #0066FF;
+    }
+    .F {
+      color: #0099FF;
+    }
+    .G {
+      color: black;
+    }
+    .H {
+      color: #00CCFF;
+    }
+    .I {
+      color: #003399;
+    }
+    .K {
+      color: #006699;
+    }
+    .L {
+      color: #009999;
+    }
+    .M {
+      color: #00CC99;
+    }
+    .N {
+      color: #d1d3cf;
+    }
+    .P {
+      color: #663399;
+    }
+    .Q {
+      color: #666699;
+    }
+    .R {
+      color: #669999;
+    }
+    .S {
+      color: #66CC99;
+    }
+    .T {
+      color: green;
+    }
+    .V {
+      color: #66FF99;
+    }
+    .W {
+      color: #663300;
+    }
+    .X {
+      color: #666600;
+    }
+    .Y {
+      color: #669900;
+    }
+    .Z {
+      color: #66CC00;
+    }
+    .gap {
+      color: gray;
+    }
+    .missing {
+      color: gray;
+    }
+    .trimmed {
+      color: #d3d3d3;
+    }
+    .invisible {
+      color: #ffffff;
+    }
+  }
+}

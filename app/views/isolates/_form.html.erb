@@ -1,0 +1,74 @@
+<%= show_val_errors(@isolate)%>
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Isolates</h3>
+  </div>
+
+  <div class="panel-body">
+    <%= form_for(@isolate) do |f| %>
+
+
+        <div class="form-group">
+          <%= f.label 'Lab isolation number' %>
+          <%= f.text_field :lab_nr,  class: 'form-control' %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label 'DNA Bank id' %>
+          <%= f.text_field :dna_bank_id,  class: 'form-control' %>
+        </div>
+
+        <!--individual /Specimen -->
+
+        <div class="form-group">
+          <%= f.label 'Individual /Specimen' %>
+          <% if @isolate.individual %>
+              <%= link_to '', edit_individual_path(@isolate.individual), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@isolate.individual.specimen_id} " %>
+          <% end %>
+          <%= f.text_field :individual_name, data: {autocomplete_source: filter_individuals_path}, class: 'form-control' %>
+        </div>
+
+
+        <div class="form-group">
+          <%= f.label :micronic_tube_id %>
+          <%= f.text_field :micronic_tube_id,  class: 'form-control' %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label 'Well position in tissue plate' %>
+          <%= f.text_field :well_pos_plant_plate,  class: 'form-control' %>
+        </div>
+
+
+        <div class="form-group">
+          <%= f.label 'Well position in DNA plate' %>
+          <%= f.text_field :well_pos_micronic_plate,  class: 'form-control' %>
+        </div>
+
+
+        <div class="form-group">
+          <%= f.label :concentration %>
+          <%= f.number_field :concentration, class: 'form-control' %>
+        </div>
+
+
+        <div class="form-group">
+          <%= f.label 'Tissue type' %>
+          <%= f.collection_select(:tissue_id, Tissue.all, :id, :name) %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label 'Plate (DNA)' %>
+          <%= f.collection_select(:micronic_plate_id, MicronicPlate.all, :id, :name) %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label 'Plate (Tissue)' %>
+          <%= f.collection_select(:plant_plate_id, PlantPlate.all, :id, :name) %>
+        </div>
+
+        <%= f.submit 'Update', :class => 'button right' %>
+    <% end %>
+  </div>
+</div>

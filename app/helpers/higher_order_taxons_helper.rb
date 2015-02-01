@@ -1,0 +1,2 @@
+module HigherOrderTaxonsHelper
+end

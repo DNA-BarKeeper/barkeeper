@@ -1,0 +1,12 @@
+<p>
+  <strong>Rackcode:</strong>
+  <%= @lab_rack.rackcode %>
+</p>
+
+<p>
+  <strong>Rackcode:</strong>
+  <%= @lab_rack.freezer.freezercode %>
+</p>
+
+<%= link_to 'Edit', edit_lab_rack_path(@lab_rack) %> |
+<%= link_to 'Back', lab_racks_path %>

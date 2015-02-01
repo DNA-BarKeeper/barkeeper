@@ -1,0 +1,11 @@
+<%= show_val_errors(@status)%>
+<div class="authform">
+  <h4><%= @status.name%></h4>
+<%= form_for(@status) do |f| %>
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
+      </div>
+      <%= f.submit 'Update', :class => 'button right' %>
+<% end %>
+</div>

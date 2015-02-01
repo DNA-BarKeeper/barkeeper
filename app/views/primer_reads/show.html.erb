@@ -1,0 +1,46 @@
+
+<br>
+<p>
+  <strong>Name:</strong>
+  <%= @primer_read.name if @primer_read.name.present?%>
+</p>
+
+<p>
+  <strong>Sequence:</strong>
+  <%= @primer_read.seq_for_display if @primer_read.sequence.present? %>
+</p>
+<p>
+  <strong>Used segment after trimming:</strong>
+  <%= "#{@primer_read.trimmedReadStart}-#{@primer_read.trimmedReadEnd}" if @primer_read.trimmedReadEnd.present?%>
+</p>
+<p>
+  <strong>Trimmed Sequence:</strong>
+  <%= @primer_read.trimmed_seq_for_display if @primer_read.trimmed_seq.present?%>
+</p>
+
+<p>
+  <strong>Primer:</strong>
+  <%= @primer_read.primer.name if @primer_read.primer.present?%>
+</p>
+
+
+<!--<p>-->
+  <!--<strong>Chromatogram URL:</strong>-->
+  <!--<%= @primer_read.chromatogram.url if @primer_read.chromatogram.url.present?%>-->
+<!--</p>-->
+
+<p>
+  <strong><%= '< Reverse complement' if @primer_read.reverse%></strong>
+</p>
+
+
+<p>
+  <strong>Contig:</strong>
+  <%= @primer_read.contig.name if @primer_read.contig.present?%>
+</p>
+
+
+<%= link_to 'Download Chromatogram', @primer_read.chromatogram.url, class: 'btn btn-primary' %>
+
+<%= link_to 'Edit', edit_primer_read_path(@primer_read) %> |
+<%= link_to 'Back', primer_reads_path %>

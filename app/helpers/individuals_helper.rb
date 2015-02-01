@@ -1,0 +1,2 @@
+module IndividualsHelper
+end

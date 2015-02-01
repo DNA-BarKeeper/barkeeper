@@ -1,0 +1,54 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Primers</h3>
+  </div>
+
+  <div class="panel-body">
+
+    <div class="well">
+      Import Primers from Excel file:<p></p>
+      <%= form_tag import_primers_path, multipart: true do %>
+          <%= file_field_tag :file %>
+          <br>
+          <%= submit_tag "Import" %>
+      <% end %>
+    </div>
+
+    <table id="primers">
+
+
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Alt. Name</th>
+        <th>R/F</th>
+        <th>Marker</th>
+        <th>Position</th>
+        <th>Updated</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @primers.each do |primer| %>
+          <tr>
+            <td><%= link_to primer.name, edit_primer_path(primer) %></td>
+            <td><%= primer.alt_name %></td>
+            <% if primer.reverse %>
+                <td>R</td>
+            <% else %>
+                <td>F</td>
+            <% end %>
+            <td><%= link_to primer.marker.name, edit_marker_path(primer.marker) if primer.marker %></td>
+            <td><%= primer.position %></td>
+            <td><%= primer.updated_at %></td>
+            <td><%= link_to 'Delete', primer, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<%= link_to 'New Primer', new_primer_path %>

@@ -1,0 +1,19 @@
+
+
+<p>
+  <strong>Specimen:</strong>
+  <%= @individual.specimen_id %>
+</p>
+
+<p>
+  <strong>Dna bank:</strong>
+  <%= @individual.DNA_bank_id %>
+</p>
+
+<p>
+  <strong>Collector:</strong>
+  <%= @individual.collector %>
+</p>
+
+<%= link_to 'Edit', edit_individual_path(@individual) %> |
+<%= link_to 'Back', individuals_path %>

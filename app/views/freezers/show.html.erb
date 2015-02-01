@@ -1,0 +1,14 @@
+
+
+<p>
+  <strong>Freezercode:</strong>
+  <%= @freezer.freezercode %>
+</p>
+
+<p>
+  <strong>Freezercode:</strong>
+  <%= @freezer.lab.labcode %>
+</p>
+
+<%= link_to 'Edit', edit_freezer_path(@freezer) %> |
+<%= link_to 'Back', freezers_path %>

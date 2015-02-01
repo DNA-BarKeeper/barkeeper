@@ -1,0 +1,19 @@
+<p>
+  <strong>Name:</strong>
+  <%= @contig.name %>
+</p>
+
+<p>
+  <strong>Consensus:</strong>
+  <%= @contig.consensus %>
+</p>
+
+
+<p>
+  <strong>Marker Sequence:</strong>
+  <%= @contig.marker_sequence.name unless @marker_sequence.nil? %>
+</p>
+
+
+<%= link_to 'Edit', edit_contig_path(@contig) %> |
+<%= link_to 'Back', contigs_path %>
