@@ -1,5 +1,7 @@
 GBOLapp::Application.routes.draw do
 
+  #stupid comment from MacBook
+
   root :to => "home#about"
 
   match 'help',    to: 'home#help',    via: 'get'
