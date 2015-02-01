@@ -214,11 +214,8 @@
     <orderEntry type="library" scope="PROVIDED" name="rails-deprecated_sanitizer (v1.0.3, rbenv: 2.2.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rails-dom-testing (v1.0.5, rbenv: 2.2.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rails-html-sanitizer (v1.0.1, rbenv: 2.2.0) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rails_12factor (v0.0.3, rbenv: 2.2.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rails_apps_testing (v0.3.12, rbenv: 2.2.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rails_layout (v1.0.24, rbenv: 2.2.0) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rails_serve_static_assets (v0.0.3, rbenv: 2.2.0) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rails_stdout_logging (v0.0.3, rbenv: 2.2.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="railties (v4.2.0, rbenv: 2.2.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rake (v10.4.2, rbenv: 2.2.0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rb-fsevent (v0.9.4, rbenv: 2.2.0) [gem]" level="application" />
