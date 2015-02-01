@@ -2389,3 +2389,380 @@ Started GET "/assets/logo_bgbm.jpg" for 127.0.0.1 at 2015-02-01 17:10:55 +0100
 
 
 Started GET "/assets/SMNS.png" for 127.0.0.1 at 2015-02-01 17:10:55 +0100
+
+
+Started GET "/" for 127.0.0.1 at 2015-02-01 18:25:52 +0100
+  [1m[36mActiveRecord::SchemaMigration Load (0.6ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by HomeController#about as HTML
+  Rendered home/about.html.erb within layouts/application (11.0ms)
+  [1m[35mUser Load (0.4ms)[0m  SELECT  "users".* FROM "users" WHERE "users"."id" = $1  ORDER BY "users"."id" ASC LIMIT 1  [["id", 1]]
+  Rendered layouts/_navigation_links.html.erb (27.8ms)
+  Rendered layouts/_navigation.html.erb (29.7ms)
+  Rendered layouts/_messages.html.erb (0.4ms)
+Completed 200 OK in 1073ms (Views: 1062.3ms | ActiveRecord: 3.7ms)
+
+
+Started GET "/assets/alignments.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/authors.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/individuals.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/dataTables/jquery.dataTables.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/families.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/freezers.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/contigs.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/isolates.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/issues.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/higher_order_taxons.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/labs.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/markers.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/marker_sequences.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/micronic_plates.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/news.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/lab_racks.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/primer_pos_on_genomes.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/primer_reads.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/primers.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/plant_plates.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/species.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/shelves.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/statuses.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/tissues.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/framework_and_overrides.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/projects.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/species_epithets.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/core.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/widget.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/accordion.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/gens.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/button.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/mouse.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/resizable.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/position.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/menu.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/autocomplete.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/datepicker.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/draggable.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/dialog.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/droppable.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-blind.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-clip.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-explode.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-fold.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-size.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-bounce.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-drop.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-fade.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-highlight.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-scale.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-puff.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-shake.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-transfer.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/selectable.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/spinner.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/slider.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-pulsate.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/effect-slide.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/progressbar.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/selectmenu.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/tabs.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/sortable.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-ui/tooltip.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:54 +0100
+
+
+Started GET "/assets/jquery-fileupload/vendor/jquery.ui.widget.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/jquery-fileupload/jquery.fileupload.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/jquery.turbolinks.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/jquery-fileupload/vendor/tmpl.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/jquery-ui.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/dataTables/jquery.dataTables.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/jquery-fileupload/jquery.iframe-transport.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/jquery-fileupload/basic.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/alignments.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/contigs.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/freezers.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/higher_order_taxons.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/lab_racks.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/isolates.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/authors.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/families.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/gens.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/individuals.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/labs.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/issues.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/marker_sequences.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/micronic_plates.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/primer_pos_on_genomes.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/primers.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/shelves.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/markers.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/news.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/plant_plates.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/primer_reads.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/projects.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/species.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/species_epithets.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/tissues.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/statuses.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/Uni_Bonn.png/" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/wwu_logo.png" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/GBoL.png" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/Nees.png" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/BMBF.jpg" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/ieb.png/" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/logo_bgbm.jpg" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/assets/SMNS.png" for 127.0.0.1 at 2015-02-01 18:25:55 +0100
+
+
+Started GET "/contigs" for 127.0.0.1 at 2015-02-01 18:26:01 +0100
+Processing by ContigsController#index as HTML
+  [1m[36mUser Load (0.3ms)[0m  [1mSELECT  "users".* FROM "users" WHERE "users"."id" = $1  ORDER BY "users"."id" ASC LIMIT 1[0m  [["id", 1]]
+  [1m[35mContig Load (79.8ms)[0m  SELECT "contigs".* FROM "contigs"
+  [1m[36m (1.6ms)[0m  [1mSELECT COUNT(*) FROM "contigs" WHERE "contigs"."assembled" = 't'[0m
+  Rendered contigs/index.html.erb within layouts/application (898.6ms)
+  Rendered layouts/_navigation_links.html.erb (2.1ms)
+  Rendered layouts/_navigation.html.erb (3.8ms)
+  Rendered layouts/_messages.html.erb (0.3ms)
+Completed 200 OK in 1404ms (Views: 1305.6ms | ActiveRecord: 83.4ms)
+
+
+Started GET "/assets/dataTables/sort_both.png" for 127.0.0.1 at 2015-02-01 18:26:03 +0100
+
+
+Started GET "/assets/dataTables/sort_desc.png" for 127.0.0.1 at 2015-02-01 18:26:03 +0100
