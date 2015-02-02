@@ -13,7 +13,7 @@ class PrimerRead < ActiveRecord::Base
   scope :trimmed, -> { where.not(:trimmedReadStart => nil)}
   scope :use_for_assembly, ->  { trimmed.where(:used_for_con => true)}
 
-  # reactivate this only after absolute-primer-position-mess (strandedness etc) clairfied:
+  # reactivate this only after absolute-primer-position-mess (strandedness etc) clarified:
   # def expected_read_start
   #   if self.reverse
   #     if self.trimmedReadEnd and self.trimmedReadStart

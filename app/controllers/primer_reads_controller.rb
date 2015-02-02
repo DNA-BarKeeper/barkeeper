@@ -11,7 +11,7 @@ class PrimerReadsController < ApplicationController
   # GET /primer_reads
   # GET /primer_reads.json
   def index
-    @primer_reads = PrimerRead.includes(:contig).all
+    @primer_reads = PrimerRead.includes(:contig).select("name, assembled, updated_at, contig_id, id").limit(1000)
   end
 
   # GET /primer_reads/1
