@@ -2,3 +2,4 @@
 database.yml
 tmp/
 log/
+.DS_Store
