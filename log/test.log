@@ -7905,3 +7905,177 @@ Completed 200 OK in 5ms (Views: 4.3ms | ActiveRecord: 0.0ms)
   [1m[35m (54.4ms)[0m  TRUNCATE TABLE "families", "genera", "markers", "orders", "delayed_jobs", "news", "projects_users", "higher_order_taxons", "lab_racks", "individuals", "shelves", "copies", "labs", "marker_sequences", "alignments", "contigs", "freezers", "helps", "tissues", "plant_plates", "species", "oders", "micronic_plates", "statuses", "issues", "primer_pos_on_genomes", "primer_reads", "primers", "projects", "users" RESTART IDENTITY CASCADE;
   [1m[36m (3.0ms)[0m  [1mALTER TABLE "families" ENABLE TRIGGER ALL;ALTER TABLE "markers" ENABLE TRIGGER ALL;ALTER TABLE "orders" ENABLE TRIGGER ALL;ALTER TABLE "delayed_jobs" ENABLE TRIGGER ALL;ALTER TABLE "news" ENABLE TRIGGER ALL;ALTER TABLE "projects_users" ENABLE TRIGGER ALL;ALTER TABLE "higher_order_taxons" ENABLE TRIGGER ALL;ALTER TABLE "lab_racks" ENABLE TRIGGER ALL;ALTER TABLE "individuals" ENABLE TRIGGER ALL;ALTER TABLE "shelves" ENABLE TRIGGER ALL;ALTER TABLE "copies" ENABLE TRIGGER ALL;ALTER TABLE "genera" ENABLE TRIGGER ALL;ALTER TABLE "labs" ENABLE TRIGGER ALL;ALTER TABLE "marker_sequences" ENABLE TRIGGER ALL;ALTER TABLE "alignments" ENABLE TRIGGER ALL;ALTER TABLE "contigs" ENABLE TRIGGER ALL;ALTER TABLE "freezers" ENABLE TRIGGER ALL;ALTER TABLE "helps" ENABLE TRIGGER ALL;ALTER TABLE "schema_migrations" ENABLE TRIGGER ALL;ALTER TABLE "tissues" ENABLE TRIGGER ALL;ALTER TABLE "plant_plates" ENABLE TRIGGER ALL;ALTER TABLE "species" ENABLE TRIGGER ALL;ALTER TABLE "oders" ENABLE TRIGGER ALL;ALTER TABLE "micronic_plates" ENABLE TRIGGER ALL;ALTER TABLE "statuses" ENABLE TRIGGER ALL;ALTER TABLE "issues" ENABLE TRIGGER ALL;ALTER TABLE "primer_pos_on_genomes" ENABLE TRIGGER ALL;ALTER TABLE "primer_reads" ENABLE TRIGGER ALL;ALTER TABLE "primers" ENABLE TRIGGER ALL;ALTER TABLE "projects" ENABLE TRIGGER ALL;ALTER TABLE "users" ENABLE TRIGGER ALL[0m
   [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.8ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[36m (138.7ms)[0m  [1mDROP DATABASE IF EXISTS "gbol_test"[0m
+  [1m[35m (414.1ms)[0m  CREATE DATABASE "gbol_test" ENCODING = 'unicode'
+  [1m[36mSQL (1.2ms)[0m  [1mCREATE EXTENSION IF NOT EXISTS "plpgsql"[0m
+  [1m[35m (15.3ms)[0m  CREATE TABLE "alignments" ("id" serial primary key, "name" character varying(255), "URL" character varying(255), "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (3.2ms)[0m  [1mCREATE TABLE "contigs" ("id" serial primary key, "name" character varying(255), "consensus" text, "created_at" timestamp, "updated_at" timestamp, "marker_sequence_id" integer, "isolate_id" integer, "marker_id" integer, "assembled" boolean, "overlaps" integer, "partial_cons1" text, "partial_cons2" text, "assembly_tried" boolean, "aligned_cons" character varying(255), "pde" text, "fas" text) [0m
+  [1m[35m (3.1ms)[0m  CREATE TABLE "copies" ("id" serial primary key, "well_pos_plant_plate" character varying, "lab_nr" integer, "micronic_tube_id" integer, "well_pos_micronic_plate" character varying, "concentration" decimal, "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (4.1ms)[0m  [1mCREATE TABLE "delayed_jobs" ("id" serial primary key, "priority" integer DEFAULT 0 NOT NULL, "attempts" integer DEFAULT 0 NOT NULL, "handler" text NOT NULL, "last_error" text, "run_at" timestamp, "locked_at" timestamp, "failed_at" timestamp, "locked_by" character varying(255), "queue" character varying(255), "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35m (1.7ms)[0m  CREATE  INDEX  "delayed_jobs_priority" ON "delayed_jobs" USING btree ("priority", "run_at")
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "families" ("id" serial primary key, "name" character varying(255), "author" character varying(255), "created_at" timestamp, "updated_at" timestamp, "order_id" integer) [0m
+  [1m[35m (2.0ms)[0m  CREATE TABLE "freezers" ("id" serial primary key, "freezercode" character varying(255), "created_at" timestamp, "updated_at" timestamp, "lab_id" integer) 
+  [1m[36m (2.8ms)[0m  [1mCREATE TABLE "genera" ("id" serial primary key, "name" character varying(255), "author" character varying(255), "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35m (2.0ms)[0m  CREATE TABLE "helps" ("id" serial primary key, "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (2.8ms)[0m  [1mCREATE TABLE "higher_order_taxa" ("id" serial primary key, "name" character varying(255), "created_at" timestamp, "updated_at" timestamp, "german_name" character varying(255), "position" integer) [0m
+  [1m[35m (3.4ms)[0m  CREATE TABLE "individuals" ("id" serial primary key, "specimen_id" character varying(255), "DNA_bank_id" character varying(255), "collector" character varying(255), "created_at" timestamp, "updated_at" timestamp, "silica_gel" boolean, "collected" date, "species_id" integer, "herbarium" character varying(255), "voucher" character varying(255), "country" character varying(255), "state_province" character varying(255), "locality" text, "latitude" character varying(255), "longitude" character varying(255), "elevation" character varying(255), "exposition" character varying(255), "habitat" text, "substrate" character varying(255), "life_form" character varying(255), "collection_nr" character varying(255), "collection_date" character varying(255), "determination" character varying(255), "revision" character varying(255), "confirmation" character varying(255), "comments" text) 
+  [1m[36m (3.1ms)[0m  [1mCREATE TABLE "isolates" ("id" serial primary key, "well_pos_plant_plate" character varying(255), "micronic_tube_id" character varying(255), "well_pos_micronic_plate" character varying(255), "concentration" decimal, "created_at" timestamp, "updated_at" timestamp, "isCopy" boolean, "tissue_id" integer, "micronic_plate_id" integer, "plant_plate_id" integer, "individual_id" integer, "dna_bank_id" character varying(255), "lab_nr" character varying(255)) [0m
+  [1m[35m (2.8ms)[0m  CREATE TABLE "issues" ("id" serial primary key, "title" character varying(255), "description" text, "created_at" timestamp, "updated_at" timestamp, "primer_read_id" integer, "contig_id" integer) 
+  [1m[36m (2.2ms)[0m  [1mCREATE TABLE "lab_racks" ("id" serial primary key, "rackcode" character varying(255), "created_at" timestamp, "updated_at" timestamp, "freezer_id" integer) [0m
+  [1m[35m (2.0ms)[0m  CREATE TABLE "labs" ("id" serial primary key, "labcode" character varying(255), "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (3.1ms)[0m  [1mCREATE TABLE "marker_sequences" ("id" serial primary key, "name" character varying(255), "created_at" timestamp, "updated_at" timestamp, "genbank" character varying(255), "sequence" text, "isolate_id" integer, "marker_id" integer) [0m
+  [1m[35m (2.0ms)[0m  CREATE TABLE "markers" ("id" serial primary key, "name" character varying(255), "created_at" timestamp, "updated_at" timestamp, "expected_reads" integer, "is_gbol" boolean) 
+  [1m[36m (3.3ms)[0m  [1mCREATE TABLE "micronic_plates" ("id" serial primary key, "micronic_plate_id" character varying(255), "name" character varying(255), "created_at" timestamp, "updated_at" timestamp, "location_in_rack" character varying(255)) [0m
+  [1m[35m (3.0ms)[0m  CREATE TABLE "news" ("id" serial primary key, "title" character varying(255), "body" text, "published" timestamp, "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (3.0ms)[0m  [1mCREATE TABLE "oders" ("id" serial primary key, "name" character varying(255), "author" character varying(255), "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35m (3.2ms)[0m  CREATE TABLE "orders" ("id" serial primary key, "name" character varying(255), "author" character varying(255), "created_at" timestamp, "updated_at" timestamp, "higher_order_taxon_id" integer) 
+  [1m[36m (2.8ms)[0m  [1mCREATE TABLE "partial_cons" ("id" serial primary key, "sequence" text, "aligned_sequence" text, "created_at" timestamp, "updated_at" timestamp, "contig_id" integer, "aligned_qualities" integer[]) [0m
+  [1m[35m (2.8ms)[0m  CREATE TABLE "plant_plates" ("id" serial primary key, "name" character varying(255), "how_many" integer, "created_at" timestamp, "updated_at" timestamp, "location_in_rack" character varying(255)) 
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "primer_pos_on_genomes" ("id" serial primary key, "note" text, "position" integer, "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35m (3.6ms)[0m  CREATE TABLE "primer_reads" ("id" serial primary key, "name" character varying(255), "sequence" text, "pherogram_url" character varying(255), "created_at" timestamp, "updated_at" timestamp, "chromatogram_file_name" character varying(255), "chromatogram_content_type" character varying(255), "chromatogram_file_size" integer, "chromatogram_updated_at" timestamp, "primer_id" integer, "isolate_id" integer, "contig_id" integer, "trimmedReadEnd" integer, "trimmedReadStart" integer, "qualities" integer[], "reverse" boolean, "aligned_seq" text, "used_for_con" boolean, "quality_string" text, "position" integer, "assembled" boolean, "partial_con_id" integer, "aligned_qualities" integer[], "window_size" integer DEFAULT 10, "count_in_window" integer DEFAULT 8, "min_quality_score" integer DEFAULT 30, "atrace" integer[], "ctrace" integer[], "gtrace" integer[], "ttrace" integer[], "peak_indices" integer[]) 
+  [1m[36m (3.0ms)[0m  [1mCREATE TABLE "primers" ("id" serial primary key, "name" character varying(255), "sequence" character varying(255), "reverse" boolean, "created_at" timestamp, "updated_at" timestamp, "notes" text, "marker_id" integer, "labcode" character varying(255), "author" character varying(255), "alt_name" character varying(255), "target_group" character varying(255), "tm" character varying(255), "position" integer) [0m
+  [1m[35m (3.0ms)[0m  CREATE TABLE "projects" ("id" serial primary key, "name" character varying(255), "description" text, "start" timestamp, "due" timestamp, "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (0.7ms)[0m  [1mCREATE TABLE "projects_users" ("project_id" integer, "user_id" integer) [0m
+  [1m[35m (1.9ms)[0m  CREATE TABLE "shelves" ("id" serial primary key, "name" character varying(255), "created_at" timestamp, "updated_at" timestamp) 
+  [1m[36m (3.0ms)[0m  [1mCREATE TABLE "species" ("id" serial primary key, "author" character varying(255), "genus_name" character varying(255), "species_epithet" character varying(255), "created_at" timestamp, "updated_at" timestamp, "family_id" integer, "infraspecific" character varying(255), "comment" text, "german_name" character varying(255), "author_infra" character varying(255), "synonym" character varying(255), "composed_name" character varying(255)) [0m
+  [1m[35m (2.2ms)[0m  CREATE TABLE "statuses" ("id" serial primary key, "name" character varying(255), "created_at" timestamp, "updated_at" timestamp, "contig_id" integer) 
+  [1m[36m (2.0ms)[0m  [1mCREATE TABLE "tissues" ("id" serial primary key, "name" character varying(255), "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35m (3.3ms)[0m  CREATE TABLE "users" ("id" serial primary key, "email" character varying(255) DEFAULT '' NOT NULL, "encrypted_password" character varying(255) DEFAULT '' NOT NULL, "reset_password_token" character varying(255), "reset_password_sent_at" timestamp, "remember_created_at" timestamp, "sign_in_count" integer DEFAULT 0 NOT NULL, "current_sign_in_at" timestamp, "last_sign_in_at" timestamp, "current_sign_in_ip" character varying(255), "last_sign_in_ip" character varying(255), "created_at" timestamp, "updated_at" timestamp, "name" character varying(255)) 
+  [1m[36m (0.9ms)[0m  [1mCREATE UNIQUE INDEX  "index_users_on_email" ON "users" USING btree ("email")[0m
+  [1m[35m (0.9ms)[0m  CREATE UNIQUE INDEX  "index_users_on_reset_password_token" ON "users" USING btree ("reset_password_token")
+  [1m[36m (1.5ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL) [0m
+  [1m[35m (0.8ms)[0m  CREATE UNIQUE INDEX  "unique_schema_migrations" ON "schema_migrations"  ("version")
+  [1m[36m (0.3ms)[0m  [1mSELECT version FROM "schema_migrations"[0m
+  [1m[35m (1.2ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20150129141612')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140427145700')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140427145702')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140427170957')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140427171206')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140427171750')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140427171848')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140427171933')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140427172024')
+  [1m[36m (0.4ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140427172121')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140427172201')
+  [1m[36m (0.4ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140427172301')[0m
+  [1m[35m (0.2ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140427172324')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140427175033')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140504191737')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140505202236')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140507193213')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140507194029')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140507194056')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140507194116')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140507195652')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140507195841')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140507195937')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140507200016')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140507200544')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140507200617')[0m
+  [1m[35m (0.2ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140509145138')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140509150829')[0m
+  [1m[35m (0.2ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140510135015')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140510135301')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140510143055')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140510144847')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140510151628')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140510163102')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140510163211')
+  [1m[36m (0.2ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140510174836')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140510175052')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140510175410')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140510175437')
+  [1m[36m (0.4ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140510175842')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140510181511')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140510181759')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140510181829')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140510182038')[0m
+  [1m[35m (0.2ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140510182641')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140511124759')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140530114118')
+  [1m[36m (0.2ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140530151411')[0m
+  [1m[35m (0.5ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140530153116')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140530154334')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140530161425')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140530161534')[0m
+  [1m[35m (0.4ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140530161733')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140530161912')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140530172425')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140530175330')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140530192237')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140530193440')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140611123927')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140611125718')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140628084625')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140629173725')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140629173952')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140701183233')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140703164632')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140704191315')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140704191354')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140705130422')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140706140552')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140706182145')[0m
+  [1m[35m (0.2ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140711115017')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140711115143')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140711115248')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140711115330')[0m
+  [1m[35m (0.4ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140711115522')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140711115558')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140711115635')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140711115737')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140711121015')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140711155739')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140711163837')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140711193809')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140711193842')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140711194227')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140711201249')
+  [1m[36m (0.4ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140711205359')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140712202023')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140713183721')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140713184925')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140716134550')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140716162344')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140716201705')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140716201746')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140716201820')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140716203939')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140717115622')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140717120009')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140717135209')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140717135233')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140717173827')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140718112955')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140911131412')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140921155154')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140923152840')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140924170203')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140924170931')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140924171250')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140924171424')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140924173029')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140925105938')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140926160225')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140926163501')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140926163549')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140928114133')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140928124921')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140928164126')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140928203437')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140929134322')[0m
+  [1m[35m (0.2ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140929195137')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140929201548')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20141002132544')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20141002133841')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20141002202251')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20141002202721')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20141003111508')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20141003125433')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20141008133438')
+  [1m[36m (0.3ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20141008144017')[0m
+  [1m[35m (0.4ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20141008162119')
+  [1m[36m (0.2ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20141008185051')[0m
+  [1m[35m (0.3ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20141008191217')
+  [1m[35mActiveRecord::SchemaMigration Load (0.3ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
