@@ -32,6 +32,7 @@ gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
 gem 'jquery-fileupload-rails'
 gem 'roo'
 gem 'delayed_job_active_record'
+gem 'sidekiq'
 
 group :development, :test do
   gem 'better_errors'
