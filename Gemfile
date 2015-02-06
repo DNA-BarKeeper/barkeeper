@@ -41,7 +41,6 @@ group :development, :test do
   gem 'meta_request'
   gem 'rails_apps_testing'
   gem 'rails_layout'
-  gem 'factory_girl_rails'
   gem 'database_cleaner'
   gem 'launchy'
   gem 'webrat'
