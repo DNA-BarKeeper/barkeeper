@@ -1,7 +1,8 @@
 require 'test_helper'
 
 class PrimerReadTest < ActiveSupport::TestCase
-  test "the truth" do
-    assert true
+  test "must have chromatogram attachment" do
+    pr=PrimerRead.new
+    assert pr.invalid?
   end
 end

@@ -13,6 +13,8 @@ class PrimerRead < ActiveRecord::Base
   scope :trimmed, -> { where.not(:trimmedReadStart => nil)}
   scope :use_for_assembly, ->  { trimmed.where(:used_for_con => true)}
 
+  validates_attachment_presence :chromatogram
+
   # reactivate this only after absolute-primer-position-mess (strandedness etc) clarified:
   # def expected_read_start
   #   if self.reverse
@@ -72,7 +74,6 @@ class PrimerRead < ActiveRecord::Base
       "#{self.name[0..-5]}"
     end
   end
-
 
   def default_name
     self.name ||= self.chromatogram.original_filename
@@ -219,8 +220,6 @@ class PrimerRead < ActiveRecord::Base
 
     pp
   end
-
-  # validates_attachment_presence :chromatogram
 
   def s3_credentials
     {:bucket => "gbol5", :access_key_id => "AKIAINH5TDSKSWQ6J62A", :secret_access_key => "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"}
