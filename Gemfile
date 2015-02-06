@@ -42,14 +42,10 @@ group :development, :test do
   gem 'rails_apps_testing'
   gem 'rails_layout'
   gem 'factory_girl_rails'
-  gem 'cucumber-rails', '1.4.0', :require => false
   gem 'database_cleaner'
   gem 'faker'
   gem 'launchy'
-  gem 'rspec'
-  gem 'rspec-rails'
   gem 'webrat'
-  gem 'guard-rspec'
 
   # rm later  for replacement by Spring
   gem 'spork-rails'
