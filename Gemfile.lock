@@ -51,6 +51,7 @@ GEM
     autoprefixer-rails (5.0.0.3)
       execjs
       json
+    awesome_print (1.6.1)
     aws-sdk (1.61.0)
       aws-sdk-v1 (= 1.61.0)
     aws-sdk-v1 (1.61.0)
@@ -68,6 +69,9 @@ GEM
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
     builder (3.2.2)
+    bullet (4.14.4)
+      activesupport (>= 3.0.0)
+      uniform_notifier (>= 1.6.0)
     callsite (0.0.11)
     capybara (2.4.4)
       mime-types (>= 1.16)
@@ -83,6 +87,8 @@ GEM
       activesupport (>= 3.0)
     cocaine (0.5.5)
       climate_control (>= 0.0.3, < 1.0)
+    code_analyzer (0.4.5)
+      sexp_processor
     coderay (1.1.0)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
@@ -91,6 +97,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.8.0)
+    colored (1.2)
     connection_pool (2.1.1)
     cucumber (1.3.18)
       builder (>= 2.1.2)
@@ -246,6 +253,16 @@ GEM
     rails-html-sanitizer (1.0.1)
       loofah (~> 2.0)
     rails_apps_testing (0.3.12)
+    rails_best_practices (1.15.4)
+      activesupport
+      awesome_print
+      code_analyzer (>= 0.4.3)
+      colored
+      erubis
+      i18n
+      json
+      require_all
+      ruby-progressbar
     rails_layout (1.0.24)
     railties (4.2.0)
       actionpack (= 4.2.0)
@@ -260,6 +277,7 @@ GEM
     redis (3.2.0)
     redis-namespace (1.5.1)
       redis (~> 3.0, >= 3.0.4)
+    require_all (1.3.2)
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
     roo (1.13.2)
@@ -287,6 +305,7 @@ GEM
       rspec-support (~> 3.1.0)
     rspec-support (3.1.2)
     ruby-ole (1.2.11.8)
+    ruby-progressbar (1.7.1)
     rubyzip (1.1.6)
     sass (3.2.19)
     sass-rails (4.0.5)
@@ -302,6 +321,7 @@ GEM
       multi_json (~> 1.0)
       rubyzip (~> 1.0)
       websocket (~> 1.0)
+    sexp_processor (4.4.5)
     shellany (0.0.1)
     sidekiq (3.3.2)
       celluloid (>= 0.16.0)
@@ -341,6 +361,7 @@ GEM
     uglifier (2.7.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    uniform_notifier (1.6.2)
     warden (1.2.3)
       rack (>= 1.0)
     webrat (0.7.3)
@@ -363,6 +384,7 @@ DEPENDENCIES
   binding_of_caller
   bio
   bootstrap-sass
+  bullet
   capybara
   childprocess
   coffee-rails (~> 4.0.0)
@@ -389,6 +411,7 @@ DEPENDENCIES
   rack-mini-profiler
   rails (= 4.2.0)
   rails_apps_testing
+  rails_best_practices
   rails_layout
   roo
   rspec

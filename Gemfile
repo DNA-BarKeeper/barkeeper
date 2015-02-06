@@ -4,7 +4,7 @@ ruby '2.2.0'
 # gem 'rails', '4.1.0'
 gem 'rails', '4.2.0'
 
-gem 'rack-mini-profiler'
+gem 'rack-mini-profiler', group: :development
 # gem 'rails_12factor', group: :production
 gem 'pg'
 
@@ -33,6 +33,7 @@ gem 'jquery-fileupload-rails'
 gem 'roo'
 gem 'delayed_job_active_record'
 gem 'sidekiq'
+
 
 group :development, :test do
   gem 'better_errors'
@@ -63,3 +64,8 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
 end
+
+# check for n+1 queries:
+gem 'bullet', :group => 'development'
+
+gem 'rails_best_practices'
