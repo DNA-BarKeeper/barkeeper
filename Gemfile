@@ -4,7 +4,7 @@ ruby '2.2.0'
 # gem 'rails', '4.1.0'
 gem 'rails', '4.2.0'
 
-gem 'sqlite3', group: [:development, :test]
+gem 'rack-mini-profiler'
 # gem 'rails_12factor', group: :production
 gem 'pg'
 
