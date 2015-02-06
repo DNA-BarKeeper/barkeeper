@@ -43,7 +43,6 @@ group :development, :test do
   gem 'rails_layout'
   gem 'factory_girl_rails'
   gem 'database_cleaner'
-  gem 'faker'
   gem 'launchy'
   gem 'webrat'
 
@@ -51,17 +50,14 @@ group :development, :test do
   gem 'spork-rails'
   gem 'guard-spork'
   gem 'childprocess'
-
   gem 'guard-livereload'
 
 end
 
 group :test do
-  gem 'capybara'
   gem 'selenium-webdriver'
 end
 
 # check for n+1 queries:
 gem 'bullet', :group => 'development'
-
 gem 'rails_best_practices'
