@@ -8,16 +8,18 @@ class SpeciesController < ApplicationController
   # GET /species
   # GET /species.json
   def index
-    @species = Species.includes(:family).find_each
+    # @species = Species.includes(:family).find_each
+    @species = Species.includes(:family)
     respond_to do |format|
       format.html
+      format.json { render json: SpeciesDatatable.new(view_context) }
       format.csv { send_data @species.to_csv}
       format.xls
     end
   end
 
   def filter
-    @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:name)
+    @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:composed_name)
     render json: @species.map(&:composed_name)
   end
 

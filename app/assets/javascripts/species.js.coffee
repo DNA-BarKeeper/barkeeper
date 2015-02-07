@@ -4,8 +4,14 @@
 
 jQuery ->
   $('#species').DataTable( {
-    "order": [ 3, 'desc' ]
+    sPaginationType: "full_numbers"
+    bJQueryUI: true
+    bProcessing: true
+    bServerSide: true
+    sAjaxSource: $('#species').data('source')
     "columnDefs": [
+      { "orderable": false, "targets": 2 }
+      { "orderable": false, "targets": 3 }
       { "orderable": false, "targets": 4 }
     ]
   } );

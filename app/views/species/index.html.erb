@@ -13,7 +13,7 @@
       <% end %>
     </div>
 
-    <table id="species">
+    <table id="species" data-source="<%= species_index_url(format: "json") %>">
 
       <thead>
       <tr>
@@ -21,32 +21,12 @@
         <th>Author</th>
         <th>Family</th>
         <th>Last Updated</th>
-        <!--<th>Order</th>-->
         <th></th>
       </tr>
       </thead>
 
       <tbody>
-      <% @species.each do |species| %>
-          <tr>
 
-            <td><%= link_to species.name_for_display, edit_species_path(species) %></td>
-
-            <td><%= species.author %></td>
-
-            <td>
-              <% if species.family %>
-                  <%= link_to species.family.name, edit_family_path(species.family) %>
-              <% end %>
-            </td>
-
-
-            <td><%= species.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
-
-            <td><%= link_to 'Delete', species, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-
-          </tr>
-      <% end %>
       </tbody>
     </table>
 
