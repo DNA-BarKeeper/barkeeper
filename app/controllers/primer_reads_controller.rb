@@ -11,7 +11,12 @@ class PrimerReadsController < ApplicationController
   # GET /primer_reads
   # GET /primer_reads.json
   def index
-    @primer_reads = PrimerRead.includes(:contig).select("name, assembled, updated_at, contig_id, id").find_each
+    # @primer_reads = PrimerRead.includes(:contig).select("name, assembled, updated_at, contig_id, id")
+    @primer_reads = PrimerRead.includes(:contig).select("name, assembled, updated_at, contig_id, id")
+    respond_to do |format|
+      format.html
+      format.json { render json: PrimerReadDatatable.new(view_context)}
+    end
   end
 
   # GET /primer_reads/1

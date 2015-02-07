@@ -15,13 +15,9 @@ jQuery(function() {
         }
     });
     $('#primer_reads').DataTable({
-        "order": [3, 'desc'],
-        "columnDefs": [
-            {
-                "orderable": false,
-                "targets": 4
-            }
-        ]
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#primer_reads').data('source')
     });
     $('#primer_read_contig_name').autocomplete({
         source: $('#primer_read_contig_name').data('autocomplete-source')

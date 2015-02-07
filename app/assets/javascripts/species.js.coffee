@@ -4,7 +4,6 @@
 
 jQuery ->
   $('#species').DataTable( {
-    bJQueryUI: true
     bProcessing: true
     bServerSide: true
     sAjaxSource: $('#species').data('source')

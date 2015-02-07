@@ -27,7 +27,7 @@
 </script>
     </div>
 
-    <table id="primer_reads">
+    <table id="primer_reads" data-source="<%= primer_reads_url(format: "json") %>">
 
       <thead>
       <tr>
@@ -40,8 +40,6 @@
       </thead>
 
       <tbody id="primer_read_list">
-
-        <%= render_primer_read_list(@primer_reads) %>
 
       </tbody>
     </table>

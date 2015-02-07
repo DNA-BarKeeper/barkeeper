@@ -1,6 +1,8 @@
 jQuery(function() {
     $('#contigs').DataTable({
-        "order": [2, 'desc'],
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#contigs').data('source'),
         "columnDefs": [
             {
                 "orderable": false,

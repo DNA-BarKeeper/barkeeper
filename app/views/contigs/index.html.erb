@@ -3,7 +3,7 @@
     <h3 class="panel-title">Contigs</h3>
   </div>
   <div class="panel-body">
-    <table id="contigs">
+    <table id="contigs" data-source="<%= contigs_url(format: "json") %>">
 
       <thead>
       <tr>
@@ -15,20 +15,6 @@
       </thead>
 
       <tbody>
-      <% @contigs.each do |contig| %>
-          <tr>
-            <td><%= link_to contig.name, edit_contig_path(contig) %></td>
-            <td>
-              <% if contig.assembled  %>
-                  Yes
-              <% else %>
-                  No
-              <% end %>
-            </td>
-            <td><%= contig.updated_at.in_time_zone("CET") %></td>
-            <td><%= link_to 'Delete', contig, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-          </tr>
-      <% end %>
       </tbody>
 
     </table>
