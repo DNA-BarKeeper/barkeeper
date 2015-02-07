@@ -59,4 +59,4 @@ end
 
 # check for n+1 queries:
 gem 'bullet', :group => 'development'
-gem 'rails_best_practices'
+gem 'rails_best_practices', :group => 'development'
