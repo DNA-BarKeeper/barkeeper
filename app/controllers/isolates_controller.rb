@@ -6,7 +6,7 @@ class IsolatesController < ApplicationController
   # GET /copies
   # GET /copies.json
   def index
-    @isolates = Isolate.includes(:individual).all
+    @isolates = Isolate.includes(:individual).find_each
   end
 
   def filter

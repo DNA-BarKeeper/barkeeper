@@ -8,7 +8,7 @@ class SpeciesController < ApplicationController
   # GET /species
   # GET /species.json
   def index
-    @species = Species.includes(:family).all
+    @species = Species.includes(:family).find_each
     respond_to do |format|
       format.html
       format.csv { send_data @species.to_csv}

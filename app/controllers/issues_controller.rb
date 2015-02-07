@@ -7,7 +7,7 @@ class IssuesController < ApplicationController
   # GET /issues
   # GET /issues.json
   def index
-    @issues = Issue.includes(:contig, :primer_read).all
+    @issues = Issue.includes(:contig, :primer_read).find_each
   end
 
   # GET /issues/1

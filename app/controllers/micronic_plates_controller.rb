@@ -5,7 +5,7 @@ class MicronicPlatesController < ApplicationController
   # GET /micronic_plates
   # GET /micronic_plates.json
   def index
-    @micronic_plates = MicronicPlate.all
+    @micronic_plates = MicronicPlate.find_each
   end
 
   # GET /micronic_plates/1

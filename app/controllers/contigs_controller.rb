@@ -7,7 +7,7 @@ class ContigsController < ApplicationController
   # GET /contigs
   # GET /contigs.json
   def index
-    @contigs = Contig.all
+    @contigs = Contig.find_each
   end
 
   def assemble

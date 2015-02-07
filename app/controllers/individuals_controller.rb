@@ -7,7 +7,7 @@ class IndividualsController < ApplicationController
   # GET /individuals
   # GET /individuals.json
   def index
-    @individuals = Individual.includes(:species).all
+    @individuals = Individual.includes(:species).find_each
     respond_to do |format|
       format.html
       format.csv { render text: @individuals.to_csv }
