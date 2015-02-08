@@ -1,4 +1,4 @@
-class SpeciesDatatable
+class IndividualDatatable
 
   #ToDo: fig out if this inclusion is necessary. Found on https://gist.github.com/jhjguxin/4544826, but unclear if makes sense. "delegate" statement alone does not work.
 
@@ -16,7 +16,7 @@ class SpeciesDatatable
     {
         sEcho: params[:sEcho].to_i,
         iTotalRecords: Species.count,
-        iTotalDisplayRecords: species.total_entries,
+        iTotalDisplayRecords: individuals.total_entries,
         aaData: data
     }
   end
@@ -24,31 +24,38 @@ class SpeciesDatatable
   private
 
   def data
-    species.map do |single_species|
+    individuals.map do |individual|
+
+      species=''
+      if individual.species
+        species=link_to individual.species.name_for_display, edit_species_path(individual.species)
+      end
       [
-          link_to(single_species.composed_name, edit_species_path(single_species)),
-          single_species.author,
-          link_to(single_species.family.name, edit_family_path(single_species.family)),
-          single_species.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', single_species, method: :delete, data: { confirm: 'Are you sure?' }),
+          link_to(individual.specimen_id, edit_individual_path(individual)),
+          species,
+          individual.herbarium,
+          individual.collector,
+          individual.collection_nr,
+          individual.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+          link_to('Delete', individual, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end
 
-  def species
-    @species ||= fetch_species
+  def individuals
+    @individuals ||= fetch_individuals
   end
 
-  def fetch_species
+  def fetch_individuals
 
-    species = Species.order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
-    species = species.page(page).per_page(per_page)
+    individuals = Individual.order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    individuals = individuals.page(page).per_page(per_page)
 
     if params[:sSearch].present?
       # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
-      species = species.where("composed_name like :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      individuals = individuals.where("specimen_id like :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
     end
-    species
+    individuals
   end
 
   def page
@@ -60,7 +67,7 @@ class SpeciesDatatable
   end
 
   def sort_column
-    columns = %w[composed_name author family_id updated_at]
+    columns = %w[specimen_id species_id herbarium collector collection_nr updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

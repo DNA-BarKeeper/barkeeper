@@ -26,15 +26,7 @@
       </thead>
 
       <tbody>
-      <% @isolates.each do |isolate| %>
-          <tr>
-            <td><%= link_to isolate.lab_nr, edit_isolate_path(isolate) if isolate.lab_nr %></td>
-            <td><%= link_to isolate.individual.species.composed_name, edit_species_path(isolate.individual.species) if isolate.individual and isolate.individual.species %></td>
-            <td><%= link_to isolate.individual.specimen_id, edit_individual_path(isolate.individual) if isolate.individual and isolate.individual.specimen_id!=nil %></td>
-            <td><%= isolate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
-            <td><%= link_to 'Delete', isolate, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-          </tr>
-      <% end %>
+
       </tbody>
     </table>
   </div>

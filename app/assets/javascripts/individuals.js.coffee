@@ -2,12 +2,15 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-
 jQuery ->
   $('#individuals').DataTable( {
-    "order": [ 20, 'desc' ]
+    sPaginationType: "full_numbers"
+    bJQueryUI: true
+    bProcessing: true
+    bServerSide: true
+    sAjaxSource: $('#individuals').data('source')
     "columnDefs": [
-      { "orderable": false, "targets": 21 }
+      { "orderable": false, "targets": 6 }
     ]
   } );
   $('#individual_specimen_id').autocomplete source: $('#individual_specimen_id').data('autocomplete-source')

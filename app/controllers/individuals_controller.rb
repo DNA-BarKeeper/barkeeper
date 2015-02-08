@@ -7,9 +7,10 @@ class IndividualsController < ApplicationController
   # GET /individuals
   # GET /individuals.json
   def index
-    @individuals = Individual.includes(:species).find_each
+    # @individuals = Individual.includes(:species).find_each
     respond_to do |format|
       format.html
+      format.json { render json: IndividualDatatable.new(view_context) }
       format.csv { render text: @individuals.to_csv }
       format.xls
     end

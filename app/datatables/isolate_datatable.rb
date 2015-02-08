@@ -1,4 +1,4 @@
-class SpeciesDatatable
+class IsolateDatatable
 
   #ToDo: fig out if this inclusion is necessary. Found on https://gist.github.com/jhjguxin/4544826, but unclear if makes sense. "delegate" statement alone does not work.
 
@@ -16,7 +16,7 @@ class SpeciesDatatable
     {
         sEcho: params[:sEcho].to_i,
         iTotalRecords: Species.count,
-        iTotalDisplayRecords: species.total_entries,
+        iTotalDisplayRecords: isolates.total_entries,
         aaData: data
     }
   end
@@ -24,31 +24,49 @@ class SpeciesDatatable
   private
 
   def data
-    species.map do |single_species|
+    isolates.map do |isolate|
+
+      lab_nr=''
+      if isolate.lab_nr
+        lab_nr = link_to isolate.lab_nr, edit_isolate_path(isolate)
+      end
+
+      species_name = ''
+
+      if isolate.individual and isolate.individual.species
+        species_name = link_to isolate.individual.species.composed_name, edit_species_path(isolate.individual.species)
+      end
+
+      individual=''
+      if isolate.individual and isolate.individual.specimen_id!=nil
+        individual =link_to isolate.individual.specimen_id, edit_individual_path(isolate.individual)
+      end
+
+
       [
-          link_to(single_species.composed_name, edit_species_path(single_species)),
-          single_species.author,
-          link_to(single_species.family.name, edit_family_path(single_species.family)),
-          single_species.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', single_species, method: :delete, data: { confirm: 'Are you sure?' }),
+          lab_nr,
+          species_name,
+          individual,
+          isolate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+          link_to('Delete', isolate, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end
 
-  def species
-    @species ||= fetch_species
+  def isolates
+    @isolates ||= fetch_isolates
   end
 
-  def fetch_species
+  def fetch_isolates
 
-    species = Species.order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
-    species = species.page(page).per_page(per_page)
+    isolates = Isolate.order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    isolates = isolates.page(page).per_page(per_page)
 
     if params[:sSearch].present?
       # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
-      species = species.where("composed_name like :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      isolates = isolates.where("lab_nr like :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
     end
-    species
+    isolates
   end
 
   def page
@@ -60,7 +78,7 @@ class SpeciesDatatable
   end
 
   def sort_column
-    columns = %w[composed_name author family_id updated_at]
+    columns = %w[lab_nr individual_id individual_id updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
