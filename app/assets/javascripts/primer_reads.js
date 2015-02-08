@@ -17,7 +17,10 @@ jQuery(function() {
     $('#primer_reads').DataTable({
         bProcessing: true,
         bServerSide: true,
-        sAjaxSource: $('#primer_reads').data('source')
+        sAjaxSource: $('#primer_reads').data('source'),
+        "columnDefs": [
+            { "orderable": false, "targets": 4 }
+        ]
     });
     $('#primer_read_contig_name').autocomplete({
         source: $('#primer_read_contig_name').data('autocomplete-source')

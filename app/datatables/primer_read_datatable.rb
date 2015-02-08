@@ -25,10 +25,17 @@ class PrimerReadDatatable
 
   def data
     primer_reads.map do |pr|
+
+      contig_link = ""
+
+      unless pr.contig.nil?
+        contig_link = link_to(pr.contig.name, edit_contig_path(pr.contig))
+      end
+
       [
           link_to(pr.name, edit_primer_read_path(pr)),
           pr.assembled,
-          link_to(pr.contig.name, edit_contig_path(pr.contig)),
+          contig_link,
           pr.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
           link_to('Delete', pr, method: :delete, data: { confirm: 'Are you sure?' }),
       ]
