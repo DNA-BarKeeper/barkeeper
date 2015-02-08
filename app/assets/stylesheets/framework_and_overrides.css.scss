@@ -1,33 +1,18 @@
-// Temporary workaround for Rails 4.1.2 pending releaase of bootstrap-sass 3.1.2
-//= depend_on_asset "bootstrap/glyphicons-halflings-regular.eot"
-//= depend_on_asset "bootstrap/glyphicons-halflings-regular.svg"
-//= depend_on_asset "bootstrap/glyphicons-halflings-regular.ttf"
-//= depend_on_asset "bootstrap/glyphicons-halflings-regular.woff"
-
 // import the CSS framework
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-a:hover {color: #000000; background-color: transparent; text-decoration: none}
+a {
+  color: #000;
+  &:visited {
+    color: #000;
+  }
+  &:hover {
+    color: #000;
+    text-decoration: none;
+  }
+}
 
-a.noHoverColor {color: #ffffff; background-color: transparent}
-a.noHoverColor:visited {color: #fcfcfc; background-color: transparent}
-a.noHoverColor:hover {color: #fcfcfc; background-color: transparent}
-
-
-//// make all images responsive by default
-//img {
-//  @extend .img-responsive;
-//  margin: 0 auto;
-//  }
-//// override for the 'Home' navigation link
-//.navbar-brand {
-//  font-size: inherit;
-//  }
-
-// THESE ARE EXAMPLES YOU CAN MODIFY
-// create your own classes
-// to make views framework-neutral
 .column {
   @extend .col-md-6;
   @extend .text-center;

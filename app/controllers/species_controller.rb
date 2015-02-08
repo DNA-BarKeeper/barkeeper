@@ -53,7 +53,6 @@ class SpeciesController < ApplicationController
     respond_to do |format|
       if @species.save
         format.html {
-          BackgroundTest.perform_async(@species.name_for_display)
           redirect_to @species, notice: 'Species was successfully created.'
         }
         format.json { render :show, status: :created, location: @species }
