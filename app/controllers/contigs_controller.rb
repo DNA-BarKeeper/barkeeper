@@ -7,7 +7,6 @@ class ContigsController < ApplicationController
   # GET /contigs
   # GET /contigs.json
   def index
-    @contigs = Contig.all
     respond_to do |format|
       format.html
       format.json { render json: ContigDatatable.new(view_context) }

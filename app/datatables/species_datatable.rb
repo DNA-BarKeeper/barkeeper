@@ -25,10 +25,15 @@ class SpeciesDatatable
 
   def data
     species.map do |single_species|
+
+      family=''
+      if single_species.family
+        family=link_to(single_species.family.name, edit_family_path(single_species.family))
+      end
       [
           link_to(single_species.composed_name, edit_species_path(single_species)),
           single_species.author,
-          link_to(single_species.family.name, edit_family_path(single_species.family)),
+          family,
           single_species.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
           link_to('Delete', single_species, method: :delete, data: { confirm: 'Are you sure?' }),
       ]

@@ -6,7 +6,6 @@ class IsolatesController < ApplicationController
   # GET /copies
   # GET /copies.json
   def index
-    # @isolates = Isolate.includes(:individual)
     respond_to do |format|
       format.html
       format.json { render json:  IsolateDatatable.new(view_context)}

@@ -1,15 +1,13 @@
 # noinspection RubyArgCount
 class SpeciesController < ApplicationController
 
-  #before_filter :authenticate_user!
+  before_filter :authenticate_user!
 
   before_action :set_species, only: [:show, :edit, :update, :destroy]
 
   # GET /species
   # GET /species.json
   def index
-    # @species = Species.includes(:family).find_each
-    @species = Species.includes(:family)
     respond_to do |format|
       format.html
       format.json { render json: SpeciesDatatable.new(view_context) }
@@ -54,7 +52,10 @@ class SpeciesController < ApplicationController
 
     respond_to do |format|
       if @species.save
-        format.html { redirect_to @species, notice: 'Species was successfully created.' }
+        format.html {
+          BackgroundTest.perform_async(@species.name_for_display)
+          redirect_to @species, notice: 'Species was successfully created.'
+        }
         format.json { render :show, status: :created, location: @species }
       else
         format.html { render :new }
