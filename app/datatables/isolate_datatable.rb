@@ -15,7 +15,7 @@ class IsolateDatatable
   def as_json(options = {})
     {
         sEcho: params[:sEcho].to_i,
-        iTotalRecords: Species.count,
+        iTotalRecords: Isolate.count,
         iTotalDisplayRecords: isolates.total_entries,
         aaData: data
     }

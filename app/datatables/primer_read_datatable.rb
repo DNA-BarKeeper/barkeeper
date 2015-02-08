@@ -15,7 +15,7 @@ class PrimerReadDatatable
   def as_json(options = {})
     {
         sEcho: params[:sEcho].to_i,
-        iTotalRecords: Species.count,
+        iTotalRecords: PrimerRead.count,
         iTotalDisplayRecords: primer_reads.total_entries,
         aaData: data
     }

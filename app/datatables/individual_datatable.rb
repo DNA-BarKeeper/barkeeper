@@ -15,7 +15,7 @@ class IndividualDatatable
   def as_json(options = {})
     {
         sEcho: params[:sEcho].to_i,
-        iTotalRecords: Species.count,
+        iTotalRecords: Individual.count,
         iTotalDisplayRecords: individuals.total_entries,
         aaData: data
     }

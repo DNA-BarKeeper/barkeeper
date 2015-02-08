@@ -15,7 +15,7 @@ class ContigDatatable
   def as_json(options = {})
     {
         sEcho: params[:sEcho].to_i,
-        iTotalRecords: Species.count,
+        iTotalRecords: Contig.count,
         iTotalDisplayRecords: contigs.total_entries,
         aaData: data
     }
