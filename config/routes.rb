@@ -118,4 +118,7 @@ GBOLapp::Application.routes.draw do
 
   devise_for :users, :controllers => {:registrations => "registrations"}
   resources :users
+
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 end

@@ -60,3 +60,7 @@ end
 # check for n+1 queries:
 gem 'bullet', :group => 'development'
 gem 'rails_best_practices', :group => 'development'
+
+# needed to monitor sidekiq jobs:
+gem 'sinatra', :require => nil
+gem 'slim'
