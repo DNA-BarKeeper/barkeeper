@@ -4,8 +4,8 @@
 
 jQuery ->
   $('#markers').DataTable( {
-    "order": [ 0, 'asc' ]
     "columnDefs": [
       { "orderable": false, "targets": 2 }
-    ]
+    ],
+    "order": [ 7, 'desc' ]
   } );

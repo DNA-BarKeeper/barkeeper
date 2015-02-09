@@ -9,6 +9,7 @@ jQuery ->
     sAjaxSource: $('#species').data('source')
     "columnDefs": [
       { "orderable": false, "targets": 4 }
-    ]
+    ],
+    "order": [ 3, 'desc' ]
   } );
   $('#species_family_name').autocomplete source: $('#species_family_name').data('autocomplete-source')

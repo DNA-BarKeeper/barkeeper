@@ -8,7 +8,8 @@ jQuery(function() {
                 "orderable": false,
                 "targets": 3
             }
-        ]
+        ],
+        "order": [ 2, 'desc' ]
     });
 
     $('#contig_isolate_name').autocomplete({

@@ -20,7 +20,8 @@ jQuery(function() {
         sAjaxSource: $('#primer_reads').data('source'),
         "columnDefs": [
             { "orderable": false, "targets": 4 }
-        ]
+        ],
+        "order": [ 3, 'desc' ]
     });
     $('#primer_read_contig_name').autocomplete({
         source: $('#primer_read_contig_name').data('autocomplete-source')
