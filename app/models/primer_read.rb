@@ -8,6 +8,15 @@ class PrimerRead < ActiveRecord::Base
                     :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
                     :default_url => "/chromatograms/primer_read.scf"
 
+  #do_not_validate_attachment_file_type :chromatogram
+
+  # Validate content type
+  validates_attachment_content_type :chromatogram, :content_type => /\Aapplication\/octet-stream/
+
+  # Validate filename
+  validates_attachment_file_name :chromatogram, :matches => [/scf\Z/, /ab1\Z/]
+
+
   before_create :default_name
 
   scope :trimmed, -> { where.not(:trimmedReadStart => nil)}

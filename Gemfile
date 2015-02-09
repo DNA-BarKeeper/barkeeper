@@ -24,7 +24,7 @@ gem 'sprockets-rails', :require => 'sprockets/railtie'
 gem 'devise'
 gem 'simple_form'
 gem 'bio'
-gem 'paperclip', '~> 3.5.4'
+gem 'paperclip', github: 'thoughtbot/paperclip'
 gem 'aws-sdk'
 gem 'will_paginate', '> 3.0'
 gem 'will_paginate-bootstrap'
@@ -64,3 +64,4 @@ gem 'rails_best_practices', :group => 'development'
 # needed to monitor sidekiq jobs:
 gem 'sinatra', :require => nil
 gem 'slim'
+gem 'mime-types'

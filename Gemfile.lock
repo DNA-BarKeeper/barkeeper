@@ -8,6 +8,16 @@ GIT
       railties (>= 3.1)
       sass-rails
 
+GIT
+  remote: git://github.com/thoughtbot/paperclip.git
+  revision: bc8eafe4fbf0ec6cf42c78fc1b737d569beb06e8
+  specs:
+    paperclip (4.2.1)
+      activemodel (>= 3.0.0)
+      activesupport (>= 3.0.0)
+      cocaine (~> 0.5.5)
+      mime-types
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -183,11 +193,6 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     orm_adapter (0.5.0)
-    paperclip (3.5.4)
-      activemodel (>= 3.0.0)
-      activesupport (>= 3.0.0)
-      cocaine (~> 0.5.3)
-      mime-types
     pg (0.18.1)
     populator (1.0.0)
     pry (0.10.1)
@@ -356,7 +361,8 @@ DEPENDENCIES
   jquery-ui-rails
   launchy
   meta_request
-  paperclip (~> 3.5.4)
+  mime-types
+  paperclip!
   pg
   populator
   rack-mini-profiler
