@@ -7,7 +7,11 @@ class MarkerSequencesController < ApplicationController
   # GET /marker_sequences
   # GET /marker_sequences.json
   def index
-    @marker_sequences = MarkerSequence.includes(:isolate, :marker, :contigs).all
+    respond_to do |format|
+      format.html
+      format.json { render json: MarkerSequenceDatatable.new(view_context)}
+    end
+
   end
 
   def filter

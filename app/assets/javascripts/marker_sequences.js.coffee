@@ -4,9 +4,15 @@
 
 jQuery ->
   $('#marker_sequences').DataTable( {
-    "order": [ 7, 'desc' ]
+    sPaginationType: "full_numbers"
+    bProcessing: true
+    bServerSide: true
+    sAjaxSource: $('#marker_sequences').data('source')
+    "order": [ 2, 'desc' ]
     "columnDefs": [
-      { "orderable": false, "targets": 8 }
+      { "orderable": false, "targets": 1}
+      { "orderable": false, "targets": 3 }
+
     ]
   } );
   $('#marker_sequence_isolate_lab_nr').autocomplete source: $('#marker_sequence_isolate_lab_nr').data('autocomplete-source')

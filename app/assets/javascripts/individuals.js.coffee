@@ -10,6 +10,7 @@ jQuery ->
     bServerSide: true
     sAjaxSource: $('#individuals').data('source')
     "columnDefs": [
+      { "orderable": false, "targets": 1 }
       { "orderable": false, "targets": 6 }
     ],
     "order": [ 5, 'desc' ]
