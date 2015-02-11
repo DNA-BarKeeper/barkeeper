@@ -1,21 +1,21 @@
 jQuery(function() {
-    $('#new_primer_read').fileupload()
-    //    {
-    //    dataType: "script",
-    //    add: function(e, data) {
-    //        data.context = $(tmpl("template-upload", data.files[0]));
-    //        $('#new_primer_read').append(data.context);
-    //        return data.submit();
-    //    },
-    //    progress: function(e, data) {
-    //        var progress;
-    //        if (data.context) {
-    //            progress = parseInt(data.loaded / data.total * 100, 10);
-    //            return data.context.find('.progress-bar.progress-bar-striped.active').css('width', progress + '%');
-    //        }
-    //    }
-    //}
-    //);
+    $('#new_primer_read').fileupload(
+        {
+        dataType: "script",
+        add: function(e, data) {
+            data.context = $(tmpl("template-upload", data.files[0]));
+            $('#new_primer_read').append(data.context);
+            return data.submit();
+        },
+        progress: function(e, data) {
+            var progress;
+            if (data.context) {
+                progress = parseInt(data.loaded / data.total * 100, 10);
+                return data.context.find('.progress-bar.progress-bar-striped.active').css('width', progress + '%');
+            }
+        }
+    }
+    );
     $('#primer_reads').DataTable({
         bProcessing: true,
         bServerSide: true,
