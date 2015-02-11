@@ -1,5 +1,12 @@
 <tr>
-  <td><%= link_to primer_read.name, edit_primer_read_path(primer_read) %></td>
+
+  <td>
+    <% if primer_read.processed %>
+        <%= link_to primer_read.name, edit_primer_read_path(primer_read) %>
+    <% else %>
+        <%=  primer_read.name %>
+    <% end %>
+  </td>
   <!--assembled?-->
   <td>
     <% if primer_read.assembled %>
@@ -7,7 +14,14 @@
     <% end %>
   </td>
 
-  <td><%= link_to primer_read.contig.name, edit_contig_path(primer_read.contig) if primer_read.contig %></td>
+  <td>
+    <% if primer_read.processed %>
+        <%= link_to primer_read.contig.name, edit_contig_path(primer_read.contig) if primer_read.contig %>
+    <% else %>
+        <%= '(processing)' %>
+    <% end %>
+  </td>
+
   <td><%= primer_read.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
   <td><%= link_to 'Delete', primer_read, method: :delete, data: { confirm: 'Are you sure?' } %></td>
 </tr>

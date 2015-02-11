@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150129141612) do
+ActiveRecord::Schema.define(version: 20150211200426) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -257,7 +257,7 @@ ActiveRecord::Schema.define(version: 20150129141612) do
     t.integer  "contig_id"
     t.integer  "trimmedReadEnd"
     t.integer  "trimmedReadStart"
-    t.integer  "qualities",                                          array: true
+    t.integer  "qualities",                                             array: true
     t.boolean  "reverse"
     t.text     "aligned_seq"
     t.boolean  "used_for_con"
@@ -265,15 +265,16 @@ ActiveRecord::Schema.define(version: 20150129141612) do
     t.integer  "position"
     t.boolean  "assembled"
     t.integer  "partial_con_id"
-    t.integer  "aligned_qualities",                                  array: true
+    t.integer  "aligned_qualities",                                     array: true
     t.integer  "window_size",                           default: 10
     t.integer  "count_in_window",                       default: 8
     t.integer  "min_quality_score",                     default: 30
-    t.integer  "atrace",                                             array: true
-    t.integer  "ctrace",                                             array: true
-    t.integer  "gtrace",                                             array: true
-    t.integer  "ttrace",                                             array: true
-    t.integer  "peak_indices",                                       array: true
+    t.integer  "atrace",                                                array: true
+    t.integer  "ctrace",                                                array: true
+    t.integer  "gtrace",                                                array: true
+    t.integer  "ttrace",                                                array: true
+    t.integer  "peak_indices",                                          array: true
+    t.boolean  "processed",                             default: false
   end
 
   create_table "primers", force: :cascade do |t|

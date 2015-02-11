@@ -61,9 +61,11 @@
       <p>
 
       <!--# reactivate "expected_read_start"  only after absolute-primer-position-mess (strandedness etc) clairfied:-->
-      <div class="field">
-          Primer: <%= link_to @primer_read.primer.name, edit_primer_path(@primer_read.primer) %> | Marker: <%= link_to @primer_read.contig.marker.name, edit_marker_path(@primer_read.contig.marker) if @primer_read.contig %>
-      </div>
+      <% if @primer_read.primer %>
+          <div class="field">
+              Primer: <%= link_to @primer_read.primer.name, edit_primer_path(@primer_read.primer) %> | Marker: <%= link_to @primer_read.contig.marker.name, edit_marker_path(@primer_read.contig.marker) if @primer_read.contig %>
+          </div>
+      <% end %>
 
       <p>
       <div class="field">

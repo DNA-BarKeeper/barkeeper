@@ -1,7 +1,7 @@
 class PrimerReadsController < ApplicationController
   before_filter :authenticate_user!
 
-  before_action :set_primer_read, only: [:fasta, :reverse, :restore, :assign, :trim, :show, :edit, :update, :destroy]
+  before_action :set_primer_read, only: [:fasta, :reverse, :restore, :assign, :trim, :show, :update, :destroy]
 
   def import
     PrimerRead.import(params[:file])
@@ -97,6 +97,7 @@ class PrimerReadsController < ApplicationController
 
   # GET /primer_reads/1/edit
   def edit
+    @primer_read = PrimerRead.includes(:primer, :contig).find(params[:id])
   end
 
   # POST /primer_reads
