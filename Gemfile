@@ -22,7 +22,7 @@ gem 'jquery-turbolinks'
 gem 'bootstrap-sass'
 gem 'sprockets-rails', :require => 'sprockets/railtie'
 gem 'devise'
-gem 'simple_form'
+gem 'simple_form' # todo check if used anywhere, rm
 gem 'bio'
 gem 'paperclip', github: 'thoughtbot/paperclip'
 gem 's3_direct_upload'
@@ -45,7 +45,7 @@ group :development, :test do
   gem 'launchy'
   gem 'webrat'
 
-  # rm later  for replacement by Spring
+  # rm later for replacement by Spring
   gem 'spork-rails'
   gem 'guard-spork'
   gem 'childprocess'
