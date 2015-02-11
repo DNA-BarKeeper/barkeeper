@@ -27,18 +27,38 @@ class PrimerReadDatatable
   def data
     primer_reads.map do |pr|
 
-      contig_link = ""
+      read_name=''
+      if pr.processed
+        read_name=link_to(pr.name, edit_primer_read_path(pr))
+      else
+        read_name=pr.name
+      end
 
+      assembled=''
+      if pr.assembled
+        assembled='Yes'
+      else
+        assembled='No'
+      end
+
+      contig_link = ""
       unless pr.contig.nil?
         contig_link = link_to(pr.contig.name, edit_contig_path(pr.contig))
       end
 
+      delete=''
+      if pr.processed
+        delete=  link_to('Delete', pr, method: :delete, data: { confirm: 'Are you sure?' })
+      else
+        delete='Processing...'
+      end
+
       [
-          link_to(pr.name, edit_primer_read_path(pr)),
-          pr.assembled,
+          read_name,
+          assembled,
           contig_link,
           pr.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', pr, method: :delete, data: { confirm: 'Are you sure?' }),
+          delete
       ]
     end
   end
@@ -49,7 +69,7 @@ class PrimerReadDatatable
 
   def fetch_reads
 
-    primer_reads = PrimerRead.includes(:contig).select("name, assembled, updated_at, contig_id, id").order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    primer_reads = PrimerRead.includes(:contig).select("name, processed, assembled, updated_at, contig_id, id").order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     primer_reads = primer_reads.page(page).per_page(per_page)
 
     if params[:sSearch].present?
