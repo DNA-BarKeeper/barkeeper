@@ -103,10 +103,16 @@ class PrimerReadsController < ApplicationController
   # POST /primer_reads.json
 
   def create
-    @primer_read = PrimerRead.create(primer_read_params)
-    @primer_read.auto_assign #ensures that gets reverse-complemented when primer is reverse
-    @primer_read.auto_trim
-    @primer_read.update(:used_for_con => true, :assembled => false)
+
+    @primer_read = PrimerRead.new(primer_read_params)
+
+    if @primer_read.save
+      PherogramProcessing.perform_async(@primer_read.id)
+    end
+
+    # @primer_read.auto_assign #ensures that gets reverse-complemented when primer is reverse
+    # @primer_read.auto_trim
+    # @primer_read.update(:used_for_con => true, :assembled => false)
   end
 
 

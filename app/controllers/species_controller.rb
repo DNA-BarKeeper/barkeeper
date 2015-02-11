@@ -53,8 +53,6 @@ class SpeciesController < ApplicationController
     respond_to do |format|
       if @species.save
 
-        PherogramProcessing.perform_async(@species.id)
-
         format.html { redirect_to @species, notice: 'Species was successfully created.' }
         format.json { render :show, status: :created, location: @species }
       else
