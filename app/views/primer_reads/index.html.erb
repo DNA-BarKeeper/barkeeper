@@ -5,18 +5,25 @@
 
   <div class="panel-body">
 
-    <div class="well">
+    <% if current_user.email == "kaimueller@uni-muenster.de" %>
+        <div class="well">
 
-      <table><tr>
-        <td><span class="glyphicon glyphicon-cloud-upload" style="font-size: large; width: 30px"></span></td>
-        <td title="Upload chromatograms"><%= form_for PrimerRead.new do |f| %>
-            <%= f.file_field :chromatogram, multiple: true, name: "primer_read[chromatogram]" %>
-        <% end %></td></tr></table>
+          <table>
+            <tr>
+              <td><span class="glyphicon glyphicon-cloud-upload" style="font-size: large; width: 30px"></span></td>
 
+              <td title="Upload chromatograms">
 
+                <%= form_for PrimerRead.new do |f| %>
+                    <%= f.file_field :chromatogram, multiple: true, name: "primer_read[chromatogram]" %>
+                <% end %>
 
-      <% # jquery upload template # %>
-      <script id="template-upload" type="text/x-tmpl">
+              </td>
+            </tr>
+          </table>
+
+          <% # jquery upload template # %>
+          <script id="template-upload" type="text/x-tmpl">
 <div class="upload">
   {%=o.name%}
       <div class="progress">
@@ -25,7 +32,8 @@
       </div>
 </div>
 </script>
-    </div>
+        </div>
+  <% end %>
 
     <table id="primer_reads" data-source="<%= primer_reads_url(format: "json") %>">
 
