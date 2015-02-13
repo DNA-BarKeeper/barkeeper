@@ -97,7 +97,7 @@ class PrimerReadsController < ApplicationController
 
   # GET /primer_reads/1/edit
   def edit
-    @primer_read = PrimerRead.includes(:primer, :contig).find(params[:id])
+    @primer_read = PrimerRead.includes(:primer, :contig).find(params[:id]) #TODO Add select statement here to initially NOT load chromatogram?
   end
 
   # POST /primer_reads
