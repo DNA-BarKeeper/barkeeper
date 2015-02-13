@@ -13,12 +13,11 @@ class ContigsController < ApplicationController
     end
   end
 
-  def assemble
+  def assemble_all
     Contig.where(:assembled => false).each do |c|
-      c.auto_overlap
+      ContigAssembly.perform_async(c.id)
     end
-
-    redirect_to contigs_path, notice: "Assembled. Check 'Project->Issues' for problems that may have occurred."
+    redirect_to contigs_path, notice: "Assembly for #{Contig.where(:assembled => false).count} contigs started in background."
   end
 
   def filter
@@ -83,47 +82,11 @@ class ContigsController < ApplicationController
 
 
   def overlap
-    reads = @contig.primer_reads.where(:used_for_con => true)
-    #test how many
-    if reads.length > 10
-      redirect_to edit_contig_path, alert: 'Currently no more than 10 reads allowed for assembly.'
-      return
-    elsif reads.length < 2
-      redirect_to edit_contig_path, alert: 'Need >1 reads for overlap.'
-      return
-    else
 
+    ContigAssembly.perform_async(@contig.id)
+    # @contig.auto_overlap
+    redirect_to edit_contig_path, notice: 'Assembly started in background.'
 
-      # s1= @c.primer_reads.where(:used_for_con => true)[0]
-      # s2= @c.primer_reads.where(:used_for_con => true)[1]
-      # seq1 = s1.trimmed_seq
-      # seq2 = s2.trimmed_seq
-
-      # if alignedSeqs=@c.overlap(seq1, seq2)
-
-      @contig.auto_overlap
-
-      # s1.aligned_seq=alignedSeqs[0]
-      # s2.aligned_seq=alignedSeqs[1]
-      #
-      # s1.update(:aligned_seq => alignedSeqs[0])
-      # s2.update(:aligned_seq => alignedSeqs[1])
-
-
-      # currently tried within controller:
-      # for t in 0...reads.length
-      #   reads[t].update(:aligned_seq => alignedSeqs[t])
-      # end
-
-      # if alignedSeqs[3]==1
-      #   redirect_to edit_contig_path, notice: alignedSeqs[2]
-      # else
-      #   redirect_to edit_contig_path, alert: alignedSeqs[2]
-      # end
-
-      redirect_to edit_contig_path, notice: 'Assembled. Check Project>Issues for potential errors.'
-
-    end
   end
 
   def pde_all
