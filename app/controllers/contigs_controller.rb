@@ -17,7 +17,6 @@ class ContigsController < ApplicationController
     Contig.where(:assembled => false).each do |c|
       c.auto_overlap
     end
-
     redirect_to contigs_path, notice: "Assembled. Check 'Project->Issues' for problems that may have occurred."
   end
 
