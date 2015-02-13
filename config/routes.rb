@@ -93,7 +93,7 @@ GBOLapp::Application.routes.draw do
   resources :contigs do
     collection do
       get 'filter'
-      get 'assemble'
+      get 'assemble_all'
       get 'pde_all'
     end
     member do
