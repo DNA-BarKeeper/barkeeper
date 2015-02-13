@@ -25,9 +25,13 @@ class ContigDatatable
 
   def data
     contigs.map do |contig|
+      assembled='No'
+      if contig.assembled
+        assembled='Yes'
+      end
       [
           link_to(contig.name, edit_contig_path(contig)),
-          contig.assembled,
+          assembled,
           contig.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
           link_to('Delete', contig, method: :delete, data: { confirm: 'Are you sure?' }),
       ]

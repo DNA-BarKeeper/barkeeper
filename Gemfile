@@ -4,7 +4,7 @@ ruby '2.2.0'
 # gem 'rails', '4.1.0'
 gem 'rails', '4.2.0'
 
-gem 'rack-mini-profiler', group: :development
+#gem 'rack-mini-profiler', group: :development
 # gem 'rails_12factor', group: :production
 gem 'pg'
 
@@ -33,6 +33,7 @@ gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
 gem 'jquery-fileupload-rails'
 gem 'roo'
 gem 'sidekiq'
+gem 'whenever', :require => false
 
 
 group :development, :test do
