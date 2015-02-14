@@ -588,10 +588,10 @@ class Contig < ActiveRecord::Base
                    :message_type => msg_type
     }
 
-    puts "growing_cons_seq:"
-    puts aligned_seqs[:growing_cons_seq]
-    puts "read_seq:"
-    puts aligned_seqs[:read_seq]
+    # puts "growing_cons_seq:"
+    # puts aligned_seqs[:growing_cons_seq]
+    # puts "read_seq:"
+    # puts aligned_seqs[:read_seq]
 
     # check if overlap worked or crappy alignment resulted:
 

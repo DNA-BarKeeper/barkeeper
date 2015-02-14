@@ -13,7 +13,6 @@
 
     <% seq1=@primer_read.sequence %>
 
-
     <div class="col-md-12"><div class="form-group">
       <%= f.label :name %>
       <%= f.text_field :name, class: 'form-control' %>
@@ -104,12 +103,7 @@
       <div class="alignment" >
 
         <%= content_tag "div", id: "chromatogram", data: {url: @primer_read } do %>
-            <span id="loading">Loading chromatogram ...</span>
 
-            <!--canvas-->
-            <canvas id="ChromatogramCanvas">Your browser doesn't support canvas!</canvas>
-
-            <!-- <script> now moved to primer_read.js-->
         <% end %>
 
 
