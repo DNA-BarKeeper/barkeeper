@@ -65,6 +65,26 @@ function draw_chromatogram(chromatogram1){
         .attr('width', chromatogram1.atrace.length)
         .attr('height', 250)
 
+    //draw clipped areas
+    if (chromatogram1.trimmedReadStart){
+
+        d3.select('svg').append('rect')
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", chromatogram1.peak_indices[chromatogram1.trimmedReadStart-1]-5)
+            .attr("height", ymax)
+            .attr("fill", "#d3d3d3")
+
+        d3.select('svg').append('rect')
+            .attr("x", chromatogram1.peak_indices[chromatogram1.trimmedReadEnd-1]+5)
+            .attr("y", 0)
+            .attr("width", chromatogram1.atrace.length-chromatogram1.peak_indices[chromatogram1.trimmedReadEnd-1]+5)
+            .attr("height", ymax)
+            .attr("fill", "#d3d3d3")
+    }
+
+    //draw traces
+
     d3.select('svg').append("path")
         .attr("d", lineFunction(chromatogram1.atrace))
         .attr("stroke", "green")
@@ -86,90 +106,74 @@ function draw_chromatogram(chromatogram1){
         .attr("stroke-width", 1)
         .attr("fill", "none");
 
+//    draw base calls
 
-/*//    var canvas = document.getElementById('ChromatogramCanvas');
-//    canvas.width= chromatogram1.atrace.length*2;
-//    canvas.height = 500;
-//    canvas.style.width = chromatogram1.atrace.length +"px";
-//    canvas.style.height = "250px";
-//    ymax=250;
-//
-//    var ctx = canvas.getContext('2d');
-//
-//    var r=window.devicePixelRatio;
-//
-//    if (r > 1 ) {
-//        ctx.scale(r,r);
-//    }
-//
-//    //mk dynamic via slider (deactivated) or createJS -mouse-drag later:
-//    var scale=4;
+    for(var i = 0; i < chromatogram1.peak_indices.length; i++){
+        pos = chromatogram1.peak_indices[i];
+        var ch = chromatogram1.sequence[i];
+
+        var color='gray';
+        var ta='middle';
+
+
+        var disp = i+1;
+        if(disp % 10 == 0){
+
+            //ctx.strokeText(disp, pos, 20);
+            d3.select('svg').append("text")
+                .attr("x", pos)
+                .attr("y", 20)
+                .text(disp)
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "7px")
+                .attr("fill", color)
+                .attr("text-anchor", ta);
+
+            //ctx.strokeText('.', pos, 27);
+            d3.select('svg').append("text")
+                .attr("x", pos)
+                .attr("y", 27)
+                .text('.')
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "7px")
+                .attr("fill", color)
+                .attr("text-anchor", ta);
+        }
+
+
+
+        if (ch == 'A') {
+            color = 'green';
+        } else if (ch == 'C') {
+            color = 'blue';
+        } else if (ch == 'G') {
+            color = 'black';
+        } else if (ch == 'T') {
+            color = 'red';
+        }
+
+        //ctx.font = '10pt Courier New';
+        //ctx.strokeText(ch, pos, 40);
+        //ctx.font = '5pt Courier New';
+        //ctx.strokeStyle = 'gray';
+        //ctx.strokeText(chromatogram1.qualities[i], pos, 60);
+
+        d3.select('svg').append("text")
+            .attr("x", pos)
+            .attr("y", 40)
+            .text(ch)
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "9px")
+            .attr("fill", color)
+            .attr("text-anchor", ta);
+    }
+
 //
 //    ctx.textAlign='center';
 //
 //    ctx.fillStyle = '#d3d3d3';
 //
 //
-//    if (chromatogram1.trimmedReadStart){
-//        ctx.rect(0, 0, chromatogram1.peak_indices[chromatogram1.trimmedReadStart-1]-5, ymax);
-//        ctx.fill();
-//
-//        ctx.rect(chromatogram1.peak_indices[chromatogram1.trimmedReadEnd-1]+5, 0, chromatogram1.atrace.length, ymax);
-//        ctx.fill();
-//
-//    }*/
-//
-//    <!--A trace-->
-//    ctx.strokeStyle = 'green';
-//    ctx.beginPath();
-//    ctx.moveTo(0, ymax);
-//    var y=0;
-//    for(var i = 0; i < chromatogram1.atrace.length; i++){
-//        y=ymax-chromatogram1.atrace[i]/scale;
-//        ctx.lineTo(i,y);
-//        ctx.moveTo(i,y);
-//    }
-//    ctx.stroke();
-//    ctx.closePath();
-//
-//    <!--C trace-->
-//    ctx.strokeStyle = 'blue';
-//    ctx.beginPath();
-//    ctx.moveTo(0, ymax);
-//    var y=0;
-//    for(var i = 0; i < chromatogram1.ctrace.length; i++){
-//        y=ymax-chromatogram1.ctrace[i]/scale;
-//        ctx.lineTo(i,y);
-//        ctx.moveTo(i,y);
-//    }
-//    ctx.stroke();
-//    ctx.closePath();
-//
-//    <!--G trace-->
-//    ctx.strokeStyle = 'black';
-//    ctx.beginPath();
-//    ctx.moveTo(0, ymax);
-//    var y=0;
-//    for(var i = 0; i < chromatogram1.gtrace.length; i++){
-//        y=ymax-chromatogram1.gtrace[i]/scale;
-//        ctx.lineTo(i,y);
-//        ctx.moveTo(i,y);
-//    }
-//    ctx.stroke();
-//    ctx.closePath();
-//
-//    <!--T trace-->
-//    ctx.strokeStyle = 'red';
-//    ctx.beginPath();
-//    ctx.moveTo(0, ymax);
-//    var y=0;
-//    for(var i = 0; i < chromatogram1.ttrace.length; i++){
-//        y=ymax-chromatogram1.ttrace[i]/scale;
-//        ctx.lineTo(i,y);
-//        ctx.moveTo(i,y);
-//    }
-//    ctx.stroke();
-//    ctx.closePath();
 //
 ////  base calls
 //    var pos=0;
