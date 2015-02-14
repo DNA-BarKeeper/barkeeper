@@ -77,17 +77,12 @@
     </div>
 
       <div class="col-md-4">
-        <div class="field">
-          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download trimmed sequence as Fasta file',  fasta_primer_read_path %><br><br>
-          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download chromatogram file',  @primer_read.chromatogram.url %><br><br>
-        </div>
 
-        <table width="100%">
-          <tr>
-            <td align="left"><span class="glyphicon glyphicon-paperclip"></span> Attach scf/ab1 file:<%= f.file_field :chromatogram %></td>
-            <td align="right"><%= f.submit 'Update', :class =>  'btn btn-primary' %></td>
-          </tr>
-        </table>
+        <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download trimmed sequence as Fasta file',  fasta_primer_read_path %><br>
+        <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download chromatogram file',  @primer_read.chromatogram.url %><br>
+
+        <span class="glyphicon glyphicon-paperclip"></span> Attach scf/ab1 file:<%= f.file_field :chromatogram %><br>
+        <%= f.submit 'Update', :class =>  'btn btn-primary' %>
 
       </div>
 
@@ -100,6 +95,7 @@
     <!--</div>-->
 
     <div class="col-md-12">
+      <hr>
       <div class="alignment" >
 
         <%= content_tag "div", id: "chromatogram", data: {url: @primer_read } do %>
