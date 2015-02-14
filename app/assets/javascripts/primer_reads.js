@@ -43,18 +43,21 @@ jQuery(function() {
 });
 
 
-
-
 function draw_chromatogram(chromatogram1){
 
 //    version using D3
-    var lineData = [ { "x": 1,   "y": 5},  { "x": 20,  "y": 20},
-        { "x": 40,  "y": 10}, { "x": 60,  "y": 40},
-        { "x": 80,  "y": 5},  { "x": 100, "y": 60}];
+//    var lineData = [ { "x": 1,   "y": 5},  { "x": 20,  "y": 20},
+//        { "x": 40,  "y": 10}, { "x": 60,  "y": 40},
+//        { "x": 80,  "y": 5},  { "x": 100, "y": 60}];
+
+    var ymax=250;
+
+    //mk dynamic via slider (deactivated) or createJS -mouse-drag later:
+    var scale=4;
 
     var lineFunction = d3.svg.line()
-        .x(function(d) { return d.x; })
-        .y(function(d) { return d.y; })
+        .x(function(d,i) { return i; })
+        .y(function(d) { return ymax-d/scale; })
         .interpolate("linear");
 
     d3.select('#chromatogram')
@@ -63,9 +66,24 @@ function draw_chromatogram(chromatogram1){
         .attr('height', 250)
 
     d3.select('svg').append("path")
-        .attr("d", lineFunction(lineData))
+        .attr("d", lineFunction(chromatogram1.atrace))
+        .attr("stroke", "green")
+        .attr("stroke-width", 1)
+        .attr("fill", "none");
+    d3.select('svg').append("path")
+        .attr("d", lineFunction(chromatogram1.ctrace))
         .attr("stroke", "blue")
-        .attr("stroke-width", 2)
+        .attr("stroke-width", 1)
+        .attr("fill", "none");
+    d3.select('svg').append("path")
+        .attr("d", lineFunction(chromatogram1.gtrace))
+        .attr("stroke", "black")
+        .attr("stroke-width", 1)
+        .attr("fill", "none");
+    d3.select('svg').append("path")
+        .attr("d", lineFunction(chromatogram1.ttrace))
+        .attr("stroke", "red")
+        .attr("stroke-width", 1)
         .attr("fill", "none");
 
 
