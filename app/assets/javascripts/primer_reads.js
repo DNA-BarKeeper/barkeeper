@@ -45,11 +45,6 @@ jQuery(function() {
 
 function draw_chromatogram(chromatogram1){
 
-//    version using D3
-//    var lineData = [ { "x": 1,   "y": 5},  { "x": 20,  "y": 20},
-//        { "x": 40,  "y": 10}, { "x": 60,  "y": 40},
-//        { "x": 80,  "y": 5},  { "x": 100, "y": 60}];
-
     var ymax=250;
 
     //mk dynamic via slider (deactivated) or createJS -mouse-drag later:

@@ -38,8 +38,7 @@ jQuery(function() {
 });
 
 function draw_contig(partial_cons){
-//return console.log(contig)
-//    continue here
+
     var canvas = document.getElementById('ContigCanvas');
     canvas.width= 30000;
 
@@ -55,12 +54,13 @@ function draw_contig(partial_cons){
 //        20 for consensus
 //        20 for consensus_qualities
 //        20 for gap between partials
+
     var h=partial_cons.length*80;
     for(var q = 0; q < partial_cons.length; q++) {
         h+= partial_cons[q].primer_reads.length*80;
     }
 
-    h*=2; // for retina scaling stuff
+    /*h*=2; // for retina scaling stuff
     canvas.height = h;
     canvas.style.width = "15000px";
     canvas.style.height = Math.round(h/2)+"px";
@@ -73,19 +73,25 @@ function draw_contig(partial_cons){
 
     if (r > 1 ) {
         ctx.scale(r,r);
-    }
+    }*/
 
-    //  mk white background
+    d3.select('#contig')
+        .append('svg')
+        .attr('width', 15000)
+        .attr('height', h)
+
+    /*//  mk white background
     ctx.fillStyle = 'white';
     ctx.rect(0, 0, xmax, ymax);
-    ctx.fill();
+    ctx.fill();*/
 
     var x=0;
     var y=20;
     var block_start=300;
 
-    ctx.strokeStyle = 'gray';
-    ctx.font = '10pt Courier New';
+    var color = 'gray';
+    var font_family = "sans-serif";
+    var font_size = "7px"
 
     for(var i = 0; i < partial_cons.length; i++){
         var partial_contig = partial_cons[i];
@@ -119,9 +125,9 @@ function draw_contig(partial_cons){
             x=0;
 
             //trace row
-            ctx.strokeStyle = 'gray';
-            ctx.font = '5pt Courier New';
-//            ctx.strokeText('Traces', x, y);
+            color = 'gray';
+            font_size = "7px";
+
 
             x=block_start;
 
