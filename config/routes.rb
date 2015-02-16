@@ -2,7 +2,7 @@ GBOLapp::Application.routes.draw do
 
   resources :primer_reads
 
-  root :to => "home#about"
+  root :to => "home#search"
 
   match 'help',    to: 'home#help',    via: 'get'
   match 'about',   to: 'home#about',   via: 'get'
