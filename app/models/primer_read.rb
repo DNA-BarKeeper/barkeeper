@@ -106,13 +106,20 @@ class PrimerRead < ActiveRecord::Base
 
       #logic if T7promoter or M13R-pUC.scf:
 
-      if prn == 'T7promoter'
+      if prn == 'T7promoter' #T7 immer forward
         # get first part out of m[2]
         rgx = /^_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/
         mtchs= m[2].match(rgx) #--> uv2
+
         prn=mtchs[1]
 
-      elsif prn == 'M13R-pUC'
+        p = Primer.where("primers.name ILIKE ?", "#{prn}").first
+
+        if p.reverse
+          prn=mtchs[2]
+        end
+
+      elsif prn == 'M13R-pUC' #M13R-pU
 
         # get second part out of m[2] and add "uv"
         # get first part out of m[2]
@@ -123,14 +130,19 @@ class PrimerRead < ActiveRecord::Base
         #changed again 13:04 20.09.2014 to match _uv2_uv4
 
         prn=mtchs[2]  ##--> uv4
+
+        p = Primer.where("primers.name ILIKE ?", "#{prn}").first
+
+        unless p.reverse
+          prn=mtchs[1]
+        end
+
       else
         #leave prn as is
       end
 
       # find & assign primer
-      #p = Primer.find_by(:name => prn)
 
-      #changed to mk case insensitive:
       p = Primer.where("primers.name ILIKE ?", "#{prn}").first
 
       if p
