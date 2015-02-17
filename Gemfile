@@ -35,6 +35,8 @@ gem 'roo'
 gem 'sidekiq'
 gem 'whenever', :require => false
 
+gem 'puma', :group => 'production'
+
 
 group :development, :test do
   gem 'better_errors'
@@ -66,3 +68,5 @@ gem 'rails_best_practices', :group => 'development'
 gem 'sinatra', :require => nil
 gem 'slim'
 gem 'mime-types'
+
+gem 'newrelic_rpm'
