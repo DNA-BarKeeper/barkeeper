@@ -106,7 +106,7 @@ class PrimerRead < ActiveRecord::Base
 
       #logic if T7promoter or M13R-pUC.scf:
 
-      if prn == 'T7promoter' #T7 is always forward
+      if prn == 'T7promoter' or prn== 'T7' #T7 is always forward
         # get first part out of m[2]
         rgx = /^_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/
         mtchs= m[2].match(rgx) #--> uv2
@@ -119,7 +119,7 @@ class PrimerRead < ActiveRecord::Base
           prn=mtchs[2]
         end
 
-      elsif prn == 'M13R-pUC' #M13R-pU
+      elsif prn == 'M13R-pUC'  or prn=='M13-RP'#M13R-pU
 
         # get second part out of m[2] and add "uv"
         # get first part out of m[2]
