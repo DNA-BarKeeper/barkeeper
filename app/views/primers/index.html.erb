@@ -23,7 +23,6 @@
         <th>Alt. Name</th>
         <th>R/F</th>
         <th>Marker</th>
-        <th>Position</th>
         <th>Updated</th>
         <th></th>
       </tr>
@@ -40,7 +39,6 @@
                 <td>F</td>
             <% end %>
             <td><%= link_to primer.marker.name, edit_marker_path(primer.marker) if primer.marker %></td>
-            <td><%= primer.position %></td>
             <td><%= primer.updated_at %></td>
             <td><%= link_to 'Delete', primer, method: :delete, data: { confirm: 'Are you sure?' } %></td>
           </tr>

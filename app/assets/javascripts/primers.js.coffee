@@ -4,8 +4,8 @@
 
 jQuery ->
   $('#primers').DataTable( {
-    "order": [ 5, 'desc' ]
+    "order": [ 4, 'desc' ]
     "columnDefs": [
-      { "orderable": false, "targets": 6 }
+      { "orderable": false, "targets": 5 }
     ]
   } );
