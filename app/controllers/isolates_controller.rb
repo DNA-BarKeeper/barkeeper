@@ -21,8 +21,11 @@ class IsolatesController < ApplicationController
 
     file = params[:file]
 
-    #todo if needed, add logic to distinguish between xls / xlsx / error etc here -> mv from model.
-    Isolate.correct_coordinates(file.path) # when adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
+    #todo if needed, add logic to distinguish between xls / xlsx / error etc here -> mv from model
+
+    # Isolate.correct_coordinates(file.path)
+    # Isolate.import(file)
+    Isolate.import_dnabank_info(file.path)
     redirect_to isolates_path, notice: "Imported."
   end
 

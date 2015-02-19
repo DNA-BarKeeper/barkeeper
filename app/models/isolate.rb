@@ -49,7 +49,7 @@ class Isolate < ActiveRecord::Base
 
       #isolate = Isolate.find_by(:lab_nr => row['GBoL Isolation No.'])
 
-       isolate = Isolate.find_by(:dna_bank_id => row['DNA Bank No'].gsub(' ', ''))
+      isolate = Isolate.find_by(:dna_bank_id => row['DNA Bank No'].gsub(' ', ''))
 
 
       unless isolate.nil?
@@ -67,9 +67,82 @@ class Isolate < ActiveRecord::Base
     end
   end
 
+  def self.import_dnabank_info(file)
+    spreadsheet = Roo::Excelx.new(file, nil, :ignore)
+
+    header = spreadsheet.row(1)
+    (2..spreadsheet.last_row).each do |i|
+
+      row = Hash[[header, spreadsheet.row(i)].transpose]
+
+      # update existing isolate or create new
+      isolate = Isolate.find_or_create_by(:lab_nr => row['GBoL Isolation No.'])
+
+      if row['DNA Bank No']
+        isolate.dna_bank_id=row['DNA Bank No'].gsub(' ', '')
+      end
+
+      isolate.save!
+
+      # create new individual (specimen_id will be slurped in from DNA Bank later once available there):
+      individual = Individual.create(:specimen_id => "<no info available in DNA Bank>")
+
+      individual.save!
+
+      isolate.update(:individual_id => individual.id)
+
+      # assign individual to existing or new species:
+      sp_name = ''
+
+      unless row['Genus'].nil?
+        gen_name = row['Genus']
+        gen_name.strip!
+        sp_name += gen_name
+      end
+
+      unless row['Species'].nil?
+        sp_ep= row['Species']
+        sp_ep.strip!
+        sp_name += ' '
+        sp_name += sp_ep
+      end
+
+      unless row['Subspecies'].nil?
+        sub_sp = row['Subspecies']
+        sub_sp.strip!
+        sp_name += ' '
+        sp_name += sub_sp
+
+      end
+
+      species = Species.find_or_create_by(:composed_name => sp_name)
+
+      # if for whatever weird reason the species is not yet in db, also read & assign its family
+
+      if species.genus_name.nil?
+
+        species.update(:genus_name => gen_name, :species_epithet => sp_ep)
+
+        unless row['Subspecies'].nil?
+          species.update(:infraspecific => sub_sp)
+        end
+
+        unless row['Family'].nil?
+          family_name= row['Family'].capitalize
+          family = Family.find_or_create_by(:name => family_name)
+
+          species.update(:family_id => family.id)
+        end
+      end
+
+      species.save!
+
+      individual.update(:species_id => species.id)
+    end
+  end
+
 
   def self.import(file)
-    #spreadsheet = open_spreadsheet(file)
 
     spreadsheet = Roo::Excelx.new(file, nil, :ignore)
 
