@@ -5,7 +5,25 @@
 
   <div class="panel-body">
 
+    <div class="wideTable">
+      <table id="primer_reads"  data-source="<%= primer_reads_url(format: "json") %>"  class="table table-striped table-hover table-bordered">
 
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Assembled?</th>
+        <th>Contig</th>
+        <td>Last updated</td>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody id="primer_read_list">
+
+      </tbody>
+    </table></div>
+
+    <br>
     <div class="well">
 
       <table>
@@ -33,24 +51,6 @@
 </div>
 </script>
     </div>
-
-    <div class="wideTable">
-      <table id="primer_reads"  data-source="<%= primer_reads_url(format: "json") %>"  class="table table-striped table-hover table-bordered">
-
-      <thead>
-      <tr>
-        <th>Name</th>
-        <th>Assembled?</th>
-        <th>Contig</th>
-        <td>Last updated</td>
-        <th></th>
-      </tr>
-      </thead>
-
-      <tbody id="primer_read_list">
-
-      </tbody>
-    </table></div>
 
   </div>
 </div>
