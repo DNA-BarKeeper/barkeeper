@@ -35,9 +35,6 @@ jQuery(function() {
 
     if (chromatogram1){
         draw_chromatogram(chromatogram1);
-
-        //clean up
-        $('#loading').remove()
     }
 
 });
@@ -58,7 +55,7 @@ function draw_chromatogram(chromatogram1){
     d3.select('#chromatogram')
         .append('svg')
         .attr('width', chromatogram1.atrace.length)
-        .attr('height', 250)
+        .attr('height', 250);
 
     //draw clipped areas
     if (chromatogram1.trimmedReadStart){
@@ -68,14 +65,14 @@ function draw_chromatogram(chromatogram1){
             .attr("y", 0)
             .attr("width", chromatogram1.peak_indices[chromatogram1.trimmedReadStart-1]-5)
             .attr("height", ymax)
-            .attr("fill", "#d3d3d3")
+            .attr("fill", "#d3d3d3");
 
         d3.select('svg').append('rect')
             .attr("x", chromatogram1.peak_indices[chromatogram1.trimmedReadEnd-1]+5)
             .attr("y", 0)
             .attr("width", chromatogram1.atrace.length-chromatogram1.peak_indices[chromatogram1.trimmedReadEnd-1]+5)
             .attr("height", ymax)
-            .attr("fill", "#d3d3d3")
+            .attr("fill", "#d3d3d3");
     }
 
     //draw traces
@@ -110,11 +107,10 @@ function draw_chromatogram(chromatogram1){
         var color='gray';
         var ta='middle';
 
-
+        // position indicator
         var disp = i+1;
         if(disp % 10 == 0){
 
-            //ctx.strokeText(disp, pos, 20);
             d3.select('svg').append("text")
                 .attr("x", pos)
                 .attr("y", 10)
@@ -123,8 +119,6 @@ function draw_chromatogram(chromatogram1){
                 .attr("font-size", "7px")
                 .attr("fill", color)
                 .attr("text-anchor", ta);
-
-            //ctx.strokeText('.', pos, 27);
             d3.select('svg').append("text")
                 .attr("x", pos)
                 .attr("y", 17)
@@ -135,8 +129,7 @@ function draw_chromatogram(chromatogram1){
                 .attr("text-anchor", ta);
         }
 
-
-
+        //base calls
         if (ch == 'A') {
             color = 'green';
         } else if (ch == 'C') {
@@ -146,11 +139,6 @@ function draw_chromatogram(chromatogram1){
         } else if (ch == 'T') {
             color = 'red';
         }
-
-        //ctx.font = '10pt Courier New';
-        //ctx.strokeText(ch, pos, 40);
-        //ctx.font = '5pt Courier New';
-
 
         d3.select('svg').append("text")
             .attr("x", pos)
@@ -163,8 +151,8 @@ function draw_chromatogram(chromatogram1){
 
         color='gray';
 
-        //ctx.strokeStyle = 'gray';
-        //ctx.strokeText(chromatogram1.qualities[i], pos, 60);
+        //quality scores
+
         d3.select('svg').append("text")
             .attr("x", pos)
             .attr("y", 40)
@@ -174,46 +162,4 @@ function draw_chromatogram(chromatogram1){
             .attr("fill", color)
             .attr("text-anchor", ta);
     }
-
-//
-//    ctx.textAlign='center';
-//
-//    ctx.fillStyle = '#d3d3d3';
-//
-//
-//
-////  base calls
-//    var pos=0;
-//
-//    for(var i = 0; i < chromatogram1.peak_indices.length; i++){
-//        pos = chromatogram1.peak_indices[i];
-//        var ch = chromatogram1.sequence[i];
-//
-//        ctx.strokeStyle = 'gray';
-//        ctx.font = '7pt Courier New';
-//
-//        var disp = i+1;
-//        if(disp % 10 == 0){
-//            ctx.strokeText(disp, pos, 20);
-//            ctx.strokeText('.', pos, 27);
-//        }
-//
-//        if (ch == 'A') {
-//            ctx.strokeStyle = 'green';
-//        } else if (ch == 'C') {
-//            ctx.strokeStyle = 'blue';
-//        } else if (ch == 'G') {
-//            ctx.strokeStyle = 'black';
-//        } else if (ch == 'T') {
-//            ctx.strokeStyle = 'red';
-//        } else {
-//            ctx.strokeStyle = 'gray';
-//        }
-//
-//        ctx.font = '10pt Courier New';
-//        ctx.strokeText(ch, pos, 40);
-//        ctx.font = '5pt Courier New';
-//        ctx.strokeStyle = 'gray';
-//        ctx.strokeText(chromatogram1.qualities[i], pos, 60);
-//    }
 }

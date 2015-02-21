@@ -23,16 +23,7 @@ jQuery(function() {
 
 
     if (partial_cons){
-
-        document.getElementById('download_as_img').addEventListener('click', function() {
-            var filename= "Contig.png";
-            downloadCanvas(this, 'ContigCanvas', filename); // <- this can be a dynamic name
-        }, false);
-
         draw_contig(partial_cons);
-
-        //clean up
-        $('#loading').remove()
     }
 
 });
@@ -60,25 +51,11 @@ function draw_contig(partial_cons){
         h+= partial_cons[q].primer_reads.length*80;
     }
 
-    /*h*=2; // for retina scaling stuff
-    canvas.height = h;
-    canvas.style.width = "15000px";
-    canvas.style.height = Math.round(h/2)+"px";
-    xmax=15000;
-    ymax=h;
-
-    var ctx = canvas.getContext('2d');
-
-    var r=window.devicePixelRatio;
-
-    if (r > 1 ) {
-        ctx.scale(r,r);
-    }*/
 
     d3.select('#contig')
         .append('svg')
         .attr('width', 15000)
-        .attr('height', h)
+        .attr('height', h);
 
     /*//  mk white background
     ctx.fillStyle = 'white';
@@ -91,7 +68,7 @@ function draw_contig(partial_cons){
 
     var color = 'gray';
     var font_family = "sans-serif";
-    var font_size = "7px"
+    var font_size = "7px";
 
     for(var i = 0; i < partial_cons.length; i++){
         var partial_contig = partial_cons[i];
@@ -127,7 +104,6 @@ function draw_contig(partial_cons){
             //trace row
             color = 'gray';
             font_size = "7px";
-
 
             x=block_start;
 
@@ -324,10 +300,6 @@ function draw_contig(partial_cons){
     y+=20;
 }
 
-function downloadCanvas(link, canvasId, filename) {
-    link.href = document.getElementById(canvasId).toDataURL();
-    link.download = filename;
-}
 
 // draw in 0,0
 function draw_trace_segment(ctx, pr, first_position, second_position){
@@ -354,11 +326,11 @@ function draw_trace_segment(ctx, pr, first_position, second_position){
     <!--C trace-->
     ctx.strokeStyle = 'blue';
 
-    var x=0;
-    var y=trace_ymax-pr.ctrace[xpos]/yscale;
+    x=0;
+    y=trace_ymax-pr.ctrace[xpos]/yscale;
     ctx.moveTo(x,y);
     ctx.beginPath();
-    for(var xpos = first_position; xpos <= second_position; xpos++){
+    for(xpos = first_position; xpos <= second_position; xpos++){
         y=trace_ymax-pr.ctrace[xpos]/yscale;
         ctx.lineTo(x,y);
         ctx.moveTo(x,y);
@@ -370,11 +342,11 @@ function draw_trace_segment(ctx, pr, first_position, second_position){
     <!--G trace-->
     ctx.strokeStyle = 'black';
 
-    var x=0;
-    var y=trace_ymax-pr.gtrace[xpos]/yscale;
+    x=0;
+    y=trace_ymax-pr.gtrace[xpos]/yscale;
     ctx.moveTo(x,y);
     ctx.beginPath();
-    for(var xpos = first_position; xpos <= second_position; xpos++){
+    for(xpos = first_position; xpos <= second_position; xpos++){
         y=trace_ymax-pr.gtrace[xpos]/yscale;
         ctx.lineTo(x,y);
         ctx.moveTo(x,y);
@@ -386,11 +358,11 @@ function draw_trace_segment(ctx, pr, first_position, second_position){
     <!--T trace-->
     ctx.strokeStyle = 'red';
 
-    var x=0;
-    var y=trace_ymax-pr.ttrace[xpos]/yscale;
+    x=0;
+    y=trace_ymax-pr.ttrace[xpos]/yscale;
     ctx.moveTo(x,y);
     ctx.beginPath();
-    for(var xpos = first_position; xpos <= second_position; xpos++){
+    for(xpos = first_position; xpos <= second_position; xpos++){
         y=trace_ymax-pr.ttrace[xpos]/yscale;
         ctx.lineTo(x,y);
         ctx.moveTo(x,y);
