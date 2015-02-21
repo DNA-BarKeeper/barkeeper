@@ -106,7 +106,7 @@ class PrimerRead < ActiveRecord::Base
 
       #logic if T7promoter or M13R-pUC.scf:
 
-      if prn == 'T7promoter' or prn== 'T7' #T7 is always forward
+      if prn == 'T7promoter' or prn== 'T7' or prn== 'T7-1' #T7 is always forward
         # get first part out of m[2]
         rgx = /^_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/
         mtchs= m[2].match(rgx) #--> uv2
@@ -115,11 +115,17 @@ class PrimerRead < ActiveRecord::Base
 
         p = Primer.where("primers.name ILIKE ?", "#{prn}").first
 
-        if p.reverse
-          prn=mtchs[2]
+        if p
+          if p.reverse
+            prn=mtchs[2]
+          end
+        else
+          msg= "Cannot find primer with name #{prn}."
+          create_issue = true
+          create_issue = true
         end
 
-      elsif prn == 'M13R-pUC'  or prn=='M13-RP'#M13R-pU
+      elsif prn == 'M13R-pUC'  or prn=='M13-RP' or prn=='M13-RP-1' #M13R-pU
 
         # get second part out of m[2] and add "uv"
         # get first part out of m[2]
@@ -133,8 +139,13 @@ class PrimerRead < ActiveRecord::Base
 
         p = Primer.where("primers.name ILIKE ?", "#{prn}").first
 
-        unless p.reverse
-          prn=mtchs[1]
+        if p
+          unless p.reverse
+            prn=mtchs[1]
+          end
+        else
+          msg= "Cannot find primer with name #{prn}."
+          create_issue = true
         end
 
       else

@@ -63,6 +63,8 @@ Rails.application.configure do
     Bullet.add_footer = true
   end
 
+  ENV["REDISTOGO_URL"] = 'redis://redistogo:9f39a5b8a1b376f818dd3edc74c600b6@chubb.redistogo.com:9618/'
+
 end
 
 
