@@ -29,7 +29,7 @@ class SpeciesDatatable
         family=link_to(single_species.family.name, edit_family_path(single_species.family))
       end
       [
-          link_to(single_species.composed_name, edit_species_path(single_species)),
+          link_to(single_species.name_for_display, edit_species_path(single_species)),
           single_species.author,
           family,
           single_species.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),

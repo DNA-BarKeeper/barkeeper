@@ -78,7 +78,6 @@ class Species < ActiveRecord::Base
   def self.import(file)
     #version for Berlin
 
-
     spreadsheet = Roo::Excel.new(file, nil, :ignore)
 
     header = spreadsheet.row(1)

@@ -6,14 +6,17 @@
 
   <div class="panel-body">
 
-    <div class="well">
-      Import Isolates / Specimen (Individuals) from Excel file:<p></p>
-      <%= form_tag import_isolates_path, multipart: true do %>
-          <%= file_field_tag :file %>
-          <br>
-          <%= submit_tag "Import" %>
-      <% end %>
-    </div>
+
+    <% if current_user.email == 'kaimueller@uni-muenster.de' %>
+        <div class="well">
+          Import Isolates / Specimen (Individuals) from Excel file:<p></p>
+          <%= form_tag import_isolates_path, multipart: true do %>
+              <%= file_field_tag :file %>
+              <br>
+              <%= submit_tag "Import" %>
+          <% end %>
+        </div>
+    <% end %>
 
     <div class="wideTable">
       <table id="isolates" data-source="<%= isolates_url(format: 'json') %>" class="table table-striped table-hover table-bordered">
