@@ -117,7 +117,7 @@ function draw_chromatogram(chromatogram1){
             //ctx.strokeText(disp, pos, 20);
             d3.select('svg').append("text")
                 .attr("x", pos)
-                .attr("y", 20)
+                .attr("y", 10)
                 .text(disp)
                 .attr("font-family", "sans-serif")
                 .attr("font-size", "7px")
@@ -127,7 +127,7 @@ function draw_chromatogram(chromatogram1){
             //ctx.strokeText('.', pos, 27);
             d3.select('svg').append("text")
                 .attr("x", pos)
-                .attr("y", 27)
+                .attr("y", 17)
                 .text('.')
                 .attr("font-family", "sans-serif")
                 .attr("font-size", "7px")
@@ -150,15 +150,27 @@ function draw_chromatogram(chromatogram1){
         //ctx.font = '10pt Courier New';
         //ctx.strokeText(ch, pos, 40);
         //ctx.font = '5pt Courier New';
-        //ctx.strokeStyle = 'gray';
-        //ctx.strokeText(chromatogram1.qualities[i], pos, 60);
+
 
         d3.select('svg').append("text")
             .attr("x", pos)
-            .attr("y", 40)
+            .attr("y", 30)
             .text(ch)
             .attr("font-family", "sans-serif")
-            .attr("font-size", "9px")
+            .attr("font-size", "10px")
+            .attr("fill", color)
+            .attr("text-anchor", ta);
+
+        color='gray';
+
+        //ctx.strokeStyle = 'gray';
+        //ctx.strokeText(chromatogram1.qualities[i], pos, 60);
+        d3.select('svg').append("text")
+            .attr("x", pos)
+            .attr("y", 40)
+            .text(chromatogram1.qualities[i])
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "7px")
             .attr("fill", color)
             .attr("text-anchor", ta);
     }
