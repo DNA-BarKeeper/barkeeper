@@ -380,6 +380,7 @@ DEPENDENCIES
   rails_apps_testing
   rails_best_practices
   rails_layout
+  redis
   roo
   s3_direct_upload
   sass-rails (~> 4.0.3)

@@ -70,3 +70,5 @@ gem 'slim'
 gem 'mime-types'
 
 gem 'newrelic_rpm'
+
+gem 'redis'
