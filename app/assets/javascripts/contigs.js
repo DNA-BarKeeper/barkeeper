@@ -30,9 +30,6 @@ jQuery(function() {
 
 function draw_contig(partial_cons){
 
-    var canvas = document.getElementById('ContigCanvas');
-    canvas.width= 30000;
-
 //    compute height:
 
 //    pixel per read:
@@ -57,10 +54,6 @@ function draw_contig(partial_cons){
         .attr('width', 15000)
         .attr('height', h);
 
-    /*//  mk white background
-    ctx.fillStyle = 'white';
-    ctx.rect(0, 0, xmax, ymax);
-    ctx.fill();*/
 
     var x=0;
     var y=20;
@@ -121,6 +114,14 @@ function draw_contig(partial_cons){
                 }
             }
 
+            d3.select('svg').append("text")
+                .attr("x", x)
+                .attr("y", y)
+                .text("     --- SCALED TRACES WILL SHOW UP HERE SOON ---")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", font_size)
+                .attr("fill", "gray");
+
             //draw traces
             for (i=0; i< aligned_peak_indices.length; i++){
 
@@ -170,20 +171,22 @@ function draw_contig(partial_cons){
                     }
 
                     if (second_position!=null && first_position!=null) {
-                        ctx.save();
-                        ctx.translate(x, y - 40);
+                        //ctx.save();
+                        //ctx.translate(x, y - 40);
 
 //                    fig out actual scaling factor first
 
                         var xscale = 10.0 / (second_position - first_position);
 
-                        ctx.scale(xscale, 1);
+                        //ctx.scale(xscale, 1);
 
 //                      draw all four traces paths at 0,0
 
-                        draw_trace_segment(ctx, pr, first_position, second_position);
+                        //TODO replace by d3 version:
+                        //draw_trace_segment(ctx, pr, first_position, second_position);
 
-                        ctx.restore();
+
+                        //ctx.restore();
                     }
 
                 }
@@ -191,12 +194,11 @@ function draw_contig(partial_cons){
             }
 
             y=y+20;
-            ctx.font = '10pt Courier New';
             x=0;
 
             //qualities row:
-            ctx.strokeStyle = 'gray';
-            ctx.font = '5pt Courier New';
+            color = 'gray';
+            font_size = "5px";
 
             x=block_start;
 
@@ -205,39 +207,72 @@ function draw_contig(partial_cons){
                 x=x+10;
 
                 if (qual1[q]!=-1){
-                    ctx.strokeText(ch, x, y);
+
+                    //ctx.strokeText(ch, x, y);
+
+                    d3.select('svg').append("text")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .text(ch)
+                        .attr("font-family", "sans-serif")
+                        .attr("font-size", font_size)
+                        .attr("fill", color);
                 }
             }
 
             y=y+20;
-            ctx.font = '10pt Courier New';
+            //font_size = "10px";
 
             //sequence row:
             x=0;
-            ctx.strokeStyle = 'black';
-            ctx.font = '8pt Arial';
-            ctx.strokeText(pr.name, x, y);
-            ctx.strokeStyle = 'gray';
-            ctx.font = '10pt Courier New';
+            color = 'black';
+            font_size = '8px';
+
+            //ctx.strokeText(pr.name, x, y);
+            d3.select('svg').append("text")
+                .attr("x", x)
+                .attr("y", y)
+                .text(pr.name)
+                .attr("font-family", "sans-serif")
+                .attr("font-size", font_size)
+                .attr("fill", color)
+                .on({
+                    "click":  function() {
+                        var edit_read_location = "http://www.gbol5.de/primer_reads/" + pr.id + "/edit"
+                        window.location.href = edit_read_location;
+                    }
+                });
+
+            //color = 'gray';
+            font_size = '10px';
 
             x=block_start;
 
             for (var s=0; s< seq1.length; s++){
+
                 ch= seq1[s];
-                if (ch == 'A'){
-                    ctx.strokeStyle = 'green';
-                } else if (ch=='C'){
-                    ctx.strokeStyle = 'blue';
-                } else if (ch=='G'){
-                    ctx.strokeStyle = 'black';
-                } else if (ch=='T'){
-                    ctx.strokeStyle = 'red';
+
+                if (ch == 'A') {
+                    color = 'green';
+                } else if (ch == 'C') {
+                    color = 'blue';
+                } else if (ch == 'G') {
+                    color = 'black';
+                } else if (ch == 'T') {
+                    color = 'red';
                 } else {
-                    ctx.strokeStyle = 'gray';
+                    color = 'gray';
                 }
 
                 x=x+10;
-                ctx.strokeText(ch, x, y);
+
+                d3.select('svg').append("text")
+                    .attr("x", x)
+                    .attr("y", y)
+                    .text(ch)
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", font_size)
+                    .attr("fill", color)
             }
 
             y=y+20;
@@ -248,17 +283,23 @@ function draw_contig(partial_cons){
         // render aligned consensus sequence:
         if (partial_contig.aligned_sequence != null) {
             //qual row:
-            ctx.strokeStyle = 'gray';
+            color = 'gray';
             x=0;
             y+=20;
-            ctx.font = '5pt Courier New';
+            font_size = '5px';
             x=block_start;
 
             for (s=0; s< partial_contig.aligned_qualities.length; s++){
                 ch= partial_contig.aligned_qualities[s];
                 x=x+10;
                 if (partial_contig.aligned_qualities[s]!=-1){
-                    ctx.strokeText(ch, x, y);
+                    d3.select('svg').append("text")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .text(ch)
+                        .attr("font-family", "sans-serif")
+                        .attr("font-size", font_size)
+                        .attr("fill", color);
                 }
             }
 
@@ -266,29 +307,46 @@ function draw_contig(partial_cons){
             y+=20;
 
             //sequence row:
-            ctx.strokeStyle = 'black';
-            ctx.font = '8pt Arial';
-            ctx.strokeText('Consensus', x, y);
-            ctx.strokeStyle = 'gray';
-            ctx.font = '10pt Courier New';
+            color = 'black';
+            font_size = '8px';
+
+            //ctx.strokeText('Consensus', x, y);
+            d3.select('svg').append("text")
+                .attr("x", x)
+                .attr("y", y)
+                .text('Consensus')
+                .attr("font-family", "sans-serif")
+                .attr("font-size", font_size)
+                .attr("fill", color);
+
+            color = 'gray';
+            font_size = '10px';
 
             x=block_start;
 
             for (s=0; s< partial_contig.aligned_sequence.length; s++){
                 ch= partial_contig.aligned_sequence[s];
-                if (ch == 'A'){
-                    ctx.strokeStyle = 'green';
-                } else if (ch=='C'){
-                    ctx.strokeStyle = 'blue';
-                } else if (ch=='G'){
-                    ctx.strokeStyle = 'black';
-                } else if (ch=='T'){
-                    ctx.strokeStyle = 'red';
+                if (ch == 'A') {
+                    color = 'green';
+                } else if (ch == 'C') {
+                    color = 'blue';
+                } else if (ch == 'G') {
+                    color = 'black';
+                } else if (ch == 'T') {
+                    color = 'red';
                 } else {
-                    ctx.strokeStyle = 'gray';
+                    color = 'gray';
                 }
                 x=x+10;
-                ctx.strokeText(ch, x, y);
+
+                //ctx.strokeText(ch, x, y);
+                d3.select('svg').append("text")
+                    .attr("x", x)
+                    .attr("y", y)
+                    .text(ch)
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", font_size)
+                    .attr("fill", color)
             }
             y+=20;
 
@@ -371,5 +429,3 @@ function draw_trace_segment(ctx, pr, first_position, second_position){
     ctx.stroke();
     ctx.closePath();
 }
-
-

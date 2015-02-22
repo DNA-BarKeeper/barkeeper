@@ -44,7 +44,6 @@ function draw_chromatogram(chromatogram1){
 
     var ymax=250;
 
-    //mk dynamic via slider (deactivated) or createJS -mouse-drag later:
     var scale=4;
 
     var lineFunction = d3.svg.line()
@@ -138,6 +137,8 @@ function draw_chromatogram(chromatogram1){
             color = 'black';
         } else if (ch == 'T') {
             color = 'red';
+        } else {
+            color = 'gray';
         }
 
         d3.select('svg').append("text")
