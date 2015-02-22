@@ -226,7 +226,7 @@ function draw_contig(partial_cons){
             //sequence row:
             x=0;
             color = 'black';
-            font_size = '8px';
+            font_size = '12px';
             var current_read_id=pr.id;
 
             //var read_label="pr"+pr.id;
@@ -313,7 +313,7 @@ function draw_contig(partial_cons){
 
             //sequence row:
             color = 'black';
-            font_size = '8px';
+            font_size = '12px';
 
             //ctx.strokeText('Consensus', x, y);
             d3.select('svg').append("text")
@@ -322,6 +322,7 @@ function draw_contig(partial_cons){
                 .text('Consensus')
                 .attr("font-family", "sans-serif")
                 .attr("font-size", font_size)
+                .attr("font-weight", "bold")
                 .attr("fill", color);
 
             color = 'gray';
