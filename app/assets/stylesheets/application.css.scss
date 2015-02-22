@@ -16,6 +16,17 @@
  *= require_tree .
  */
 
+#page_loading {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: image_url('page-loader.gif') no-repeat 50% 50%;
+//    rgb(249,249,249);
+}
+
 a {
   color: #000;
   &:visited {
@@ -26,23 +37,6 @@ a {
     text-decoration: none;
   }
 }
-
-#slider{
-  position: absolute;
-  height: 250px;
-  width: 10px;
-
-  input[type=range].vertical
-  {
-    writing-mode: bt-lr; /* IE */
-    -webkit-appearance: slider-vertical; /* WebKit */
-    width: 8px;
-    height: 250px;
-    padding: 0 5px;
-  }
-
-}
-
 
 .alignment {
   overflow-x: auto;
