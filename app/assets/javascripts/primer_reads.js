@@ -150,7 +150,26 @@ function draw_chromatogram(chromatogram1){
             .attr("font-family", "sans-serif")
             .attr("font-size", "10px")
             .attr("fill", color)
-            .attr("text-anchor", ta);
+            .attr("text-anchor", ta)
+            //.on('onkeypress', function(event){
+            //    var char = getChar(event || window.event);
+            //    if (!char) return; // special key
+            //
+            //    //selectBase.text = char.toUpperCase();
+            //    alert(char);
+            //
+            //    return false;
+            //});
+            .on('mouseover', function(){
+                d3.select(this)
+                    .style('font-size','14px')
+                    .style('font-weight', 'bold')
+            })
+            .on('mouseout', function(){
+                d3.select(this)
+                    .style('font-size','10px')
+                    .style('font-weight', 'normal')
+            });
 
         color='gray';
 
@@ -166,3 +185,20 @@ function draw_chromatogram(chromatogram1){
             .attr("text-anchor", ta);
     }
 }
+
+function getChar(event) {
+
+    if (event.which == null) {
+
+        return String.fromCharCode(event.keyCode); // IE
+
+    } else if (event.which!=0 && event.charCode!=0) {
+
+        return String.fromCharCode(event.which);   // the rest
+
+    } else {
+
+        return null; // special key
+    }
+}
+
