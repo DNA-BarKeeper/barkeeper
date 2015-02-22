@@ -58,7 +58,7 @@
           <% assembled=@contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, true) %>
 
           <% if assembled.any? %>
-              <p></p>
+                <br>
               <p>Included Reads:</p>
               <% for i in 0...assembled.length %>
                   <% pr= assembled[i] %>
@@ -93,13 +93,13 @@
         </div>
 
         <div class="col-md-4">
+          <br>
           <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download aligned sequences as PDE file',  pde_contig_path %><br>
           <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download aligned sequences as Fasta file',  fasta_contig_path %><br>
           <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download trimmed sequences as Fasta file',  fasta_trimmed_contig_path %><br>
           <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download raw sequences as Fasta file',  fasta_raw_contig_path %><br>
-
-          <p></p>
-          <span class="pull-right"> <%= f.submit 'Update', :class =>  'btn btn-primary'%></span>
+          <br>
+          <%= f.submit 'Update', :class =>  'btn btn-primary'%>
 
         </div>
 
