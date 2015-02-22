@@ -74,6 +74,7 @@ function draw_chromatogram(chromatogram1){
             .attr("fill", "#d3d3d3");
     }
 
+
     //draw traces
 
     d3.select('svg').append("path")
@@ -97,7 +98,8 @@ function draw_chromatogram(chromatogram1){
         .attr("stroke-width", 1)
         .attr("fill", "none");
 
-//    draw base calls
+
+    //draw base calls
 
     for(var i = 0; i < chromatogram1.peak_indices.length; i++){
         pos = chromatogram1.peak_indices[i];

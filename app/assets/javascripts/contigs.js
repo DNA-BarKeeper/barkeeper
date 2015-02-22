@@ -114,14 +114,6 @@ function draw_contig(partial_cons){
                 }
             }
 
-            d3.select('svg').append("text")
-                .attr("x", x)
-                .attr("y", y)
-                .text("     --- SCALED TRACES WILL SHOW UP HERE SOON ---")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", font_size)
-                .attr("fill", "gray");
-
             //draw traces
             for (i=0; i< aligned_peak_indices.length; i++){
 
@@ -170,23 +162,54 @@ function draw_contig(partial_cons){
                         continue;
                     }
 
-                    if (second_position!=null && first_position!=null) {
-                        //ctx.save();
-                        //ctx.translate(x, y - 40);
+                    if (isNaN(second_position)==false && isNaN(first_position)==false) {
 
-//                    fig out actual scaling factor first
+                        //fig out actual scaling factor first
+                        var xscale = 10.0 / (second_position - first_position); //10 = width of basecall over which trace segment to be aligned
 
-                        var xscale = 10.0 / (second_position - first_position);
+                        var trace_ymax=50;
+                        var yscale=40;
 
-                        //ctx.scale(xscale, 1);
+                        var scaled_line_function = d3.svg.line()
+                            .x(function(d,i) { return x+(xscale*i); })
+                            .y(function(d) { return y-40+(trace_ymax-(d/yscale)); })
+                            .interpolate("linear");
 
-//                      draw all four traces paths at 0,0
+                        //draw trace-segments for each base-call
 
-                        //TODO replace by d3 version:
-                        //draw_trace_segment(ctx, pr, first_position, second_position);
+                        //A
+                        //extract segment from array
+                        var atrace_segment = pr.atrace.slice(first_position, second_position+1);
 
-
-                        //ctx.restore();
+                        d3.select('svg').append("path")
+                            .attr("d", scaled_line_function(atrace_segment))
+                            .attr("stroke", "green")
+                            .attr("stroke-width", 0.5)
+                            .attr("fill", "none");
+                        //C
+                        //extract segment from array
+                        var ctrace_segment = pr.ctrace.slice(first_position, second_position+1);
+                        d3.select('svg').append("path")
+                            .attr("d", scaled_line_function(ctrace_segment))
+                            .attr("stroke", "blue")
+                            .attr("stroke-width", 0.5)
+                            .attr("fill", "none");
+                        //G
+                        //extract segment from array
+                        var gtrace_segment = pr.gtrace.slice(first_position, second_position+1);
+                        d3.select('svg').append("path")
+                            .attr("d", scaled_line_function(gtrace_segment))
+                            .attr("stroke", "black")
+                            .attr("stroke-width", 0.5)
+                            .attr("fill", "none");
+                        //T
+                        //extract segment from array
+                        var ttrace_segment = pr.ttrace.slice(first_position, second_position+1);
+                        d3.select('svg').append("path")
+                            .attr("d", scaled_line_function(ttrace_segment))
+                            .attr("stroke", "red")
+                            .attr("stroke-width", 0.5)
+                            .attr("fill", "none");
                     }
 
                 }
@@ -232,15 +255,14 @@ function draw_contig(partial_cons){
             //var read_label="pr"+pr.id;
 
             d3.select('svg').append("text")
-                //.attr("id", read_label)
                 .attr("x", x)
                 .attr("y", y)
                 .text(pr.name)
                 .attr("font-family", "sans-serif")
                 .attr("font-size", font_size)
                 .attr("fill", color);
-
-            //d3.select(read_label).on({
+            //
+            //d3.select("text").on({
             //    "click":  function() {
             //        var edit_read_location = "http://www.gbol5.de/primer_reads/" + pr.id + "/edit";
             //        alert(edit_read_location);
@@ -282,7 +304,7 @@ function draw_contig(partial_cons){
 
             y=y+20;
 
-        //end for through used_reads:
+            //end for through used_reads:
         }
 
         // render aligned consensus sequence:
@@ -315,7 +337,7 @@ function draw_contig(partial_cons){
             color = 'black';
             font_size = '12px';
 
-            //ctx.strokeText('Consensus', x, y);
+
             d3.select('svg').append("text")
                 .attr("x", x)
                 .attr("y", y)
@@ -345,13 +367,13 @@ function draw_contig(partial_cons){
                 }
                 x=x+10;
 
-                //ctx.strokeText(ch, x, y);
                 d3.select('svg').append("text")
                     .attr("x", x)
                     .attr("y", y)
                     .text(ch)
                     .attr("font-family", "sans-serif")
                     .attr("font-size", font_size)
+                    .attr("font-weight", "bold")
                     .attr("fill", color)
             }
             y+=20;
@@ -362,76 +384,4 @@ function draw_contig(partial_cons){
         //end loop through partial_cons
     }
     y+=20;
-}
-
-
-// draw in 0,0
-function draw_trace_segment(ctx, pr, first_position, second_position){
-
-    var trace_ymax=50;
-    var yscale=40;
-
-    <!--A trace-->
-    ctx.strokeStyle = 'green';
-
-    var x=0;
-    var y=trace_ymax-pr.atrace[xpos]/yscale;
-    ctx.moveTo(x,y);
-    ctx.beginPath();
-    for(var xpos = first_position; xpos <= second_position; xpos++){
-        y=trace_ymax-pr.atrace[xpos]/yscale;
-        ctx.lineTo(x,y);
-        ctx.moveTo(x,y);
-        x++;
-    }
-    ctx.stroke();
-    ctx.closePath();
-
-    <!--C trace-->
-    ctx.strokeStyle = 'blue';
-
-    x=0;
-    y=trace_ymax-pr.ctrace[xpos]/yscale;
-    ctx.moveTo(x,y);
-    ctx.beginPath();
-    for(xpos = first_position; xpos <= second_position; xpos++){
-        y=trace_ymax-pr.ctrace[xpos]/yscale;
-        ctx.lineTo(x,y);
-        ctx.moveTo(x,y);
-        x++;
-    }
-    ctx.stroke();
-    ctx.closePath();
-
-    <!--G trace-->
-    ctx.strokeStyle = 'black';
-
-    x=0;
-    y=trace_ymax-pr.gtrace[xpos]/yscale;
-    ctx.moveTo(x,y);
-    ctx.beginPath();
-    for(xpos = first_position; xpos <= second_position; xpos++){
-        y=trace_ymax-pr.gtrace[xpos]/yscale;
-        ctx.lineTo(x,y);
-        ctx.moveTo(x,y);
-        x++;
-    }
-    ctx.stroke();
-    ctx.closePath();
-
-    <!--T trace-->
-    ctx.strokeStyle = 'red';
-
-    x=0;
-    y=trace_ymax-pr.ttrace[xpos]/yscale;
-    ctx.moveTo(x,y);
-    ctx.beginPath();
-    for(xpos = first_position; xpos <= second_position; xpos++){
-        y=trace_ymax-pr.ttrace[xpos]/yscale;
-        ctx.lineTo(x,y);
-        ctx.moveTo(x,y);
-        x++;
-    }
-    ctx.stroke();
-    ctx.closePath();
 }
