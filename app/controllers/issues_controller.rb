@@ -7,7 +7,10 @@ class IssuesController < ApplicationController
   # GET /issues
   # GET /issues.json
   def index
-    @issues = Issue.includes(:contig, :primer_read).find_each
+    respond_to do |format|
+      format.html
+      format.json { render json: IssueDatatable.new(view_context) }
+    end
   end
 
   # GET /issues/1
