@@ -110,6 +110,7 @@ function draw_chromatogram(chromatogram1){
 
         // position indicator
         var disp = i+1;
+
         if(disp % 10 == 0){
 
             d3.select('svg').append("text")
@@ -151,15 +152,7 @@ function draw_chromatogram(chromatogram1){
             .attr("font-size", "10px")
             .attr("fill", color)
             .attr("text-anchor", ta)
-            //.on('onkeypress', function(event){
-            //    var char = getChar(event || window.event);
-            //    if (!char) return; // special key
-            //
-            //    //selectBase.text = char.toUpperCase();
-            //    alert(char);
-            //
-            //    return false;
-            //});
+
             .on('mouseover', function(){
                 d3.select(this)
                     .style('font-size','14px')
@@ -169,6 +162,63 @@ function draw_chromatogram(chromatogram1){
                 d3.select(this)
                     .style('font-size','10px')
                     .style('font-weight', 'normal')
+            })
+            .on('dblclick', function(){
+                var selected_base=d3.select(this);
+                var current_char=selected_base.text();
+                if (current_char=="A"){
+                    selected_base.text("C");
+                    selected_base.attr("fill", 'blue');
+                } else if (current_char=="C"){
+                    selected_base.text("G");
+                    selected_base.attr("fill", 'black');
+                } else if (current_char=="G"){
+                    selected_base.text("T");
+                    selected_base.attr("fill", 'red');
+                } else if (current_char=="T"){
+                    selected_base.text("-");
+                    selected_base.attr("fill", 'grey');
+                } else if (current_char=="-"){
+                    selected_base.text("A");
+                    selected_base.attr("fill", 'green');
+                }
+            })
+            .on('contextmenu', function(){
+
+                var selected_base=d3.select(this);
+                var current_x=selected_base.attr("x");
+                var current_y=selected_base.attr("y");
+
+                current_x=parseInt(current_x)+5;
+
+                d3.select('svg').append("text")
+                    .attr("x", current_x)
+                    .attr("y", current_y)
+                    .text("A")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "10px")
+                    .attr("fill", "grey")
+                    .attr("text-anchor", "middle")
+                    .on('dblclick', function(){
+                        var selected_base=d3.select(this);
+                        var current_char=selected_base.text();
+                        if (current_char=="A"){
+                            selected_base.text("C");
+                            selected_base.attr("fill", 'blue');
+                        } else if (current_char=="C"){
+                            selected_base.text("G");
+                            selected_base.attr("fill", 'black');
+                        } else if (current_char=="G"){
+                            selected_base.text("T");
+                            selected_base.attr("fill", 'red');
+                        } else if (current_char=="T"){
+                            selected_base.text("-");
+                            selected_base.attr("fill", 'grey');
+                        } else if (current_char=="-"){
+                            selected_base.text("A");
+                            selected_base.attr("fill", 'green');
+                        }
+                    })
             });
 
         color='gray';
@@ -185,20 +235,3 @@ function draw_chromatogram(chromatogram1){
             .attr("text-anchor", ta);
     }
 }
-
-function getChar(event) {
-
-    if (event.which == null) {
-
-        return String.fromCharCode(event.keyCode); // IE
-
-    } else if (event.which!=0 && event.charCode!=0) {
-
-        return String.fromCharCode(event.which);   // the rest
-
-    } else {
-
-        return null; // special key
-    }
-}
-
