@@ -199,6 +199,16 @@ function draw_chromatogram(chromatogram1){
                     .attr("font-size", "10px")
                     .attr("fill", "grey")
                     .attr("text-anchor", "middle")
+                    .on('mouseover', function(){
+                        d3.select(this)
+                            .style('font-size','14px')
+                            .style('font-weight', 'bold')
+                    })
+                    .on('mouseout', function(){
+                        d3.select(this)
+                            .style('font-size','10px')
+                            .style('font-weight', 'normal')
+                    })
                     .on('dblclick', function(){
                         var selected_base=d3.select(this);
                         var current_char=selected_base.text();
