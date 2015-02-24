@@ -1,5 +1,5 @@
 
-<br>
+<!--<br>
 <p>
   <strong>Name:</strong>
   <%= @primer_read.name if @primer_read.name.present?%>
@@ -24,10 +24,10 @@
 </p>
 
 
-<!--<p>-->
-  <!--<strong>Chromatogram URL:</strong>-->
-  <!--<%= @primer_read.chromatogram.url if @primer_read.chromatogram.url.present?%>-->
-<!--</p>-->
+&lt;!&ndash;<p>&ndash;&gt;
+  &lt;!&ndash;<strong>Chromatogram URL:</strong>&ndash;&gt;
+  &lt;!&ndash;<%= @primer_read.chromatogram.url if @primer_read.chromatogram.url.present?%>&ndash;&gt;
+&lt;!&ndash;</p>&ndash;&gt;
 
 <p>
   <strong><%= '< Reverse complement' if @primer_read.reverse%></strong>
@@ -43,4 +43,4 @@
 <%= link_to 'Download Chromatogram', @primer_read.chromatogram.url, class: 'btn btn-primary' %>
 
 <%= link_to 'Edit', edit_primer_read_path(@primer_read) %> |
-<%= link_to 'Back', primer_reads_path %>
+<%= link_to 'Back', primer_reads_path %>-->

@@ -1,7 +1,7 @@
 class PrimerReadsController < ApplicationController
   before_filter :authenticate_user!
 
-  before_action :set_primer_read, only: [:fasta, :reverse, :restore, :assign, :trim, :show, :update, :destroy]
+  before_action :set_primer_read, only: [:fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
 
   def import
     PrimerRead.import(params[:file])
@@ -130,6 +130,17 @@ class PrimerReadsController < ApplicationController
     end
   end
 
+  def change_base
+    # respond_to :js
+    #TODO how to get data sent by ajax call?
+    sequence= @primer_read.sequence
+    pos=params[:position].to_i
+    base=params[:base]
+    sequence[pos]=base
+    @primer_read.update(:sequence => sequence)
+    render :nothing => true
+  end
+
   # DELETE /primer_reads/1
   # DELETE /primer_reads/1.json
   def destroy
@@ -159,7 +170,7 @@ class PrimerReadsController < ApplicationController
                                         :quality_string,
                                         :used_for_con, :file, :name, :sequence, :pherogram_url, :chromatogram, :primer_id, :contig_id,
                                         :contig_name, :isolate_id, :chromatograms, :trimmedReadEnd, :trimmedReadStart,
-                                        :min_quality_score, :count_in_window, :window_size )
-
+                                        :min_quality_score, :count_in_window, :window_size,
+                                        :position, :base)
   end
 end

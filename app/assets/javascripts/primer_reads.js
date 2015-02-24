@@ -42,6 +42,8 @@ jQuery(function() {
 
 function draw_chromatogram(chromatogram1){
 
+    var change_base_primer_read_url='/primer_reads/'+chromatogram1.id+'/change_base';
+
     var ymax=250;
 
     var scale=4;
@@ -152,6 +154,7 @@ function draw_chromatogram(chromatogram1){
             .attr("font-size", "10px")
             .attr("fill", color)
             .attr("text-anchor", ta)
+            .attr("id", i)
 
             .on('mouseover', function(){
                 d3.select(this)
@@ -166,21 +169,27 @@ function draw_chromatogram(chromatogram1){
             .on('dblclick', function(){
                 var selected_base=d3.select(this);
                 var current_char=selected_base.text();
+                var pos = selected_base.attr("id");
                 if (current_char=="A"){
                     selected_base.text("C");
                     selected_base.attr("fill", 'blue');
+                    change_base(pos, "G", change_base_primer_read_url);
                 } else if (current_char=="C"){
                     selected_base.text("G");
                     selected_base.attr("fill", 'black');
+                    change_base(pos, "G", change_base_primer_read_url);
                 } else if (current_char=="G"){
                     selected_base.text("T");
                     selected_base.attr("fill", 'red');
+                    change_base(pos, "T", change_base_primer_read_url);
                 } else if (current_char=="T"){
-                    selected_base.text("-");
+                    selected_base.text("_");
                     selected_base.attr("fill", 'grey');
-                } else if (current_char=="-"){
+                    change_base(pos, "_", change_base_primer_read_url);
+                } else if (current_char=="_"){
                     selected_base.text("A");
                     selected_base.attr("fill", 'green');
+                    change_base(pos, "A", change_base_primer_read_url);
                 }
             })
             .on('contextmenu', function(){
@@ -244,4 +253,23 @@ function draw_chromatogram(chromatogram1){
             .attr("fill", color)
             .attr("text-anchor", ta);
     }
+}
+
+function change_base(pos, base, change_base_primer_read_url) {
+    console.log(pos, base, change_base_primer_read_url);
+    $.ajax({
+        data: {
+            'position': pos,
+            'base': base
+        },
+        type: 'POST',
+        url: change_base_primer_read_url,
+        success: function () {
+        },
+        error: function (response) {
+            // we had an error
+            alert('Could not change base at pos. '+pos+' to '+base+'. \n' +response);
+        }
+    });
+    return 0;
 }

@@ -67,6 +67,7 @@ GBOLapp::Application.routes.draw do
       get 'reverse'
       get 'restore'
       get 'fasta'
+      post 'change_base'
     end
   end
 
