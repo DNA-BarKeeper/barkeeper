@@ -1,6 +1,11 @@
-
-
 <%= render 'form' %>
-
-<%= link_to 'Show', @lab_rack %> |
-<%= link_to 'Back', lab_racks_path %>
+<table width="100%">
+  <tr>
+    <td>
+      <%= link_to '', 'javascript:history.go(-1)', :class => "glyphicon glyphicon-chevron-left" %>
+    </td>
+    <td align="right">
+      <%= link_to '', @lab_rack, method: :delete, data: { confirm: 'Are you sure?' }, :class => "glyphicon glyphicon-trash" %>
+    </td>
+  </tr>
+</table>

@@ -1,4 +1,11 @@
-
 <%= render 'form' %>
-
-<%= link_to 'Back', isolates_path %>
+<table width="100%">
+  <tr>
+    <td>
+      <%= link_to '', 'javascript:history.go(-1)', :class => "glyphicon glyphicon-chevron-left" %>
+    </td>
+    <td align="right">
+      <%= link_to '', @isolate, method: :delete, data: { confirm: 'Are you sure?' }, :class => "glyphicon glyphicon-trash" %>
+    </td>
+  </tr>
+</table>
