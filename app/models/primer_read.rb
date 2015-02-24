@@ -263,7 +263,7 @@ class PrimerRead < ActiveRecord::Base
 
   end
 
-  def auto_trim
+  def auto_trim(change_orientation_and_store_again)
 
     msg=nil
     create_issue = false
@@ -294,13 +294,13 @@ class PrimerRead < ActiveRecord::Base
       sequence = chromatogram1.sequence.upcase
 
       #copy chromatogram over into db
-      if self.sequence.nil?
+      if self.sequence.nil? or change_orientation_and_store_again
         self.update(:sequence => sequence)
       end
-      if self.qualities.nil?
+      if self.qualities.nil? or change_orientation_and_store_again
         self.update(:qualities => chromatogram1.qualities)
       end
-      if self.atrace.nil?
+      if self.atrace.nil? or change_orientation_and_store_again
         self.update(:atrace => chromatogram1.atrace)
         self.update(:ctrace => chromatogram1.ctrace)
         self.update(:gtrace => chromatogram1.gtrace)

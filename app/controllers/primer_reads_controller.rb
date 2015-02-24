@@ -42,7 +42,7 @@ class PrimerReadsController < ApplicationController
 
   def trim
 
-    msg_hash = @primer_read.auto_trim
+    msg_hash = @primer_read.auto_trim(false)
 
     if msg_hash[:create_issue]
       redirect_to edit_primer_read_path, alert: msg_hash[:msg]
@@ -69,7 +69,7 @@ class PrimerReadsController < ApplicationController
     unless @primer_read.reverse
       begin
         @primer_read.update(:reverse => true)
-        @primer_read.auto_trim
+        @primer_read.auto_trim(true)
         redirect_to edit_primer_read_path, notice: 'Reversed.'
       rescue
         redirect_to edit_primer_read_path, alert: 'Could not reverse'
@@ -84,7 +84,7 @@ class PrimerReadsController < ApplicationController
 
       begin
         @primer_read.update(:reverse => false)
-        @primer_read.auto_trim
+        @primer_read.auto_trim(true)
 
         redirect_to edit_primer_read_path, notice: 'Restored non-reversed state.'
       rescue
@@ -119,8 +119,6 @@ class PrimerReadsController < ApplicationController
   def update
     respond_to do |format|
       if @primer_read.update(primer_read_params)
-        @primer_read.update(:position => @primer_read.get_position_in_marker(@primer_read.primer))
-        #todo
         format.html { redirect_to edit_primer_read_path(@primer_read), notice: 'Primer read was successfully updated.' }
         format.json { render :show, status: :ok, location: @primer_read }
       else

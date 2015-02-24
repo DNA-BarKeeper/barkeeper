@@ -25,20 +25,11 @@
 
     <br>
     <div class="well">
-
-      <table>
-        <tr>
-          <td><span class="glyphicon glyphicon-cloud-upload" style="font-size: large; width: 30px"></span></td>
-
-          <td title="Upload chromatograms">
+          New Primer Read(s):
 
             <%= form_for PrimerRead.new do |f| %>
                 <%= f.file_field :chromatogram, multiple: true, name: "primer_read[chromatogram]" %>
             <% end %>
-
-          </td>
-        </tr>
-      </table>
 
       <% # jquery upload template # %>
       <script id="template-upload" type="text/x-tmpl">
