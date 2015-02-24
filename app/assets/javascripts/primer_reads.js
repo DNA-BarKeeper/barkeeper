@@ -166,69 +166,58 @@ function draw_chromatogram(chromatogram1){
                     .style('font-size','10px')
                     .style('font-weight', 'normal')
             })
-            .on('dblclick', function(){
-                var selected_base=d3.select(this);
+            .on('click', function(){
+                var p = this.parentNode;
+
+
+                var selected_base = d3.select(this);
+                var p_el = d3.select(p);
+
+
                 var current_x=selected_base.attr("x");
                 var current_y=selected_base.attr("y");
                 var current_char=selected_base.text();
+                var base_index = selected_base.attr("id");
 
+                var frm = p_el.append("foreignObject");
 
-                //svg.append("rect")
-                //    .attr("x", current_x)
-                //    .attr("y", 30)
-                //    .attr("width",10)
-                //    .attr("height", 10)
-                //    .attr("fill", "yellow");
-
-                var fo= svg.append('foreignObject')
+                var inp = frm
                     .attr({
                         'x': current_x-5,
                         'y': 12,
                         'width': 20,
                         'height': 20
-                    });
-                var ti=fo.append('xhtml:input')
-                    .attr({
-                        'type': 'text',
-                        'value': current_char
-                    });
-                svg.on('click', function() {
+                    })
+                    .append("xhtml:form")
+                        .append('xhtml:input')
+                            .attr("value", current_char)
+                            .on("keypress", function() {
 
-                    //get value
-                    //TODO: this does not get current text, but previously set text instead:
+                                if (d3.event.keyCode===13) {
 
-                    // var new_base = ti.value;
-                    console.log(ti.attr('value'));
+                                    event.preventDefault(); // cancel default behavior
 
-                    //get old base & compare
-                    //if change:
+                                    var newBase = inp.node().value[0];
+                                    selected_base.text(newBase);
 
-                    ti.remove()
-                });
+                                    if (newBase=="A"){
+                                        selected_base.attr("fill", 'green');
+                                    } else if (newBase=="C"){
+                                        selected_base.attr("fill", 'blue');
+                                    } else if (newBase=="G"){
+                                        selected_base.attr("fill", 'black');
+                                    } else if (newBase=="T"){
+                                        selected_base.attr("fill", 'red');
+                                    } else {
+                                        selected_base.attr("fill", 'grey');
+                                    }
 
-                var base_index = selected_base.attr("id");
+                                    change_base(base_index, newBase, change_base_primer_read_url);
 
-                //if (current_char=="A"){
-                //    selected_base.text("C");
-                //    selected_base.attr("fill", 'blue');
-                //    change_base(base_index, "G", change_base_primer_read_url);
-                //} else if (current_char=="C"){
-                //    selected_base.text("G");
-                //    selected_base.attr("fill", 'black');
-                //    change_base(base_index, "G", change_base_primer_read_url);
-                //} else if (current_char=="G"){
-                //    selected_base.text("T");
-                //    selected_base.attr("fill", 'red');
-                //    change_base(base_index, "T", change_base_primer_read_url);
-                //} else if (current_char=="T"){
-                //    selected_base.text("_");
-                //    selected_base.attr("fill", 'grey');
-                //    change_base(base_index, "_", change_base_primer_read_url);
-                //} else if (current_char=="_"){
-                //    selected_base.text("A");
-                //    selected_base.attr("fill", 'green');
-                //    change_base(base_index, "A", change_base_primer_read_url);
-                //}
+                                    frm.remove();
+                                }
+                            });
+
             });
             //.on('contextmenu', function(){
             //
