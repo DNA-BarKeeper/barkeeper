@@ -53,7 +53,7 @@ function draw_chromatogram(chromatogram1){
         .y(function(d) { return ymax-d/scale; })
         .interpolate("linear");
 
-    d3.select('#chromatogram')
+    var svg=d3.select('#chromatogram')
         .append('svg')
         .attr('width', chromatogram1.atrace.length)
         .attr('height', 250);
@@ -61,14 +61,14 @@ function draw_chromatogram(chromatogram1){
     //draw clipped areas
     if (chromatogram1.trimmedReadStart){
 
-        d3.select('svg').append('rect')
+        svg.append('rect')
             .attr("x", 0)
             .attr("y", 0)
             .attr("width", chromatogram1.peak_indices[chromatogram1.trimmedReadStart-1]-5)
             .attr("height", ymax)
             .attr("fill", "#d3d3d3");
 
-        d3.select('svg').append('rect')
+        svg.append('rect')
             .attr("x", chromatogram1.peak_indices[chromatogram1.trimmedReadEnd-1]+5)
             .attr("y", 0)
             .attr("width", chromatogram1.atrace.length-chromatogram1.peak_indices[chromatogram1.trimmedReadEnd-1]+5)
@@ -79,22 +79,22 @@ function draw_chromatogram(chromatogram1){
 
     //draw traces
 
-    d3.select('svg').append("path")
+    svg.append("path")
         .attr("d", lineFunction(chromatogram1.atrace))
         .attr("stroke", "green")
         .attr("stroke-width", 1)
         .attr("fill", "none");
-    d3.select('svg').append("path")
+    svg.append("path")
         .attr("d", lineFunction(chromatogram1.ctrace))
         .attr("stroke", "blue")
         .attr("stroke-width", 1)
         .attr("fill", "none");
-    d3.select('svg').append("path")
+    svg.append("path")
         .attr("d", lineFunction(chromatogram1.gtrace))
         .attr("stroke", "black")
         .attr("stroke-width", 1)
         .attr("fill", "none");
-    d3.select('svg').append("path")
+    svg.append("path")
         .attr("d", lineFunction(chromatogram1.ttrace))
         .attr("stroke", "red")
         .attr("stroke-width", 1)
@@ -104,7 +104,7 @@ function draw_chromatogram(chromatogram1){
     //draw base calls
 
     for(var i = 0; i < chromatogram1.peak_indices.length; i++){
-        pos = chromatogram1.peak_indices[i];
+        var pos = chromatogram1.peak_indices[i];
         var ch = chromatogram1.sequence[i];
 
         var color='gray';
@@ -115,7 +115,7 @@ function draw_chromatogram(chromatogram1){
 
         if(disp % 10 == 0){
 
-            d3.select('svg').append("text")
+            svg.append("text")
                 .attr("x", pos)
                 .attr("y", 10)
                 .text(disp)
@@ -123,7 +123,7 @@ function draw_chromatogram(chromatogram1){
                 .attr("font-size", "7px")
                 .attr("fill", color)
                 .attr("text-anchor", ta);
-            d3.select('svg').append("text")
+            svg.append("text")
                 .attr("x", pos)
                 .attr("y", 17)
                 .text('.')
@@ -146,7 +146,7 @@ function draw_chromatogram(chromatogram1){
             color = 'gray';
         }
 
-        d3.select('svg').append("text")
+        svg.append("text")
             .attr("x", pos)
             .attr("y", 30)
             .text(ch)
@@ -168,83 +168,121 @@ function draw_chromatogram(chromatogram1){
             })
             .on('dblclick', function(){
                 var selected_base=d3.select(this);
-                var current_char=selected_base.text();
-                var pos = selected_base.attr("id");
-                if (current_char=="A"){
-                    selected_base.text("C");
-                    selected_base.attr("fill", 'blue');
-                    change_base(pos, "G", change_base_primer_read_url);
-                } else if (current_char=="C"){
-                    selected_base.text("G");
-                    selected_base.attr("fill", 'black');
-                    change_base(pos, "G", change_base_primer_read_url);
-                } else if (current_char=="G"){
-                    selected_base.text("T");
-                    selected_base.attr("fill", 'red');
-                    change_base(pos, "T", change_base_primer_read_url);
-                } else if (current_char=="T"){
-                    selected_base.text("_");
-                    selected_base.attr("fill", 'grey');
-                    change_base(pos, "_", change_base_primer_read_url);
-                } else if (current_char=="_"){
-                    selected_base.text("A");
-                    selected_base.attr("fill", 'green');
-                    change_base(pos, "A", change_base_primer_read_url);
-                }
-            })
-            .on('contextmenu', function(){
-
-                var selected_base=d3.select(this);
                 var current_x=selected_base.attr("x");
                 var current_y=selected_base.attr("y");
+                var current_char=selected_base.text();
 
-                current_x=parseInt(current_x)+5;
 
-                d3.select('svg').append("text")
-                    .attr("x", current_x)
-                    .attr("y", current_y)
-                    .text("A")
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", "10px")
-                    .attr("fill", "grey")
-                    .attr("text-anchor", "middle")
-                    .on('mouseover', function(){
-                        d3.select(this)
-                            .style('font-size','14px')
-                            .style('font-weight', 'bold')
-                    })
-                    .on('mouseout', function(){
-                        d3.select(this)
-                            .style('font-size','10px')
-                            .style('font-weight', 'normal')
-                    })
-                    .on('dblclick', function(){
-                        var selected_base=d3.select(this);
-                        var current_char=selected_base.text();
-                        if (current_char=="A"){
-                            selected_base.text("C");
-                            selected_base.attr("fill", 'blue');
-                        } else if (current_char=="C"){
-                            selected_base.text("G");
-                            selected_base.attr("fill", 'black');
-                        } else if (current_char=="G"){
-                            selected_base.text("T");
-                            selected_base.attr("fill", 'red');
-                        } else if (current_char=="T"){
-                            selected_base.text("-");
-                            selected_base.attr("fill", 'grey');
-                        } else if (current_char=="-"){
-                            selected_base.text("A");
-                            selected_base.attr("fill", 'green');
-                        }
-                    })
+                //svg.append("rect")
+                //    .attr("x", current_x)
+                //    .attr("y", 30)
+                //    .attr("width",10)
+                //    .attr("height", 10)
+                //    .attr("fill", "yellow");
+
+                var fo= svg.append('foreignObject')
+                    .attr({
+                        'x': current_x-5,
+                        'y': 12,
+                        'width': 20,
+                        'height': 20
+                    });
+                var ti=fo.append('xhtml:input')
+                    .attr({
+                        'type': 'text',
+                        'value': current_char
+                    });
+                svg.on('click', function() {
+
+                    //get value
+                    //TODO: this does not get current text, but previously set text instead:
+
+                    // var new_base = ti.value;
+                    console.log(ti.attr('value'));
+
+                    //get old base & compare
+                    //if change:
+
+                    ti.remove()
+                });
+
+                var base_index = selected_base.attr("id");
+
+                //if (current_char=="A"){
+                //    selected_base.text("C");
+                //    selected_base.attr("fill", 'blue');
+                //    change_base(base_index, "G", change_base_primer_read_url);
+                //} else if (current_char=="C"){
+                //    selected_base.text("G");
+                //    selected_base.attr("fill", 'black');
+                //    change_base(base_index, "G", change_base_primer_read_url);
+                //} else if (current_char=="G"){
+                //    selected_base.text("T");
+                //    selected_base.attr("fill", 'red');
+                //    change_base(base_index, "T", change_base_primer_read_url);
+                //} else if (current_char=="T"){
+                //    selected_base.text("_");
+                //    selected_base.attr("fill", 'grey');
+                //    change_base(base_index, "_", change_base_primer_read_url);
+                //} else if (current_char=="_"){
+                //    selected_base.text("A");
+                //    selected_base.attr("fill", 'green');
+                //    change_base(base_index, "A", change_base_primer_read_url);
+                //}
             });
+            //.on('contextmenu', function(){
+            //
+            //    var selected_base=d3.select(this);
+            //    var current_x=selected_base.attr("x");
+            //    var current_y=selected_base.attr("y");
+            //
+            //    current_x=parseInt(current_x)+5;
+            //
+            //    svg.append("text")
+            //        .attr("x", current_x)
+            //        .attr("y", current_y)
+            //        .text("A")
+            //        .attr("font-family", "sans-serif")
+            //        .attr("font-size", "10px")
+            //        .attr("fill", "grey")
+            //        .attr("text-anchor", "middle")
+            //        .on('mouseover', function(){
+            //            d3.select(this)
+            //                .style('font-size','14px')
+            //                .style('font-weight', 'bold')
+            //        })
+            //        .on('mouseout', function(){
+            //            d3.select(this)
+            //                .style('font-size','10px')
+            //                .style('font-weight', 'normal')
+            //        })
+            //        .on('dblclick', function(){
+            //            var selected_base=d3.select(this);
+            //            var current_char=selected_base.text();
+            //            if (current_char=="A"){
+            //                selected_base.text("C");
+            //                selected_base.attr("fill", 'blue');
+            //            } else if (current_char=="C"){
+            //                selected_base.text("G");
+            //                selected_base.attr("fill", 'black');
+            //            } else if (current_char=="G"){
+            //                selected_base.text("T");
+            //                selected_base.attr("fill", 'red');
+            //            } else if (current_char=="T"){
+            //                selected_base.text("-");
+            //                selected_base.attr("fill", 'grey');
+            //            } else if (current_char=="-"){
+            //                selected_base.text("A");
+            //                selected_base.attr("fill", 'green');
+            //            }
+            //        })
+            //});
 
         color='gray';
 
         //quality scores
 
-        d3.select('svg').append("text")
+        svg.append("text")
             .attr("x", pos)
             .attr("y", 40)
             .text(chromatogram1.qualities[i])
@@ -255,11 +293,11 @@ function draw_chromatogram(chromatogram1){
     }
 }
 
-function change_base(pos, base, change_base_primer_read_url) {
-    console.log(pos, base, change_base_primer_read_url);
+function change_base(base_index, base, change_base_primer_read_url) {
+    //console.log(pos, base, change_base_primer_read_url);
     $.ajax({
         data: {
-            'position': pos,
+            'position': base_index,
             'base': base
         },
         type: 'POST',
@@ -268,7 +306,7 @@ function change_base(pos, base, change_base_primer_read_url) {
         },
         error: function (response) {
             // we had an error
-            alert('Could not change base at pos. '+pos+' to '+base+'. \n' +response);
+            alert('Could not change base at pos. '+base_index+' to '+base+'. \n' +response);
         }
     });
     return 0;
