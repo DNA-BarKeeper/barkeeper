@@ -15,14 +15,19 @@
         <th>Orders</th>
         <th>Families</th>
         <th>Species (targeted)</th>
-        <th>Specimen [Unique Spp.]</th>
-        <th>Isolates [Unique Spp.]</th>
-        <th>Contigs [Unique Spp.]</th>
+        <th>Specimen [spp.]</th>
+        <th>Isolates [spp.]</th>
+        <th>Contigs [spp.]</th>
         <th>Reads</th>
-        <th>Marker sequences [Unique Spp.]</th>
+        <th>Marker sequences [spp.]</th>
       </tr>
       </thead>
       <tbody>
+      <% total0 = 0 %>
+      <% total1 = 0 %>
+      <% total2 = 0 %>
+      <% total3 = 0 %>
+
       <% for t in HigherOrderTaxon.all.order('higher_order_taxa.position') %>
           <tr>
             <td><%= t.name %></td>
@@ -37,19 +42,23 @@
             <td><%= Species.joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: t.id}).count%></td>
 
             <% counts = Individual.spp_in_higher_order_taxon(t.id) %>
-            <td><%= counts[0] %> [<%=counts[1]%>]</td>
 
+            <td><%= counts[0] %> [<%=counts[1]%>]</td>
+            <% total0 = total0+counts[1] %>
 
             <% counts = Isolate.spp_in_higher_order_taxon(t.id) %>
             <td><%= counts[0] %> [<%=counts[1]%>]</td>
+            <% total1 += counts[1] %>
 
             <% counts = Contig.spp_in_higher_order_taxon(t.id) %>
             <td><%= counts[0] %> [<%=counts[1]%>]</td>
+            <% total2 += counts[1] %>
 
             <td><%= PrimerRead.joins(:contig => {:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}}).where(orders: {higher_order_taxon_id: t.id}).count %></td>
-            <% counts = MarkerSequence.spp_in_higher_order_taxon(t.id) %>
 
+            <% counts = MarkerSequence.spp_in_higher_order_taxon(t.id) %>
             <td><%= counts[0] %> [<%=counts[1]%>]</td>
+            <% total3 += counts[1] %>
           </tr>
       <% end %>
 
@@ -82,11 +91,11 @@
         <td><%= Order.count %></td>
         <td><%= Family.count%></td>
         <td><%= Species.count %></td>
-        <td><%= Individual.count %></td>
-        <td><%= Isolate.count %></td>
-        <td><%= Contig.count %></td>
+        <td><%= Individual.count %> [<%=total0%>]</td>
+        <td><%= Isolate.count %> [<%=total1%>]</td>
+        <td><%= Contig.count %> [<%=total2%>]</td>
         <td><%= PrimerRead.count %></td>
-        <td><%= MarkerSequence.count %></td>
+        <td><%= MarkerSequence.count %> [<%=total3%>]</td>
       </tr></tfoot>
       </tbody>
     </table></div>
