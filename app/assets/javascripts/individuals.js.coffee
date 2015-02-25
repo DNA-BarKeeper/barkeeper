@@ -13,4 +13,4 @@ jQuery ->
     ],
     "order": [ 5, 'desc' ]
   } );
-  $('#individual_specimen_id').autocomplete source: $('#individual_specimen_id').data('autocomplete-source')
+  $('#individual_species_name').autocomplete source: $('#individual_species_name').data('autocomplete-source')

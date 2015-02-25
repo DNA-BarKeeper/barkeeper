@@ -12,6 +12,14 @@ class IsolatesController < ApplicationController
     end
   end
 
+  def prefilter
+   #TODO read parameter "query" and restrict to those
+    if params[:query]
+      # @isolates=Isolate.order(:lab_nr).where...
+    end
+  end
+
+
   def filter
     @isolates = Isolate.order(:lab_nr).where("lab_nr ILIKE ?", "%#{params[:term]}%")
     render json: @isolates.map(&:lab_nr)
@@ -95,6 +103,7 @@ class IsolatesController < ApplicationController
     params.require(:isolate).permit(:well_pos_plant_plate, :lab_nr, :micronic_tube_id, :well_pos_micronic_plate, :concentration,
                                     :tissue_id, :micronic_plate_id, :plant_plate_id, :term,
                                     :file,
-                                    :individual_name)
+                                    :individual_name,
+                                    :query)
   end
 end

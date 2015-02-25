@@ -25,7 +25,7 @@
         <div class="form-group">
           <%= f.label 'Species' %>
           <% if @individual.species %>
-              <%= link_to '', edit_species_path(@individual.species), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@individual.species.full_name} " %>
+              <%= link_to '', edit_species_path(@individual.species), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@individual.species.composed_name} " %>
           <% end %>
           <%= f.text_field :species_name, data: {autocomplete_source: filter_species_index_path} , class: 'form-control'%>
         </div>
