@@ -37,28 +37,19 @@
             <td><%= Species.joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: t.id}).count%></td>
 
             <% counts = Individual.spp_in_higher_order_taxon(t.id) %>
-            <% individuals_count = counts[0] %>
-            <% unique_species_count = counts[1] %>
-            <td><%= individuals_count %> [<%=unique_species_count%>]</td>
+            <td><%= counts[0] %> [<%=counts[1]%>]</td>
 
 
             <% counts = Isolate.spp_in_higher_order_taxon(t.id) %>
-            <% individuals_count = counts[0] %>
-            <% unique_species_count = counts[1] %>
-            <td><%= individuals_count %> [<%=unique_species_count%>]</td>
+            <td><%= counts[0] %> [<%=counts[1]%>]</td>
 
             <% counts = Contig.spp_in_higher_order_taxon(t.id) %>
-            <% individuals_count = counts[0] %>
-            <% unique_species_count = counts[1] %>
-            <td><%= individuals_count %> [<%=unique_species_count%>]</td>
-
+            <td><%= counts[0] %> [<%=counts[1]%>]</td>
 
             <td><%= PrimerRead.joins(:contig => {:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}}).where(orders: {higher_order_taxon_id: t.id}).count %></td>
-
             <% counts = MarkerSequence.spp_in_higher_order_taxon(t.id) %>
-            <% individuals_count = counts[0] %>
-            <% unique_species_count = counts[1] %>
-            <td><%= individuals_count %> [<%=unique_species_count%>]</td>
+
+            <td><%= counts[0] %> [<%=counts[1]%>]</td>
           </tr>
       <% end %>
 
