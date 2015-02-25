@@ -49,18 +49,9 @@ class Individual < ActiveRecord::Base
 
   end
 
-  def self.in_higher_order_taxon(higher_order_taxon_id)
-    count=0
-
-    HigherOrderTaxon.find(higher_order_taxon_id).orders.each do |ord|
-      ord.families.each do |fam|
-        fam.species.each do  |sp|
-          count+=sp.individuals.count
-        end
-      end
-    end
-
-    count
+  def self.spp_in_higher_order_taxon(higher_order_taxon_id)
+    individuals= Individual.select("species_id").joins(:species => {:family => {:order => :higher_order_taxon}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    [individuals.count, individuals.uniq.count]
   end
 
   def species_name

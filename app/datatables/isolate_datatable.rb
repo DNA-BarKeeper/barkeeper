@@ -32,7 +32,7 @@ class IsolateDatatable
       species_name = ''
 
       if isolate.individual and isolate.individual.species
-        species_name = link_to isolate.individual.species.composed_name, edit_species_path(isolate.individual.species)
+        species_name = link_to isolate.individual.species.name_for_display, edit_species_path(isolate.individual.species)
       end
 
       individual=''

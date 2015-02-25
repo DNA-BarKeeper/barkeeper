@@ -14,12 +14,12 @@
         <th>Taxa</th>
         <th>Orders</th>
         <th>Families</th>
-        <th>Species (Zielliste)</th>
-        <th>Specimen</th>
-        <th>Isolates</th>
-        <th>Contigs</th>
+        <th>Species (targeted)</th>
+        <th>Specimen [Unique Spp.]</th>
+        <th>Isolates [Unique Spp.]</th>
+        <th>Contigs [Unique Spp.]</th>
         <th>Reads</th>
-        <th>Marker sequences</th>
+        <th>Marker sequences [Unique Spp.]</th>
       </tr>
       </thead>
       <tbody>
@@ -36,20 +36,29 @@
 
             <td><%= Species.joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: t.id}).count%></td>
 
+            <% counts = Individual.spp_in_higher_order_taxon(t.id) %>
+            <% individuals_count = counts[0] %>
+            <% unique_species_count = counts[1] %>
+            <td><%= individuals_count %> [<%=unique_species_count%>]</td>
 
-            <td><%= Individual.joins(:species => {:family => {:order => :higher_order_taxon}}).where(orders: {higher_order_taxon_id: t.id}).count %></td>
 
+            <% counts = Isolate.spp_in_higher_order_taxon(t.id) %>
+            <% individuals_count = counts[0] %>
+            <% unique_species_count = counts[1] %>
+            <td><%= individuals_count %> [<%=unique_species_count%>]</td>
 
-            <td><%= Isolate.joins(:individual => {:species => {:family => {:order => :higher_order_taxon}}}).where(orders: {higher_order_taxon_id: t.id}).count %></td>
-
-
-            <td><%= Contig.joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: t.id}).count %></td>
+            <% counts = Contig.spp_in_higher_order_taxon(t.id) %>
+            <% individuals_count = counts[0] %>
+            <% unique_species_count = counts[1] %>
+            <td><%= individuals_count %> [<%=unique_species_count%>]</td>
 
 
             <td><%= PrimerRead.joins(:contig => {:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}}).where(orders: {higher_order_taxon_id: t.id}).count %></td>
 
-
-            <td><%= MarkerSequence.joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: t.id}).count %></td>
+            <% counts = MarkerSequence.spp_in_higher_order_taxon(t.id) %>
+            <% individuals_count = counts[0] %>
+            <% unique_species_count = counts[1] %>
+            <td><%= individuals_count %> [<%=unique_species_count%>]</td>
           </tr>
       <% end %>
 

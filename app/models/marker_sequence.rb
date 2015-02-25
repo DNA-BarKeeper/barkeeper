@@ -4,22 +4,11 @@ class MarkerSequence < ActiveRecord::Base
   belongs_to :marker
   #validates_presence_of :sequence
 
-  def self.in_higher_order_taxon(higher_order_taxon_id)
-    count=0
+  def self.spp_in_higher_order_taxon(higher_order_taxon_id)
 
-    HigherOrderTaxon.find(higher_order_taxon_id).orders.each do |ord|
-      ord.families.each do |fam|
-        fam.species.each do  |sp|
-          sp.individuals.each do |ind|
-            ind.isolates.each do |iso|
-              count+=iso.marker_sequences.count
-            end
-          end
-        end
-      end
-    end
+    ms=MarkerSequence.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
 
-    count
+    [ms.count, ms.uniq.count]
   end
 
   def generate_name

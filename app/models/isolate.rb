@@ -9,25 +9,19 @@ class Isolate < ActiveRecord::Base
 
   scope :recent, ->  { where('isolates.updated_at > ?', 1.hours.ago)}
 
-  def self.in_higher_order_taxon(higher_order_taxon_id)
-    count=0
+  def self.spp_in_higher_order_taxon(higher_order_taxon_id)
 
-    HigherOrderTaxon.find(higher_order_taxon_id).orders.each do |ord|
-      ord.families.each do |fam|
-        fam.species.each do  |sp|
-          sp.individuals.each do |ind|
-            count+=ind.isolates.count
-          end
-        end
-      end
-    end
+    isolates=Isolate.select("species_id").includes(:individual).joins(:individual => {:species => {:family => {:order => :higher_order_taxon}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
 
-    count
+    [isolates.count, isolates.uniq.count]
   end
+
 
   def individual_name
     individual.try(:specimen_id)
   end
+
+
 
   def individual_name=(name)
     if name == ''
