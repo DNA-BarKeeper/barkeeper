@@ -91,9 +91,11 @@
 
       <tbody>
       <% @isolate.contigs.each do |c| %>
-      <td>
-        <%= link_to c.name,edit_contig_path(c) %>
-      </td>
+          <tr>
+            <td>
+              <%= link_to c.name,edit_contig_path(c) %>
+            </td>
+          </tr>
       <% end %>
       </tbody>
 
