@@ -21,7 +21,7 @@ class IsolatesController < ApplicationController
 
 
   def filter
-    @isolates = Isolate.order(:lab_nr).where("lab_nr ILIKE ?", "%#{params[:term]}%")
+    @isolates = Isolate.include(:individual => :species).order(:lab_nr).where("lab_nr ILIKE ?", "%#{params[:term]}%")
     render json: @isolates.map(&:lab_nr)
   end
 
@@ -59,7 +59,7 @@ class IsolatesController < ApplicationController
 
     respond_to do |format|
       if @isolate.save
-        format.html { redirect_to isolates_path(@isolate), notice: 'Isolate was successfully created.' }
+        format.html { redirect_to isolates_path, notice: 'Isolate was successfully created.' }
         format.json { render :show, status: :created, location: @isolate }
       else
         format.html { render :new }
@@ -73,7 +73,7 @@ class IsolatesController < ApplicationController
   def update
     respond_to do |format|
       if @isolate.update(copy_params)
-        format.html { redirect_to isolates_path(@isolate), notice: 'Isolate was successfully updated.' }
+        format.html { redirect_to isolates_path, notice: 'Isolate was successfully updated.' }
         format.json { render :show, status: :ok, location: @isolate }
       else
         format.html { render :edit }

@@ -85,6 +85,7 @@
             <% else %>
                 <% color = "white" %>
             <% end %>
+
             <% Isolate.includes(:individual => :species).where(:lab_nr => duplicate_isolate).each do |isolate| %>
                 <tr style="background-color: <%=color%>">
                   <td><%= link_to isolate.lab_nr, edit_isolate_path(isolate) %></td>

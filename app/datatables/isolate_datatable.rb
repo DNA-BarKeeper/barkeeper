@@ -57,7 +57,7 @@ class IsolateDatatable
 
   def fetch_isolates
 
-    isolates = Isolate.order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    isolates = Isolate.includes(:individual => :species).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     isolates = isolates.page(page).per_page(per_page)
 
     if params[:sSearch].present?
