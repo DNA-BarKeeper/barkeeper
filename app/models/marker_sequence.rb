@@ -11,6 +11,8 @@ class MarkerSequence < ActiveRecord::Base
     [ms.count, ms.uniq.count]
   end
 
+
+
   def generate_name
     if self.marker.present? and self.isolate.present?
       self.update(:name => "#{self.isolate.lab_nr}_#{self.marker.name}")

@@ -9,96 +9,96 @@
 
     <div class="wideTable">
       <table class="table table-striped table-hover table-bordered">
-      <thead>
-      <tr>
-        <th>Taxa</th>
-        <th>Orders</th>
-        <th>Families</th>
-        <th>Species (targeted)</th>
-        <th>Specimen [spp.]</th>
-        <th>Isolates [spp.]</th>
-        <th>Contigs [spp.]</th>
-        <th>Reads</th>
-        <th>Marker sequences [spp.]</th>
-      </tr>
-      </thead>
-      <tbody>
-      <% total0 = 0 %>
-      <% total1 = 0 %>
-      <% total2 = 0 %>
-      <% total3 = 0 %>
+        <thead>
+        <tr>
+          <th>Taxa</th>
+          <th>Orders</th>
+          <th>Families</th>
+          <th>Species (targeted)</th>
+          <th>Specimen [spp.]</th>
+          <th>Isolates [spp.]</th>
+          <th>Contigs [spp.]</th>
+          <th>Reads</th>
+          <th>Marker sequences [spp.]</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% total0 = 0 %>
+        <% total1 = 0 %>
+        <% total2 = 0 %>
+        <% total3 = 0 %>
 
-      <% for t in HigherOrderTaxon.all.order('higher_order_taxa.position') %>
-          <tr>
-            <td><%= t.name %></td>
-
-
-            <td><%= Order.joins(:higher_order_taxon).where(higher_order_taxon_id: t.id).count %></td>
+        <% for t in HigherOrderTaxon.all.order('higher_order_taxa.position') %>
+            <tr>
+              <td><%= t.name %></td>
 
 
-            <td><%= Family.joins(:order => :higher_order_taxon).where(orders: {higher_order_taxon_id: t.id}).count %></td>
+              <td><%= Order.joins(:higher_order_taxon).where(higher_order_taxon_id: t.id).count %></td>
 
 
-            <td><%= Species.joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: t.id}).count%></td>
-
-            <% counts = Individual.spp_in_higher_order_taxon(t.id) %>
-
-            <td><%= counts[0] %> [<%=counts[1]%>]</td>
-            <% total0 = total0+counts[1] %>
-
-            <% counts = Isolate.spp_in_higher_order_taxon(t.id) %>
-            <td><%= counts[0] %> [<%=counts[1]%>]</td>
-            <% total1 += counts[1] %>
-
-            <% counts = Contig.spp_in_higher_order_taxon(t.id) %>
-            <td><%= counts[0] %> [<%=counts[1]%>]</td>
-            <% total2 += counts[1] %>
-
-            <td><%= PrimerRead.joins(:contig => {:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}}).where(orders: {higher_order_taxon_id: t.id}).count %></td>
-
-            <% counts = MarkerSequence.spp_in_higher_order_taxon(t.id) %>
-            <td><%= counts[0] %> [<%=counts[1]%>]</td>
-            <% total3 += counts[1] %>
-          </tr>
-      <% end %>
-
-      <tr><td>Unassigned</td>
-        <td><%= Order.where(higher_order_taxon_id: nil).count %></td>
+              <td><%= Family.joins(:order => :higher_order_taxon).where(orders: {higher_order_taxon_id: t.id}).count %></td>
 
 
-        <td><%= Family.where(order_id: nil).count %></td>
+              <td><%= Species.joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: t.id}).count%></td>
+
+              <% counts = Individual.spp_in_higher_order_taxon(t.id) %>
+
+              <td><%= counts[0] %> [<%=counts[1]%>]</td>
+              <% total0 = total0+counts[1] %>
+
+              <% counts = Isolate.spp_in_higher_order_taxon(t.id) %>
+              <td><%= counts[0] %> [<%=counts[1]%>]</td>
+              <% total1 += counts[1] %>
+
+              <% counts = Contig.spp_in_higher_order_taxon(t.id) %>
+              <td><%= counts[0] %> [<%=counts[1]%>]</td>
+              <% total2 += counts[1] %>
+
+              <td><%= PrimerRead.joins(:contig => {:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}}).where(orders: {higher_order_taxon_id: t.id}).count %></td>
+
+              <% counts = MarkerSequence.spp_in_higher_order_taxon(t.id) %>
+              <td><%= counts[0] %> [<%=counts[1]%>]</td>
+              <% total3 += counts[1] %>
+            </tr>
+        <% end %>
+
+        <tr><td>Unassigned</td>
+          <td><%= Order.where(higher_order_taxon_id: nil).count %></td>
 
 
-        <td><%= Species.where(family_id: nil).count%></td>
+          <td><%= Family.where(order_id: nil).count %></td>
 
 
-        <td><%= Individual.where(species_id: nil).count %></td>
+          <td><%= Species.where(family_id: nil).count%></td>
 
 
-        <td><%= Isolate.where(individual_id: nil).count %></td>
+          <td><%= Individual.where(species_id: nil).count %></td>
 
 
-        <td><%= Contig.where(isolate_id: nil).count %></td>
+          <td><%= Isolate.where(individual_id: nil).count %></td>
 
 
-        <td><%= PrimerRead.where(contig_id: nil).count %></td>
+          <td><%= Contig.where(isolate_id: nil).count %></td>
 
 
-        <td><%= MarkerSequence.where(isolate_id: nil).count %></td>
-      </tr>
+          <td><%= PrimerRead.where(contig_id: nil).count %></td>
 
-      <tfoot><tr><td>Total</td>
-        <td><%= Order.count %></td>
-        <td><%= Family.count%></td>
-        <td><%= Species.count %></td>
-        <td><%= Individual.count %> [<%=total0%>]</td>
-        <td><%= Isolate.count %> [<%=total1%>]</td>
-        <td><%= Contig.count %> [<%=total2%>]</td>
-        <td><%= PrimerRead.count %></td>
-        <td><%= MarkerSequence.count %> [<%=total3%>]</td>
-      </tr></tfoot>
-      </tbody>
-    </table></div>
+
+          <td><%= MarkerSequence.where(isolate_id: nil).count %></td>
+        </tr>
+
+        <tfoot><tr><td>Total</td>
+          <td><%= Order.count %></td>
+          <td><%= Family.count%></td>
+          <td><%= Species.count %></td>
+          <td><%= Individual.count %> [<%=total0%>]</td>
+          <td><%= Isolate.count %> [<%=total1%>]</td>
+          <td><%= Contig.count %> [<%=total2%>]</td>
+          <td><%= PrimerRead.count %></td>
+          <td><%= MarkerSequence.count %> [<%=total3%>]</td>
+        </tr></tfoot>
+        </tbody>
+      </table></div>
     <br>
     <p style="text-align: center">GBOL Markers</p>
 
@@ -106,141 +106,153 @@
 
     <div class="wideTable">
       <table class="table table-striped table-hover table-bordered">
-      <thead>
-      <tr>
-        <th>Taxa</th>
-        <% for m in Marker.gbol_marker.order('name') %>
-            <th colspan="3"><%= m.name %></th>
-        <% end %>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <th></th>
-        <% for m in Marker.gbol_marker.order('name') %>
-            <th>Reads</th>
-            <th>Contigs</th>
-            <th>Sequences</th>
-        <% end %>
-      </tr>
-      <% for t in HigherOrderTaxon.all.order('higher_order_taxa.position') %>
-          <tr>
-
-            <td><%= t.name %></td>
-
-            <% for m in Marker.gbol_marker.order('name') %>
-                <td>
-                  <%= PrimerRead.joins(:contig =>
-                                               {:isolate =>
-                                                        {:individual =>
-                                                                 {:species =>
-                                                                          {:family =>
-                                                                                   {:order => :higher_order_taxon}}}}}).
-                              where(orders: {higher_order_taxon_id: t.id}, contigs: {marker_id: m.id}).count %>
-                </td>
-                <td>
-                <%= Contig.joins(:isolate =>
-                                         {:individual =>
-                                                  {:species =>
-                                                           {:family =>
-                                                                    {:order => :higher_order_taxon}}}}).
-                            where(orders: {higher_order_taxon_id: t.id}, contigs: {marker_id: m.id}).count %>
-                </td>
-                <td>
-                  <%= MarkerSequence.joins(:isolate =>
-                                                   {:individual =>
-                                                            {:species =>
-                                                                     {:family =>
-                                                                              {:order => :higher_order_taxon}}}}).
-                              where(orders: {higher_order_taxon_id: t.id}, marker_sequences: {marker_id: m.id}).count %>
-                </td>
-            <% end %>
-
-          </tr>
-      <% end %>
-
-      <tfoot>
+        <thead>
         <tr>
-        <td>Total</td>
-        <% Marker.gbol_marker.order('name').each do |m| %>
-            <td><%= PrimerRead.joins(:contig).where(contigs: {marker_id: m.id}).count %></td>
-            <td><%= Contig.where(marker_id: m.id).count %></td>
-            <td><%= m.marker_sequences.count %></td>
+          <th>Taxa</th>
+          <% for m in Marker.gbol_marker.order('name') %>
+              <th colspan="3"><%= m.name %></th>
+          <% end %>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th></th>
+          <% for m in Marker.gbol_marker.order('name') %>
+              <th>Reads</th>
+              <th>Contigs</th>
+              <th>Sequences</th>
+          <% end %>
+        </tr>
+
+
+
+        <% marker_totals_across_higher_order = Array.new(Marker.gbol_marker.count,0) %>
+
+
+        <% for t in HigherOrderTaxon.all.order('higher_order_taxa.position') %>
+
+            <tr>
+              <td><%= t.name %></td>
+
+              <% i = 0 %>
+
+              <% total_counts_current_higher_order = 0%>
+
+              <% for m in Marker.gbol_marker.order('name') %>
+                  <td>
+                    <%= PrimerRead.joins(:contig =>
+                                                 {:isolate =>
+                                                          {:individual =>
+                                                                   {:species =>
+                                                                            {:family =>
+                                                                                     {:order => :higher_order_taxon}}}}}).
+                        where(orders: {higher_order_taxon_id: t.id}, contigs: {marker_id: m.id}).count %>
+                  </td>
+                  <td>
+                    <%= Contig.joins(:isolate =>
+                                             {:individual =>
+                                                      {:species =>
+                                                               {:family =>
+                                                                        {:order => :higher_order_taxon}}}}).
+                        where(orders: {higher_order_taxon_id: t.id}, contigs: {marker_id: m.id}).count %>
+                  </td>
+
+                  <% counts = m.spp_in_higher_order_taxon(t.id) %>
+                  <td><%= counts[0] %> [<%=counts[1]%>]</td>
+
+
+                  <% marker_totals_across_higher_order[i] += counts[1] %>
+
+                  <% i+=1 %>
+              <% end %>
+            </tr>
+
         <% end %>
-      </tr>
-      </tfoot>
-    </table>
+
+        <tfoot>
+        <tr>
+          <td>Total</td>
+          <% i = 0 %>
+          <% Marker.gbol_marker.order('name').each do |m| %>
+              <td><%= PrimerRead.joins(:contig).where(contigs: {marker_id: m.id}).count %></td>
+              <td><%= Contig.where(marker_id: m.id).count %></td>
+              <td><%= m.marker_sequences.count %> [<%=marker_totals_across_higher_order[i]%>]</td>
+              <% i+=1 %>
+          <% end %>
+        </tr>
+        </tfoot>
+        </table>
     </div>
   </div>
-    <div class="panel-heading">
-      <h3 class="panel-title">General Statistics</h3>
-    </div>
+  <div class="panel-heading">
+    <h3 class="panel-title">General Statistics</h3>
+  </div>
 
 
 
-    <div class="panel-body">
+  <div class="panel-body">
 
-      <ul>
-        <li>DNA Data</li>
-        <ul><!--create_table "primer_reads", force: true do |t|-->
-          <li><%= link_to "Primer Reads: #{PrimerRead.all.count}", primer_reads_path%></li>
-          <!--create_table "partial_cons", force: true do |t|-->
-          <li><%=  "Partial Contigs: #{PartialCon.all.count}" %></li>
-          <!--create_table "contigs", force: true do |t|-->
-          <li><%= link_to "Contigs: #{Contig.all.count}", contigs_path %></li>
-          <!--create_table "marker_sequences", force: true do |t|-->
-          <li><%= link_to "Marker Sequences: #{MarkerSequence.all.count}", marker_sequences_path %></li>
-          <!--create_table "isolates", force: true do |t|-->
-          <li><%= link_to "Isolates: #{Isolate.all.count}", isolates_path %></li>
-          <!--alignments-->
-          <li><%= link_to "Alignments: #{Alignment.all.count}", alignments_path %></li></ul>
-        <li>Plants & Taxonomy </li>
-        <ul><!--create_table "individuals", force: true do |t|-->
-          <li><%= link_to "Individuals/Specimen: #{Individual.all.count}", individuals_path %></li>
-          <!--create_table "spp", force: true do |t|-->
-          <li><%= link_to "Species: #{Species.all.count}", species_index_path%></li>
-          <!--create_table "families", force: true do |t|-->
-          <li><%= link_to "Families: #{Family.all.count}", families_path   %></li>
-          <!--create_table "orders", force: true do |t|-->
-          <li><%= link_to "Orders: #{Order.all.count}", orders_path %></li>
-          <!--create_table "higher_order_taxa", force: true do |t|-->
-          <li><%= link_to "Higher-order Taxa: #{HigherOrderTaxon.all.count}", higher_order_taxons_path %></li></ul>
-        <li>Lab management</li><ul>
-        <!--create_table "labs", force: true do |t|-->
-        <li><%= link_to "Labs: #{Lab.all.count}", labs_path %></li>
-        <!--create_table "freezers", force: true do |t|-->
-        <li> <%= link_to "Freezers: #{Freezer.all.count}", freezers_path %></li>
-        <!--create_table "lab_racks", force: true do |t|-->
-        <li><%= link_to "LabRacks: #{LabRack.all.count}", lab_racks_path %></li>
-        <!--create_table "micronic_plates", force: true do |t|-->
-        <li><%= link_to "MicronicPlates: #{MicronicPlate.all.count}", micronic_plates_path%></li>
-        <!--create_table "plant_plates", force: true do |t|-->
-        <li><%= link_to "PlantPlates: #{PlantPlate.all.count}", plant_plates_path %></li>
-        <!--create_table "primers", force: true do |t|-->
-        <li><%= link_to "Primers: #{Primer.all.count}", primers_path %></li>
-        <!--create_table "shelves", force: true do |t|-->
-        <li><%= link_to "Shelves: #{Shelf.all.count}", shelves_path %></li>
-        <!--TISSUETYPES: create_table "tissues", force: true do |t|-->
-        <li><%= link_to "Tissue Types: #{Tissue.all.count}", tissues_path %></li></ul>
-        <li>Project management</li>
-        <ul><!--create_table "markers", force: true do |t|-->
-          <li><%= link_to "Markers: #{Marker.all.count}", markers_path %></li>
-          <!--create_table "primer_pos_on_genomes", force: true do |t|-->
-          <!--<li><%= link_to "Primers, Genome positions: #{PrimerPosOnGenome.all.count}", primer_pos_on_genomes_path %></li>-->
+    <ul>
+      <li>DNA Data</li>
+      <ul><!--create_table "primer_reads", force: true do |t|-->
+        <li><%= link_to "Primer Reads: #{PrimerRead.all.count}", primer_reads_path%></li>
+        <!--create_table "partial_cons", force: true do |t|-->
+        <li><%=  "Partial Contigs: #{PartialCon.all.count}" %></li>
+        <!--create_table "contigs", force: true do |t|-->
+        <li><%= link_to "Contigs: #{Contig.all.count}", contigs_path %></li>
+        <!--create_table "marker_sequences", force: true do |t|-->
+        <li><%= link_to "Marker Sequences: #{MarkerSequence.all.count}", marker_sequences_path %></li>
+        <!--create_table "isolates", force: true do |t|-->
+        <li><%= link_to "Isolates: #{Isolate.all.count}", isolates_path %></li>
+        <!--alignments-->
+        <li><%= link_to "Alignments: #{Alignment.all.count}", alignments_path %></li></ul>
+      <li>Plants & Taxonomy </li>
+      <ul><!--create_table "individuals", force: true do |t|-->
+        <li><%= link_to "Individuals/Specimen: #{Individual.all.count}", individuals_path %></li>
+        <!--create_table "spp", force: true do |t|-->
+        <li><%= link_to "Species: #{Species.all.count}", species_index_path%></li>
+        <!--create_table "families", force: true do |t|-->
+        <li><%= link_to "Families: #{Family.all.count}", families_path   %></li>
+        <!--create_table "orders", force: true do |t|-->
+        <li><%= link_to "Orders: #{Order.all.count}", orders_path %></li>
+        <!--create_table "higher_order_taxa", force: true do |t|-->
+        <li><%= link_to "Higher-order Taxa: #{HigherOrderTaxon.all.count}", higher_order_taxons_path %></li></ul>
+      <li>Lab management</li><ul>
+      <!--create_table "labs", force: true do |t|-->
+      <li><%= link_to "Labs: #{Lab.all.count}", labs_path %></li>
+      <!--create_table "freezers", force: true do |t|-->
+      <li> <%= link_to "Freezers: #{Freezer.all.count}", freezers_path %></li>
+      <!--create_table "lab_racks", force: true do |t|-->
+      <li><%= link_to "LabRacks: #{LabRack.all.count}", lab_racks_path %></li>
+      <!--create_table "micronic_plates", force: true do |t|-->
+      <li><%= link_to "MicronicPlates: #{MicronicPlate.all.count}", micronic_plates_path%></li>
+      <!--create_table "plant_plates", force: true do |t|-->
+      <li><%= link_to "PlantPlates: #{PlantPlate.all.count}", plant_plates_path %></li>
+      <!--create_table "primers", force: true do |t|-->
+      <li><%= link_to "Primers: #{Primer.all.count}", primers_path %></li>
+      <!--create_table "shelves", force: true do |t|-->
+      <li><%= link_to "Shelves: #{Shelf.all.count}", shelves_path %></li>
+      <!--TISSUETYPES: create_table "tissues", force: true do |t|-->
+      <li><%= link_to "Tissue Types: #{Tissue.all.count}", tissues_path %></li></ul>
+      <li>Project management</li>
+      <ul><!--create_table "markers", force: true do |t|-->
+        <li><%= link_to "Markers: #{Marker.all.count}", markers_path %></li>
+        <!--create_table "primer_pos_on_genomes", force: true do |t|-->
+        <!--<li><%= link_to "Primers, Genome positions: #{PrimerPosOnGenome.all.count}", primer_pos_on_genomes_path %></li>-->
 
-          <!--create_table "issues", force: true do |t|-->
-          <li><%= link_to "Issues: #{Issue.all.count}", issues_path %></li>
-          <!--create_table "news", force: true do |t|-->
-          <li><%= link_to "News: #{News.all.count}", news_index_path %></li>
-          <!--create_table "statuses", force: true do |t|-->
-          <li><%= link_to "Statuses: #{Status.all.count}", statuses_path %></li>
-          <li><%= link_to "Projects: #{Project.all.count}", projects_path %></li>
-          <!--create_table "projects", force: true do |t|-->
-          <li><%= link_to "Users: #{User.all.count}", users_path %></li>
-          <!--create_table "users", force: true do |t|--></ul>
+        <!--create_table "issues", force: true do |t|-->
+        <li><%= link_to "Issues: #{Issue.all.count}", issues_path %></li>
+        <!--create_table "news", force: true do |t|-->
+        <li><%= link_to "News: #{News.all.count}", news_index_path %></li>
+        <!--create_table "statuses", force: true do |t|-->
+        <li><%= link_to "Statuses: #{Status.all.count}", statuses_path %></li>
+        <li><%= link_to "Projects: #{Project.all.count}", projects_path %></li>
+        <!--create_table "projects", force: true do |t|-->
+        <li><%= link_to "Users: #{User.all.count}", users_path %></li>
+        <!--create_table "users", force: true do |t|--></ul>
 
-      </ul>
-    </div>
+    </ul>
+  </div>
 
 
 
