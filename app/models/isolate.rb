@@ -12,15 +12,15 @@ class Isolate < ActiveRecord::Base
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
 
     isolates=Isolate.select("species_id").includes(:individual).joins(:individual => {:species => {:family => {:order => :higher_order_taxon}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    isolates_i=Isolate.select("individual_id").joins(:individual => {:species => {:family => {:order => :higher_order_taxon}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
 
-    [isolates.count, isolates.uniq.count]
+    [isolates.count, isolates.uniq.count, isolates_i.uniq.count]
   end
 
 
   def individual_name
     individual.try(:specimen_id)
   end
-
 
 
   def individual_name=(name)

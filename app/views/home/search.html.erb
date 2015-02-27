@@ -16,10 +16,10 @@
           <th>Families</th>
           <th>Species (targeted)</th>
           <th>Specimen [spp.]</th>
-          <th>Isolates [spp.]</th>
+          <th>Isolates [spp., spmn.]</th>
           <th>Reads</th>
-          <th>Contigs [spp.]</th>
-          <th>Marker sequences [spp.]</th>
+          <th>Contigs [spp., spmn.]</th>
+          <th>Marker sequences [spp., spmn.]</th>
         </tr>
         </thead>
         <tbody>
@@ -27,6 +27,10 @@
         <% total1 = 0 %>
         <% total2 = 0 %>
         <% total3 = 0 %>
+
+        <% total1_i = 0 %>
+        <% total2_i = 0 %>
+        <% total3_i = 0 %>
 
         <% for t in HigherOrderTaxon.all.order('higher_order_taxa.position') %>
             <tr>
@@ -47,19 +51,22 @@
               <% total0 = total0+counts[1] %>
 
               <% counts = Isolate.spp_in_higher_order_taxon(t.id) %>
-              <td><%= counts[0] %> [<%=counts[1]%>]</td>
+              <td><%= counts[0] %> [<%=counts[1]%>, <%= counts[2] %>]</td>
               <% total1 += counts[1] %>
+              <% total1_i += counts[2] %>
 
               <td><%= PrimerRead.joins(:contig => {:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}}).where(orders: {higher_order_taxon_id: t.id}).count %></td>
 
               <% counts = Contig.spp_in_higher_order_taxon(t.id) %>
-              <td><%= counts[0] %> [<%=counts[1]%>]</td>
+              <td><%= counts[0] %> [<%=counts[1]%>, <%= counts[2] %>]</td>
               <% total2 += counts[1] %>
+              <% total2_i += counts[2] %>
 
 
               <% counts = MarkerSequence.spp_in_higher_order_taxon(t.id) %>
-              <td><%= counts[0] %> [<%=counts[1]%>]</td>
+              <td><%= counts[0] %> [<%=counts[1]%>, <%= counts[2] %>]</td>
               <% total3 += counts[1] %>
+              <% total3_i += counts[2] %>
             </tr>
         <% end %>
 
@@ -91,10 +98,10 @@
           <td><%= Family.count%></td>
           <td><%= Species.count %></td>
           <td><%= Individual.count %> [<%=total0%>]</td>
-          <td><%= Isolate.count %> [<%=total1%>]</td>
+          <td><%= Isolate.count %> [<%=total1%>, <%= total1_i %>]</td>
           <td><%= PrimerRead.count %></td>
-          <td><%= Contig.count %> [<%=total2%>]</td>
-          <td><%= MarkerSequence.count %> [<%=total3%>]</td>
+          <td><%= Contig.count %> [<%=total2%>, <%= total2_i %>]</td>
+          <td><%= MarkerSequence.count %> [<%=total3%>, <%= total3_i %>]</td>
         </tr></tfoot>
         </tbody>
       </table></div>
@@ -119,13 +126,14 @@
           <% for m in Marker.gbol_marker.order('name') %>
               <th>Reads</th>
               <th>Contigs</th>
-              <th>Sequences</th>
+              <th>Sequences [spp., spmn.]</th>
           <% end %>
         </tr>
 
 
 
         <% marker_totals_across_higher_order = Array.new(Marker.gbol_marker.count,0) %>
+        <% marker_totals_across_higher_order_i = Array.new(Marker.gbol_marker.count,0) %>
 
 
         <% for t in HigherOrderTaxon.all.order('higher_order_taxa.position') %>
@@ -134,8 +142,6 @@
               <td><%= t.name %></td>
 
               <% i = 0 %>
-
-              <% total_counts_current_higher_order = 0%>
 
               <% for m in Marker.gbol_marker.order('name') %>
                   <td>
@@ -157,10 +163,11 @@
                   </td>
 
                   <% counts = m.spp_in_higher_order_taxon(t.id) %>
-                  <td><%= counts[0] %> [<%=counts[1]%>]</td>
+                  <td><%= counts[0] %> [<%=counts[1]%>, <%= counts[2] %>]</td>
 
 
                   <% marker_totals_across_higher_order[i] += counts[1] %>
+                  <% marker_totals_across_higher_order_i[i] += counts[2] %>
 
                   <% i+=1 %>
               <% end %>
@@ -175,7 +182,7 @@
           <% Marker.gbol_marker.order('name').each do |m| %>
               <td><%= PrimerRead.joins(:contig).where(contigs: {marker_id: m.id}).count %></td>
               <td><%= Contig.where(marker_id: m.id).count %></td>
-              <td><%= m.marker_sequences.count %> [<%=marker_totals_across_higher_order[i]%>]</td>
+              <td><%= m.marker_sequences.count %> [<%=marker_totals_across_higher_order[i]%>, <%=marker_totals_across_higher_order_i[i]%>]</td>
               <% i+=1 %>
           <% end %>
         </tr>

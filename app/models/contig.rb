@@ -11,9 +11,9 @@ class Contig < ActiveRecord::Base
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
 
     contigs=Contig.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    contigs_i=Contig.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
 
-
-    [contigs.count, contigs.uniq.count]
+    [contigs.count, contigs.uniq.count, contigs_i.uniq.count]
   end
 
 

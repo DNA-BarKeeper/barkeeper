@@ -14,8 +14,14 @@ class Marker < ActiveRecord::Base
                                                                                                  {:family =>
                                                                                                       {:order => :higher_order_taxon}}}}).
         where(orders: {higher_order_taxon_id: higher_order_taxon_id}, marker_sequences: {marker_id: self.id})
+    ms_i=MarkerSequence.select("individual_id").includes(:isolate => :individual).joins(:isolate =>
+                                                                                       {:individual =>
+                                                                                            {:species =>
+                                                                                                 {:family =>
+                                                                                                      {:order => :higher_order_taxon}}}}).
+        where(orders: {higher_order_taxon_id: higher_order_taxon_id}, marker_sequences: {marker_id: self.id})
 
-    [ms.count, ms.uniq.count]
+    [ms.count, ms.uniq.count, ms_i.uniq.count]
   end
 
 end
