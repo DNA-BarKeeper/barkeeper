@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150211200426) do
+ActiveRecord::Schema.define(version: 20150227173532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -100,6 +100,11 @@ ActiveRecord::Schema.define(version: 20150211200426) do
     t.datetime "updated_at"
     t.string   "german_name", limit: 255
     t.integer  "position"
+  end
+
+  create_table "higher_order_taxa_markers", id: false, force: :cascade do |t|
+    t.integer "higher_order_taxon_id"
+    t.integer "marker_id"
   end
 
   create_table "individuals", force: :cascade do |t|

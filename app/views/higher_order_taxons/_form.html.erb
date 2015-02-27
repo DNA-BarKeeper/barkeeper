@@ -18,6 +18,11 @@
         <%= f.text_field :position,  class: 'form-control' %>
       </div>
 
+      <div class="form-group">
+        <%= f.label 'GBoL5 target markers' %>
+        <%= f.collection_select :marker_ids, Marker.gbol_marker.order(:name), :id, :name, {}, {multiple:true} %>
+      </div>
+
       <%= f.submit 'Update', :class => 'button right' %>
 
 <% end %>

@@ -30,7 +30,7 @@ class HigherOrderTaxonsController < ApplicationController
 
     respond_to do |format|
       if @higher_order_taxon.save
-        format.html { redirect_to @higher_order_taxon, notice: 'Higher order taxon was successfully created.' }
+        format.html { redirect_to higher_order_taxons_path, notice: 'Higher order taxon was successfully created.' }
         format.json { render :show, status: :created, location: @higher_order_taxon }
       else
         format.html { render :new }
@@ -44,7 +44,7 @@ class HigherOrderTaxonsController < ApplicationController
   def update
     respond_to do |format|
       if @higher_order_taxon.update(higher_order_taxon_params)
-        format.html { redirect_to @higher_order_taxon, notice: 'Higher order taxon was successfully updated.' }
+        format.html { redirect_to higher_order_taxons_path, notice: 'Higher order taxon was successfully updated.' }
         format.json { render :show, status: :ok, location: @higher_order_taxon }
       else
         format.html { render :edit }
@@ -71,6 +71,6 @@ class HigherOrderTaxonsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def higher_order_taxon_params
-      params.require(:higher_order_taxon).permit(:position, :name, :german_name)
+      params.require(:higher_order_taxon).permit(:position, :name, :german_name,:marker_ids => [])
     end
 end
