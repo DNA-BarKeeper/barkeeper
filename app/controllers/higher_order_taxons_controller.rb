@@ -6,7 +6,7 @@ class HigherOrderTaxonsController < ApplicationController
   # GET /higher_order_taxons
   # GET /higher_order_taxons.json
   def index
-    @higher_order_taxons = HigherOrderTaxon.all
+    @higher_order_taxons = HigherOrderTaxon.order(:position).all
   end
 
   # GET /higher_order_taxons/1
