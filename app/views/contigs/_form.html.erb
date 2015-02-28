@@ -23,6 +23,7 @@
                 <%= link_to '', edit_isolate_path(@contig.isolate), :class => "glyphicon glyphicon-share-alt" %>
             <% end %>
             <%= f.text_field :isolate_name , data: {autocomplete_source: filter_isolates_path} , class: 'form-control'%>
+
           </div>
 
           <div class="form-group">

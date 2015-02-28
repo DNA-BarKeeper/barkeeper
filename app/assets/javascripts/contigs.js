@@ -19,11 +19,9 @@ jQuery(function() {
         ],
         "order": [ 2, 'desc' ]
     });
-
     $('#contig_isolate_name').autocomplete({
         source: $('#contig_isolate_name').data('autocomplete-source')
     });
-
 
 //    draw partial_cons
 

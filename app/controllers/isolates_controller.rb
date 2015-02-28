@@ -12,24 +12,15 @@ class IsolatesController < ApplicationController
     end
   end
 
-  def prefilter
-   #TODO read parameter "query" and restrict to those
-    if params[:query]
-      # @isolates=Isolate.order(:lab_nr).where...
-    end
-  end
-
 
   def filter
-    @isolates = Isolate.include(:individual => :species).order(:lab_nr).where("lab_nr ILIKE ?", "%#{params[:term]}%")
+    @isolates = Isolate.select('lab_nr, id').where('lab_nr ILIKE ?', "%#{params[:term]}%").order(:lab_nr)
     render json: @isolates.map(&:lab_nr)
   end
 
   def import
 
     file = params[:file]
-
-    #todo if needed, add logic to distinguish between xls / xlsx / error etc here -> mv from model
 
     # Isolate.correct_coordinates(file.path)
     Isolate.import(file.path)

@@ -80,6 +80,7 @@
         <tbody>
         <% i=0 %>
         <% d.each do |duplicate_isolate| %>
+
             <% if (i % 2 == 0) %>
                 <% color = "#f5f5f5" %>
             <% else %>
@@ -96,7 +97,7 @@
                   </td>
                   <td>
                     <% if isolate.individual %>
-                        <%= link_to isolate.individual.specimen_id, edit_species_path(isolate.individual)%>
+                        <%= link_to isolate.individual.specimen_id, edit_individual_path(isolate.individual)%>
                     <% end %>
                   </td>
                   <td>
