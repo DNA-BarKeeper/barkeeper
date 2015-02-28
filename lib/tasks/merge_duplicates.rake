@@ -23,24 +23,27 @@ namespace :data do
 
       #get all others and compare to first
       (1..dups.count-1).each do |i|
-      curr_dup= dups[i]
+        curr_dup= dups[i]
         puts "#{curr_dup.lab_nr} (#{curr_dup.id})  vs #{first_dup.lab_nr} ( #{first_dup.id} ):"
 
         if curr_dup.individual
           first_dup.update(:individual => curr_dup.individual)
         end
 
-      if curr_dup.marker_sequences.count > 0
-        curr_dup.marker_sequences.each do |m|
-          first_dup.marker_sequences << m
+        if curr_dup.marker_sequences.count > 0
+          curr_dup.marker_sequences.each do |m|
+            first_dup.marker_sequences << m
+          end
         end
-      end
 
         if curr_dup.contigs.count >0
           curr_dup.contigs.each do |c|
             first_dup.contigs << c
           end
         end
+
+        curr_dup.destroy
+
       end
 
       puts ""
