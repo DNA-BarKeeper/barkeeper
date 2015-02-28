@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150227173532) do
+ActiveRecord::Schema.define(version: 20150228182800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -319,18 +319,19 @@ ActiveRecord::Schema.define(version: 20150227173532) do
   end
 
   create_table "species", force: :cascade do |t|
-    t.string   "author",          limit: 255
-    t.string   "genus_name",      limit: 255
-    t.string   "species_epithet", limit: 255
+    t.string   "author",            limit: 255
+    t.string   "genus_name",        limit: 255
+    t.string   "species_epithet",   limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "family_id"
-    t.string   "infraspecific",   limit: 255
+    t.string   "infraspecific",     limit: 255
     t.text     "comment"
-    t.string   "german_name",     limit: 255
-    t.string   "author_infra",    limit: 255
-    t.string   "synonym",         limit: 255
-    t.string   "composed_name",   limit: 255
+    t.string   "german_name",       limit: 255
+    t.string   "author_infra",      limit: 255
+    t.string   "synonym",           limit: 255
+    t.string   "composed_name",     limit: 255
+    t.string   "species_component"
   end
 
   create_table "statuses", force: :cascade do |t|

@@ -7,15 +7,19 @@ class Species < ActiveRecord::Base
     @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:name)
   end
 
-  def self.in_higher_order_taxon(higher_order_taxon_id)
-    count=0
-    HigherOrderTaxon.find(higher_order_taxon_id).orders.each do |ord|
-      ord.families.each do |fam|
-        count+=fam.species.count
-      end
-    end
-    count
+  def self.spp_in_higher_order_taxon(higher_order_taxon_id)
+    spp=Species.select("species_component").joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    [spp.uniq.count]
   end
+
+  #
+  # def self.spp_in_higher_order_taxon(higher_order_taxon_id)
+  #
+  #   contigs=Contig.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+  #   contigs_i=Contig.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+  #
+  #   [contigs.count, contigs.uniq.count, contigs_i.uniq.count]
+  # end
 
   # version for Stuttgart
 
@@ -151,6 +155,10 @@ class Species < ActiveRecord::Base
     else
       "#{self.genus_name} #{self.species_epithet} ssp. #{self.infraspecific}".strip
     end
+  end
+
+  def get_species_component
+    "#{self.genus_name} #{self.species_epithet}".strip
   end
 
   def family_name
