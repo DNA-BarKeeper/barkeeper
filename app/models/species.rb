@@ -107,6 +107,7 @@ class Species < ActiveRecord::Base
       sp.family_id=fa.id
       sp.save
       sp.update(:composed_name=>sp.full_name)
+      sp.update(:species_component=>sp.get_species_component)
 
       # if sp.genus_name.nil?
       #   components=[]

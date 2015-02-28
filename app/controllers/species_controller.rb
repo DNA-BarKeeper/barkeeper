@@ -52,7 +52,7 @@ class SpeciesController < ApplicationController
 
     respond_to do |format|
       if @species.save
-
+        @species.update(:species_component => @species.get_species_component)
         format.html { redirect_to @species, notice: 'Species was successfully created.' }
         format.json { render :show, status: :created, location: @species }
       else
@@ -67,6 +67,7 @@ class SpeciesController < ApplicationController
   def update
     respond_to do |format|
       if @species.update(species_params)
+        @species.update(:species_component => @species.get_species_component)
         format.html { redirect_to species_index_path, notice: 'Species was successfully updated.' }
         format.json { render :show, status: :ok, location: @species }
       else
