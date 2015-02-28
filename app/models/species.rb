@@ -74,7 +74,6 @@ class Species < ActiveRecord::Base
   # end
 
 
-
   def self.import(file)
     #version for Berlin
 
