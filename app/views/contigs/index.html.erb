@@ -30,3 +30,69 @@
 <%= link_to 'Perform read assembly for all contigs with incomplete assembly', assemble_all_contigs_path %><br>
 <%= link_to 'Download pde files for all', pde_all_contigs_path %><br>
 <%= link_to 'New Contig', new_contig_path %>
+<hr>
+
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Duplicate Contigs</h3>
+  </div>
+
+  <div class="panel-body">
+
+    <div class="wideTable">
+
+      <table class="table table-bordered">
+
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Reads</th>
+          <th>Last updated</th>
+          <th></th>
+        </tr>
+        </thead>
+
+        <!--get list w duplicates-->
+        <% a=[] %>
+        <% Contig.select("name").all.each do |i| %>
+            <% a << i.name %>
+        <% end %>
+
+        <% d=a.select{ |e| a.count(e) > 1 }.uniq %>
+
+        <tbody>
+        <% i=0 %>
+        <% d.each do |duplicate| %>
+
+            <% if (i % 2 == 0) %>
+                <% color = "#f5f5f5" %>
+            <% else %>
+                <% color = "white" %>
+            <% end %>
+
+            <% Contig.where(:name => duplicate).each do |contig| %>
+                <tr style="background-color: <%=color%>">
+                  <td><%= link_to contig.name, edit_contig_path(contig) %></td>
+
+                  <td>
+                    <%=contig.primer_reads.count%>
+                  </td>
+                  <td> <%= contig.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
+                  <td><%= link_to 'Delete', contig, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+                </tr>
+            <% end %>
+            <% i+=1 %>
+        <% end %>
+        </tbody>
+
+      </table>
+    </div>
+
+    <br>
+
+  </div>
+
+</div>
+
+
