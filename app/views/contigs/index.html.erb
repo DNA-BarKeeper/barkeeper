@@ -47,6 +47,7 @@
         <thead>
         <tr>
           <th>Name</th>
+          <th>Isolate</th>
           <th>Reads</th>
           <th>Last updated</th>
           <th></th>
@@ -71,10 +72,14 @@
                 <% color = "white" %>
             <% end %>
 
-            <% Contig.where(:name => duplicate).each do |contig| %>
+            <% Contig.includes(:isolate).where(:name => duplicate).each do |contig| %>
                 <tr style="background-color: <%=color%>">
                   <td><%= link_to contig.name, edit_contig_path(contig) %></td>
-
+                  <td>
+                    <% if contig.isolate %>
+                    <%=link_to contig.isolate.lab_nr, edit_isolate_path(contig)%>
+                    <% end %>
+                  </td>
                   <td>
                     <%=contig.primer_reads.count%>
                   </td>
