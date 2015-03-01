@@ -1,5 +1,7 @@
 namespace :data do
 
+  #TODO: scary loop in which arr.elements are deleted - fix!
+
   desc "Merge multiple copies of same isolate into one with all associations & attributes"
 
   task :merge_duplicates => :environment do

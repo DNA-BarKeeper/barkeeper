@@ -48,7 +48,7 @@ class IndividualDatatable
 
   def fetch_individuals
 
-    individuals = Individual.order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    individuals = Individual.includes(:species).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     individuals = individuals.page(page).per_page(per_page)
 
     if params[:sSearch].present?
