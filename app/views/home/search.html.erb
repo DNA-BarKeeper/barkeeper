@@ -38,7 +38,6 @@
             <tr>
               <td><%= t.name %></td>
 
-
               <td><%= Order.joins(:higher_order_taxon).where(higher_order_taxon_id: t.id).count %></td>
 
 

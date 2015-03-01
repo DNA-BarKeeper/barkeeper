@@ -8,28 +8,28 @@
     <div class="wideTable">
       <table id="primer_reads"  data-source="<%= primer_reads_url(format: "json") %>"  class="table table-striped table-hover table-bordered">
 
-      <thead>
-      <tr>
-        <th>Name</th>
-        <th>Assembled?</th>
-        <th>Contig</th>
-        <td>Last updated</td>
-        <th></th>
-      </tr>
-      </thead>
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Assembled?</th>
+          <th>Contig</th>
+          <td>Last updated</td>
+          <th></th>
+        </tr>
+        </thead>
 
-      <tbody id="primer_read_list">
+        <tbody id="primer_read_list">
 
-      </tbody>
-    </table></div>
+        </tbody>
+      </table></div>
 
     <br>
     <div class="well">
-          New Primer Read(s):
+      New Primer Read(s):
 
-            <%= form_for PrimerRead.new do |f| %>
-                <%= f.file_field :chromatogram, multiple: true, name: "primer_read[chromatogram]" %>
-            <% end %>
+      <%= form_for PrimerRead.new do |f| %>
+          <%= f.file_field :chromatogram, multiple: true, name: "primer_read[chromatogram]" %>
+      <% end %>
 
       <% # jquery upload template # %>
       <script id="template-upload" type="text/x-tmpl">
@@ -47,7 +47,53 @@
 </div>
 
 <% if PrimerRead.unprocessed.count > 0 %>
-Unprocessed: <%= PrimerRead.unprocessed.count %>
+    Unprocessed: <%= PrimerRead.unprocessed.count %>
 <% end %>
 
 
+<!--PrimerRead.where(:contig => nil)-->
+<hr>
+
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Reads where no Contig could be assigned:</h3>
+  </div>
+
+  <div class="panel-body">
+
+    <div class="wideTable">
+
+      <table class="table table-striped table-hover table-bordered">
+
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Last updated</th>
+          <th></th>
+        </tr>
+        </thead>
+
+
+        <tbody>
+
+        <% PrimerRead.where(:contig => nil).each do |read| %>
+
+            <tr>
+              <td><%= link_to read.name, edit_primer_read_path(read) %></td>
+
+              <td> <%= read.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
+              <td><%= link_to 'Delete', read, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            </tr>
+
+        <% end %>
+        </tbody>
+
+      </table>
+    </div>
+
+    <br>
+
+  </div>
+
+</div>
