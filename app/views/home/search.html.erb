@@ -194,6 +194,7 @@
     </div>
   </div>
 
+
   <!--
   <div class="panel-heading">
     <h3 class="panel-title">General Statistics</h3>
@@ -266,3 +267,4 @@
 
 
 </div>
+<%= PrimerRead.sum(:base_count)  %> bases sequenced as of <%=Time.now.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>.

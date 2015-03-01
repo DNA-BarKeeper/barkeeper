@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150228182800) do
+ActiveRecord::Schema.define(version: 20150301190309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -280,6 +280,7 @@ ActiveRecord::Schema.define(version: 20150228182800) do
     t.integer  "ttrace",                                                array: true
     t.integer  "peak_indices",                                          array: true
     t.boolean  "processed",                             default: false
+    t.integer  "base_count"
   end
 
   create_table "primers", force: :cascade do |t|

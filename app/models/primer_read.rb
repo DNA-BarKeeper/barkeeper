@@ -296,6 +296,7 @@ class PrimerRead < ActiveRecord::Base
       #copy chromatogram over into db
       if self.sequence.nil? or change_orientation_and_store_again
         self.update(:sequence => sequence)
+        self.update(:base_count => sequence.length)
       end
       if self.qualities.nil? or change_orientation_and_store_again
         self.update(:qualities => chromatogram1.qualities)
