@@ -44,7 +44,7 @@ class SpeciesDatatable
 
   def fetch_species
 
-    species = Species.order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    species = Species.includes(:family).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     species = species.page(page).per_page(per_page)
 
     if params[:sSearch].present?
