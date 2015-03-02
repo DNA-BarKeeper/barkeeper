@@ -11,8 +11,8 @@
  * file per style scope.
  *
 
-// *= require dataTables/jquery.dataTables
  *= require_self
+ *= require dataTables/jquery.dataTables
  *= require_tree .
  */
 
