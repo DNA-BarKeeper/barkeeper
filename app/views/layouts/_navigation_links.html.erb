@@ -13,7 +13,7 @@
     <li><%= link_to 'Overview', search_path %></li>
     <li><%= link_to 'News', news_index_path %></li>
 
-    <li class="<%= theClass %>"><%= link_to 'Issues', issues_path %></li>
+    <li class="<%= theClass %>"><%= link_to 'Notifications', issues_path %></li>
     <li class="<%= theClass %>"><%= link_to 'Projects', projects_path %></li>
 
   </ul>
@@ -23,21 +23,21 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Taxa <b class="caret"></b></a>
   <ul class="dropdown-menu">
-    <li class="<%= theClass %>"><%= link_to 'Species', species_index_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Individuals', individuals_path %></li>
+    <li><%= link_to 'Species', species_index_path %></li>
+    <li><%= link_to 'Individuals', individuals_path %></li>
     <li class="divider"></li>
-    <li class="<%= theClass %>"><%= link_to 'Families', families_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Orders', orders_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Higher-order Taxa', higher_order_taxons_path %></li>
+    <li><%= link_to 'Families', families_path %></li>
+    <li><%= link_to 'Orders', orders_path %></li>
+    <li><%= link_to 'Top-level Taxa', higher_order_taxons_path %></li>
   </ul>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">DNA <b class="caret"></b></a>
   <ul class="dropdown-menu">
-    <li class="<%= theClass %>"><%= link_to 'Primer Reads', primer_reads_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Contigs', contigs_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Marker Sequences', marker_sequences_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Isolates', isolates_path %></li>
+    <li><%= link_to 'Primer Reads', primer_reads_path %></li>
+    <li><%= link_to 'Contigs', contigs_path %></li>
+    <li><%= link_to 'Marker Sequences', marker_sequences_path %></li>
+    <li><%= link_to 'Isolates', isolates_path %></li>
     <li class="divider"></li>
     <li class="<%= theClass %>"><%= link_to 'Markers', markers_path %></li>
     <li class="<%= theClass %>"><%= link_to 'Primers', primers_path %></li>

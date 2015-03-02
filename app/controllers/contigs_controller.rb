@@ -1,6 +1,6 @@
 class ContigsController < ApplicationController
 
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => [:edit, :index, :filter]
 
   before_action :set_contig, only: [:pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :show, :edit, :update, :destroy]
 

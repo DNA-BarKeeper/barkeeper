@@ -28,16 +28,14 @@
 
     <br>
 
-    <% if current_user.email == 'kaimueller@uni-muenster.de' %>
-        <div class="well">
-          Import Isolates / Specimen (Individuals) from Excel file:<p></p>
-          <%= form_tag import_isolates_path, multipart: true do %>
-              <%= file_field_tag :file %>
-              <br>
-              <%= submit_tag "Import" %>
-          <% end %>
-        </div>
-    <% end %>
+    <div class="well">
+      Import Isolates / Specimen (Individuals) from Excel file:<p></p>
+      <%= form_tag import_isolates_path, multipart: true do %>
+          <%= file_field_tag :file %>
+          <br>
+          <%= submit_tag "Import" %>
+      <% end %>
+    </div>
 
   </div>
 

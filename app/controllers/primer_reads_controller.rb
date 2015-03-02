@@ -1,5 +1,5 @@
 class PrimerReadsController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => [:edit, :index]
 
   before_action :set_primer_read, only: [:fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
 
