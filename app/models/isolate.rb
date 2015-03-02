@@ -8,6 +8,7 @@ class Isolate < ActiveRecord::Base
 
 
   scope :recent, ->  { where('isolates.updated_at > ?', 1.hours.ago)}
+  scope :no_controls, -> { where(:negative_control => false)}
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
 

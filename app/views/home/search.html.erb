@@ -87,7 +87,7 @@
           <td><%= Individual.where(species_id: nil).count %></td>
 
 
-          <td><%= Isolate.where(individual_id: nil).count %></td>
+          <td><%= Isolate.no_controls.where(individual_id: nil).count %></td>
 
           <td><%= PrimerRead.where(contig_id: nil).count %></td>
 
@@ -267,4 +267,4 @@
 
 
 </div>
-<%= PrimerRead.sum(:base_count)  %> bases sequenced as of <%=Time.now.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>.
+<%= PrimerRead.sum(:base_count)  %> bp sequenced as of <%=Time.now.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>.

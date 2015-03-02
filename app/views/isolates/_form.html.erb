@@ -68,7 +68,12 @@
           <%= f.collection_select(:plant_plate_id, PlantPlate.all, :id, :name) %>
         </div>
 
-        <%= f.submit 'Update', :class => 'button right' %>
+        <div class="form-group">
+          <%= f.label 'Negative control' %>
+          <%= f.check_box :negative_control  %>
+        </div>
+
+        <%= f.submit 'Update', :class =>  'btn btn-primary' %>
     <% end %>
   </div>
 </div>
