@@ -5,7 +5,7 @@ class PherogramProcessing
   def perform(primer_read_id)
     primer_read=PrimerRead.find(primer_read_id)
     primer_read.auto_assign #ensures that gets reverse-complemented when primer is reverse
-    primer_read.auto_trim
+    primer_read.auto_trim(true)
     primer_read.update(:processed => true, :used_for_con => true, :assembled => false)
   end
 
