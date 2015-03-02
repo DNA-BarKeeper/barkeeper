@@ -17,7 +17,7 @@
 
       <div class="form-group">
         <%= f.label 'Order' %>
-        <%= f.collection_select(:order_id, Order.all, :id, :name) %>
+        <%= f.collection_select(:order_id, Order.order(:name).all, :id, :name) %>
       </div>
 
       <%= f.submit 'Update', :class => 'button right' %>

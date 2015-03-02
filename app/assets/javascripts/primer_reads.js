@@ -295,7 +295,7 @@ function change_base(base_index, base, change_base_primer_read_url) {
         },
         error: function (response) {
             // we had an error
-            alert('Could not change base at pos. '+base_index+' to '+base+'. \n' +response);
+            alert('Not authorized? Could not change base at index '+base_index+' to '+base);
         }
     });
     return 0;
