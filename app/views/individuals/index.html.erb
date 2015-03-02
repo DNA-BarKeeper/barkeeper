@@ -32,3 +32,51 @@
 
 <%= link_to 'New Individual', new_individual_path %>
 
+<!-- Unassigned-->
+
+<hr>
+
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Specimen where no species could be assigned:</h3>
+  </div>
+
+  <div class="panel-body">
+
+    <div class="wideTable">
+
+      <table class="table table-striped table-hover table-bordered">
+
+        <thead>
+        <tr>
+          <th>Specimen ID</th>
+          <th>Last updated</th>
+          <th></th>
+        </tr>
+        </thead>
+
+
+        <tbody>
+
+        <% Individual.where(:species => nil).each do |individual| %>
+
+            <tr>
+              <td><%= link_to individual.specimen_id, edit_individual_path(individual) %></td>
+
+              <td> <%= individual.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
+              <td><%= link_to 'Delete', individual, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            </tr>
+
+        <% end %>
+        </tbody>
+
+      </table>
+    </div>
+
+    <br>
+
+  </div>
+
+</div>
+
