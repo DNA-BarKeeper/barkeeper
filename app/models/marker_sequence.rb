@@ -7,8 +7,9 @@ class MarkerSequence < ActiveRecord::Base
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
 
     ms=MarkerSequence.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    ms_s=MarkerSequence.select("species_component").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     ms_i=MarkerSequence.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    [ms.count, ms.uniq.count, ms_i.uniq.count]
+    [ms.count, ms_s.uniq.count, ms.uniq.count, ms_i.uniq.count]
   end
 
 

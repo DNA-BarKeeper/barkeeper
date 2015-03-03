@@ -9,7 +9,8 @@ class Species < ActiveRecord::Base
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
     spp=Species.select("species_component").joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    [spp.uniq.count]
+    subspp=Species.select("id").joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    [spp.uniq.count, subspp.count]
   end
 
   #

@@ -14,21 +14,50 @@
           <th>Taxa</th>
           <th>Orders</th>
           <th>Families</th>
-          <th>Species</th>
-          <th>Specimen [spp.]</th>
-          <th>Isolates [spp., spmn.]</th>
+          <th colspan="2" style="text-align: center">Species</th>
+          <th colspan="3" style="text-align: center">Specimen</th>
+          <th colspan="4" style="text-align: center">Isolates</th>
           <th>Reads</th>
-          <th>Contigs [spp., spmn.]</th>
-          <th>Marker sequences [spp., spmn.]</th>
+          <th colspan="4" style="text-align: center">Contigs</th>
+          <th colspan="4" style="text-align: center">Sequences</th>
         </tr>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th>incl. subspp.</th>
+          <th></th>
+          <th>spp.</th>
+          <th>incl. subspp.</th>
+          <th></th>
+          <th>spp.</th>
+          <th>incl. subspp.</th>
+          <th>Specimen</th>
+          <th></th>
+          <th></th>
+          <th>spp.</th>
+          <th>incl. subspp.</th>
+          <th>Specimen</th>
+          <th></th>
+          <th>spp.</th>
+          <th>incl. subspp.</th>
+          <th>Specimen</th>
+        </tr>
+
         </thead>
         <tbody>
 
-        <% total = 0 %>
+        <% total_s = 0 %>
+
         <% total0 = 0 %>
+        <% total0_sub = 0 %>
         <% total1 = 0 %>
+        <% total1_sub = 0 %>
         <% total2 = 0 %>
+        <% total2_sub = 0 %>
         <% total3 = 0 %>
+        <% total3_sub = 0 %>
 
         <% total1_i = 0 %>
         <% total2_i = 0 %>
@@ -44,33 +73,47 @@
               <td><%= Family.joins(:order => :higher_order_taxon).where(orders: {higher_order_taxon_id: t.id}).count %></td>
 
               <% counts = Species.spp_in_higher_order_taxon(t.id) %>
-
-              <td><%= counts[0] %></td>
-              <% total = total+counts[0] %>
+              <td><%= counts[0] %></td>  <!-- spp -->
+              <td><%= counts[1] %></td>  <!-- spp+subspp -->
+              <% total_s = total_s+counts[0] %>
 
 
               <% counts = Individual.spp_in_higher_order_taxon(t.id) %>
-
-              <td><%= counts[0] %> [<%=counts[1]%>]</td>
+              <td><%= counts[0] %></td> <!-- Ind. -->
+              <td><%= counts[1] %></td> <!-- Spp. -->
+              <td><%= counts[2] %></td> <!-- spp+Subspp. -->
               <% total0 = total0+counts[1] %>
+              <% total0_sub = total0+counts[2] %>
 
               <% counts = Isolate.spp_in_higher_order_taxon(t.id) %>
-              <td><%= counts[0] %> [<%=counts[1]%>, <%= counts[2] %>]</td>
+              <td><%= counts[0] %></td> <!-- Isolates -->
+              <td><%= counts[1] %></td> <!-- Spp. -->
+              <td><%= counts[2] %></td> <!-- Subspp. -->
+              <td><%= counts[3] %></td> <!-- Ind. -->
               <% total1 += counts[1] %>
-              <% total1_i += counts[2] %>
+              <% total1_sub += counts[2] %>
+              <% total1_i += counts[3] %>
 
               <td><%= PrimerRead.joins(:contig => {:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}}).where(orders: {higher_order_taxon_id: t.id}).count %></td>
 
               <% counts = Contig.spp_in_higher_order_taxon(t.id) %>
-              <td><%= counts[0] %> [<%=counts[1]%>, <%= counts[2] %>]</td>
+              <td><%= counts[0] %></td> <!-- Contigs -->
+              <td><%= counts[1] %></td> <!-- Spp. -->
+              <td><%=counts[2]%></td> <!-- Subspp. -->
+              <td><%= counts[3] %></td> <!-- Ind. -->
               <% total2 += counts[1] %>
-              <% total2_i += counts[2] %>
+              <% total2_sub += counts[2] %>
+              <% total2_i += counts[3] %>
 
 
               <% counts = MarkerSequence.spp_in_higher_order_taxon(t.id) %>
-              <td><%= counts[0] %> [<%=counts[1]%>, <%= counts[2] %>]</td>
+              <td><%= counts[0] %></td> <!-- MarkerSeqs -->
+              <td><%= counts[1] %></td><!-- Spp. -->
+              <td><%= counts[2] %></td><!-- Subspp. -->
+              <td><%= counts[3] %></td><!-- Ind. -->
               <% total3 += counts[1] %>
-              <% total3_i += counts[2] %>
+              <% total3_sub += counts[2] %>
+              <% total3_i += counts[3] %>
             </tr>
         <% end %>
 
@@ -82,37 +125,69 @@
 
 
           <td><%= Species.where(family_id: nil).count%></td>
+          <td></td>
 
 
           <td><%= Individual.where(species_id: nil).count %></td>
+          <td></td>
+          <td></td>
 
 
           <td><%= Isolate.no_controls.where(individual_id: nil).count %></td>
+          <td></td>
+          <td></td>
+          <td></td>
 
           <td><%= PrimerRead.where(contig_id: nil).count %></td>
 
           <td><%= Contig.where(isolate_id: nil).count %></td>
+          <td></td>
+          <td></td>
+          <td></td>
 
 
           <td><%= MarkerSequence.where(isolate_id: nil).count %></td>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr>
 
         <tfoot><tr><td>Total</td>
+
           <td><%= Order.count %></td>
           <td><%= Family.count%></td>
-          <td><%= total %></td>
-          <td><%= Individual.count %> [<%=total0%>]</td>
-          <td><%= Isolate.count %> [<%=total1%>, <%= total1_i %>]</td>
+
+          <td><%= total_s %></td>
+          <td><%= Species.count %></td>
+
+          <td><%= Individual.count %></td>
+          <td><%= total0 %></td>
+          <td><%= total0_sub %></td>
+
+          <td><%= Isolate.count %></td>
+          <td><%= total1 %></td>
+          <td><%= total1_sub %></td>
+          <td><%= total1_i %></td>
+
           <td><%= PrimerRead.count %></td>
-          <td><%= Contig.count %> [<%=total2%>, <%= total2_i %>]</td>
-          <td><%= MarkerSequence.count %> [<%=total3%>, <%= total3_i %>]</td>
+
+          <td><%= Contig.count %></td>
+          <td><%= total2 %></td>
+          <td><%= total2_sub %></td>
+          <td><%= total2_i %></td>
+
+          <td><%= MarkerSequence.count %></td>
+          <td><%= total3 %></td>
+          <td><%= total3_sub %></td>
+          <td><%= total3_i %></td>
+
         </tr></tfoot>
         </tbody>
       </table></div>
     <br>
     <p style="text-align: center">GBoL5 Markers</p>
 
-    <!--table 2-->
+    <!--table with info per marker-->
 
     <div class="wideTable">
       <table class="table table-striped table-hover table-bordered">
@@ -263,8 +338,6 @@
 
     </ul>
   </div>-->
-
-
 
 </div>
 <%= PrimerRead.sum(:base_count)  %> bp sequenced as of <%=Time.now.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>.

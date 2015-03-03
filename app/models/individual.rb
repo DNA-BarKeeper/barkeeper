@@ -51,7 +51,8 @@ class Individual < ActiveRecord::Base
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
     individuals= Individual.select("species_id").joins(:species => {:family => {:order => :higher_order_taxon}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    [individuals.count, individuals.uniq.count]
+    individuals_s= Individual.select("species_component").joins(:species => {:family => {:order => :higher_order_taxon}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    [individuals.count, individuals_s.uniq.count, individuals.uniq.count]
   end
 
   def species_name
