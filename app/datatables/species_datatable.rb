@@ -47,7 +47,7 @@ class SpeciesDatatable
   def fetch_species
 
     if @higher_order_id
-      species=Species.includes(:family).joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: @higher_order_id})
+      species=Species.includes(:family).joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: @higher_order_id}).order("#{sort_column} #{sort_direction}")
     elsif @family_id
       species = Species.includes(:family).where(:family_id => @family_id).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     else

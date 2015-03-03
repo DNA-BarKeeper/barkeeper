@@ -46,7 +46,7 @@
       </thead>
 
       <tbody>
-      <% @order.families.each do |c| %>
+      <% @order.families.order(:name).each do |c| %>
           <tr>
             <td>
               <%= link_to c.name,edit_family_path(c) %>

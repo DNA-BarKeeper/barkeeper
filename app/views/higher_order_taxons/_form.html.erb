@@ -82,7 +82,7 @@
       </thead>
 
       <tbody>
-      <% @higher_order_taxon.orders.each do |c| %>
+      <% @higher_order_taxon.orders.order(:name).each do |c| %>
           <tr>
             <td>
               <%= link_to c.name,edit_order_path(c) %>
