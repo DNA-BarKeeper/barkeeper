@@ -18,6 +18,9 @@ GBOLapp::Application.routes.draw do
       post :import
       get :filter
     end
+    member do
+      get 'show_individuals'
+    end
   end
 
   resources :primer_pos_on_genomes

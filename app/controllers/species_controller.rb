@@ -21,6 +21,13 @@ class SpeciesController < ApplicationController
     render json: @species.map(&:composed_name)
   end
 
+  def show_individuals
+    respond_to do |format|
+      format.html
+      format.json { render json: IndividualDatatable.new(view_context, params[:id]) }
+    end
+  end
+
   def import
     # Species.import(params[:file])
 

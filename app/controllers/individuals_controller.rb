@@ -9,7 +9,7 @@ class IndividualsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: IndividualDatatable.new(view_context) }
+      format.json { render json: IndividualDatatable.new(view_context, nil) }
       format.csv { render text: @individuals.to_csv }
       format.xls
     end

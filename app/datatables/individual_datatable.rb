@@ -8,8 +8,9 @@ class IndividualDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view)
+  def initialize(view, species_id)
     @view = view
+    @species_id=species_id
   end
 
   def as_json(options = {})
@@ -47,8 +48,12 @@ class IndividualDatatable
   end
 
   def fetch_individuals
+    if @species_id
+      individuals = Individual.includes(:species).where(:species_id => @species_id).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    else
+      individuals = Individual.includes(:species).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
 
-    individuals = Individual.includes(:species).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    end
     individuals = individuals.page(page).per_page(per_page)
 
     if params[:sSearch].present?

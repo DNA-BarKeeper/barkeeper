@@ -198,8 +198,8 @@
               <th colspan="3" style="text-align: center"><%= m.name %></th>
           <% end %>
         </tr>
-        </thead>
-        <tbody>
+
+
         <tr>
           <th></th>
           <% for m in Marker.gbol_marker.order('name') %>
@@ -208,7 +208,8 @@
               <th>Sequences [spp., spmn.]</th>
           <% end %>
         </tr>
-
+        </thead>
+        <tbody>
 
         <% marker_totals_across_higher_order = Array.new(Marker.gbol_marker.count,0) %>
         <% marker_totals_across_higher_order_i = Array.new(Marker.gbol_marker.count,0) %>
