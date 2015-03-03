@@ -11,7 +11,11 @@ GBOLapp::Application.routes.draw do
 
   resources :issues
 
-  resources :higher_order_taxons
+  resources :higher_order_taxons do
+    member do
+      get 'show_species'
+    end
+  end
 
   resources :species do
     collection do

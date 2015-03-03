@@ -1,29 +1,66 @@
 <%= show_val_errors(@higher_order_taxon)%>
 
-<div class="authform">
-  <h4><%= @higher_order_taxon.name%></h4>
-<%= form_for(@higher_order_taxon) do |f| %>
-      <div class="form-group">
-        <%= f.label :name %>
-        <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
-      </div>
+<div class="panel panel-default">
 
-      <div class="form-group">
-        <%= f.label 'Deutsch' %>
-        <%= f.text_field :german_name, class: 'form-control' %>
-      </div>
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= @higher_order_taxon.name %></h3>
+  </div>
+  <div class="panel-body">
+    <%= form_for(@higher_order_taxon) do |f| %>
+        <div class="form-group">
+          <%= f.label :name %>
+          <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
+        </div>
 
-      <div class="form-group">
-        <%= f.label :position %>
-        <%= f.text_field :position,  class: 'form-control' %>
-      </div>
+        <div class="form-group">
+          <%= f.label 'Deutsch' %>
+          <%= f.text_field :german_name, class: 'form-control' %>
+        </div>
 
-      <div class="form-group">
-        <%= f.label 'GBoL5 target markers' %><br>
-        <%= f.collection_select :marker_ids, Marker.gbol_marker.order(:name), :id, :name, {}, {multiple:true} %>
-      </div>
+        <div class="form-group">
+          <%= f.label :position %>
+          <%= f.text_field :position,  class: 'form-control' %>
+        </div>
 
-      <%= f.submit 'Update', :class => 'button right' %>
+        <div class="form-group">
+          <%= f.label 'GBoL5 target markers' %><br>
+          <%= f.collection_select :marker_ids, Marker.gbol_marker.order(:name), :id, :name, {}, {multiple:true} %>
+        </div>
 
-<% end %>
+        <%= f.submit 'Update', :class => 'button right' %>
+    <% end %>
+  </div>
+</div>
+
+<!-- show assigned spp.-->
+
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Species</h3>
+  </div>
+
+
+  <div class="panel-body">
+    <div class="wideTable">
+      <table id="species" data-source="<%= show_species_higher_order_taxon_url(format: "json") %>" class="table table-striped table-hover table-bordered">
+
+        <thead>
+        <tr>
+          <th>Species</th>
+          <th>Author</th>
+          <th>Family</th>
+          <th>Last Updated</th>
+          <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
+
 </div>

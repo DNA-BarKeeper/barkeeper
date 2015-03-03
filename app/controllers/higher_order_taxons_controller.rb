@@ -9,6 +9,13 @@ class HigherOrderTaxonsController < ApplicationController
     @higher_order_taxons = HigherOrderTaxon.order(:position).all
   end
 
+  def show_species
+    respond_to do |format|
+          format.html
+          format.json { render json: SpeciesDatatable.new(view_context, nil, params[:id]) }
+        end
+  end
+
   # GET /higher_order_taxons/1
   # GET /higher_order_taxons/1.json
   def show

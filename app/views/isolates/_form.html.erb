@@ -90,7 +90,7 @@
 
       <thead>
       <tr>
-        <th>Lab Nr</th>
+        <th>Name</th>
       </tr>
       </thead>
 
@@ -99,6 +99,35 @@
           <tr>
             <td>
               <%= link_to c.name,edit_contig_path(c) %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+
+    </table>
+  </div>
+</div>
+
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Marker Sequences</h3>
+  </div>
+
+  <div class="panel-body">
+    <table  class="table table-striped table-hover table-bordered">
+
+      <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @isolate.marker_sequences.each do |c| %>
+          <tr>
+            <td>
+              <%= link_to c.name,edit_marker_sequence_path(c) %>
             </td>
           </tr>
       <% end %>

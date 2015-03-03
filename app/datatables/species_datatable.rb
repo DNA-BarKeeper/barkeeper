@@ -6,9 +6,10 @@ class SpeciesDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view, family_id)
+  def initialize(view, family_id, higher_order_id)
     @view = view
     @family_id = family_id
+    @higher_order_id=higher_order_id
   end
 
   def as_json(options = {})
@@ -45,7 +46,9 @@ class SpeciesDatatable
 
   def fetch_species
 
-    if @family_id
+    if @higher_order_id
+      species=Species.includes(:family).joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: @higher_order_id})
+    elsif @family_id
       species = Species.includes(:family).where(:family_id => @family_id).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     else
       species = Species.includes(:family).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting

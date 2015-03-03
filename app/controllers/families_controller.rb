@@ -19,7 +19,7 @@ class FamiliesController < ApplicationController
   def show_species
     respond_to do |format|
       format.html
-      format.json { render json: SpeciesDatatable.new(view_context, params[:id]) }
+      format.json { render json: SpeciesDatatable.new(view_context, params[:id], nil) }
     end
   end
 
