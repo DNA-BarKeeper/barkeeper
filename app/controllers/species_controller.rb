@@ -1,7 +1,7 @@
 # noinspection RubyArgCount
 class SpeciesController < ApplicationController
 
-  before_filter :authenticate_user!, :except => [:edit, :index, :filter]
+  before_filter :authenticate_user!, :except => [:edit, :index, :filter, :show_individuals]
 
   before_action :set_species, only: [:show, :edit, :update, :destroy]
 

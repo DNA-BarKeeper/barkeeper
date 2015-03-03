@@ -27,7 +27,7 @@
           <%= f.collection_select :marker_ids, Marker.gbol_marker.order(:name), :id, :name, {}, {multiple:true} %>
         </div>
 
-        <%= f.submit 'Update', :class => 'button right' %>
+        <%= f.submit 'Update', :class => 'btn btn-primary' %>
     <% end %>
   </div>
 </div>
@@ -63,4 +63,34 @@
 
   </div>
 
+</div>
+
+<!--orders-->
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Orders</h3>
+  </div>
+
+  <div class="panel-body">
+    <table  class="table table-striped table-hover table-bordered">
+
+      <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @higher_order_taxon.orders.each do |c| %>
+          <tr>
+            <td>
+              <%= link_to c.name,edit_order_path(c) %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+
+    </table>
+  </div>
 </div>

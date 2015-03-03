@@ -109,7 +109,7 @@
     <div class="col-md-12">
       <div class="alignment">
 
-        <%= content_tag "div", id: "contig", data: {url: @contig.partial_cons } do %>
+        <%= content_tag "div", id: "contig", data: {url: @contig.partial_cons.includes(:primer_reads) } do %>
             <!--<span id="loading">Loading contig ...</span>-->
 
             <!--&lt;!&ndash;canvas&ndash;&gt;-->

@@ -1,26 +1,60 @@
 <%= show_val_errors(@order)%>
 
-<div class="authform">
-  <h4><%= @order.name%></h4>
+<div class="panel panel-default">
 
-<%= form_for(@order) do |f| %>
-
-      <div class="form-group">
-        <%= f.label :name %>
-        <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :author %>
-        <%= f.text_field :author, class: 'form-control' %>
-      </div>
-
-      <div class="form-group">
-        <%= f.label 'Belongs to' %>
-        <%= f.collection_select(:higher_order_taxon_id, HigherOrderTaxon.all, :id, :name) %>
-      </div>
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= @order.name%></h3>
+  </div>
 
 
-      <%= f.submit 'Update', :class => 'button right' %>
-<% end %>
+  <div class="panel-body">
+    <%= form_for(@order) do |f| %>
+
+        <div class="form-group">
+          <%= f.label :name %>
+          <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :author %>
+          <%= f.text_field :author, class: 'form-control' %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label 'Belongs to' %>
+          <%= f.collection_select(:higher_order_taxon_id, HigherOrderTaxon.all, :id, :name) %>
+        </div>
+
+        <%= f.submit 'Update', :class => 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>
+
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Families</h3>
+  </div>
+
+  <div class="panel-body">
+    <table  class="table table-striped table-hover table-bordered">
+
+      <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @order.families.each do |c| %>
+          <tr>
+            <td>
+              <%= link_to c.name,edit_family_path(c) %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+
+    </table>
+  </div>
 </div>
