@@ -74,7 +74,7 @@ class PrimerReadDatatable
 
     if params[:sSearch].present?
       # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
-      primer_reads = primer_reads.where("name like :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      primer_reads = primer_reads.where("name ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
     end
     primer_reads
   end

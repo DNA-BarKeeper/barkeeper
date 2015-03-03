@@ -53,7 +53,7 @@ class IndividualDatatable
 
     if params[:sSearch].present?
       # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
-      individuals = individuals.where("specimen_id like :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      individuals = individuals.where("specimen_id ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
     end
     individuals
   end

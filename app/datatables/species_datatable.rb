@@ -6,8 +6,9 @@ class SpeciesDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view)
+  def initialize(view, family_id)
     @view = view
+    @family_id = family_id
   end
 
   def as_json(options = {})
@@ -44,12 +45,16 @@ class SpeciesDatatable
 
   def fetch_species
 
-    species = Species.includes(:family).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    if @family_id
+      species = Species.includes(:family).where(:family_id => @family_id).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    else
+      species = Species.includes(:family).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    end
     species = species.page(page).per_page(per_page)
 
     if params[:sSearch].present?
       # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
-      species = species.where("composed_name like :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      species = species.where("composed_name ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
     end
     species
   end

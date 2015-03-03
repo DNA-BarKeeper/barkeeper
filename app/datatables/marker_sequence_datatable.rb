@@ -50,7 +50,7 @@ class MarkerSequenceDatatable
     marker_sequences = marker_sequences.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-        marker_sequences = marker_sequences.where("name like :search", search: "%#{params[:sSearch]}%") #  todo --> fix to use case-insensitive / postgres
+        marker_sequences = marker_sequences.where("name ILIKE :search", search: "%#{params[:sSearch]}%") #  todo --> fix to use case-insensitive / postgres
     end
     marker_sequences
   end

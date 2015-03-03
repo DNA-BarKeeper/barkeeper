@@ -10,7 +10,7 @@ class SpeciesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: SpeciesDatatable.new(view_context) }
+      format.json { render json: SpeciesDatatable.new(view_context, nil) }
       format.csv { send_data @species.to_csv}
       format.xls
     end

@@ -88,6 +88,9 @@ GBOLapp::Application.routes.draw do
     collection do
       get 'filter'
     end
+    member do
+      get 'show_species'
+    end
   end
 
 

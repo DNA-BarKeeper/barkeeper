@@ -16,6 +16,13 @@ class FamiliesController < ApplicationController
     render json: @families.map(&:name)
   end
 
+  def show_species
+    respond_to do |format|
+      format.html
+      format.json { render json: SpeciesDatatable.new(view_context, params[:id]) }
+    end
+  end
+
   # GET /families/1
   # GET /families/1.json
   def show

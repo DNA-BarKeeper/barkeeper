@@ -62,7 +62,7 @@ class IsolateDatatable
 
     if params[:sSearch].present?
       # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
-      isolates = isolates.where("lab_nr like :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      isolates = isolates.where("lab_nr ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
     end
     isolates
   end

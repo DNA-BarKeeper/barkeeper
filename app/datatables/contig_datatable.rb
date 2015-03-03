@@ -49,7 +49,7 @@ class ContigDatatable
 
     if params[:sSearch].present?
       # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
-      contigs = contigs.where("name like :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      contigs = contigs.where("name ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
     end
     contigs
   end
