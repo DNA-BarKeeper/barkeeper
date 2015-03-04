@@ -1,10 +1,11 @@
 class HomeController < ApplicationController
+
   def search
 
   end
 
   def about
-
+    @about_page=true
   end
 
   def help
