@@ -70,6 +70,54 @@
 
 </div>
 
+<!--show subssp if any -->
+<% unless @species.infraspecific? %>
+    <% str=@species.species_component %>
+    <% a = Species.where(:species_component => str)%>
+    <% if a.count > 1 %>
+
+
+        <div class="panel panel-default">
+
+          <div class="panel-heading">
+            <h3 class="panel-title">Subspecies</h3>
+          </div>
+
+          <div class="panel-body">
+
+            <div class="wideTable">
+              <table class="table table-striped table-hover table-bordered">
+
+                <thead>
+                <tr>
+                  <th>Name</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <% a.each do |subsp| %>
+
+                    <% if subsp.infraspecific? %>
+
+                    <tr><td><%= link_to subsp.name_for_display, edit_species_path(subsp) %></td></tr>
+
+                    <% end%>
+
+                <% end %>
+
+                </tbody>
+
+              </table></div>
+
+          </div>
+
+        </div>
+
+    <% end %>
+
+<% end %>
+
 <!-- show assigned indiv.-->
 
 <div class="panel panel-default">
