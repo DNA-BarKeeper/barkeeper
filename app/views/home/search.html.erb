@@ -65,7 +65,7 @@
 
         <% for t in HigherOrderTaxon.all.order('higher_order_taxa.position') %>
             <tr>
-              <td><%= t.name %></td>
+              <td><%= link_to t.name, edit_higher_order_taxon_path(t) %></td>
 
               <td><%= Order.joins(:higher_order_taxon).where(higher_order_taxon_id: t.id).count %></td>
 
@@ -218,7 +218,7 @@
         <% for t in HigherOrderTaxon.all.order('higher_order_taxa.position') %>
 
             <tr>
-              <td><%= t.name %></td>
+              <td><%= link_to t.name, edit_higher_order_taxon_path(t) %></td>
 
               <% i = 0 %>
 
