@@ -2,97 +2,119 @@
 
 <div class="panel panel-default">
 
-<div class="panel-heading">
-  <h3 class="panel-title">Primer Read</h3>
-</div>
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= @primer_read.name %></h3>
+  </div>
 
-<div class="panel-body">
+  <div class="panel-body">
 
 
-<%= form_for(@primer_read) do |f| %>
+    <%= form_for(@primer_read) do |f| %>
 
-    <% seq1=@primer_read.sequence %>
+        <% seq1=@primer_read.sequence %>
 
-    <div class="col-md-12"><div class="form-group">
-      <%= f.label :name %>
-      <%= f.text_field :name, class: 'form-control' %>
-    </div></div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li><a href="#description" role="tab" data-toggle="tab">Description</a></li>
+          <li class="active"><a href="#quality" role="tab" data-toggle="tab">Quality</a></li>
+          <li><a href="#files" role="tab" data-toggle="tab">Files</a></li>
+        </ul>
 
-    <div class="col-md-4">
-      <div class="form-group">
-        <%= f.label 'Contig' %>
-        <% if @primer_read.contig %>
-            <%= link_to '', edit_contig_path(@primer_read.contig), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@primer_read.contig.name} " %>
-        <% end %>
-        <%= f.text_field :contig_name , data: {autocomplete_source: filter_contigs_path} , class: 'form-control'%>
-      </div>
+        <!-- Tab panes -->
+        <div class="tab-content">
 
-      <div class="form-group"><span class="glyphicon glyphicon-link"></span><%= link_to ' Auto-assign contig, isolate, primer, and read orientation', assign_primer_read_path %><br></div>
+          <div class="tab-pane" id="description">
+            <br>
 
-      <p>
-        <% if @primer_read.reverse %>
-            <span class="glyphicon glyphicon-arrow-left"></span> Read is reverse-complemented. <span class="glyphicon glyphicon-repeat"></span> <%= link_to 'Restore original orientation.', restore_primer_read_path %>
-        <% else %>
-            <span class="glyphicon glyphicon-arrow-right"></span> Forward read. <span class="glyphicon glyphicon-repeat"></span> <%= link_to 'Reverse-complement the read', reverse_primer_read_path %>
-        <% end %>
-      </p>
-    </div>
+            <div class="form-group">
+              <%= f.label :name %>
+              <%= f.text_field :name, class: 'form-control' %>
+            </div>
 
-    <div class="col-md-4">
-      <% if seq1 %>
-          <div >
-            <%= f.label 'Readable bases ' %>
-            <%= f.text_field :trimmedReadStart, :class => "sequence_position_left" %>
-            <%= f.label ' - ' %>
-            <%= f.text_field :trimmedReadEnd, :class => "sequence_position_right" %>
-            out of <%= seq1.length %>
+
+            <div class="form-group">
+              <%= f.label 'Contig' %>
+              <% if @primer_read.contig %>
+                  <%= link_to '', edit_contig_path(@primer_read.contig), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@primer_read.contig.name} " %>
+              <% end %>
+              <%= f.text_field :contig_name , data: {autocomplete_source: filter_contigs_path} , class: 'form-control'%>
+            </div>
+
+            <div class="form-group">
+              <span class="glyphicon glyphicon-link"></span><%= link_to ' Auto-assign contig, isolate, primer, and read orientation', assign_primer_read_path %>
+              <br>
+            </div>
+
+            <p>
+              <% if @primer_read.reverse %>
+                  <span class="glyphicon glyphicon-arrow-left"></span> Read is reverse-complemented. <span class="glyphicon glyphicon-repeat"></span> <%= link_to 'Restore original orientation.', restore_primer_read_path %>
+              <% else %>
+                  <span class="glyphicon glyphicon-arrow-right"></span> Forward read. <span class="glyphicon glyphicon-repeat"></span> <%= link_to 'Reverse-complement the read', reverse_primer_read_path %>
+              <% end %>
+            </p>
+
+            <% if @primer_read.primer %>
+                <div class="field">
+                  Primer: <%= link_to @primer_read.primer.name, edit_primer_path(@primer_read.primer) %> | Marker: <%= link_to @primer_read.contig.marker.name, edit_marker_path(@primer_read.contig.marker) if @primer_read.contig %>
+                </div>
+            <% end %>
+            <br>
+
           </div>
-      <% end %>
-      <span class="glyphicon glyphicon-resize-small"></span><%= link_to ' Trim sequence based on quality scores', trim_primer_read_path %>
-      <div >
-       Min. qual.:
-        <%= f.text_field :min_quality_score, :class => "sequence_position_right" %>
-        Window:
-        <%= f.text_field :window_size, :class => "sequence_position_right" %>
-        > min.:
-        <%= f.text_field :count_in_window, :class => "sequence_position_right" %>
-      </div>
-      <p>
 
-      <!--# reactivate "expected_read_start"  only after absolute-primer-position-mess (strandedness etc) clairfied:-->
-      <% if @primer_read.primer %>
-          <div class="field">
-              Primer: <%= link_to @primer_read.primer.name, edit_primer_path(@primer_read.primer) %> | Marker: <%= link_to @primer_read.contig.marker.name, edit_marker_path(@primer_read.contig.marker) if @primer_read.contig %>
+
+          <div class="tab-pane active" id="quality">
+            <br>
+            <% if seq1 %>
+                <div >
+                  <%= f.label 'Readable bases ' %>
+                  <%= f.text_field :trimmedReadStart, :class => "sequence_position_left" %>
+                  <%= f.label ' - ' %>
+                  <%= f.text_field :trimmedReadEnd, :class => "sequence_position_right" %>
+                  out of <%= seq1.length %>
+                </div>
+            <% end %>
+            <span class="glyphicon glyphicon-resize-small"></span><%= link_to ' Trim sequence based on quality scores', trim_primer_read_path %>
+            <div >
+              Min. qual.:
+              <%= f.text_field :min_quality_score, :class => "sequence_position_right" %>
+              Window:
+              <%= f.text_field :window_size, :class => "sequence_position_right" %>
+              > min.:
+              <%= f.text_field :count_in_window, :class => "sequence_position_right" %>
+            </div>
+            <p>
+
+
+            <p>
+            <div class="field">
+              <%= f.label 'Use for contig' %>
+              <%= f.check_box :used_for_con  %> |
+              <%= f.label 'Assembled' %>
+              <%= f.check_box :assembled  %>
+            </div>
+
           </div>
-      <% end %>
 
-      <p>
-      <div class="field">
-        <%= f.label 'Use for contig' %>
-        <%= f.check_box :used_for_con  %> |
-        <%= f.label 'Assembled' %>
-        <%= f.check_box :assembled  %>
-      </div>
 
-    </div>
+          <div class="tab-pane" id="files">
+            <br>
+            <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download trimmed sequence as Fasta file',  fasta_primer_read_path %><br>
+            <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download chromatogram file',  @primer_read.chromatogram.url %><br>
+            <span class="glyphicon glyphicon-paperclip"></span> Attach scf/ab1 file:<%= f.file_field :chromatogram %>
+            <br>
 
-      <div class="col-md-4">
+          </div>
+        </div>
 
-        <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download trimmed sequence as Fasta file',  fasta_primer_read_path %><br>
-        <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download chromatogram file',  @primer_read.chromatogram.url %><br>
-
-        <span class="glyphicon glyphicon-paperclip"></span> Attach scf/ab1 file:<%= f.file_field :chromatogram %><br>
         <%= f.submit 'Update', :class =>  'btn btn-primary' %>
 
-      </div>
 
 
+    <% end %>
+    <!--chromatogram view-->
 
 
-<% end %>
-  <!--chromatogram view-->
-
-  <div class="col-md-12">
     <hr>
     <div class="alignment" >
 
@@ -103,9 +125,9 @@
 
     </div>
     <!--end chromatogram div -->
-  </div>
 
-</div>
+
+  </div>
 
 
 </div>
