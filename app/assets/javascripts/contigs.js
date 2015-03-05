@@ -54,12 +54,10 @@ function draw_contig(partial_cons){
         h+= partial_cons[q].primer_reads.length*80;
     }
 
-
     d3.select('#contig')
         .append('svg')
         .attr('width', 15000)
         .attr('height', h);
-
 
     var x=0;
     var y=20;
@@ -69,8 +67,14 @@ function draw_contig(partial_cons){
     var font_family = "sans-serif";
     var font_size = "7px";
 
-    for(var i = 0; i < partial_cons.length; i++){
-        var partial_contig = partial_cons[i];
+    for(var partial_cons_index = 0; partial_cons_index < partial_cons.length; partial_cons_index++){
+        var partial_contig = partial_cons[partial_cons_index];
+
+        console.log("working on:");
+        console.log(partial_cons_index);
+        console.log("out of ");
+        console.log(partial_cons.length);
+        console.log(partial_contig.id);
 
 
         var used_reads = partial_contig.primer_reads;

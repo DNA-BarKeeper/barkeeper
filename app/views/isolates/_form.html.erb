@@ -10,19 +10,19 @@
 
 
         <div class="form-group">
-          <%= f.label 'Lab isolation number' %>
+          <%= f.label :lab_nr, 'Lab isolation number' %>
           <%= f.text_field :lab_nr,  class: 'form-control' %>
         </div>
 
         <div class="form-group">
-          <%= f.label 'DNA Bank id' %>
+          <%= f.label :dna_bank_id, 'DNA Bank ID' %>
           <%= f.text_field :dna_bank_id,  class: 'form-control' %>
         </div>
 
         <!--individual /Specimen -->
 
         <div class="form-group">
-          <%= f.label 'Individual /Specimen' %>
+          <%= f.label @isolate, 'Individual / Specimen' %>
           <% if @isolate.individual %>
               <%= link_to '', edit_individual_path(@isolate.individual), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@isolate.individual.specimen_id} " %>
           <% end %>
@@ -31,18 +31,18 @@
 
 
         <div class="form-group">
-          <%= f.label :micronic_tube_id %>
+          <%= f.label :micronic_tube_id, 'Micronic tube ID' %>
           <%= f.text_field :micronic_tube_id,  class: 'form-control' %>
         </div>
 
         <div class="form-group">
-          <%= f.label 'Well position in tissue plate' %>
+          <%= f.label :well_pos_plant_plate_plate, 'Well position in tissue plate' %>
           <%= f.text_field :well_pos_plant_plate,  class: 'form-control' %>
         </div>
 
 
         <div class="form-group">
-          <%= f.label 'Well position in DNA plate' %>
+          <%= f.label :well_pos_micronic_plate, 'Well position in DNA plate' %>
           <%= f.text_field :well_pos_micronic_plate,  class: 'form-control' %>
         </div>
 
@@ -54,22 +54,22 @@
 
 
         <div class="form-group">
-          <%= f.label 'Tissue type' %>
+          <%= f.label :tissue_id, 'Tissue type' %>
           <%= f.collection_select(:tissue_id, Tissue.all, :id, :name) %>
         </div>
 
         <div class="form-group">
-          <%= f.label 'Plate (DNA)' %>
+          <%= f.label :micronic_plate_id, 'Plate (DNA)' %>
           <%= f.collection_select(:micronic_plate_id, MicronicPlate.all, :id, :name) %>
         </div>
 
         <div class="form-group">
-          <%= f.label 'Plate (Tissue)' %>
+          <%= f.label :plant_plate_id, 'Plate (Tissue)' %>
           <%= f.collection_select(:plant_plate_id, PlantPlate.all, :id, :name) %>
         </div>
 
         <div class="form-group">
-          <%= f.label 'Negative control' %>
+          <%= f.label :negative_control, 'Negative control' %>
           <%= f.check_box :negative_control  %>
         </div>
 
