@@ -154,7 +154,10 @@
             </div>
             <br>
 
-            <% url="http://de.m.wikipedia.org/wiki/#{@species.name_for_display}" %>
+            <% name_str=@species.species_component %>
+            <% name_str=name_str.gsub!(' ', '_') %>
+
+            <% url="http://de.m.wikipedia.org/wiki/#{name_str}" %>
 
 
             <div class="wideTable">
