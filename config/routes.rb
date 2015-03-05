@@ -43,7 +43,11 @@ GBOLapp::Application.routes.draw do
 
   resources :lab_racks
 
-  resources :marker_sequences
+  resources :marker_sequences do
+    collection do
+      get :filter
+    end
+  end
 
   resources :orders
 

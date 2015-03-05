@@ -22,6 +22,9 @@ jQuery(function() {
     $('#contig_isolate_name').autocomplete({
         source: $('#contig_isolate_name').data('autocomplete-source')
     });
+    $('#contig_marker_sequence_name').autocomplete({
+        source: $('#contig_marker_sequence_name').data('autocomplete-source')
+    });
 
 //    draw partial_cons
 

@@ -77,7 +77,10 @@ class SpeciesController < ApplicationController
       if @species.update(species_params)
         @species.update(:species_component => @species.get_species_component)
         @species.update(:composed_name=>@species.full_name)
-        format.html { redirect_to species_index_path, notice: 'Species was successfully updated.' }
+        format.html {
+          Issue.create(:title => "#{@species.name_for_display} updated by #{current_user.name}")
+          redirect_to species_index_path, notice: 'Species was successfully updated.'
+        }
         format.json { render :show, status: :ok, location: @species }
       else
         format.html { render :edit }

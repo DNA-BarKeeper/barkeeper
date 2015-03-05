@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150302001516) do
+ActiveRecord::Schema.define(version: 20150305175028) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20150302001516) do
     t.string   "aligned_cons",       limit: 255
     t.text     "pde"
     t.text     "fas"
+    t.boolean  "verified",                       default: false
   end
 
   create_table "copies", force: :cascade do |t|

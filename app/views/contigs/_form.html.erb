@@ -7,101 +7,128 @@
 
     <%= form_for(@contig) do |f| %>
 
-        <div class="col-md-12">
-          <div class="form-group">
-            <%= f.label :name %>
-            <%= f.text_field :name, class: 'form-control' %>
-          </div>
+
+        <div class="form-group">
+          <%= f.label :name %>
+          <%= f.text_field :name, class: 'form-control' %>
         </div>
 
 
-        <div class="col-md-4">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li><a href="#description" role="tab" data-toggle="tab">Description</a></li>
+          <li class="active"><a href="#assembly" role="tab" data-toggle="tab">Assembly</a></li>
+          <li><a href="#reads" role="tab" data-toggle="tab">Reads</a></li>
+          <li><a href="#downloads" role="tab" data-toggle="tab">Downloads</a></li>
+        </ul>
 
-          <div class="form-group">
-            <%= f.label 'Isolate' %>
-            <% if @contig.isolate %>
-                <%= link_to '', edit_isolate_path(@contig.isolate), :class => "glyphicon glyphicon-share-alt" %>
-            <% end %>
-            <%= f.text_field :isolate_name , data: {autocomplete_source: filter_isolates_path} , class: 'form-control'%>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+
+          <div class="tab-pane" id="description">
+            <br>
+            <div class="form-group">
+              <%= f.label 'Isolate' %>
+              <% if @contig.isolate %>
+                  <%= link_to '', edit_isolate_path(@contig.isolate), :class => "glyphicon glyphicon-share-alt" %>
+              <% end %>
+              <%= f.text_field :isolate_name , data: {autocomplete_source: filter_isolates_path} , class: 'form-control'%>
+            </div>
+
+
+            <div class="form-group">
+              <%= f.label 'Marker' %>
+
+              <%= f.collection_select(:marker_id, Marker.all, :id, :name, include_blank: true) %>
+              <% if @contig.marker %>
+                  <%= link_to '', edit_marker_path(@contig.marker), :class => "glyphicon glyphicon-share-alt" %>
+              <% end %>
+            </div>
+
+
+
           </div>
 
-          <div class="form-group">
-            <%= f.label 'Marker' %>
 
-            <%= f.collection_select(:marker_id, Marker.all, :id, :name, include_blank: true) %>
-            <% if @contig.marker %>
-                <%= link_to '', edit_marker_path(@contig.marker), :class => "glyphicon glyphicon-share-alt" %>
-            <% end %>
-          </div>
+          <div class="tab-pane active" id="reads">
 
-          <span class="glyphicon glyphicon-align-center"></span> <%= link_to 'Assemble primer reads', overlap_contig_path %><p></p>
+            <!-- list/ling included reads -->
+            <% assembled=@contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, true) %>
 
-          <div >
-            <%= f.label 'Assembly complete' %>
-            <%= f.check_box :assembled  %>
-          </div>
-
-          <p></p>
-          <% if @contig.overlaps %>
-              <%= @contig.overlaps %> read overlaps.
-          <% end%>
-          <% if @contig.assembled %>
-              Assembly should be complete.
-          <% end %>
-
-
-        </div>
-
-        <div class="col-md-4">
-
-          <!-- list/ling included reads -->
-          <% assembled=@contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, true) %>
-
-          <% if assembled.any? %>
+            <% if assembled.any? %>
                 <br>
-              <p>Included Reads:</p>
-              <% for i in 0...assembled.length %>
-                  <% pr= assembled[i] %>
-                  <%= link_to pr.name, edit_primer_read_path(pr) %><br>
+                <p>Included Reads:</p>
+                <% for i in 0...assembled.length %>
+                    <% pr= assembled[i] %>
+                    <%= link_to pr.name, edit_primer_read_path(pr) %><br>
+                <% end %>
+            <% end %>
+
+            <!-- to be used but not assembled-->
+
+            <% failures=@contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, false)%>
+
+            <% if failures.any? %>
+                <p></p>
+                <p>Assigned Reads not assembled:</p>
+                <% for i in 0...failures.length %>
+                    <% pr= failures[i] %>
+                    <%= link_to pr.name, edit_primer_read_path(pr) %><br>
+                <% end %>
+            <% end %>
+
+            <!-- not to be used -->
+            <% dontuse=@contig.primer_reads.where(:used_for_con => false) %>
+
+            <% if dontuse.any? %>
+                <p></p>
+                <p>Excluded Reads:</p>
+                <% for i in 0...dontuse.length %>
+                    <% pr= dontuse[i] %>
+                    <%= link_to pr.name, edit_primer_read_path(pr) %><br>
+                <% end %>
+            <% end %>
+
+            </div>
+
+            <div class="tab-pane active" id="assembly">
+              <br>
+            <span class="glyphicon glyphicon-align-center"></span> <%= link_to 'Assemble primer reads', overlap_contig_path %><p></p>
+
+            <div >
+              <%= f.label :assembled, 'Assembly complete' %>
+              <%= f.check_box :assembled  %>
+            </div>
+
+            <div >
+              <%= f.label :verified, 'Assembly verified' %>
+              <%= f.check_box :verified  %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label 'Marker Sequence' %>
+              <% if @contig.marker_sequence %>
+                  <%= link_to '', edit_marker_sequence_path(@contig.marker_sequence), :class => "glyphicon glyphicon-share-alt" %>
               <% end %>
-          <% end %>
+              <%= f.text_field :marker_sequence_name , data: {autocomplete_source: filter_marker_sequences_path} , class: 'form-control'%>
+            </div>
 
-          <!-- to be used but not assembled-->
+          </div>
 
-          <% failures=@contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, false)%>
 
-          <% if failures.any? %>
-              <p></p>
-              <p>Assigned Reads not assembled:</p>
-              <% for i in 0...failures.length %>
-                  <% pr= failures[i] %>
-                  <%= link_to pr.name, edit_primer_read_path(pr) %><br>
-              <% end %>
-          <% end %>
+          <div class="tab-pane" id="downloads">
+            <br>
+            <div class="form-group"><span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download aligned sequences as PDE file',  pde_contig_path %><br>
+              <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download aligned sequences as Fasta file',  fasta_contig_path %><br>
+              <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download trimmed sequences as Fasta file',  fasta_trimmed_contig_path %><br>
+              <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download raw sequences as Fasta file',  fasta_raw_contig_path %><br></div>
 
-          <!-- not to be used -->
-          <% dontuse=@contig.primer_reads.where(:used_for_con => false) %>
-
-          <% if dontuse.any? %>
-              <p></p>
-              <p>Excluded Reads:</p>
-              <% for i in 0...dontuse.length %>
-                  <% pr= dontuse[i] %>
-                  <%= link_to pr.name, edit_primer_read_path(pr) %><br>
-              <% end %>
-          <% end %>
+          </div>
         </div>
+        <%= f.submit 'Update', :class =>  'btn btn-primary'%>
 
-        <div class="col-md-4">
-          <br>
-          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download aligned sequences as PDE file',  pde_contig_path %><br>
-          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download aligned sequences as Fasta file',  fasta_contig_path %><br>
-          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download trimmed sequences as Fasta file',  fasta_trimmed_contig_path %><br>
-          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download raw sequences as Fasta file',  fasta_raw_contig_path %><br>
-          <br>
-          <%= f.submit 'Update', :class =>  'btn btn-primary'%>
 
-        </div>
 
     <% end %>
 
@@ -115,11 +142,13 @@
         <% end %>
 
       </div>
+
+
     </div>
 
+
+
+
   </div>
-
-
-</div>
 </div>
 </div>

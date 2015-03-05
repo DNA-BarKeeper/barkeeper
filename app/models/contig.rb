@@ -29,6 +29,19 @@ class Contig < ActiveRecord::Base
     end
   end
 
+  def marker_sequence_name
+    marker_sequence.try(:name)
+  end
+
+  def marker_sequence_name=(name)
+    if name == ''
+      self.marker_sequence = nil
+    else
+      self.marker_sequence = MarkerSequence.find_or_create_by(:name => name) if name.present?
+    end
+  end
+
+
   def generate_name
     if self.marker.present? and self.isolate.present?
       self.name = "#{self.isolate.lab_nr}_#{self.marker.name}"

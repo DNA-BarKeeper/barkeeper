@@ -61,7 +61,10 @@ class ContigsController < ApplicationController
   def update
     respond_to do |format|
       if @contig.update(contig_params)
-        format.html { redirect_to edit_contig_path(@contig), notice: 'Contig was successfully updated.' }
+        format.html {
+          Issue.create(:title => "Contig updated by #{current_user.name}", :contig_id => @contig.id)
+          redirect_to edit_contig_path(@contig), notice: 'Contig was successfully updated.'
+        }
         format.json { render :show, status: :ok, location: @contig }
       else
         format.html { render :edit }
