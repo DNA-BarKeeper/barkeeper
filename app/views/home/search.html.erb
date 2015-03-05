@@ -15,7 +15,7 @@
           <th>Orders</th>
           <th>Families</th>
           <th colspan="2" style="text-align: center">Species</th>
-          <th colspan="3" style="text-align: center">Specimen</th>
+          <th colspan="3" style="text-align: center">Specimens</th>
           <th colspan="4" style="text-align: center">Isolates</th>
           <th>Reads</th>
           <th colspan="4" style="text-align: center">Contigs</th>
@@ -33,16 +33,16 @@
           <th></th>
           <th>spp.</th>
           <th>incl. subspp.</th>
-          <th>Specimen</th>
+          <th>Specimens</th>
           <th></th>
           <th></th>
           <th>spp.</th>
           <th>incl. subspp.</th>
-          <th>Specimen</th>
+          <th>Specimens</th>
           <th></th>
           <th>spp.</th>
           <th>incl. subspp.</th>
-          <th>Specimen</th>
+          <th>Specimens</th>
         </tr>
 
         </thead>
@@ -294,7 +294,7 @@
         <li><%= link_to "Alignments: #{Alignment.all.count}", alignments_path %></li></ul>
       <li>Plants & Taxonomy </li>
       <ul>&lt;!&ndash;create_table "individuals", force: true do |t|&ndash;&gt;
-        <li><%= link_to "Individuals/Specimen: #{Individual.all.count}", individuals_path %></li>
+        <li><%= link_to "Individuals/Specimens: #{Individual.all.count}", individuals_path %></li>
         &lt;!&ndash;create_table "spp", force: true do |t|&ndash;&gt;
         <li><%= link_to "Species: #{Species.all.count}", species_index_path%></li>
         &lt;!&ndash;create_table "families", force: true do |t|&ndash;&gt;
