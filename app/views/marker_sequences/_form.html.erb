@@ -10,49 +10,65 @@
 
     <%= form_for(@marker_sequence) do |f| %>
 
-        <div class="form-group">
-          <%= f.label 'Name' %>
-          <%= f.text_field :name, class: 'form-control' %>
-        </div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
+          <li><a href="#assigned_contigs" role="tab" data-toggle="tab">Contigs</a></li>
+        </ul>
 
-        <div class="form-group">
-          <%= f.label 'Genbank no.' %>
-          <%= f.text_field :genbank,  class: 'form-control' %>
-        </div>
+        <!-- Tab panes -->
+        <div class="tab-content">
 
-        <div class="form-group">
-          <%= f.label :sequence %>
-          <%= f.text_area :sequence, class: 'form-control' %>
-        </div>
+          <div class="tab-pane active" id="description">
+            <br>
 
-        <div class="form-group">
-          <%= f.label :isolate %>
-          <% if @marker_sequence.isolate %>
-              <%= link_to '', edit_isolate_path(@marker_sequence.isolate), :class => "glyphicon glyphicon-share-alt" %>
-          <% end %>
-          <%= f.text_field :isolate_lab_nr , data: {autocomplete_source: filter_isolates_path} , class: 'form-control'%>
-        </div>
+            <div class="form-group">
+              <%= f.label 'Name' %>
+              <%= f.text_field :name, class: 'form-control' %>
+            </div>
 
-        <div class="form-group">
-          <%= f.label :marker %>
-          <%= f.collection_select(:marker_id, Marker.all, :id, :name, :include_blank => '<no marker selected>') %>
+            <div class="form-group">
+              <%= f.label 'Genbank no.' %>
+              <%= f.text_field :genbank,  class: 'form-control' %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :sequence %>
+              <%= f.text_area :sequence, class: 'form-control' %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :isolate %>
+              <% if @marker_sequence.isolate %>
+                  <%= link_to '', edit_isolate_path(@marker_sequence.isolate), :class => "glyphicon glyphicon-share-alt" %>
+              <% end %>
+              <%= f.text_field :isolate_lab_nr , data: {autocomplete_source: filter_isolates_path} , class: 'form-control'%>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :marker %>
+              <%= f.collection_select(:marker_id, Marker.all, :id, :name, :include_blank => '<no marker selected>') %>
+            </div>
+
+          </div>
+
+
+          <div class="tab-pane" id="assigned_contigs">
+            <br>
+            <% if @marker_sequence.contigs.any? %>
+
+                <ul>
+                  <% @marker_sequence.contigs.each do |ct| %>
+                      <li><%= link_to ct.name, edit_contig_path(ct) %></li>
+                  <% end %>
+                </ul>
+            <% end %>
+
+          </div>
+
         </div>
 
         <%= f.submit 'Update', :class => 'btn btn-primary' %>
-    <% end %>
-
-
-    <% if @marker_sequence.contigs.any? %>
-
-        <p></p>
-        <hr>
-        <p></p>
-
-        Contigs:
-
-        <ul><% @marker_sequence.contigs.each do |ct| %>
-            <li><%= link_to ct.name, edit_contig_path(ct) %></li>
-        <% end %></ul>
     <% end %>
 
   </div>

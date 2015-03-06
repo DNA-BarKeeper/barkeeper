@@ -2,137 +2,140 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Isolate</h3>
+    <h3 class="panel-title">Isolate <%= @isolate.lab_nr %></h3>
   </div>
 
   <div class="panel-body">
     <%= form_for(@isolate) do |f| %>
 
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li><a href="#description" role="tab" data-toggle="tab">Description</a></li>
+          <li class="active"><a href="#assigned_contigs" role="tab" data-toggle="tab">Contigs</a></li>
+          <li><a href="#assigned_marker_sequences" role="tab" data-toggle="tab">Sequences</a></li>
+        </ul>
 
-        <div class="form-group">
-          <%= f.label :lab_nr, 'Lab isolation number' %>
-          <%= f.text_field :lab_nr,  class: 'form-control' %>
-        </div>
+        <!-- Tab panes -->
+        <div class="tab-content">
 
-        <div class="form-group">
-          <%= f.label :dna_bank_id, 'DNA Bank ID' %>
-          <%= f.text_field :dna_bank_id,  class: 'form-control' %>
-        </div>
+          <div class="tab-pane" id="description">
+            <br>
+            <div class="form-group">
+              <%= f.label :lab_nr, 'Lab isolation number' %>
+              <%= f.text_field :lab_nr,  class: 'form-control' %>
+            </div>
 
-        <!--individual /Specimen -->
+            <div class="form-group">
+              <%= f.label :dna_bank_id, 'DNA Bank ID' %>
+              <%= f.text_field :dna_bank_id,  class: 'form-control' %>
+            </div>
 
-        <div class="form-group">
-          <%= f.label @isolate, 'Individual / Specimen' %>
-          <% if @isolate.individual %>
-              <%= link_to '', edit_individual_path(@isolate.individual), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@isolate.individual.specimen_id} " %>
-          <% end %>
-          <%= f.text_field :individual_name, data: {autocomplete_source: filter_individuals_path}, class: 'form-control' %>
-        </div>
+            <!--individual /Specimen -->
 
-
-        <div class="form-group">
-          <%= f.label :micronic_tube_id, 'Micronic tube ID' %>
-          <%= f.text_field :micronic_tube_id,  class: 'form-control' %>
-        </div>
-
-        <div class="form-group">
-          <%= f.label :well_pos_plant_plate_plate, 'Well position in tissue plate' %>
-          <%= f.text_field :well_pos_plant_plate,  class: 'form-control' %>
-        </div>
-
-
-        <div class="form-group">
-          <%= f.label :well_pos_micronic_plate, 'Well position in DNA plate' %>
-          <%= f.text_field :well_pos_micronic_plate,  class: 'form-control' %>
-        </div>
+            <div class="form-group">
+              <%= f.label @isolate, 'Individual / Specimen' %>
+              <% if @isolate.individual %>
+                  <%= link_to '', edit_individual_path(@isolate.individual), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@isolate.individual.specimen_id} " %>
+              <% end %>
+              <%= f.text_field :individual_name, data: {autocomplete_source: filter_individuals_path}, class: 'form-control' %>
+            </div>
 
 
-        <div class="form-group">
-          <%= f.label :concentration %>
-          <%= f.number_field :concentration, class: 'form-control' %>
-        </div>
+            <div class="form-group">
+              <%= f.label :micronic_tube_id, 'Micronic tube ID' %>
+              <%= f.text_field :micronic_tube_id,  class: 'form-control' %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :well_pos_plant_plate_plate, 'Well position in tissue plate' %>
+              <%= f.text_field :well_pos_plant_plate,  class: 'form-control' %>
+            </div>
 
 
-        <div class="form-group">
-          <%= f.label :tissue_id, 'Tissue type' %>
-          <%= f.collection_select(:tissue_id, Tissue.all, :id, :name) %>
-        </div>
+            <div class="form-group">
+              <%= f.label :well_pos_micronic_plate, 'Well position in DNA plate' %>
+              <%= f.text_field :well_pos_micronic_plate,  class: 'form-control' %>
+            </div>
 
-        <div class="form-group">
-          <%= f.label :micronic_plate_id, 'Plate (DNA)' %>
-          <%= f.collection_select(:micronic_plate_id, MicronicPlate.all, :id, :name) %>
-        </div>
 
-        <div class="form-group">
-          <%= f.label :plant_plate_id, 'Plate (Tissue)' %>
-          <%= f.collection_select(:plant_plate_id, PlantPlate.all, :id, :name) %>
-        </div>
+            <div class="form-group">
+              <%= f.label :concentration %>
+              <%= f.number_field :concentration, class: 'form-control' %>
+            </div>
 
-        <div class="form-group">
-          <%= f.label :negative_control, 'Negative control' %>
-          <%= f.check_box :negative_control  %>
+
+            <div class="form-group">
+              <%= f.label :tissue_id, 'Tissue type' %>
+              <%= f.collection_select(:tissue_id, Tissue.all, :id, :name) %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :micronic_plate_id, 'Plate (DNA)' %>
+              <%= f.collection_select(:micronic_plate_id, MicronicPlate.all, :id, :name) %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :plant_plate_id, 'Plate (Tissue)' %>
+              <%= f.collection_select(:plant_plate_id, PlantPlate.all, :id, :name) %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :negative_control, 'Negative control' %>
+              <%= f.check_box :negative_control  %>
+            </div>
+
+          </div>
+
+          <div class="tab-pane active" id="assigned_contigs">
+            <br>
+            <table  class="table table-striped table-hover table-bordered">
+
+              <thead>
+              <tr>
+                <th>Name</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <% @isolate.contigs.each do |c| %>
+                  <tr>
+                    <td>
+                      <%= link_to c.name,edit_contig_path(c) %>
+                    </td>
+                  </tr>
+              <% end %>
+              </tbody>
+
+            </table>
+
+          </div>
+
+          <div class="tab-pane" id="assigned_marker_sequences">
+            <br>
+            <table  class="table table-striped table-hover table-bordered">
+
+              <thead>
+              <tr>
+                <th>Name</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <% @isolate.marker_sequences.each do |c| %>
+                  <tr>
+                    <td>
+                      <%= link_to c.name,edit_marker_sequence_path(c) %>
+                    </td>
+                  </tr>
+              <% end %>
+              </tbody>
+
+            </table>
+          </div>
+
         </div>
 
         <%= f.submit 'Update', :class =>  'btn btn-primary' %>
     <% end %>
-  </div>
-</div>
-
-
-<div class="panel panel-default">
-
-  <div class="panel-heading">
-    <h3 class="panel-title">Contigs</h3>
-  </div>
-
-  <div class="panel-body">
-    <table  class="table table-striped table-hover table-bordered">
-
-      <thead>
-      <tr>
-        <th>Name</th>
-      </tr>
-      </thead>
-
-      <tbody>
-      <% @isolate.contigs.each do |c| %>
-          <tr>
-            <td>
-              <%= link_to c.name,edit_contig_path(c) %>
-            </td>
-          </tr>
-      <% end %>
-      </tbody>
-
-    </table>
-  </div>
-</div>
-
-<div class="panel panel-default">
-
-  <div class="panel-heading">
-    <h3 class="panel-title">Marker Sequences</h3>
-  </div>
-
-  <div class="panel-body">
-    <table  class="table table-striped table-hover table-bordered">
-
-      <thead>
-      <tr>
-        <th>Name</th>
-      </tr>
-      </thead>
-
-      <tbody>
-      <% @isolate.marker_sequences.each do |c| %>
-          <tr>
-            <td>
-              <%= link_to c.name,edit_marker_sequence_path(c) %>
-            </td>
-          </tr>
-      <% end %>
-      </tbody>
-
-    </table>
   </div>
 </div>

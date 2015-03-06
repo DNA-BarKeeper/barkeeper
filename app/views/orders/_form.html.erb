@@ -9,20 +9,56 @@
 
   <div class="panel-body">
     <%= form_for(@order) do |f| %>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li><a href="#description" role="tab" data-toggle="tab">Description</a></li>
+          <li class="active"><a href="#assigned_families" role="tab" data-toggle="tab">Families</a></li>
+        </ul>
 
-        <div class="form-group">
-          <%= f.label :name %>
-          <%= f.text_field :name, class: 'form-control' %>
-        </div>
+        <!-- Tab panes -->
+        <div class="tab-content">
 
-        <div class="form-group">
-          <%= f.label :author %>
-          <%= f.text_field :author, class: 'form-control' %>
-        </div>
+          <div class="tab-pane" id="description">
+            <br>
 
-        <div class="form-group">
-          <%= f.label 'Belongs to' %>
-          <%= f.collection_select(:higher_order_taxon_id, HigherOrderTaxon.all, :id, :name) %>
+            <div class="form-group">
+              <%= f.label :name %>
+              <%= f.text_field :name, class: 'form-control' %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :author %>
+              <%= f.text_field :author, class: 'form-control' %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label 'Belongs to' %>
+              <%= f.collection_select(:higher_order_taxon_id, HigherOrderTaxon.all, :id, :name) %>
+            </div>
+          </div>
+
+          <div class="tab-pane active" id="assigned_families">
+            <br>
+            <table  class="table table-striped table-hover table-bordered">
+
+              <thead>
+              <tr>
+                <th>Name</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <% @order.families.order(:name).each do |c| %>
+                  <tr>
+                    <td>
+                      <%= link_to c.name,edit_family_path(c) %>
+                    </td>
+                  </tr>
+              <% end %>
+              </tbody>
+
+            </table>
+          </div>
         </div>
 
         <%= f.submit 'Update', :class => 'btn btn-primary' %>
@@ -30,31 +66,3 @@
   </div>
 </div>
 
-<div class="panel panel-default">
-
-  <div class="panel-heading">
-    <h3 class="panel-title">Families</h3>
-  </div>
-
-  <div class="panel-body">
-    <table  class="table table-striped table-hover table-bordered">
-
-      <thead>
-      <tr>
-        <th>Name</th>
-      </tr>
-      </thead>
-
-      <tbody>
-      <% @order.families.order(:name).each do |c| %>
-          <tr>
-            <td>
-              <%= link_to c.name,edit_family_path(c) %>
-            </td>
-          </tr>
-      <% end %>
-      </tbody>
-
-    </table>
-  </div>
-</div>
