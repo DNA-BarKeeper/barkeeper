@@ -129,12 +129,41 @@ class PrimerReadsController < ApplicationController
   end
 
   def change_base
-    # respond_to :js
-    #TODO how to get data sent by ajax call?
+
     sequence= @primer_read.sequence
     pos=params[:position].to_i
     base=params[:base]
-    sequence[pos]=base
+
+    # if insertions needed: handle inserting new elements in qualities etc. arrays
+    if base.length > 1
+
+      insertions_needed=base.length-1
+
+      qualities=@primer_read.qualities
+      insertions_needed.times do
+        # insert placeholder element into qualities
+        qualities.insert(pos+1,-10) #-1 already taken by aligned_qualities to indicate "gap" to be drawn in contig view
+      end
+
+      peak_indices=@primer_read.peak_indices
+
+      #compute new indices based on existing neighbors:
+      left_index=peak_indices[pos]
+      right_index=peak_indices[pos+1]
+      distance=right_index-left_index
+      x_increment=(distance/base.length)
+
+      x=left_index
+      insertions_needed.times do
+        x=x+x_increment
+        # insert placeholder element into peak_indices:
+        peak_indices.insert(pos+1,x)
+      end
+
+    end
+
+    #in all cases (replacement, insertion & deletion) insert string:
+    sequence[pos] = base
     @primer_read.update(:sequence => sequence)
     render :nothing => true
   end

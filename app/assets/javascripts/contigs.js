@@ -73,13 +73,6 @@ function draw_contig(partial_cons){
     for(var partial_cons_index = 0; partial_cons_index < partial_cons.length; partial_cons_index++){
         var partial_contig = partial_cons[partial_cons_index];
 
-        console.log("working on:");
-        console.log(partial_cons_index);
-        console.log("out of ");
-        console.log(partial_cons.length);
-        console.log(partial_contig.id);
-
-
         var used_reads = partial_contig.primer_reads;
 
         for (var j=0; j < used_reads.length; j++){

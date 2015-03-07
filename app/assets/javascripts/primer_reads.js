@@ -105,7 +105,7 @@ function draw_chromatogram(chromatogram1){
 
     for(var i = 0; i < chromatogram1.peak_indices.length; i++){
         var pos = chromatogram1.peak_indices[i];
-        var ch = chromatogram1.sequence[i];
+        var ch = chromatogram1.sequence[i]; //TODO check if works when >1 char @ pos
 
         var color='gray';
         var ta='middle';
@@ -189,96 +189,57 @@ function draw_chromatogram(chromatogram1){
                         'height': 20
                     })
                     .append("xhtml:form")
-                        .append('xhtml:input')
-                            .attr("value", current_char)
-                            .on("keypress", function() {
+                    .append('xhtml:input')
+                    .attr("value", current_char)
+                    .on("keypress", function() {
 
-                                if (d3.event.keyCode===13) {
+                        if (d3.event.keyCode===13) {
 
-                                    event.preventDefault(); // cancel default behavior
+                            event.preventDefault(); // cancel default behavior
 
-                                    var newBase = inp.node().value[0];
-                                    selected_base.text(newBase);
+                            var newBase = inp.node().value;
 
-                                    if (newBase=="A"){
-                                        selected_base.attr("fill", 'green');
-                                    } else if (newBase=="C"){
-                                        selected_base.attr("fill", 'blue');
-                                    } else if (newBase=="G"){
-                                        selected_base.attr("fill", 'black');
-                                    } else if (newBase=="T"){
-                                        selected_base.attr("fill", 'red');
-                                    } else {
-                                        selected_base.attr("fill", 'grey');
-                                    }
+                            if (newBase==" " || newBase=="" || newBase=="_") {
+                                newBase = "-";
+                            }
 
-                                    change_base(base_index, newBase, change_base_primer_read_url);
+                            change_base(base_index, newBase, change_base_primer_read_url);
 
-                                    frm.remove();
-                                }
-                            });
+                            selected_base.text(newBase);
+
+                            if (newBase=="A"){
+                                selected_base.attr("fill", 'green');
+                            } else if (newBase=="C"){
+                                selected_base.attr("fill", 'blue');
+                            } else if (newBase=="G"){
+                                selected_base.attr("fill", 'black');
+                            } else if (newBase=="T"){
+                                selected_base.attr("fill", 'red');
+                            } else {
+                                selected_base.attr("fill", 'grey');
+                            }
+
+
+                            frm.remove();
+                        }
+                    });
 
             });
-            //.on('contextmenu', function(){
-            //
-            //    var selected_base=d3.select(this);
-            //    var current_x=selected_base.attr("x");
-            //    var current_y=selected_base.attr("y");
-            //
-            //    current_x=parseInt(current_x)+5;
-            //
-            //    svg.append("text")
-            //        .attr("x", current_x)
-            //        .attr("y", current_y)
-            //        .text("A")
-            //        .attr("font-family", "sans-serif")
-            //        .attr("font-size", "10px")
-            //        .attr("fill", "grey")
-            //        .attr("text-anchor", "middle")
-            //        .on('mouseover', function(){
-            //            d3.select(this)
-            //                .style('font-size','14px')
-            //                .style('font-weight', 'bold')
-            //        })
-            //        .on('mouseout', function(){
-            //            d3.select(this)
-            //                .style('font-size','10px')
-            //                .style('font-weight', 'normal')
-            //        })
-            //        .on('dblclick', function(){
-            //            var selected_base=d3.select(this);
-            //            var current_char=selected_base.text();
-            //            if (current_char=="A"){
-            //                selected_base.text("C");
-            //                selected_base.attr("fill", 'blue');
-            //            } else if (current_char=="C"){
-            //                selected_base.text("G");
-            //                selected_base.attr("fill", 'black');
-            //            } else if (current_char=="G"){
-            //                selected_base.text("T");
-            //                selected_base.attr("fill", 'red');
-            //            } else if (current_char=="T"){
-            //                selected_base.text("-");
-            //                selected_base.attr("fill", 'grey');
-            //            } else if (current_char=="-"){
-            //                selected_base.text("A");
-            //                selected_base.attr("fill", 'green');
-            //            }
-            //        })
-            //});
 
         color='gray';
 
         //quality scores
-
-        svg.append("text")
-            .attr("x", pos)
-            .attr("y", 40)
-            .text(chromatogram1.qualities[i])
-            .attr("font-family", "sans-serif")
-            .attr("font-size", "7px")
-            .attr("fill", color)
-            .attr("text-anchor", ta);
+        var q=chromatogram1.qualities[i];
+        if (q > -1) {
+            svg.append("text")
+                .attr("x", pos)
+                .attr("y", 40)
+                .text(q)
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "7px")
+                .attr("fill", color)
+                .attr("text-anchor", ta);
+        }
     }
 }
 
