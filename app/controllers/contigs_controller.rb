@@ -2,7 +2,7 @@ class ContigsController < ApplicationController
 
   before_filter :authenticate_user!, :except => [:edit, :index, :filter]
 
-  before_action :set_contig, only: [:pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :show, :edit, :update, :destroy]
+  before_action :set_contig, only: [:pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :overlap_background, :show, :edit, :update, :destroy]
 
   # GET /contigs
   # GET /contigs.json
@@ -85,6 +85,13 @@ class ContigsController < ApplicationController
 
 
   def overlap
+
+    @contig.auto_overlap
+    redirect_to edit_contig_path, notice: 'Assembly finished.'
+
+  end
+
+  def overlap_background
 
     ContigAssembly.perform_async(@contig.id)
     # @contig.auto_overlap

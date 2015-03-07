@@ -16,39 +16,47 @@ a {
 .column {
   @extend .col-md-6;
   @extend .text-center;
-  }
+}
 .form {
   @extend .col-md-6;
-  }
+}
 .form-centered {
   @extend .col-md-6;
   @extend .text-center;
-  }
+}
 .submit {
   @extend .btn;
   @extend .btn-primary;
   @extend .btn-lg;
-  }
+}
 
 // apply styles to HTML elements
 // to make views framework-neutral
 main {
   @extend .container;
-//  background-color: #eee;
+  //  background-color: #eee;
   padding-bottom: 80px;
   width: 100%;
   margin-top: 51px; // accommodate the navbar
-  }
+}
+
 section {
   @extend .row;
   margin-top: 20px;
-  }
+}
+
+input[type=text] {
+  border: none;
+  padding: 0;
+  -webkit-appearance: none;
+  box-shadow: none !important;
+}
 
 input.sequence_position_left {
-    text-align: right;
-    width: 40px;
-    border: 0px;
- }
+  text-align: right;
+  width: 40px;
+  border: 0px;
+}
 input.sequence_position_right {
   text-align: left;
   width: 40px;

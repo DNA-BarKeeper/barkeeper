@@ -117,6 +117,7 @@ GBOLapp::Application.routes.draw do
       get 'fasta_trimmed'
       get 'fasta_raw'
       get 'overlap'
+      get 'overlap_background'
     end
   end
 

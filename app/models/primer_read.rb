@@ -360,7 +360,8 @@ class PrimerRead < ActiveRecord::Base
     else
       if trimmedReadEnd > trimmedReadStart
         raw_sequence = self.sequence[(self.trimmedReadStart-1)..(self.trimmedReadEnd-1)] if self.sequence.present?
-        cleaned_sequence = raw_sequence.gsub('-', '') # in case basecalls in pherogram have already '-' - as in some crappy seq. I got from BN
+        raw_sequence
+        #cleaned_sequence = raw_sequence.gsub('-', '') # in case basecalls in pherogram have already '-' - as in some crappy seq. I got from BN
       else
         nil
       end

@@ -91,18 +91,14 @@
 
           <div class="tab-pane active" id="assembly">
             <br>
-            <span class="glyphicon glyphicon-align-center"></span> <%= link_to 'Assemble primer reads', overlap_contig_path %><p></p>
-
+            <span class="glyphicon glyphicon-align-center"></span> <%= link_to 'Assemble primer reads', overlap_contig_path %><br>
+            <span class="glyphicon glyphicon-align-center"></span> <%= link_to 'Assemble in background', overlap_background_contig_path %>
+            <br>
             <div >
               <%= f.label :assembled, 'Assembly complete' %>
               <%= f.check_box :assembled  %>
             </div>
-
-            <div >
-              <%= f.label :verified, 'Assembly verified' %>
-              <%= f.check_box :verified  %>
-            </div>
-
+            <br>
             <div class="form-group">
               <%= f.label 'Marker Sequence' %>
               <% if @contig.marker_sequence %>
@@ -110,6 +106,13 @@
               <% end %>
               <%= f.text_field :marker_sequence_name , data: {autocomplete_source: filter_marker_sequences_path} , class: 'form-control'%>
             </div>
+
+            <div >
+              <%= f.label :verified, 'Assembly verified' %>
+              <%= f.check_box :verified  %>
+            </div>
+
+
 
           </div>
 
