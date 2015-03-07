@@ -266,15 +266,24 @@ function draw_contig(partial_cons){
                 .text(pr.name)
                 .attr("font-family", "sans-serif")
                 .attr("font-size", font_size)
-                .attr("fill", color);
-            //
-            //d3.select("text").on({
-            //    "click":  function() {
-            //        var edit_read_location = "http://www.gbol5.de/primer_reads/" + pr.id + "/edit";
-            //        alert(edit_read_location);
-            //        //window.location.href = edit_read_location;
-            //    }
-            //});
+                .attr("fill", color)
+                .attr("cursor", "pointer")
+                .attr("id", current_read_id)
+                .on('mouseover', function(){
+                    d3.select(this)
+                        .attr('fill','#3072ed')
+
+                })
+                .on('mouseout', function(){
+                    d3.select(this)
+                        .attr('fill','black')
+                })
+                .on('click', function(){
+                    var selected_primer = d3.select(this);
+                    var primer_id = selected_primer.attr("id");
+                    window.location.href = "http://www.gbol5.de/primer_reads/" + primer_id + "/edit";
+                });
+
 
             //color = 'gray';
             font_size = '10px';
