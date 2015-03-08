@@ -37,8 +37,7 @@ jQuery(function() {
         draw_chromatogram(chromatogram1);
     }
 
-    $('#chromatogram_container').scrollLeft(100);
-
+    //$('#chromatogram_container').scrollLeft(100);
 
 });
 
@@ -108,7 +107,7 @@ function draw_chromatogram(chromatogram1){
 
     for(var i = 0; i < chromatogram1.peak_indices.length; i++){
         var pos = chromatogram1.peak_indices[i];
-        var ch = chromatogram1.sequence[i]; //TODO check if works when >1 char @ pos
+        var ch = chromatogram1.sequence[i];
 
         var color='gray';
         var ta='middle';
@@ -265,3 +264,43 @@ function change_base(base_index, base, change_base_primer_read_url) {
     });
     return 0;
 }
+
+//var resize = d3.behavior.drag()
+//    .origin(function() {
+//        var current = d3.select(this);
+//        return {x: current.attr("x"), y: current.attr("y") };
+//    })
+//    .on("drag", dragResize);
+//
+//function dragResize(){
+//    var dragx = Math.max(dx + (16/2), Math.min(w, dx + width + d3.event.dx));
+//
+//
+//    //console.log("resize x:"+x+" y:"+y);
+//    console.log("d3.event.x:"+d3.event.dx);
+//
+//    var dragTarget = d3.select(this);
+//    var dragObject = d3.select(this.parentNode);
+//
+//    var o = dragObject.select("rect.box");
+//    var o1 = dragObject.select("rect.titleBox");
+//
+//
+//    var oldx = dx;
+//    var oldy = dy;
+//
+//    dx = Math.max(0, Math.min(dx + width - (16 / 2), d3.event.x));
+//    dy = Math.max(0, Math.min(dy + height - (16 ), d3.event.y));
+//    w = w - (oldx - dx);
+//    h = h - (oldy - dy);
+//
+//
+//    dragTarget
+//        .attr("x", function(d) { return dragx - (16/2) })
+//        .attr("y", function(d) { return dragy - (16) })
+//
+//    o.attr("width", w)
+//        .attr("height", h);
+//
+//    o1.attr("width", w);
+//};

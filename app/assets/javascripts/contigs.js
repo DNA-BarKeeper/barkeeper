@@ -50,6 +50,7 @@ function draw_contig(partial_cons){
 //        20 for gap between reads & consensus
 //        20 for consensus
 //        20 for consensus_qualities
+//        20 for coordinates
 //        20 for gap between partials
 
     var h=partial_cons.length*80;
@@ -57,7 +58,7 @@ function draw_contig(partial_cons){
         h+= partial_cons[q].primer_reads.length*80;
     }
 
-    d3.select('#contig')
+    var svg=d3.select('#contig')
         .append('svg')
         .attr('width', 15000)
         .attr('height', h);
@@ -121,9 +122,9 @@ function draw_contig(partial_cons){
             }
 
             //draw traces
-            for (i=0; i< aligned_peak_indices.length; i++){
+            for (var i=0; i< aligned_peak_indices.length; i++){
 
-                x=block_start+10*i;
+                x=(block_start-5)+10*i; // -5 to accommodate "middle" text-anchor for associated text
 
                 var current_peak = aligned_peak_indices[i];
 
@@ -187,35 +188,39 @@ function draw_contig(partial_cons){
                         //extract segment from array
                         var atrace_segment = pr.atrace.slice(first_position, second_position+1);
 
-                        d3.select('svg').append("path")
+                        svg.append("path")
                             .attr("d", scaled_line_function(atrace_segment))
                             .attr("stroke", "green")
                             .attr("stroke-width", 0.5)
-                            .attr("fill", "none");
+                            .attr("fill", "none")
+                            .attr("text-anchor", 'middle');
                         //C
                         //extract segment from array
                         var ctrace_segment = pr.ctrace.slice(first_position, second_position+1);
-                        d3.select('svg').append("path")
+                        svg.append("path")
                             .attr("d", scaled_line_function(ctrace_segment))
                             .attr("stroke", "blue")
                             .attr("stroke-width", 0.5)
-                            .attr("fill", "none");
+                            .attr("fill", "none")
+                            .attr("text-anchor", 'middle');
                         //G
                         //extract segment from array
                         var gtrace_segment = pr.gtrace.slice(first_position, second_position+1);
-                        d3.select('svg').append("path")
+                        svg.append("path")
                             .attr("d", scaled_line_function(gtrace_segment))
                             .attr("stroke", "black")
                             .attr("stroke-width", 0.5)
-                            .attr("fill", "none");
+                            .attr("fill", "none")
+                            .attr("text-anchor", 'middle');
                         //T
                         //extract segment from array
                         var ttrace_segment = pr.ttrace.slice(first_position, second_position+1);
-                        d3.select('svg').append("path")
+                        svg.append("path")
                             .attr("d", scaled_line_function(ttrace_segment))
                             .attr("stroke", "red")
                             .attr("stroke-width", 0.5)
-                            .attr("fill", "none");
+                            .attr("fill", "none")
+                            .attr("text-anchor", 'middle');
                     }
 
                 }
@@ -231,21 +236,22 @@ function draw_contig(partial_cons){
 
             x=block_start;
 
-            for (var q=0; q< qual1.length; q++){
+            for (q=0; q< qual1.length; q++){
                 var ch= qual1[q];
                 x=x+10;
 
-                if (qual1[q]!=-1){
+                if (qual1[q]>-1){
 
                     //ctx.strokeText(ch, x, y);
 
-                    d3.select('svg').append("text")
+                    svg.append("text")
                         .attr("x", x)
                         .attr("y", y)
                         .text(ch)
                         .attr("font-family", "sans-serif")
                         .attr("font-size", font_size)
-                        .attr("fill", color);
+                        .attr("fill", color)
+                        .attr("text-anchor", 'middle');
                 }
             }
 
@@ -260,7 +266,7 @@ function draw_contig(partial_cons){
 
             //var read_label="pr"+pr.id;
 
-            d3.select('svg').append("text")
+            svg.append("text")
                 .attr("x", x)
                 .attr("y", y)
                 .text(pr.name)
@@ -308,13 +314,14 @@ function draw_contig(partial_cons){
 
                 x=x+10;
 
-                d3.select('svg').append("text")
+                svg.append("text")
                     .attr("x", x)
                     .attr("y", y)
                     .text(ch)
                     .attr("font-family", "sans-serif")
                     .attr("font-size", font_size)
                     .attr("fill", color)
+                    .attr("text-anchor", 'middle');
             }
 
             y=y+20;
@@ -334,14 +341,15 @@ function draw_contig(partial_cons){
             for (s=0; s< partial_contig.aligned_qualities.length; s++){
                 ch= partial_contig.aligned_qualities[s];
                 x=x+10;
-                if (partial_contig.aligned_qualities[s]!=-1){
+                if (partial_contig.aligned_qualities[s]>-10){
                     d3.select('svg').append("text")
                         .attr("x", x)
                         .attr("y", y)
                         .text(ch)
                         .attr("font-family", "sans-serif")
                         .attr("font-size", font_size)
-                        .attr("fill", color);
+                        .attr("fill", color)
+                .attr("text-anchor", 'middle');
                 }
             }
 
@@ -353,7 +361,7 @@ function draw_contig(partial_cons){
             font_size = '12px';
 
 
-            d3.select('svg').append("text")
+            svg.append("text")
                 .attr("x", x)
                 .attr("y", y)
                 .text('Consensus')
@@ -382,7 +390,7 @@ function draw_contig(partial_cons){
                 }
                 x=x+10;
 
-                d3.select('svg').append("text")
+                svg.append("text")
                     .attr("x", x)
                     .attr("y", y)
                     .text(ch)
@@ -390,7 +398,43 @@ function draw_contig(partial_cons){
                     .attr("font-size", font_size)
                     .attr("font-weight", "bold")
                     .attr("fill", color)
+                    .attr("text-anchor", 'middle');
             }
+            y+=10;
+
+
+            // coordinates - position indicator
+
+            color = 'gray';
+            font_size = '7px';
+            x=block_start;
+
+            for (var c=0; c < partial_contig.aligned_sequence.length; c++) {
+                var disp = c + 1;
+
+                if (disp % 10 == 0) {
+
+                    svg.append("text")
+                        .attr("x", x+10)
+                        .attr("y", y)
+                        .text('.')
+                        .attr("font-family", "sans-serif")
+                        .attr("font-size", "7px")
+                        .attr("fill", color)
+                        .attr("text-anchor", 'middle');
+                    svg.append("text")
+                        .attr("x", x+10)
+                        .attr("y", y+10)
+                        .text(disp)
+                        .attr("font-family", "sans-serif")
+                        .attr("font-size", font_size)
+                        .attr("fill", color)
+                        .attr("text-anchor", 'middle');
+
+                }
+                x+=10;
+            }
+
             y+=20;
 
         }
