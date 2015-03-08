@@ -22,5 +22,4 @@
 //= require bootstrap
 //= require_tree .
 
-
-$('textarea').autosize();
+//$('textarea').autosize();
