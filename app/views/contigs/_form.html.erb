@@ -1,4 +1,6 @@
+<% provide(:title, @contig.name) %>
 <%= show_val_errors(@contig)%>
+
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Contig <%= @contig.name %></h3>
@@ -14,7 +16,6 @@
           <li><a href="#reads" role="tab" data-toggle="tab">Reads</a></li>
           <li><a href="#downloads" role="tab" data-toggle="tab">Downloads</a></li>
         </ul>
-
 
         <!-- Tab panes -->
         <div class="tab-content">
@@ -91,8 +92,7 @@
 
           <div class="tab-pane active" id="assembly">
             <br>
-            <span class="glyphicon glyphicon-align-center"></span> <%= link_to 'Assemble primer reads', overlap_contig_path %><br>
-            <span class="glyphicon glyphicon-align-center"></span> <%= link_to 'Assemble in background', overlap_background_contig_path %>
+            <span class="glyphicon glyphicon-align-center"></span> <%= link_to 'Assemble primer reads', overlap_contig_path %> | <%= link_to 'Assemble in background', overlap_background_contig_path %>
             <br>
             <div >
               <%= f.label :assembled, 'Assembly complete' %>

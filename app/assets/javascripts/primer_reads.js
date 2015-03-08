@@ -37,6 +37,9 @@ jQuery(function() {
         draw_chromatogram(chromatogram1);
     }
 
+    $('#chromatogram_container').scrollLeft(100);
+
+
 });
 
 
@@ -230,7 +233,8 @@ function draw_chromatogram(chromatogram1){
 
         //quality scores
         var q=chromatogram1.qualities[i];
-        if (q > -1) {
+        //ignore manually entered bases with fake qualities "-10"
+        if (q > -10) {
             svg.append("text")
                 .attr("x", pos)
                 .attr("y", 40)

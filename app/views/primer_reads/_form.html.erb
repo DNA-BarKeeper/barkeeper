@@ -1,3 +1,4 @@
+<% provide(:title, @primer_read.name) %>
 <%= show_val_errors(@primer_read)%>
 
 <div class="panel panel-default">
@@ -113,11 +114,11 @@
 
 
     <% end %>
+
     <!--chromatogram view-->
 
-
     <hr>
-    <div class="alignment" >
+    <div class="alignment" id="chromatogram_container">
 
       <%= content_tag "div", id: "chromatogram", data: {url: @primer_read } do %>
 
