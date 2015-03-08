@@ -61,7 +61,7 @@ function draw_contig(partial_cons){
     var svg=d3.select('#contig')
         .append('svg')
         .attr('width', 15000)
-        .attr('height', h);
+        .attr('height', h-30);
 
     var x=0;
     var y=20;
@@ -290,8 +290,6 @@ function draw_contig(partial_cons){
                     window.location.href = "http://www.gbol5.de/primer_reads/" + primer_id + "/edit";
                 });
 
-
-            //color = 'gray';
             font_size = '10px';
 
             x=block_start;
@@ -321,7 +319,9 @@ function draw_contig(partial_cons){
                     .attr("font-family", "sans-serif")
                     .attr("font-size", font_size)
                     .attr("fill", color)
-                    .attr("text-anchor", 'middle');
+                    .attr("text-anchor", 'middle')
+                    .append("svg:title")
+                    .text((s+1)+' in '+pr.name);
             }
 
             y=y+20;
@@ -349,7 +349,7 @@ function draw_contig(partial_cons){
                         .attr("font-family", "sans-serif")
                         .attr("font-size", font_size)
                         .attr("fill", color)
-                .attr("text-anchor", 'middle');
+                        .attr("text-anchor", 'middle');
                 }
             }
 
@@ -442,5 +442,5 @@ function draw_contig(partial_cons){
 
         //end loop through partial_cons
     }
-    y+=20;
+    y += 20;
 }

@@ -13,7 +13,6 @@
         <ul class="nav nav-tabs" role="tablist">
           <li><a href="#description" role="tab" data-toggle="tab">Description</a></li>
           <li class="active"><a href="#assembly" role="tab" data-toggle="tab">Assembly</a></li>
-          <li><a href="#reads" role="tab" data-toggle="tab">Reads</a></li>
           <li><a href="#downloads" role="tab" data-toggle="tab">Downloads</a></li>
         </ul>
 
@@ -46,49 +45,6 @@
 
           </div>
 
-
-          <div class="tab-pane" id="reads">
-
-            <!-- list/ling included reads -->
-            <% assembled=@contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, true) %>
-
-            <% if assembled.any? %>
-                <br>
-                <p>Included Reads:</p>
-                <% for i in 0...assembled.length %>
-                    <% pr= assembled[i] %>
-                    <%= link_to pr.name, edit_primer_read_path(pr) %><br>
-                <% end %>
-            <% end %>
-
-            <!-- to be used but not assembled-->
-
-            <% failures=@contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, false)%>
-
-            <% if failures.any? %>
-                <p></p>
-                <p>Assigned Reads not assembled:</p>
-                <% for i in 0...failures.length %>
-                    <% pr= failures[i] %>
-                    <%= link_to pr.name, edit_primer_read_path(pr) %><br>
-                <% end %>
-            <% end %>
-
-            <!-- not to be used -->
-            <% dontuse=@contig.primer_reads.where(:used_for_con => false) %>
-
-            <% if dontuse.any? %>
-                <p></p>
-                <p>Excluded Reads:</p>
-                <% for i in 0...dontuse.length %>
-                    <% pr= dontuse[i] %>
-                    <%= link_to pr.name, edit_primer_read_path(pr) %><br>
-                <% end %>
-            <% end %>
-
-            <br>
-
-          </div>
 
           <div class="tab-pane active" id="assembly">
             <br>
@@ -141,6 +97,28 @@
 
     </div>
 
+    <!-- to be used but not assembled-->
+
+    <% failures=@contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, false)%>
+
+    <% if failures.any? %>
+        Assigned reads not yet assembled:<br>
+        <% for i in 0...failures.length %>
+            <% pr= failures[i] %>
+            <%= link_to pr.name, edit_primer_read_path(pr) %><br>
+        <% end %>
+    <% end %>
+
+    <!-- not to be used -->
+    <% dontuse=@contig.primer_reads.where(:used_for_con => false) %>
+
+    <% if dontuse.any? %>
+        <br>Excluded Reads:<br>
+        <% for i in 0...dontuse.length %>
+            <% pr= dontuse[i] %>
+            <%= link_to pr.name, edit_primer_read_path(pr) %><br>
+        <% end %>
+    <% end %>
 
   </div>
 </div>
