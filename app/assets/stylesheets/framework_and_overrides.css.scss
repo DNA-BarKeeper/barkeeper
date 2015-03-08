@@ -3,7 +3,8 @@
 @import "bootstrap";
 
 a {
-  color: #000;
+  color: inherit;
+
   &:visited {
     color: inherit;
   }
