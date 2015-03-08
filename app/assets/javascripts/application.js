@@ -14,9 +14,13 @@
 //= require jquery-ui
 //= require jquery_ujs
 //= require dataTables/jquery.dataTables
+//= require jquery.autosize
 //= require jquery-fileupload/basic
 //= require jquery-fileupload/vendor/tmpl
 //= require turbolinks
 //= require jquery.turbolinks
 //= require bootstrap
 //= require_tree .
+
+
+$('textarea').autosize();

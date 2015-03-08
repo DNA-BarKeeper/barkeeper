@@ -52,6 +52,16 @@ input[type=text] {
   box-shadow: none !important;
 }
 
+textarea {
+  border: none !important;
+  overflow: auto !important;
+  outline: none !important;
+
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
 input.sequence_position_left {
   text-align: right;
   width: 40px;
