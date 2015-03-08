@@ -107,11 +107,13 @@ GBOLapp::Application.routes.draw do
 
   resources :contigs do
     collection do
+      get 'show_need_verify'
       get 'filter'
       get 'assemble_all'
       get 'pde_all'
     end
     member do
+      get 'verify'
       get 'pde'
       get 'fasta'
       get 'fasta_trimmed'

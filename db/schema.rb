@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150305175028) do
+ActiveRecord::Schema.define(version: 20150308202429) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,8 @@ ActiveRecord::Schema.define(version: 20150305175028) do
     t.text     "pde"
     t.text     "fas"
     t.boolean  "verified",                       default: false
+    t.integer  "verified_by"
+    t.datetime "verified_at"
   end
 
   create_table "copies", force: :cascade do |t|

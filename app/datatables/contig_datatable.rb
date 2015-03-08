@@ -8,8 +8,9 @@ class ContigDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view)
+  def initialize(view, need_verify)
     @view = view
+    @need_verify = need_verify
   end
 
   def as_json(options = {})
@@ -44,7 +45,11 @@ class ContigDatatable
 
   def fetch_contigs
 
-    contigs = Contig.order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    if @need_verify
+      contigs = Contig.assembled_need_verification.order("#{sort_column} #{sort_direction}")
+    else
+      contigs = Contig.order("#{sort_column} #{sort_direction}")
+    end
     contigs = contigs.page(page).per_page(per_page)
 
     if params[:sSearch].present?

@@ -2,14 +2,21 @@ class ContigsController < ApplicationController
 
   before_filter :authenticate_user!, :except => [:edit, :index, :filter]
 
-  before_action :set_contig, only: [:pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :overlap_background, :show, :edit, :update, :destroy]
+  before_action :set_contig, only: [:verify, :pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :overlap_background, :show, :edit, :update, :destroy]
 
   # GET /contigs
   # GET /contigs.json
   def index
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context) }
+      format.json { render json: ContigDatatable.new(view_context, false) }
+    end
+  end
+
+  def show_need_verify #assembled according to app but need manual check
+    respond_to do |format|
+      format.html
+      format.json { render json: ContigDatatable.new(view_context, true) }
     end
   end
 
@@ -24,6 +31,19 @@ class ContigsController < ApplicationController
     @contigs = Contig.order(:name).where("name like ?", "%#{params[:term]}%")
     render json: @contigs.map(&:name)
   end
+
+  def verify
+    if @contig.verified_by
+      @contig.update(:verified_by => nil, :verified_at => nil)
+      redirect_to edit_contig_path, notice: "Set to non-verified."
+    else
+      @contig.update(:verified_by => current_user.id, :verified_at => Time.now)
+      redirect_to edit_contig_path, notice: "Verified."
+    end
+  end
+
+
+
 
   # GET /contigs/1
   # GET /contigs/1.json

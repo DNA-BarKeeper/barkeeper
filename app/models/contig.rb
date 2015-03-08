@@ -8,6 +8,12 @@ class Contig < ActiveRecord::Base
   has_many :issues
   has_many :partial_cons
 
+  scope :assembled, -> { where(:assembled => true)}
+  scope :not_assembled, -> { where.not(:assembled => true)}
+  scope :verified, -> { where.not(:verified_by => nil)}
+  scope :need_verification, -> { where(:verified_by => nil)}
+  scope :assembled_need_verification, -> { assembled.where(:verified_by => nil)}
+
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
 
     contigs=Contig.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})

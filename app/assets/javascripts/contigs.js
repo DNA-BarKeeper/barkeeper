@@ -57,10 +57,18 @@ function draw_contig(partial_cons){
     for(var q = 0; q < partial_cons.length; q++) {
         h+= partial_cons[q].primer_reads.length*80;
     }
+    h=Math.max(h,30); //for cases where 0
+
+    var max_width=0;
+    for(var partial_cons_index = 0; partial_cons_index < partial_cons.length; partial_cons_index++) {
+        var partial_contig = partial_cons[partial_cons_index];
+        max_width=Math.max(partial_contig.aligned_sequence.length, max_width);
+    }
+
 
     var svg=d3.select('#contig')
         .append('svg')
-        .attr('width', 15000)
+        .attr('width', max_width*10+350)
         .attr('height', h-30);
 
     var x=0;
@@ -71,8 +79,8 @@ function draw_contig(partial_cons){
     var font_family = "sans-serif";
     var font_size = "7px";
 
-    for(var partial_cons_index = 0; partial_cons_index < partial_cons.length; partial_cons_index++){
-        var partial_contig = partial_cons[partial_cons_index];
+    for(partial_cons_index = 0; partial_cons_index < partial_cons.length; partial_cons_index++){
+        partial_contig = partial_cons[partial_cons_index];
 
         var used_reads = partial_contig.primer_reads;
 
