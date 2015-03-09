@@ -8,6 +8,10 @@ class HomeController < ApplicationController
     @about_page=true
   end
 
+  def impressum
+    @about_page=true
+  end
+
   def help
 
   end

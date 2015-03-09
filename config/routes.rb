@@ -6,6 +6,7 @@ GBOLapp::Application.routes.draw do
 
   match 'help',    to: 'home#help',    via: 'get'
   match 'about',   to: 'home#about',   via: 'get'
+  match 'impressum',   to: 'home#impressum',   via: 'get'
   match 'contact', to: 'home#contact', via: 'get'
   match 'search', to: 'home#search', via: 'get'
 

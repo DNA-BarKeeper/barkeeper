@@ -4,9 +4,7 @@ namespace :data do
   task :create_users => :environment do
 
 
-
-
-    @user = User.new(:name => 'Michelle Thönnes', :email => 'michelle.thoennes@uni-muenster.de', :password => '8TZPzm7MvhviCE', :password_confirmation => '8TZPzm7MvhviCE')
+    @user = User.new(:name => '', :email => '', :password => '', :password_confirmation => '')
     @user.save
 
     puts "Done."
