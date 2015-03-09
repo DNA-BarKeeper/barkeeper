@@ -54,7 +54,6 @@
               <%= f.label :assembled, 'Assembly complete' %>
               <%= f.check_box :assembled  %>
             </div>
-            <br>
             <div class="form-group">
               <%= f.label 'Marker Sequence' %>
               <% if @contig.marker_sequence %>
@@ -64,11 +63,21 @@
             </div>
 
             <div >
-              <%= f.label :verified, 'Assembly verified' %>
-              <%= f.check_box :verified  %>
+              <% if @contig.verified_by %>
+                  <%begin%>
+                      <%user= User.find(@contig.verified_by).name %>
+                  <%rescue%>
+                      <% user= '?'%>
+                  <%end%>
+                  Verified by <%=  user %> on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %><br><br>
+              <% else %>
+                  <%= link_to verify_contig_path(@contig) do %>
+                      <span class = "glyphicon glyphicon-ok"></span> Verify
+            <% end %>
+                      <br><br>
+              <% end %>
+
             </div>
-
-
 
           </div>
 
