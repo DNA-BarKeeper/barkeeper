@@ -1,9 +1,14 @@
 <%= show_val_errors(@issue)%>
 
+<div class="panel panel-default">
 
-<div class="authform">
-  <h4><%= @issue.title%></h4>
-<%= form_for(@issue) do |f| %>
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= @issue.title %></h3>
+  </div>
+
+
+  <div class="panel-body">
+    <%= form_for(@issue) do |f| %>
 
       <div class="form-group">
         <%= f.label :title %>
@@ -16,6 +21,7 @@
         <%= f.text_area :description, :autofocus => true, class: 'form-control' %>
       </div>
 
-      <%= f.submit 'Update', :class => 'button right' %>
-<% end %>
+      <%= f.submit 'Update', :class => 'btn btn-default' %>
+  <% end %></div>
+  
 </div>

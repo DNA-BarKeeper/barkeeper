@@ -34,8 +34,6 @@ GBOLapp::Application.routes.draw do
 
   resources :projects
 
-  resources :news
-
   resources :shelves
 
   resources :labs
