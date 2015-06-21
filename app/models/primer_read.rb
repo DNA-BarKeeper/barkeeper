@@ -177,7 +177,6 @@ class PrimerRead < ActiveRecord::Base
 
           isolate = Isolate.where("isolates.lab_nr ILIKE ?", "#{isolate_component}").first
 
-
           if isolate.nil?
             isolate = Isolate.where("isolates.dna_bank_id ILIKE ?", "#{isolate_component}").first
           end
@@ -185,7 +184,6 @@ class PrimerRead < ActiveRecord::Base
           if isolate.nil?
             isolate = Isolate.create(:lab_nr => isolate_component)
           end
-
 
           self.update(:isolate_id => isolate.id)
 
