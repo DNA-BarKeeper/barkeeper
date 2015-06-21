@@ -49,12 +49,6 @@ group :development, :test do
   gem 'launchy'
   gem 'webrat'
 
-  # rm later for replacement by Spring
-  gem 'spork-rails'
-  gem 'guard-spork'
-  gem 'childprocess'
-  gem 'guard-livereload'
-
 end
 
 group :test do
