@@ -81,7 +81,7 @@ class MarkerSequencesController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_marker_sequence
-    @marker_sequence = MarkerSequence.find(params[:id])
+    @marker_sequence = MarkerSequence.includes(:isolate => :individual).find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

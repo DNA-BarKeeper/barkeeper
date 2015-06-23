@@ -26,12 +26,22 @@ class ContigDatatable
 
   def data
     contigs.map do |contig|
+
       assembled='No'
       if contig.assembled
         assembled='Yes'
       end
+
+      species_name=''
+      species_id=0;
+      if contig.try(:isolate).try(:individual).try(:species)
+        species_name=contig.isolate.individual.species.name_for_display
+        species_id=contig.isolate.individual.species.id
+      end
+
       [
           link_to(contig.name, edit_contig_path(contig)),
+          link_to(species_name, edit_species_path(species_id)),
           assembled,
           contig.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
           link_to('Delete', contig, method: :delete, data: { confirm: 'Are you sure?' }),
@@ -53,8 +63,7 @@ class ContigDatatable
     contigs = contigs.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
-      contigs = contigs.where("name ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      contigs = contigs.where("name ILIKE :search", search: "%#{params[:sSearch]}%")
     end
     contigs
   end
@@ -68,7 +77,7 @@ class ContigDatatable
   end
 
   def sort_column
-    columns = %w[name assembled updated_at]
+    columns = %w[name species_id assembled updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

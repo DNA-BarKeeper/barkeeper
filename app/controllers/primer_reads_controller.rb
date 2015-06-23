@@ -1,7 +1,7 @@
 class PrimerReadsController < ApplicationController
   before_filter :authenticate_user!, :except => [:edit, :index]
 
-  before_action :set_primer_read, only: [:fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
+  before_action :set_primer_read, only: [:edit, :fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
 
   def import
     PrimerRead.import(params[:file])
@@ -97,7 +97,7 @@ class PrimerReadsController < ApplicationController
 
   # GET /primer_reads/1/edit
   def edit
-    @primer_read = PrimerRead.includes(:primer, :contig).find(params[:id]) #TODO Add select statement here to initially NOT load chromatogram?
+    #@primer_read = PrimerRead.includes(:primer, :contig).find(params[:id]) #TODO Add select statement here to initially NOT load chromatogram?
   end
 
   # POST /primer_reads
@@ -188,7 +188,7 @@ class PrimerReadsController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_primer_read
-    @primer_read = PrimerRead.find(params[:id])
+    @primer_read = PrimerRead.includes(:contig => { :isolate => :individual }).find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

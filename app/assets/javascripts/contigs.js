@@ -12,13 +12,13 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#contigs').data('source'),
         "columnDefs": [
-            {
-                "orderable": false,
-                "targets": 3
-            }
+            { "orderable": false, "targets": 2 },
+            { "orderable": false, "targets": 4 }
         ],
-        "order": [ 2, 'desc' ]
+        "order": [ 3, 'desc' ]
     });
+
+
     $('#contig_isolate_name').autocomplete({
         source: $('#contig_isolate_name').data('autocomplete-source')
     });

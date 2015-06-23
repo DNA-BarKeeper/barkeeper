@@ -4,7 +4,12 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Sequence <%= @marker_sequence.name %></h3>
+    <h3 class="panel-title">Sequence <%= @marker_sequence.name %>
+        <% if @marker_sequence.try(:isolate).try(:individual).try(:species) %>
+            - <%= @marker_sequence.isolate.individual.species.name_for_display  %>
+        <% end %>
+      </h3>
+    </h3>
   </div>
 
   <div class="panel-body">

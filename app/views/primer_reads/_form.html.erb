@@ -4,7 +4,11 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title"><%= @primer_read.name %></h3>
+    <h3 class="panel-title"><%= @primer_read.name %>
+      <% if @primer_read.try(:contig).try(:isolate).try(:individual).try(:species) %>
+          - <%= @primer_read.contig.isolate.individual.species.name_for_display  %>
+      <% end %>
+    </h3>
   </div>
 
   <div class="panel-body">
