@@ -6,7 +6,7 @@
   <div class="panel-heading">
     <h3 class="panel-title">Sequence <%= @marker_sequence.name %>
         <% if @marker_sequence.try(:isolate).try(:individual).try(:species) %>
-            - <%= @marker_sequence.isolate.individual.species.name_for_display  %>
+            - <%= link_to(@marker_sequence.isolate.individual.species.name_for_display, edit_species_path(@marker_sequence.isolate.individual.species.id))  %>
         <% end %>
       </h3>
     </h3>

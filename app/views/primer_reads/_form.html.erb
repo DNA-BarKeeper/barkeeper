@@ -6,7 +6,7 @@
   <div class="panel-heading">
     <h3 class="panel-title"><%= @primer_read.name %>
       <% if @primer_read.try(:contig).try(:isolate).try(:individual).try(:species) %>
-          - <%= @primer_read.contig.isolate.individual.species.name_for_display  %>
+          - <%= link_to(@primer_read.contig.isolate.individual.species.name_for_display, edit_species_path(@primer_read.contig.isolate.individual.species.id))  %>
       <% end %>
     </h3>
   </div>

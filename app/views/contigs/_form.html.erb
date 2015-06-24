@@ -5,7 +5,7 @@
   <div class="panel-heading">
     <h3 class="panel-title">Contig <%= @contig.name %>
       <% if @contig.try(:isolate).try(:individual).try(:species) %>
-         - <%= @contig.isolate.individual.species.name_for_display  %>
+         - <%= link_to(@contig.isolate.individual.species.name_for_display, edit_species_path(@contig.isolate.individual.species.id)) %>
       <% end %>
     </h3>
   </div>

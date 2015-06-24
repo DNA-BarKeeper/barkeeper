@@ -33,7 +33,8 @@ class ContigDatatable
       end
 
       species_name=''
-      species_id=0;
+      species_id=0
+
       if contig.try(:isolate).try(:individual).try(:species)
         species_name=contig.isolate.individual.species.name_for_display
         species_id=contig.isolate.individual.species.id
@@ -44,7 +45,7 @@ class ContigDatatable
           link_to(species_name, edit_species_path(species_id)),
           assembled,
           contig.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', contig, method: :delete, data: { confirm: 'Are you sure?' }),
+          link_to('Delete', contig, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end

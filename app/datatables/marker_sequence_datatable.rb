@@ -27,15 +27,20 @@ class MarkerSequenceDatatable
 
     marker_sequences.map do |marker_sequence|
 
-      sp=""
-      if marker_sequence.isolate and marker_sequence.isolate.individual and marker_sequence.isolate.individual.species
-        sp=marker_sequence.isolate.individual.species.name_for_display
+      species_name=''
+      species_id=0
+
+      if marker_sequence.try(:isolate).try(:individual).try(:species)
+        species_name=marker_sequence.isolate.individual.species.name_for_display
+        species_id=marker_sequence.isolate.individual.species.id
       end
+
       [
           link_to(marker_sequence.name, edit_marker_sequence_path(marker_sequence)),
-          sp,
+          link_to(species_name, edit_species_path(species_id)),
+          # species_name,
           marker_sequence.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', marker_sequence, method: :delete, data: { confirm: 'Are you sure?' }),
+          link_to('Delete', marker_sequence, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end
@@ -64,7 +69,7 @@ class MarkerSequenceDatatable
   end
 
   def sort_column
-    columns = %w[name isolate_id updated_at]
+    columns = %w[name species_id updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
