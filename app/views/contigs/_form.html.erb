@@ -115,10 +115,24 @@
     <% failures=@contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, false)%>
 
     <% if failures.any? %>
-        Assigned reads not yet assembled:<br>
+        <hr>
+        <p><b>Assigned reads not yet assembled:</b></p>
         <% for i in 0...failures.length %>
             <% pr= failures[i] %>
-            <%= link_to pr.name, edit_primer_read_path(pr) %><br>
+
+            <!--single chromatogram view-->
+            <%= link_to pr.name, edit_primer_read_path(pr) %>
+            <hr>
+
+            <div class="alignment" id="chromatogram_container">
+
+              <%= content_tag "div", id: "chromatogram", data: {url: pr } do %>
+
+              <% end %>
+
+            </div>
+            <!--end chromatogram div -->
+            <br>
         <% end %>
     <% end %>
 
