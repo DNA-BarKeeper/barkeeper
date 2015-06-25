@@ -42,9 +42,6 @@ class ContigsController < ApplicationController
     end
   end
 
-
-
-
   # GET /contigs/1
   # GET /contigs/1.json
   def show

@@ -23,6 +23,7 @@ class PrimerRead < ActiveRecord::Base
   scope :use_for_assembly, ->  { trimmed.where(:used_for_con => true)}
   scope :processed, -> {where(:processed => true)}
   scope :unprocessed, -> {where(:processed => false)}
+  scope :not_assembled, -> {use_for_assembly.where(:assembled => false)}
 
   validates_attachment_presence :chromatogram
 

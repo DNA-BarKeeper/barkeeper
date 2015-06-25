@@ -100,11 +100,11 @@
 
     <% end %>
 
+    <!-- draw contig alignment -->
 
     <div class="alignment">
 
       <%= content_tag "div", id: "contig", data: {url: @contig.partial_cons.includes(:primer_reads) } do %>
-
 
       <% end %>
 
@@ -112,7 +112,7 @@
 
     <!-- to be used but not assembled-->
 
-    <% failures=@contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, false)%>
+    <% failures=@contig.primer_reads.not_assembled%>
 
     <% if failures.any? %>
         <hr>
@@ -122,16 +122,19 @@
 
             <!--single chromatogram view-->
             <%= link_to pr.name, edit_primer_read_path(pr) %>
-            <hr>
+
 
             <div class="alignment" id="chromatogram_container">
 
-              <%= content_tag "div", id: "chromatogram", data: {url: pr } do %>
+              <% div_id= "primer_read_#{pr.id}" %>
+
+              <%= content_tag "div",  class: "chromatogram", id: div_id, data: {url: pr } do %>
 
               <% end %>
 
             </div>
             <!--end chromatogram div -->
+            <hr>
             <br>
         <% end %>
     <% end %>

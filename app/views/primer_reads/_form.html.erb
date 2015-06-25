@@ -125,7 +125,9 @@
 
     <div class="alignment" id="chromatogram_container">
 
-      <%= content_tag "div", id: "chromatogram", data: {url: @primer_read } do %>
+      <% div_id="primer_read_#{@primer_read.id}" %>
+
+      <%= content_tag "div", class: "chromatogram", id: div_id, data: {url: @primer_read } do %>
 
       <% end %>
 

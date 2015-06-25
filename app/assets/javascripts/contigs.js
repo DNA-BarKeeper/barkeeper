@@ -35,7 +35,22 @@ jQuery(function() {
         draw_contig(partial_cons);
     }
 
+
+    //    draw singletons (unassembled reads)
+
+    var not_assembled = $('#singletons').data('url');
+
+
+    if (not_assembled){
+        draw_singletons(not_assembled);
+    }
+
 });
+
+function draw_singletons(not_assembled){
+    //alert("Singleton draw");
+
+}
 
 function draw_contig(partial_cons){
 

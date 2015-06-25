@@ -644,6 +644,11 @@ class Contig < ActiveRecord::Base
   end
 
 
+  def not_assembled
+    self.primer_reads.not_assembled.as_json
+  end
+
+
   def compute_consensus(seq1, qual1, seq2, qual2)
     consensus_seq=''
     consensus_qal=[]
