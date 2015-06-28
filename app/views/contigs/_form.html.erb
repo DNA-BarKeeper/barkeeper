@@ -47,6 +47,8 @@
               <% end %>
             </div>
 
+
+
           </div>
 
 
@@ -84,7 +86,7 @@
             </div>
 
           </div>
-
+          
 
           <div class="tab-pane" id="downloads">
             <br>
@@ -110,45 +112,32 @@
 
     </div>
 
-    <!-- to be used but not assembled-->
+    <!-- list all reads again, grouped by status-->
 
-    <% failures=@contig.primer_reads.not_assembled%>
+    <p><b>Assembled:</b><br>
+      <% @contig.primer_reads.assembled.each do |read|%>
+          <%= link_to read.name, edit_primer_read_path(read) %><%= link_to ' (open in new tab)', edit_primer_read_path(read), :target => "_blank" %><br>
+      <%end %></p>
 
-    <% if failures.any? %>
-        <hr>
-        <p><b>Assigned reads not yet assembled:</b></p>
-        <% for i in 0...failures.length %>
-            <% pr= failures[i] %>
+    <p><b>Not assembled:</b><br>
+      <% @contig.primer_reads.not_assembled.each do |read|%>
+          <%= link_to read.name, edit_primer_read_path(read) %><%= link_to ' (open in new tab)', edit_primer_read_path(read), :target => "_blank" %><br>
+      <%end %></p>
 
-            <!--single chromatogram view-->
-            <%= link_to pr.name, edit_primer_read_path(pr) %>
+    <p><b>Not to be used in assembly:</b><br>
+      <% @contig.primer_reads.not_used_for_assembly.each do |read|%>
+          <%= link_to read.name, edit_primer_read_path(read) %><%= link_to ' (open in new tab)', edit_primer_read_path(read), :target => "_blank" %><br>
+      <%end %></p>
 
+    <p><b>Not trimmed:</b><br>
+      <% @contig.primer_reads.not_trimmed.each do |read|%>
+          <%= link_to read.name, edit_primer_read_path(read) %><%= link_to ' (open in new tab)', edit_primer_read_path(read), :target => "_blank" %><br>
+      <%end %></p>
 
-            <div class="alignment" id="chromatogram_container">
-
-              <% div_id= "primer_read_#{pr.id}" %>
-
-              <%= content_tag "div",  class: "chromatogram", id: div_id, data: {url: pr } do %>
-
-              <% end %>
-
-            </div>
-            <!--end chromatogram div -->
-            <hr>
-            <br>
-        <% end %>
-    <% end %>
-
-    <!-- not to be used -->
-    <% dontuse=@contig.primer_reads.where(:used_for_con => false) %>
-
-    <% if dontuse.any? %>
-        <br>Excluded Reads:<br>
-        <% for i in 0...dontuse.length %>
-            <% pr= dontuse[i] %>
-            <%= link_to pr.name, edit_primer_read_path(pr) %><br>
-        <% end %>
-    <% end %>
+    <p><b>Unprocessed:</b><br>
+      <% @contig.primer_reads.unprocessed.each do |read|%>
+          <%= link_to read.name, edit_primer_read_path(read) %><%= link_to ' (open in new tab)', edit_primer_read_path(read), :target => "_blank" %><br>
+      <%end %></p>
 
   </div>
 </div>

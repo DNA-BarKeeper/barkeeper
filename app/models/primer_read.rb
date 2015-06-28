@@ -19,11 +19,18 @@ class PrimerRead < ActiveRecord::Base
 
   before_create :default_name
 
-  scope :trimmed, -> { where.not(:trimmedReadStart => nil)}
+  scope :assembled, -> {use_for_assembly.where(:assembled => true)}
+  scope :not_assembled, -> {use_for_assembly.where(:assembled => false)}
+
   scope :use_for_assembly, ->  { trimmed.where(:used_for_con => true)}
+  scope :not_used_for_assembly, ->  { trimmed.where(:used_for_con => false)}
+
+  scope :trimmed, -> { where.not(:trimmedReadStart => nil)}
+  scope :not_trimmed, -> { where(:trimmedReadStart => nil)}
+
   scope :processed, -> {where(:processed => true)}
   scope :unprocessed, -> {where(:processed => false)}
-  scope :not_assembled, -> {use_for_assembly.where(:assembled => false)}
+
 
   validates_attachment_presence :chromatogram
 
