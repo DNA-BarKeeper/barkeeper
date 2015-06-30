@@ -6,12 +6,20 @@ class IndividualsController < ApplicationController
 
   # GET /individuals
   # GET /individuals.json
+  # GET /individuals.xls
+  # GET /individuals.abc
   def index
     respond_to do |format|
       format.html
       format.json { render json: IndividualDatatable.new(view_context, nil) }
-      format.csv { render text: @individuals.to_csv }
-      format.xls
+
+      # these two for API use - get all records, not just those visible in table
+      format.xls do
+        get_all_individuals
+      end
+      format.abc do
+        get_all_individuals
+      end
     end
   end
 
@@ -78,6 +86,10 @@ class IndividualsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_individual
     @individual = Individual.find(params[:id])
+  end
+
+  def get_all_individuals
+    @individuals=Individual.includes(:species => :family).all
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
