@@ -22,7 +22,8 @@ class XmlUploader < ActiveRecord::Base
     # end
 
     file_to_upload = File.open("file_created_in_Background.txt", "w")
-    file_to_upload.write("Hurz")
+
+    file_to_upload.write(xml_string)
     file_to_upload.close()
     self.uploaded_file = File.open("file_created_in_Background.txt")
     self.save!
@@ -32,6 +33,14 @@ class XmlUploader < ActiveRecord::Base
 
   def s3_credentials
     {:bucket => "gbol5", :access_key_id => "AKIAINH5TDSKSWQ6J62A", :secret_access_key => "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"}
+  end
+
+  def xml_string
+    # get all indiv.
+    @individuals=Individual.includes(:species => :family).all
+
+    xml_string=""
+
   end
 
 
