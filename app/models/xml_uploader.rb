@@ -5,7 +5,7 @@ class XmlUploader < ActiveRecord::Base
   has_attached_file :uploaded_file,
                     :storage => :s3,
                     :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
-                    :default_url => "/specimens.xml"
+                    :path => "/specimens.xml"
 
   # Validate content type
   validates_attachment_content_type :uploaded_file, :content_type => /\Atext\/plain/
@@ -21,10 +21,10 @@ class XmlUploader < ActiveRecord::Base
     #   p.name "Test"
     # end
 
-    file_to_upload = File.open("some-file-name.txt", "w")
+    file_to_upload = File.open("file_created_in_Background.txt", "w")
     file_to_upload.write("Hurz")
     file_to_upload.close()
-    self.uploaded_file = File.open("some-file-name.txt")
+    self.uploaded_file = File.open("file_created_in_Background.txt")
     self.save!
   end
 

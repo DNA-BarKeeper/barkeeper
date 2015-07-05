@@ -15,10 +15,11 @@ class IndividualsController < ApplicationController
 
       # these two for API use - get all records, not just those visible in table
       format.xls do
-        get_all_individuals
+        # get_all_individuals
+        SpecimenExport.perform_async
       end
       format.abc do
-        get_all_individuals
+        # get_all_individuals
       end
     end
   end
