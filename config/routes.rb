@@ -53,6 +53,8 @@ GBOLapp::Application.routes.draw do
   resources :individuals do
     collection do
       get :filter
+      get 'create_xls'
+      get 'xls'
     end
   end
 

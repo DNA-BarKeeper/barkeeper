@@ -12,16 +12,16 @@ class IndividualsController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: IndividualDatatable.new(view_context, nil) }
-
-      # these two for API use - get all records, not just those visible in table
-      format.xls do
-        # get_all_individuals
-        SpecimenExport.perform_async
-      end
-      format.abc do
-        # get_all_individuals
-      end
     end
+  end
+
+  def create_xls
+    SpecimenExport.perform_async
+    redirect_to individuals_path, notice: "Writing Excel file to S3 in background."
+  end
+
+  def xls
+    redirect_to XmlUploader.last.uploaded_file.url
   end
 
   def filter
