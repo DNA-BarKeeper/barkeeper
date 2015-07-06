@@ -8,10 +8,10 @@ class XmlUploader < ActiveRecord::Base
                     :path => "/specimens.xml"
 
   # Validate content type
-  validates_attachment_content_type :uploaded_file, :content_type => /\Atext\/plain/
+  validates_attachment_content_type :uploaded_file, :content_type => /\Aapplication\/xml/
 
   # Validate filename
-  validates_attachment_file_name :uploaded_file, :matches => [/txt\Z/]
+  validates_attachment_file_name :uploaded_file, :matches => [/xml\Z/]
 
   def create_uploaded_file
 
@@ -21,11 +21,11 @@ class XmlUploader < ActiveRecord::Base
     #   p.name "Test"
     # end
 
-    file_to_upload = File.open("file_created_in_Background.txt", "w")
+    file_to_upload = File.open("specimens.xml", "w")
 
     file_to_upload.write(xml_string)
     file_to_upload.close()
-    self.uploaded_file = File.open("file_created_in_Background.txt")
+    self.uploaded_file = File.open("specimens.xml")
     self.save!
   end
 
@@ -39,7 +39,20 @@ class XmlUploader < ActiveRecord::Base
     # get all indiv.
     @individuals=Individual.includes(:species => :family).all
 
-    xml_string=""
+    # todo fillw with specimen data:
+    
+    builder = Nokogiri::XML::Builder.new do |xml|
+      xml.root {
+        xml.products {
+          xml.widget {
+            xml.id_ "10"
+            xml.name "Awesome widget"
+          }
+        }
+      }
+    end
+
+    builder.to_xml
 
   end
 
