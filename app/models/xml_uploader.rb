@@ -1,3 +1,5 @@
+# write to Excel-XML (xls) for use by ZFMK for their "Portal / db "
+
 class XmlUploader < ActiveRecord::Base
 
   #todo later rename  :uploaded_file to xml_File or s.th.
@@ -35,9 +37,11 @@ class XmlUploader < ActiveRecord::Base
     # get all indiv.
     @individuals=Individual.includes(:species => :family).all
 
-    # todo fillw with specimen data:
+    # liste Bundesländer to check state_province against:
 
-    @header_cells = ["GBOL-Nr.",
+    @states=["Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen","Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Nordrhein-Westfalen","Rheinland-Pfalz","Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","Thüringen"]
+
+    @header_cells = ["GBOL5 specimen ID",
                      "Feldnummer",
                      "Institut",
                      "Sammlungs-Nr.",
@@ -97,7 +101,9 @@ class XmlUploader < ActiveRecord::Base
               xml.Row{
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text(individual.try(:isolates).first.try(:lab_nr))
+                    #previous version with "Gbol-Nr.":
+                    # xml.text(individual.try(:isolates).first.try(:lab_nr))
+                    xml.text(individual.id)
                   }
                 }
                 xml.Cell {
@@ -187,7 +193,14 @@ class XmlUploader < ActiveRecord::Base
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text(individual.state_province)
+
+                    # tests first if is a Bundesland; outputs nothing if other crap was entered in this field:
+
+                    if @states.include? individual.state_province
+                      xml.text(individual.state_province)
+                    else
+                      puts "#{individual.id} #{individual.state_province}"
+                    end
                   }
                 }
                 xml.Cell {
