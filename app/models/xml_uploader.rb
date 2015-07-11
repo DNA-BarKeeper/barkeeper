@@ -37,6 +37,7 @@ class XmlUploader < ActiveRecord::Base
     # get all indiv.
     @individuals=Individual.includes(:species => :family).all
 
+    @states=["Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen","Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Nordrhein-Westfalen","Rheinland-Pfalz","Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","Thüringen"]
 
     @header_cells = ["GBOL5 specimen ID",
                      "Feldnummer",
@@ -201,12 +202,16 @@ class XmlUploader < ActiveRecord::Base
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
 
-                    # tests first if is a Bundesland; outputs nothing if other crap was entered in this field:
-
                     if individual.country == 'Germany'
+                      # tests first if is a Bundesland; outputs nothing if other crap was entered in this field:
 
-                      xml.text(individual.state_province)
+                      if @states.include? individual.state_province
+                        xml.text(individual.state_province)
+                      else
+                        xml.text('')
+                      end
 
+                      # stuff from Schweiz etc
                     else
                       xml.text('Europa')
                     end
