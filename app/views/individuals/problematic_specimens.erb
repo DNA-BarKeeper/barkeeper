@@ -24,15 +24,15 @@
         <tr>
           <td></td>
           <td>Should be one of "Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen","Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Nordrhein-Westfalen","Rheinland-Pfalz","Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","Thüringen"</td>
-          <td>Should be "Deutschland"</td>
+          <td>Should be "Germany"</td>
         </tr>
 
         <% @individuals.each do |individual| %>
 
             <tr>
               <td><%= link_to individual.specimen_id, edit_individual_path(individual) %></td>
-              <td> <%= individual.state_province %></td>
-              <td> <%= individual.country %></td>
+              <td> <%= link_to individual.state_province, edit_individual_path(individual) %></td>
+              <td> <%= link_to individual.country, edit_individual_path(individual) %></td>
             </tr>
 
         <% end %>

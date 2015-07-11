@@ -32,7 +32,7 @@ class IndividualsController < ApplicationController
     @individuals=[]
 
     Individual.all.each do |i|
-      if @states.include? i.state_province and i.country == "Deutschland"
+      if @states.include? i.state_province and i.country == "Germany"
       else
         @individuals.push(i)
       end
