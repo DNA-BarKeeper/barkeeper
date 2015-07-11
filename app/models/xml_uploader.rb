@@ -105,7 +105,11 @@ class XmlUploader < ActiveRecord::Base
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text(individual.collection_nr)
+                    if individual.collection_nr.include? 's.n.'
+                      xml.text('')
+                    else
+                      xml.text(individual.collection_nr)
+                    end
                   }
                 }
                 xml.Cell {
@@ -115,7 +119,11 @@ class XmlUploader < ActiveRecord::Base
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text(individual.specimen_id)
+                    if individual.specimen_id == "<no info available in DNA Bank>"
+                      xml.text('')
+                    else
+                      xml.text(individual.specimen_id)
+                    end
                   }
                 }
                 xml.Cell {
@@ -193,10 +201,14 @@ class XmlUploader < ActiveRecord::Base
 
                     # tests first if is a Bundesland; outputs nothing if other crap was entered in this field:
 
-                    if @states.include? individual.state_province
-                      xml.text(individual.state_province)
+                    if individual.country == 'Germany'
+                      if @states.include? individual.state_province
+                        xml.text(individual.state_province)
+                      else
+                        puts "#{individual.id} #{individual.state_province}"
+                      end
                     else
-                      puts "#{individual.id} #{individual.state_province}"
+                      xml.text('Europa')
                     end
                   }
                 }
