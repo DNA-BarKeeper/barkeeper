@@ -37,9 +37,6 @@ class XmlUploader < ActiveRecord::Base
     # get all indiv.
     @individuals=Individual.includes(:species => :family).all
 
-    # liste Bundesländer to check state_province against:
-
-    @states=["Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen","Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Nordrhein-Westfalen","Rheinland-Pfalz","Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","Thüringen"]
 
     @header_cells = ["GBOL5 specimen ID",
                      "Feldnummer",

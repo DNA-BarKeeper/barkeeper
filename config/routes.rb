@@ -55,6 +55,7 @@ GBOLapp::Application.routes.draw do
       get :filter
       get 'create_xls'
       get 'xls'
+      get :problematic_specimens
     end
   end
 

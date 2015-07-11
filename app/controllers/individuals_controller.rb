@@ -24,6 +24,21 @@ class IndividualsController < ApplicationController
     redirect_to XmlUploader.last.uploaded_file.url
   end
 
+  def problematic_specimens
+    # liste Bundesländer to check state_province against:
+
+    @states=["Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen","Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Nordrhein-Westfalen","Rheinland-Pfalz","Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","Thüringen"]
+
+    @individuals=[]
+
+    Individual.all.each do |i|
+      if @states.include? i.state_province and i.country == "Deutschland"
+      else
+        @individuals.push(i)
+      end
+    end
+  end
+
   def filter
     @individuals = Individual.where("individuals.specimen_id like ?", "%#{params[:term]}%")
     render json: @individuals.map(&:specimen_id)
