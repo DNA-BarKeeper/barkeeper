@@ -105,10 +105,12 @@ class XmlUploader < ActiveRecord::Base
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    if individual.collection_nr.include? 's.n.'
-                      xml.text('')
-                    else
-                      xml.text(individual.collection_nr)
+                    if individual.collection_nr
+                      if individual.collection_nr.include? 's.n.' or individual.collection_nr.include? 's. n.'
+                        xml.text('')
+                      else
+                        xml.text(individual.collection_nr)
+                      end
                     end
                   }
                 }
@@ -202,11 +204,9 @@ class XmlUploader < ActiveRecord::Base
                     # tests first if is a Bundesland; outputs nothing if other crap was entered in this field:
 
                     if individual.country == 'Germany'
-                      if @states.include? individual.state_province
-                        xml.text(individual.state_province)
-                      else
-                        puts "#{individual.id} #{individual.state_province}"
-                      end
+
+                      xml.text(individual.state_province)
+
                     else
                       xml.text('Europa')
                     end
