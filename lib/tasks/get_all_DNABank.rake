@@ -94,7 +94,9 @@ namespace :data do
           sp=individual.species
 
           if sp.nil?
-            sp= Species.find_or_create_by(:species_component => specimen_id)
+            
+            # sp= Species.find_or_create_by(:species_component => specimen_id)
+            sp= Species.find_or_create_by(:species_component => species_component)
             individual.update(:species=>sp)
           end
         end
