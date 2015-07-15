@@ -9,7 +9,7 @@ namespace :data do
   task :get_all_DNABank => :environment do
 
     (10000..12350).each do |unit_id|
-    #   (10000..10001).each do |unit_id|
+    #    (10000..10001).each do |unit_id|
 
       service_url="http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/UnitID'>DB #{unit_id}</like></filter><count>false</count></search></request>"
 
@@ -94,7 +94,7 @@ namespace :data do
           sp=individual.species
 
           if sp.nil?
-            
+
             # sp= Species.find_or_create_by(:species_component => specimen_id)
             sp= Species.find_or_create_by(:species_component => species_component)
             individual.update(:species=>sp)
