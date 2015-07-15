@@ -7,7 +7,7 @@
 
 
       <% if @isolate.try(:individual).try(:species) %>
-          - <%= @isolate.individual.species.name_for_display  %>
+          - <%=link_to(@isolate.individual.species.name_for_display, edit_species_path(@isolate.individual.species.id))  %>
       <% end %>
     </h3>
   </div>
