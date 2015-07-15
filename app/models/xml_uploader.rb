@@ -146,7 +146,7 @@ class XmlUploader < ActiveRecord::Base
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text("")
+                    xml.text('')
                   }
                 }
                 xml.Cell {
@@ -156,32 +156,32 @@ class XmlUploader < ActiveRecord::Base
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text("")
+                    xml.text('')
                   }
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text("Blattmaterial")
+                    xml.text('Blattmaterial')
                   }
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text("")
+                    xml.text('')
                   }
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text("Silica gel")
+                    xml.text('Silica gel')
                   }
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text("")
+                    xml.text('')
                   }
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text("")
+                    xml.text('')
                   }
                 }
                 xml.Cell {
@@ -196,7 +196,7 @@ class XmlUploader < ActiveRecord::Base
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text("")
+                    xml.text('')
                   }
                 }
                 xml.Cell {
@@ -230,7 +230,7 @@ class XmlUploader < ActiveRecord::Base
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text("")
+                    xml.text('')
                   }
                 }
                 xml.Cell {
@@ -245,7 +245,7 @@ class XmlUploader < ActiveRecord::Base
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text("")
+                    xml.text('')
                   }
                 }
                 xml.Cell {
@@ -276,7 +276,7 @@ class XmlUploader < ActiveRecord::Base
 
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text("")
+                    xml.text('')
                   }
                 }
 
