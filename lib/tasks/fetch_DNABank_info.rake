@@ -4,7 +4,7 @@ require 'nokogiri'
 
 namespace :data do
 
-  desc "Merge multiple copies of same isolate into one with all associations & attributes"
+  desc "Get specimen info from DNA-Bank"
 
   task :fetch_DNABank_info => :environment do
 
@@ -91,7 +91,6 @@ namespace :data do
       if herbarium
         individual.update(:herbarium => herbarium)
       end
-
 
 
       if full_name
