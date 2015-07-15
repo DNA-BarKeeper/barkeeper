@@ -103,6 +103,7 @@ namespace :data do
 
       puts gbol_nr
       if gbol_nr
+        # inconsistent in DNABank: sometimes lowercase, sometimes uppercase o in GBOL:
         if gbol_nr[2]=='O'
           gbol_nr[2]='o'
         end
