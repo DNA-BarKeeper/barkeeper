@@ -2,6 +2,20 @@ class Individual < ActiveRecord::Base
   has_many :isolates
   belongs_to :species
 
+
+  scope :without_species, -> {where(:species => nil)}
+
+  scope :without_isolates, ->{joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
+                             select('individuals.id').
+                             group('individuals.id').having('count(isolates.id) = 0')}
+
+  scope :no_species_isolates, ->{without_species.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
+      select('individuals.id').
+      group('individuals.id').having('count(isolates.id) = 0')}
+
+  # in rc count how many have no isolate:
+  # Individual.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').where('isolates.id' => nil).count
+
   def self.to_csv(options = {})
 
     # change to_csv block to list attributes/values individually
