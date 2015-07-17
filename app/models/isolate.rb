@@ -139,7 +139,7 @@ class Isolate < ActiveRecord::Base
 
   def self.import(file)
 
-    spreadsheet = Roo::Excelx.new(file, nil, :ignore)
+    spreadsheet = Roo::Excel.new(file, nil, :ignore)
 
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|

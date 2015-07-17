@@ -27,7 +27,7 @@
     <br>
 
     <div class="well">
-      Import Taxa from Excel file:<p></p>
+      Import Taxa from Excel file <%= link_to '(Download example / template file)', 'https://s3-eu-west-1.amazonaws.com/gbol5/Species+upload+template.xls' %>:
       <%= form_tag import_species_index_path, multipart: true do %>
           <%= file_field_tag :file %>
           <br>
