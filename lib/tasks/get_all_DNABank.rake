@@ -85,7 +85,7 @@ namespace :data do
 
       if full_name
 
-        regex = /^(\w+\s\w+)/
+        regex = /^(\w+\s+\w+)/
         matches = full_name.match(regex)
         if matches
           species_component = matches[1]
@@ -103,7 +103,6 @@ namespace :data do
         end
 
       end
-
 
       if gbol_nr
         # inconsistent in DNABank: sometimes lowercase, sometimes uppercase o in GBOL:

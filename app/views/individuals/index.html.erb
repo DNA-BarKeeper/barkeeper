@@ -33,7 +33,7 @@
 <%= link_to 'New Individual', new_individual_path %>
 
 <!-- Unassigned-->
-
+<%if (Individual.where(:species => nil).any?)%>
 <hr>
 
 <div class="panel panel-default">
@@ -80,3 +80,4 @@
 
 </div>
 
+<% end%>
