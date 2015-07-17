@@ -13,6 +13,9 @@ class Individual < ActiveRecord::Base
       select('individuals.id').
       group('individuals.id').having('count(isolates.id) = 0')}
 
+  scope :recent_crap, -> { where('individuals.updated_at > ? AND individuals.specimen_id = ?', 3.days.ago, "<no info available in DNA Bank>")}
+
+
   # in rc count how many have no isolate:
   # Individual.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').where('isolates.id' => nil).count
 

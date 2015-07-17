@@ -8,7 +8,8 @@ namespace :data do
 
   task :get_all_DNABank => :environment do
 
-    (10000..12350).each do |unit_id|
+    # (10000..12350).each do |unit_id|
+      (10000..10000).each do |unit_id|
 
       service_url="http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/UnitID'>DB #{unit_id}</like></filter><count>false</count></search></request>"
 
@@ -32,14 +33,14 @@ namespace :data do
       begin
         unit = doc.at_xpath('//abcd21:Unit')
 
+        specimen_id=unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content
         full_name= unit.at_xpath('//abcd21:FullScientificNameString').content
+        gbol_nr=unit.at_xpath('//abcd21:sampleDesignation').content
+        herbarium=unit.at_xpath('//abcd21:SourceInstitutionCode').content
         collector= unit.at_xpath('//abcd21:GatheringAgent').content
         locality=unit.at_xpath('//abcd21:LocalityText').content
         longitude=unit.at_xpath('//abcd21:LongitudeDecimal').content
         latitude=unit.at_xpath('//abcd21:LatitudeDecimal').content
-        specimen_id=unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content
-        herbarium=unit.at_xpath('//abcd21:SourceInstitutionCode').content
-        gbol_nr=unit.at_xpath('//abcd21:sampleDesignation').content
       rescue
       end
 
@@ -53,11 +54,14 @@ namespace :data do
       end
 
 
+      if individual.DNA_bank_id.nil?
+        individual.update(:DNA_bank_id => "DB #{unit_id}")
+      end
+
       puts collector
       if collector
         individual.update(:collector => collector.strip)
       end
-
 
       puts locality
       if locality
@@ -81,7 +85,6 @@ namespace :data do
 
 
       if full_name
-        puts full_name
 
         regex = /^(\w+\s\w+)/
         matches = full_name.match(regex)
@@ -102,12 +105,13 @@ namespace :data do
 
       end
 
-      puts gbol_nr
+
       if gbol_nr
         # inconsistent in DNABank: sometimes lowercase, sometimes uppercase o in GBOL:
         if gbol_nr[2]=='O'
           gbol_nr[2]='o'
         end
+        puts gbol_nr
         isolate = Isolate.find_or_create_by(:lab_nr => gbol_nr)
         isolate.update(:individual => individual)
       end

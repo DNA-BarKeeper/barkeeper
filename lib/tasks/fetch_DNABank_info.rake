@@ -41,17 +41,19 @@ namespace :data do
       latitude=nil
       specimen_id=nil
       herbarium=nil
+      gbol_nr=nil
 
       begin
         unit = doc.at_xpath('//abcd21:Unit')
 
+        specimen_id=unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content
         full_name= unit.at_xpath('//abcd21:FullScientificNameString').content
+        gbol_nr=unit.at_xpath('//abcd21:sampleDesignation').content
+        herbarium=unit.at_xpath('//abcd21:SourceInstitutionCode').content
         collector= unit.at_xpath('//abcd21:GatheringAgent').content
         locality=unit.at_xpath('//abcd21:LocalityText').content
         longitude=unit.at_xpath('//abcd21:LongitudeDecimal').content
         latitude=unit.at_xpath('//abcd21:LatitudeDecimal').content
-        specimen_id=unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content
-        herbarium=unit.at_xpath('//abcd21:SourceName').content
       rescue
       end
 
@@ -116,6 +118,7 @@ namespace :data do
       db_nr=unit_id.gsub(' ','')
       puts db_nr
 
+      #todo: altervative base on gbol_nr that now also gets stored in DNA Bank
       isolate=Isolate.where(:lab_nr => db_nr).first
 
       isolate.update(:individual => individual)
