@@ -147,4 +147,6 @@
 
     <% end %>
 
+    <p><%= Individual.where(:longitude => nil).count %> specimens do not have any latitude/longitude information.</p>
+
 <% end %>
