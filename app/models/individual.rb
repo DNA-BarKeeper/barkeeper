@@ -6,8 +6,8 @@ class Individual < ActiveRecord::Base
   scope :without_species, -> {where(:species => nil)}
 
   scope :without_isolates, ->{joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
-                             select('individuals.id').
-                             group('individuals.id').having('count(isolates.id) = 0')}
+      select('individuals.id').
+      group('individuals.id').having('count(isolates.id) = 0')}
 
   scope :no_species_isolates, ->{without_species.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
       select('individuals.id').
@@ -17,7 +17,7 @@ class Individual < ActiveRecord::Base
   # Individual.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').where('isolates.id' => nil).count
 
   scope :recent_crap, -> { where('individuals.updated_at > ? AND individuals.specimen_id = ?', 3.days.ago, "<no info available in DNA Bank>")}
-
+  scope :bad_location, -> { where('individuals.longitude NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
 
   def self.to_csv(options = {})
 
