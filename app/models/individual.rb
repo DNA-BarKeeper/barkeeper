@@ -17,7 +17,8 @@ class Individual < ActiveRecord::Base
   # Individual.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').where('isolates.id' => nil).count
 
   scope :recent_crap, -> { where('individuals.updated_at > ? AND individuals.specimen_id = ?', 3.days.ago, "<no info available in DNA Bank>")}
-  scope :bad_location, -> { where('individuals.longitude NOT SIMILAR TO ? OR individuals.longitude = ?', '[0-9]{1,}\.{0,}[0-9]{0,}', nil)}
+  scope :bad_location, -> { where('individuals.longitude NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
+  scope :no_location, -> { where(:longitude => nil)}
 
   def self.to_csv(options = {})
 
