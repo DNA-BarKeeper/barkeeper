@@ -18,7 +18,7 @@ class Individual < ActiveRecord::Base
 
   scope :recent_crap, -> { where('individuals.updated_at > ? AND individuals.specimen_id = ?', 3.days.ago, "<no info available in DNA Bank>")}
   scope :bad_location, -> { where('individuals.longitude NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
-  scope :no_location, -> { where(:longitude => nil)}
+  scope :no_location, -> { where('individuals.longitude = ?', nil ) }
 
   def self.to_csv(options = {})
 
