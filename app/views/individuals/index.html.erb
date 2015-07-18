@@ -123,7 +123,11 @@
 
                     <tr>
                       <td><%= link_to individual.specimen_id, edit_individual_path(individual) %></td>
-                      <td><%= link_to individual.species.name_for_display, edit_species_path(individual.species) %></td>
+                      <td>
+                        <% if individual.try(:species) %>
+                            <%= link_to individual.species.name_for_display, edit_species_path(individual.species) %>
+                        <% end %>
+                      </td>
                       <td><%= link_to individual.latitude, edit_individual_path(individual) %></td>
                       <td><%= link_to individual.longitude, edit_individual_path(individual) %></td>
                       <td> <%= individual.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
