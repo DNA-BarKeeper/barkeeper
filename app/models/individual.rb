@@ -1,6 +1,7 @@
 class Individual < ActiveRecord::Base
   has_many :isolates
   belongs_to :species
+  has_and_belongs_to_many :projects
 
   scope :without_species, -> {where(:species => nil)}
 

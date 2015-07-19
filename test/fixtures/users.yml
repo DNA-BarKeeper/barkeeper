@@ -1,0 +1,4 @@
+default:
+  email: 'default@example.com'
+  name: "Testuser #1"
+  encrypted_password: <%= encrypted_password %>
