@@ -3,6 +3,8 @@ class PrimerRead < ActiveRecord::Base
   belongs_to :partial_con
   belongs_to :primer
   has_many :issues
+  has_and_belongs_to_many :projects
+
   has_attached_file :chromatogram,
                     :storage => :s3,
                     :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },

@@ -7,6 +7,7 @@ class Contig < ActiveRecord::Base
   validates_presence_of :name
   has_many :issues
   has_many :partial_cons
+  has_and_belongs_to_many :projects
 
   scope :assembled, -> { where(:assembled => true)}
   scope :not_assembled, -> { where.not(:assembled => true)}

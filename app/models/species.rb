@@ -2,6 +2,7 @@ class Species < ActiveRecord::Base
   has_many :individuals
   has_many :primer_pos_on_genomes
   belongs_to :family
+  has_and_belongs_to_many :projects
 
   def filter
     @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:name)

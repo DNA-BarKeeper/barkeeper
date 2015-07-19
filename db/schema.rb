@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150719172520) do
+ActiveRecord::Schema.define(version: 20150719200053) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,11 @@ ActiveRecord::Schema.define(version: 20150719172520) do
     t.boolean  "verified",                       default: false
     t.integer  "verified_by"
     t.datetime "verified_at"
+  end
+
+  create_table "contigs_projects", id: false, force: :cascade do |t|
+    t.integer "contig_id"
+    t.integer "project_id"
   end
 
   create_table "copies", force: :cascade do |t|
@@ -78,6 +83,11 @@ ActiveRecord::Schema.define(version: 20150719172520) do
     t.integer  "order_id"
   end
 
+  create_table "families_projects", id: false, force: :cascade do |t|
+    t.integer "family_id"
+    t.integer "project_id"
+  end
+
   create_table "freezers", force: :cascade do |t|
     t.string   "freezercode", limit: 255
     t.datetime "created_at"
@@ -108,6 +118,11 @@ ActiveRecord::Schema.define(version: 20150719172520) do
   create_table "higher_order_taxa_markers", id: false, force: :cascade do |t|
     t.integer "higher_order_taxon_id"
     t.integer "marker_id"
+  end
+
+  create_table "higher_order_taxa_projects", id: false, force: :cascade do |t|
+    t.integer "higher_order_taxon_id"
+    t.integer "project_id"
   end
 
   create_table "individuals", force: :cascade do |t|
@@ -161,6 +176,11 @@ ActiveRecord::Schema.define(version: 20150719172520) do
     t.boolean  "negative_control",                    default: false
   end
 
+  create_table "isolates_projects", id: false, force: :cascade do |t|
+    t.integer "isolate_id"
+    t.integer "project_id"
+  end
+
   create_table "issues", force: :cascade do |t|
     t.string   "title",          limit: 255
     t.text     "description"
@@ -168,6 +188,11 @@ ActiveRecord::Schema.define(version: 20150719172520) do
     t.datetime "updated_at"
     t.integer  "primer_read_id"
     t.integer  "contig_id"
+  end
+
+  create_table "issues_projects", id: false, force: :cascade do |t|
+    t.integer "issue_id"
+    t.integer "project_id"
   end
 
   create_table "lab_racks", force: :cascade do |t|
@@ -181,6 +206,11 @@ ActiveRecord::Schema.define(version: 20150719172520) do
     t.string   "labcode",    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "labs_projects", id: false, force: :cascade do |t|
+    t.integer "lab_id"
+    t.integer "project_id"
   end
 
   create_table "marker_sequences", force: :cascade do |t|
@@ -230,6 +260,11 @@ ActiveRecord::Schema.define(version: 20150719172520) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "higher_order_taxon_id"
+  end
+
+  create_table "orders_projects", id: false, force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "project_id"
   end
 
   create_table "partial_cons", force: :cascade do |t|
@@ -292,6 +327,11 @@ ActiveRecord::Schema.define(version: 20150719172520) do
     t.integer  "base_count"
   end
 
+  create_table "primer_reads_projects", id: false, force: :cascade do |t|
+    t.integer "primer_read_id"
+    t.integer "project_id"
+  end
+
   create_table "primers", force: :cascade do |t|
     t.string   "name",         limit: 255
     t.string   "sequence",     limit: 255
@@ -315,6 +355,11 @@ ActiveRecord::Schema.define(version: 20150719172520) do
     t.datetime "due"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "projects_species", id: false, force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "species_id"
   end
 
   create_table "projects_users", id: false, force: :cascade do |t|
