@@ -2,7 +2,6 @@ class Individual < ActiveRecord::Base
   has_many :isolates
   belongs_to :species
 
-
   scope :without_species, -> {where(:species => nil)}
 
   scope :without_isolates, ->{joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
@@ -32,7 +31,7 @@ class Individual < ActiveRecord::Base
     end
   end
 
-  def self.export(file)
+def self.export(file)
 
     # GBOL-Nr.
     # Feldnummer

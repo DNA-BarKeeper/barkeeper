@@ -1,5 +1,7 @@
 GBOLapp::Application.routes.draw do
 
+  resources :individuals
+
   resources :primer_reads
 
   root :to => "home#about"

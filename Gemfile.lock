@@ -262,7 +262,6 @@ GEM
       tilt (>= 1.3.3, < 2.1)
     spreadsheet (1.0.1)
       ruby-ole (>= 1.0)
-    spring (1.2.0)
     sprockets (2.12.3)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -321,6 +320,7 @@ DEPENDENCIES
   launchy
   meta_request
   mime-types
+  minitest
   newrelic_rpm
   paperclip!
   pg
@@ -342,7 +342,6 @@ DEPENDENCIES
   simple_form
   sinatra
   slim
-  spring
   sprockets-rails
   turbolinks
   uglifier (>= 1.3.0)
