@@ -17,6 +17,7 @@ class PrimerReadsControllerTest < ActionController::TestCase
   end
 
   test "should create primer_read" do
+    user_log_in
     assert_difference('PrimerRead.count') do
       post :create, primer_read: {  }
     end
@@ -35,11 +36,13 @@ class PrimerReadsControllerTest < ActionController::TestCase
   end
 
   test "should update primer_read" do
+    user_log_in
     patch :update, id: @primer_read, primer_read: {  }
     assert_redirected_to primer_read_path(assigns(:primer_read))
   end
 
   test "should destroy primer_read" do
+    user_log_in
     assert_difference('PrimerRead.count', -1) do
       delete :destroy, id: @primer_read
     end
