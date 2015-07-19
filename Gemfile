@@ -15,7 +15,7 @@ gem 'jquery-rails', '~> 2.3.0'
 gem 'jquery-ui-rails'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0',          group: :doc
-gem 'spring',        group: :development
+# gem 'spring',        group: :development
 gem 'populator'
 gem 'turbolinks'
 gem 'jquery-turbolinks'
@@ -38,8 +38,8 @@ gem 'select2-rails'
 
 gem 'puma', :group => 'production'
 
-
 group :development, :test do
+  gem 'minitest'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'meta_request'
@@ -48,7 +48,6 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'launchy'
   gem 'webrat'
-
 end
 
 group :test do
