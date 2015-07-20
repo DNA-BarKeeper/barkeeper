@@ -4,6 +4,7 @@ require 'rails/test_help'
 require 'minitest/autorun'
 
 class ActiveSupport::TestCase
+  ActiveRecord::Migration.check_pending!
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
   #
   # Note: You'll currently still have to declare fixtures explicitly in integration tests
@@ -14,7 +15,7 @@ class ActiveSupport::TestCase
 end
 
 module FixtureFileHelpers
-  def encrypted_password(password = 'password123')
+  def encrypted_password(password = 'abcdef12!')
     User.new.send(:password_digest, password)
   end
 end

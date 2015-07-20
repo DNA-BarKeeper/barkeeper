@@ -2,8 +2,6 @@ require 'test_helper'
 
 class ProjectsControllerTest < ActionController::TestCase
 
-  include Devise::TestHelpers
-
   setup do
     @project = projects(:gbol5)
     @user = users(:default)

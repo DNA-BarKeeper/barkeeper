@@ -1,4 +1,16 @@
 default:
-  email: 'default@example.com'
-  name: "Testuser #1"
+  email: default@example.com
+  name: Testuser no.1
+  encrypted_password: <%= encrypted_password %>
+  projects: gbol5
+
+kai:
+  email: kaimueller@uni-muenster.de
+  name: Kai Müller
+  encrypted_password: <%= encrypted_password %>
+  projects: gbol5
+
+invalid_user:
+  email: invalid@anywhere.com
+  name: invalid
   encrypted_password: <%= encrypted_password %>

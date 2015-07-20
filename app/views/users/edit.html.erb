@@ -1,0 +1,16 @@
+<div class="authform">
+
+  <h4><%= @user.name%></h4>
+
+  <%= form_for(@user) do |f| %>
+
+      <div class="form-group">
+        <%= f.label 'Projects' %><br>
+        <%= f.collection_select :project_ids, Project.order(:name), :id, :name, {}, {multiple:true} %>
+      </div>
+
+      <%= f.submit 'Update', :class => 'btn btn-default' %>
+
+  <% end %>
+
+</div>

@@ -12,9 +12,11 @@ class ProjectTest < ActiveSupport::TestCase
     assert_not project.save, 'Saved the project without a title'
   end
 
-  test 'user should be assignable to project' do
-    @project.users << @user
-    assert_equal(1, @project.users.count, 'User could not be assigned to project')
+  # todo change this to assert difference
+  test 'assign a user to project' do
+    assert_difference ->{ @project.users.count }, 1, 'User could not be assigned to project' do
+      @project.users << @user
+    end
   end
 
   test 'assign an individual to project' do
@@ -41,7 +43,6 @@ class ProjectTest < ActiveSupport::TestCase
     @project.higher_order_taxa << higher_order_taxa(:magnoliopsida)
     assert_equal(1, @project.higher_order_taxa.count, 'Higher-order-taxon could not be assigned to project')
   end
-
 
   test 'assign an isolate to project' do
     @project.isolates << isolates(:gbol5127)
