@@ -50,7 +50,7 @@ class UsersControllerTest < ActionController::TestCase
     assert_difference ->{@edited_user.projects.count}, 1, 'no project was added.' do
       patch :update, id: @edited_user, user: {project_ids: projects(:gbol5, :t3)}
     end
-   
+
   end
 
   test "other than kai should not be able to assign additional projects to user" do
