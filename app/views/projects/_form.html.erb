@@ -3,7 +3,7 @@
 
 <div class="authform">
   <h4><%= @project.name%></h4>
-<%= form_for(@project) do |f| %>
+  <%= form_for(@project) do |f| %>
       <div class="form-group">
         <%= f.label :name %>
         <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
@@ -14,8 +14,8 @@
         <%= f.text_area :description, class: 'form-control' %>
       </div>
 
-  <div class="form-actions">
-    <%= f.button :submit %>
-  </div>
-<% end %>
+      <div class="form-actions">
+        <%= f.button :submit %>
+      </div>
+  <% end %>
 </div>

@@ -2,6 +2,13 @@ require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
 
+  test "as kai, should get new" do
+    @user = users(:kai)
+    sign_in @user
+    get :new
+    assert_response :success
+  end
+
   test "should get users index if user is Kai" do
     @user = users(:kai)
     sign_in @user
@@ -60,6 +67,18 @@ class UsersControllerTest < ActionController::TestCase
     assert_no_difference ->{@user.projects.count} do
       patch :update, id: @user, user: {project_ids: projects(:gbol5, :t3)}
     end
+  end
+
+  test 'kai should be able to create new users' do
+    @user = users(:kai)
+    sign_in @user
+
+    assert_difference('User.count') do
+      post :create, user: { :name => 'test_user', :email => 'test@example.com', :password => 'password', :password_confirmation => 'password'}
+    end
+
+    assert_redirected_to user_path(assigns(:user))
 
   end
+
 end
