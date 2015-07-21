@@ -2,6 +2,7 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+//override crappy default hover color (black background!) by blue:
 a {
   color: inherit;
 
