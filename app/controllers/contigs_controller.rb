@@ -13,7 +13,7 @@ class ContigsController < ApplicationController
     end
   end
 
-  def show_need_verify #assembled according to app but need manual check
+  def show_need_verify #assembly finished according to app but still need manual check
     respond_to do |format|
       format.html
       format.json { render json: ContigDatatable.new(view_context, true) }

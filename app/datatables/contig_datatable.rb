@@ -7,7 +7,6 @@ class ContigDatatable
 
   delegate :params, :link_to, :h, to: :@view
 
-
   def initialize(view, need_verify)
     @view = view
     @need_verify = need_verify
@@ -61,6 +60,7 @@ class ContigDatatable
     else
       contigs = Contig.order("#{sort_column} #{sort_direction}")
     end
+
     contigs = contigs.page(page).per_page(per_page)
 
     if params[:sSearch].present?

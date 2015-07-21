@@ -49,16 +49,15 @@ class IndividualDatatable
 
   def fetch_individuals
     if @species_id
-      individuals = Individual.includes(:species).where(:species_id => @species_id).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+      individuals = Individual.includes(:species).where(:species_id => @species_id).order("#{sort_column} #{sort_direction}")
     else
-      individuals = Individual.includes(:species).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
-
+      individuals = Individual.includes(:species).order("#{sort_column} #{sort_direction}")
     end
+
     individuals = individuals.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
-      individuals = individuals.where("specimen_id ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      individuals = individuals.where("specimen_id ILIKE :search", search: "%#{params[:sSearch]}%")
     end
     individuals
   end
