@@ -17,9 +17,8 @@
 //= require jquery.autosize
 //= require jquery-fileupload/basic
 //= require jquery-fileupload/vendor/tmpl
+//= require chosen.jquery
 //= require turbolinks
 //= require jquery.turbolinks
 //= require bootstrap
 //= require_tree .
-
-//$('textarea').autosize();

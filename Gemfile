@@ -34,7 +34,7 @@ gem 'jquery-fileupload-rails'
 gem 'roo'
 gem 'sidekiq'
 gem 'whenever', :require => false
-gem 'select2-rails'
+gem 'chosen-rails'
 
 gem 'puma', :group => 'production'
 

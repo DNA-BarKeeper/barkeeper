@@ -5,7 +5,9 @@ jQuery(function() {
         ],
         "order": [ 2, 'asc' ]
     });
-    //$('select#higher_order_taxon_marker_ids').select2({
-    //    width: '100%'
-    //});
+    $('#higher_order_taxon_marker_ids').chosen({
+        allow_single_deselect: true,
+        no_results_text: 'No results matched',
+        width: '400px'
+    });
 });
