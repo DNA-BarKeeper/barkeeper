@@ -11,15 +11,7 @@ module GBOLapp
   class Application < Rails::Application
 
     config.generators do |g|
-      g.test_framework :test_unit
-      # g.test_framework :rspec,
-      #   fixtures: true,
-      #   view_specs: true,
-      #   helper_specs: true,
-      #   routing_specs: true,
-      #   controller_specs: true,
-      #   request_specs: true
-      # g.fixture_replacement :factory_girl, dir: "spec/factories"
+      g.test_framework :minitest
     end
 
     # Settings in config/environments/* take precedence over those specified here.
