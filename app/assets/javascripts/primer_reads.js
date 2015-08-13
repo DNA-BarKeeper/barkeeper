@@ -32,7 +32,6 @@ jQuery(function() {
 
 //    draw chromatogram
 
-
     draw_chromatogram();
 
 });
@@ -40,7 +39,7 @@ jQuery(function() {
 
 function draw_chromatogram(){
 
-    // über alle divs einer classe iterieren und die dort jeweiligen read data zum zeichnen nutzen
+    // über alle divs einer classe iterieren und die dort jeweiligen read data zum Zeichnen nutzen
     var primer_read_divs = document.getElementsByClassName('chromatogram');
 
     for (var e = 0; e < primer_read_divs.length; e++) {
@@ -206,7 +205,7 @@ function draw_chromatogram(){
 
                             if (d3.event.keyCode === 13) {
 
-                                event.preventDefault(); // cancel default behavior
+                                d3.event.preventDefault(); // cancel default behavior
 
                                 var newBase = inp.node().value;
 
@@ -230,7 +229,6 @@ function draw_chromatogram(){
                                 } else {
                                     selected_base.attr("fill", 'grey');
                                 }
-
 
                                 frm.remove();
                             }
