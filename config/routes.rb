@@ -117,6 +117,7 @@ GBOLapp::Application.routes.draw do
       get 'filter'
       get 'assemble_all'
       get 'pde_all'
+      get 'duplicates'
     end
     member do
       get 'verify'

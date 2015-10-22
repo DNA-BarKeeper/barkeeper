@@ -13,6 +13,10 @@ class ContigsController < ApplicationController
     end
   end
 
+  def duplicates
+
+  end
+
   def show_need_verify #assembly finished according to app but still need manual check
     respond_to do |format|
       format.html
