@@ -4,7 +4,7 @@ namespace :data do
 
   desc "Merge multiple copies of same isolate into one with all associations & attributes"
 
-  task :merge_duplicates => :environment do
+  task :merge_duplicate_isolates => :environment do
 
     # get list w duplicates
     a=[]
