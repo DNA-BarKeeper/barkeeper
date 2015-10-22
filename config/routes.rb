@@ -95,6 +95,8 @@ GBOLapp::Application.routes.draw do
   resources :isolates do
     collection do
       get 'filter'
+      get 'duplicates'
+      get 'no_specimen'
       post :import
     end
   end

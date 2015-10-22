@@ -329,8 +329,8 @@ class Contig < ActiveRecord::Base
   end
 
   #perform Needleman-Wunsch-based overlapping:
-  def overlap(growing_cons_hash, read, qualities)
 
+  def overlap(growing_cons_hash, read, qualities)
 
     growing_consensus = growing_cons_hash[:consensus]
     growing_consensus_qualities = growing_cons_hash[:consensus_qualities]
@@ -489,7 +489,6 @@ class Contig < ActiveRecord::Base
       aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
       aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
 
-      # mirror everything that's done to aligned_cons_seq in all previously aligned_seqs:
       for k in 0...adjusted_prev_aligned_reads.size do
         adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
         adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
@@ -514,7 +513,6 @@ class Contig < ActiveRecord::Base
         aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
         aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
 
-        # mirror everything that's done to aligned_cons_seq in all previously aligned_seqs:
         for k in 0...adjusted_prev_aligned_reads.size do
           adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
           adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
@@ -528,7 +526,6 @@ class Contig < ActiveRecord::Base
         aligned_cons_seq = '-' + aligned_cons_seq
         aligned_cons_qual.unshift(-1)
 
-        # mirror everything that's done to aligned_cons_seq in all previously aligned_seqs:
         for k in 0...adjusted_prev_aligned_reads.size do
           adjusted_prev_aligned_reads[k] = '-' + adjusted_prev_aligned_reads[k]
           adjusted_prev_aligned_qualities[k].unshift(-1)
@@ -541,7 +538,6 @@ class Contig < ActiveRecord::Base
         aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
         aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
 
-        # mirror everything that's done to aligned_cons_seq in all previously aligned_seqs:
         for k in 0...adjusted_prev_aligned_reads.size do
           adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
           adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])

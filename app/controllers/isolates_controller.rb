@@ -13,6 +13,15 @@ class IsolatesController < ApplicationController
   end
 
 
+  def duplicates
+
+  end
+
+  def no_specimen
+    
+  end
+
+
   def filter
     @isolates = Isolate.select('lab_nr, id').where('lab_nr ILIKE ?', "%#{params[:term]}%").order(:lab_nr)
     render json: @isolates.map(&:lab_nr)
