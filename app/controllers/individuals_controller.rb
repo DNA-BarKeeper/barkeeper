@@ -1,6 +1,6 @@
 class IndividualsController < ApplicationController
 
-  # before_filter :authenticate_user!, :except => [:edit, :index, :filter, :xls]
+  before_filter :authenticate_user!, :except => [:edit, :index, :filter, :xls]
 
   before_action :set_individual, :only => [:show, :edit, :update, :destroy]
 
