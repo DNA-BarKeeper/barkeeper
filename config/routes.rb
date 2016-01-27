@@ -12,8 +12,8 @@ GBOLapp::Application.routes.draw do
   match 'contact', to: 'home#contact', via: 'get'
   match 'search', to: 'home#search', via: 'get'
 
-  get 'individuals_xls', action: :xls, controller: 'individuals'
-  get 'individuals_create_xls', action: :create_xls, controller: 'individuals'
+  get 'specimens_xls', action: :xls, controller: 'individuals'
+  get 'specimens_create_xls', action: :create_xls, controller: 'individuals'
 
   resources :issues
 
