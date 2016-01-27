@@ -12,10 +12,10 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#contigs').data('source'),
         "columnDefs": [
-            { "orderable": false, "targets": 1 },
-            { "orderable": false, "targets": 4 }
+            { "orderable": false, "targets": 2 },
+            { "orderable": false, "targets": 5 }
         ],
-        "order": [ 3, 'desc' ]
+        "order": [ 4, 'desc' ]
     });
 
 

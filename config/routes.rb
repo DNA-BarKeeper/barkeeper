@@ -12,6 +12,9 @@ GBOLapp::Application.routes.draw do
   match 'contact', to: 'home#contact', via: 'get'
   match 'search', to: 'home#search', via: 'get'
 
+  get 'individuals_xls', action: :xls, controller: 'individuals'
+  get 'individuals_create_xls', action: :create_xls, controller: 'individuals'
+
   resources :issues
 
   resources :higher_order_taxons do
@@ -55,8 +58,8 @@ GBOLapp::Application.routes.draw do
   resources :individuals do
     collection do
       get :filter
-      get 'create_xls'
-      get 'xls'
+      # get 'create_xls'
+      # get 'xls'
       get :problematic_specimens
     end
   end

@@ -40,6 +40,7 @@ class ContigDatatable
       end
 
       [
+          check_box_tag("contig_ids[]", contig.id),
           link_to(contig.name, edit_contig_path(contig)),
           link_to(species_name, edit_species_path(species_id)),
           assembled,
