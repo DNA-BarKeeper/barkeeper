@@ -12,10 +12,9 @@
           <% version = ENV['HEROKU_RELEASE_VERSION'] %>
       <% else %>
           <% version = '' %>
-
       <% end %>
       <%= link_to  about_path, class: 'navbar-brand'  do %>
-          GBOL5 <span style="color: #616161">Web App</span><span style="font-size: x-small"><i> <%= version %></i></span>
+          GBOL5 <span style="color: #616161">Web App <span style="font-size: xx-small"> <%= version %></span></span>
       <% end %>
     </div>
     <div class="collapse navbar-collapse">
