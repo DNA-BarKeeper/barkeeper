@@ -4,8 +4,22 @@
     <h3 class="panel-title">Impressum</h3>
   </div>
 
+  <% if ENV['HEROKU_RELEASE_VERSION'] %>
+      <% version = ENV['HEROKU_RELEASE_VERSION'] %>
+  <% else %>
+      <% version = '' %>
+  <% end %>
+
+
+
+  <% if ENV['HEROKU_RELEASE_CREATED_AT'] %>
+      <% date = ENV['HEROKU_RELEASE_CREATED_AT'] %>
+  <% else %>
+      <% date = '' %>
+  <% end %>
+
   <div class="panel-body">
-    <p>GBOL5 web application</p>
+    <p>GBOL5 Web Application, version <%= version %>, released <%= date %> </p>
     <p>Written by <a href="http://www2.ieb.uni-muenster.de/EvolBiodivPlants/en/People/Mueller">Kai Müller</a>, who is also responsible for this website in accordance with § 5 Telemediengesetz and § 55 Staatsvertrag für Rundfunk und Telemedien.</p>
 
     <p><strong>Contact:</strong></p>
@@ -19,5 +33,6 @@
       kaimueller@uni-muenster.de<br>
     </p>
   </div>
+
 
 </div>
