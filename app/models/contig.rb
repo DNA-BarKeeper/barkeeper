@@ -690,7 +690,7 @@ class Contig < ActiveRecord::Base
             else
 
               #get surrounding base qualities
-              
+
               if i>0
                 neighboring_qual1=qual1[i-1]
               else

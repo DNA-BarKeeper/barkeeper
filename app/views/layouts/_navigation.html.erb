@@ -8,7 +8,15 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <%= link_to 'GBOL5', about_path, class: 'navbar-brand' %>
+      <% if ENV['HEROKU_RELEASE_VERSION'] %>
+          <% version = ENV['HEROKU_RELEASE_VERSION'] %>
+      <% else %>
+          <% version = '' %>
+
+      <% end %>
+      <%= link_to  about_path, class: 'navbar-brand'  do %>
+          GBOL5 <span style="color: #616161">Web App</span><span style="font-size: x-small"><i> <%= version %></i></span>
+      <% end %>
     </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
