@@ -36,8 +36,6 @@ gem 'chosen-rails'
 
 gem 'puma', :group => 'production'
 
-gem 'heroku-api'
-
 group :development, :test do
   gem 'minitest'
   gem 'better_errors'
