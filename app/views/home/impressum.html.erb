@@ -6,20 +6,33 @@
 
   <% if ENV['HEROKU_RELEASE_VERSION'] %>
       <% version = ENV['HEROKU_RELEASE_VERSION'] %>
+      <% version = version.match(/^v(\d+)/)[1] %>
   <% else %>
       <% version = '' %>
   <% end %>
 
-
-
   <% if ENV['HEROKU_RELEASE_CREATED_AT'] %>
       <% date = ENV['HEROKU_RELEASE_CREATED_AT'] %>
+      <% date=Time.zone.parse(date) %>
   <% else %>
       <% date = '' %>
   <% end %>
 
+  <% if ENV['HEROKU_SLUG_DESCRIPTION'] %>
+      <% change = ENV['HEROKU_SLUG_DESCRIPTION'] %>
+  <% else %>
+      <% change = '' %>
+  <% end %>
+
+  <% if ENV['HEROKU_SLUG_COMMIT'] %>
+      <% commit = ENV['HEROKU_SLUG_COMMIT'] %>
+      <% commit_url =  'https://bitbucket.org/kai42/gbol5/commits/'+commit %>
+  <% else %>
+      <% commit = '' %><% commit_url = '' %>
+  <% end %>
+
   <div class="panel-body">
-    <p>GBOL5 Web Application, version <%= version %>, released <%= date %> </p>
+    <p>GBOL5 Web Application, version <%= version %>, released <%= date %>, <%= change %>, <a href="<%= commit_url %>">commit <%= commit %></a> </p>
     <p>Written by <a href="http://www2.ieb.uni-muenster.de/EvolBiodivPlants/en/People/Mueller">Kai Müller</a>, who is also responsible for this website in accordance with § 5 Telemediengesetz and § 55 Staatsvertrag für Rundfunk und Telemedien.</p>
 
     <p><strong>Contact:</strong></p>
