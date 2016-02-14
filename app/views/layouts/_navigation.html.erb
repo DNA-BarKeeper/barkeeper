@@ -13,7 +13,13 @@
       <% else %>
           <% version = '' %>
       <% end %>
-      <%= link_to  about_path, class: 'navbar-brand'  do %>
+      <% if ENV['HEROKU_RELEASE_CREATED_AT'] %>
+          <% date = ENV['HEROKU_RELEASE_CREATED_AT'] %>
+          <% date=Time.zone.parse(date) %>
+      <% else %>
+          <% date = Time.zone.now %>
+      <% end %>
+      <%= link_to  about_path, class: 'navbar-brand', :title => "Released #{distance_of_time_in_words(Time.zone.now, date)} ago"  do %>
           GBOL5 <span style="color: #616161">Web App <span style="font-size: xx-small"> <%= version %></span></span>
       <% end %>
     </div>
