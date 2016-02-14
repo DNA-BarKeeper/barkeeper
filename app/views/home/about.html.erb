@@ -72,10 +72,10 @@
 
     GBOL5 Web Application version <%= version %><br>
 
-    Released <%= distance_of_time_in_words(Time.zone.now, date)%> ago<br>
+    <span title="<%= date.strftime("%Y-%m-%d %H:%M") %>">Released <%= distance_of_time_in_words(Time.zone.now, date)%> ago</span><br>
 
     Last change: <%= change %><br>
 
-    Last commit: <a href="<%= commit_url %>">Commit <%= commit %></a> by Kai Müller</div><br>
+    Last commit: <a href="<%= commit_url %>"><%= commit %></a> by Kai Müller</div><br>
 
 </div>

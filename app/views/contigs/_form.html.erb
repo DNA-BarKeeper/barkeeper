@@ -5,7 +5,7 @@
   <div class="panel-heading">
     <h3 class="panel-title">Contig <%= @contig.name %>
       <% if @contig.try(:isolate).try(:individual).try(:species) %>
-         - <%= link_to(@contig.isolate.individual.species.name_for_display, edit_species_path(@contig.isolate.individual.species.id)) %>
+          - <%= link_to(@contig.isolate.individual.species.name_for_display, edit_species_path(@contig.isolate.individual.species.id)) %>
       <% end %>
     </h3>
   </div>
@@ -76,14 +76,13 @@
               <% else %>
                   <%= link_to verify_contig_path(@contig) do %>
                       <span class = "glyphicon glyphicon-ok"></span> Verify
-            <% end %>
-                      <br><br>
+                  <% end %>
+                  <br><br>
               <% end %>
 
             </div>
 
           </div>
-
 
           <div class="tab-pane" id="downloads">
             <br>
@@ -94,7 +93,6 @@
           </div>
         </div>
         <%= f.submit 'Update', :class =>  'btn btn-default'%>
-
 
 
     <% end %>

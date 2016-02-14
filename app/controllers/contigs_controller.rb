@@ -2,7 +2,8 @@ class ContigsController < ApplicationController
 
   before_filter :authenticate_user!, :except => [:edit, :index, :filter]
 
-  before_action :set_contig, only: [:verify, :pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :overlap_background, :show, :edit, :update, :destroy]
+  before_action :set_contig, only: [:verify, :pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :overlap_background, :show, :edit,\
+   :update, :destroy]
 
   # GET /contigs
   # GET /contigs.json
