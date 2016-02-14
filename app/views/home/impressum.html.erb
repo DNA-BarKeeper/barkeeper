@@ -4,46 +4,15 @@
     <h3 class="panel-title">Impressum</h3>
   </div>
 
-  <% if ENV['HEROKU_RELEASE_VERSION'] %>
-      <% version = ENV['HEROKU_RELEASE_VERSION'] %>
-      <% version = version.match(/^v(\d+)/)[1] %>
-  <% else %>
-      <% version = '' %>
-  <% end %>
-
-  <% if ENV['HEROKU_RELEASE_CREATED_AT'] %>
-      <% date = ENV['HEROKU_RELEASE_CREATED_AT'] %>
-      <% date=Time.zone.parse(date) %>
-  <% else %>
-      <% date = '' %>
-  <% end %>
-
-  <% if ENV['HEROKU_SLUG_DESCRIPTION'] %>
-      <% change = ENV['HEROKU_SLUG_DESCRIPTION'] %>
-  <% else %>
-      <% change = '' %>
-  <% end %>
-
-  <% if ENV['HEROKU_SLUG_COMMIT'] %>
-      <% commit = ENV['HEROKU_SLUG_COMMIT'] %>
-      <% commit_url =  'https://bitbucket.org/kai42/gbol5/commits/'+commit %>
-  <% else %>
-      <% commit = '' %><% commit_url = '' %>
-  <% end %>
-
   <div class="panel-body">
-    <p>GBOL5 Web Application, version <%= version %>, released <%= distance_of_time_in_words(Time.zone.now, date)%> ago, <%= change %>, <a href="<%= commit_url %>">commit <%= commit %></a> </p>
-    <p>Written by <a href="http://www2.ieb.uni-muenster.de/EvolBiodivPlants/en/People/Mueller">Kai Müller</a>, who is also responsible for this website in accordance with § 5 Telemediengesetz and § 55 Staatsvertrag für Rundfunk und Telemedien.</p>
-
-    <p><strong>Contact:</strong></p>
+    <p>Responsible for this website in accordance with § 5 Telemediengesetz and § 55 Staatsvertrag für Rundfunk und Telemedien:</p>
     <p>
-      Prof. Dr. Kai Müller<br>
+      <span style="color: darkslategray"><strong><a href="mailto:kaimueller@uni-muenster.de">Prof. Dr. Kai Müller</a></strong></span><br>
       Evolution und Biodiversität der Pflanzen<br>
       Institut für Evolution und Biodiversität<br>
       Westfälische Wilhelms-Universität Münster<br>
       Hüfferstraße 1<br>
-      48149 Münster<br><br>
-      kaimueller@uni-muenster.de<br>
+      48149 Münster<br>
     </p>
   </div>
 

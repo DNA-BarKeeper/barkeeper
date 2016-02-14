@@ -1,6 +1,5 @@
 <div class="jumbotron" style="opacity: 0.7;">
 
-
   <a href="http://www.bolgermany.de"><img alt="GBOL" width="100" class="pull-right" src=<%= asset_path('GBoL_transparent.png')  %> /></a>
   <h1>GBOL5<br>
   <small>Barcoding the German Flora</small></h1>
@@ -27,19 +26,15 @@
       <a href="http://www.nees.uni-bonn.de"><img alt="Bonn" height="35" src=<%= asset_path('Uni_Bonn_transparent.png') %> /></a>
     </div>
 
-
-
     <div style="height: 70px" class="col-lg-3 col-md-3 col-sm-3 col-xs-12" >
       <a href="http://ieb.uni-muenster.de"><img alt="IEB" height="27"  src=<%= asset_path('ieb_transparent.png') %> /></a>
       <a href="http://ieb.uni-muenster.de"><img alt="WWU"  height="35"  src=<%= asset_path('wwu_logo_transparent.png') %> /></a>
     </div>
 
-
     <div style="height: 70px" class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
       <a href="http://www.bgbm.org/"><img alt="BGBM" height="40"  src=<%= asset_path('logo_bgbm_transparent.png') %> /></a>
       <a href="http://www.bgbm.org/"><img alt="BGBM" height="40"  src=<%= asset_path('FU_Berlin.png') %> /></a>
     </div>
-
 
     <div style="height: 70px" class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
       <a href="http://www.naturkundemuseum-bw.de/intl/englisch/stuttgart-state-museum-natural-history"><img alt="SMNS" height="60" class="img-rounded" src=<%= asset_path('SMNS_transparent.png') %> /></a>
@@ -48,6 +43,39 @@
   </footer>
   <hr>
 
+  <div style="font-size: xx-small"><% if ENV['HEROKU_RELEASE_VERSION'] %>
+        <% version = ENV['HEROKU_RELEASE_VERSION'] %>
+        <% version = version.match(/^v(\d+)/)[1] %>
+    <% else %>
+        <% version = '123' %>
+    <% end %>
 
+    <% if ENV['HEROKU_RELEASE_CREATED_AT'] %>
+        <% date = ENV['HEROKU_RELEASE_CREATED_AT'] %>
+        <% date=Time.zone.parse(date) %>
+    <% else %>
+        <% date = Time.zone.now %>
+    <% end %>
+
+    <% if ENV['HEROKU_SLUG_DESCRIPTION'] %>
+        <% change = ENV['HEROKU_SLUG_DESCRIPTION'] %>
+    <% else %>
+        <% change = 'Commit 2134js9' %>
+    <% end %>
+
+    <% if ENV['HEROKU_SLUG_COMMIT'] %>
+        <% commit = ENV['HEROKU_SLUG_COMMIT'] %>
+        <% commit_url =  'https://bitbucket.org/kai42/gbol5/commits/'+commit %>
+    <% else %>
+        <% commit = '75923870awjaösg' %><% commit_url = '75923870awjaösg' %>
+    <% end %>
+
+    GBOL5 Web Application version <%= version %><br>
+
+    Released <%= distance_of_time_in_words(Time.zone.now, date)%> ago<br>
+
+    Last change: <%= change %><br>
+
+    Last commit: <a href="<%= commit_url %>">Commit <%= commit %></a> by Kai Müller</div><br>
 
 </div>
