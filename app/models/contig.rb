@@ -153,6 +153,7 @@ class Contig < ActiveRecord::Base
 
         max_width = growing_consensus[:consensus].length if  growing_consensus[:consensus].length > max_width
 
+
         # write out aligned seqs:
 
         growing_consensus[:reads].each do |aligned_read|

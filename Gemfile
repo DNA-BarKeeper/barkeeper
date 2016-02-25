@@ -37,26 +37,26 @@ gem 'chosen-rails'
 gem 'puma', :group => 'production'
 
 group :development, :test do
-  gem 'minitest'
   gem 'better_errors'
-  gem 'binding_of_caller'
-  gem 'meta_request'
-  gem 'rails_apps_testing'
-  gem 'rails_layout'
-  gem 'database_cleaner'
+  gem 'yard'
+  # check for n+1 queries:
+  gem 'bullet'
+  gem 'rails_best_practices'
+  gem 'meta_request' #Supporting gem for Rails Panel (Google Chrome extension for Rails development)., https://github.com/dejan/rails_panel/tree/master/meta_request
   gem 'launchy'
-  gem 'webrat'
 end
 
 group :test do
+  gem 'minitest'
   gem 'minitest-rails-capybara'
   gem 'minitest-reporters'
+  gem 'minitest-fail-fast'
+  gem 'webrat'
+  gem 'simplecov'
   gem 'selenium-webdriver'
+  gem 'binding_of_caller'
 end
 
-# check for n+1 queries:
-gem 'bullet', :group => 'development'
-gem 'rails_best_practices', :group => 'development'
 
 # needed to monitor sidekiq jobs:
 gem 'sinatra', :require => nil

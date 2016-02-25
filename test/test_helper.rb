@@ -4,14 +4,15 @@ require 'rails/test_help'
 require 'minitest/rails'
 require 'minitest/rails/capybara'
 require 'minitest/autorun' # needed?
+require 'minitest/fail_fast'
 require 'minitest/reporters'
+MiniTest::Reporters.use!
 
 class ActiveSupport::TestCase
   #Note: declare fixtures explicitly in integration tests
   # -- they do not yet inherit this setting
   ActiveRecord::Migration.check_pending!
   fixtures :all
-
 end
 
 module FixtureFileHelpers

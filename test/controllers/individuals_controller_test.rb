@@ -8,6 +8,7 @@ class IndividualsControllerTest < ActionController::TestCase
   end
 
   test "should get index" do
+    #TODO should be possible to factor out user_log_in
     user_log_in
     get :index
     assert_response :success
