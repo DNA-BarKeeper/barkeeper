@@ -35,7 +35,6 @@ jQuery(function() {
         draw_contig(partial_cons);
     }
 
-
     //    draw singletons (unassembled reads)
 
     var not_assembled = $('#singletons').data('url');
