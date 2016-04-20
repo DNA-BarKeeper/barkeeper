@@ -47,33 +47,19 @@
               <%= f.text_field :individual_name, data: {autocomplete_source: filter_individuals_path}, class: 'form-control' %>
             </div>
 
+            <div class="form-group">
+              <%= f.label :tissue_id, 'Tissue type' %>
+              <%= f.collection_select(:tissue_id, Tissue.all, :id, :name) %>
+            </div>
 
             <div class="form-group">
-              <%= f.label :micronic_tube_id, 'Micronic tube ID' %>
-              <%= f.text_field :micronic_tube_id,  class: 'form-control' %>
+              <%= f.label :plant_plate_id, 'Plate (Tissue)' %>
+              <%= f.collection_select(:plant_plate_id, PlantPlate.all, :id, :name) %>
             </div>
 
             <div class="form-group">
               <%= f.label :well_pos_plant_plate_plate, 'Well position in tissue plate' %>
               <%= f.text_field :well_pos_plant_plate,  class: 'form-control' %>
-            </div>
-
-
-            <div class="form-group">
-              <%= f.label :well_pos_micronic_plate, 'Well position in DNA plate' %>
-              <%= f.text_field :well_pos_micronic_plate,  class: 'form-control' %>
-            </div>
-
-
-            <div class="form-group">
-              <%= f.label :concentration %>
-              <%= f.text_field :concentration, class: 'form-control' %>
-            </div>
-
-
-            <div class="form-group">
-              <%= f.label :tissue_id, 'Tissue type' %>
-              <%= f.collection_select(:tissue_id, Tissue.all, :id, :name) %>
             </div>
 
             <div class="form-group">
@@ -82,9 +68,22 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :plant_plate_id, 'Plate (Tissue)' %>
-              <%= f.collection_select(:plant_plate_id, PlantPlate.all, :id, :name) %>
+              <%= f.label :well_pos_micronic_plate, 'Well position in DNA plate' %>
+              <%= f.text_field :well_pos_micronic_plate,  class: 'form-control' %>
             </div>
+
+
+            <div class="form-group">
+              <%= f.label :micronic_tube_id, 'Micronic tube ID' %>
+              <%= f.text_field :micronic_tube_id,  class: 'form-control' %>
+            </div>
+
+
+            <div class="form-group">
+              <%= f.label :concentration %>
+              <%= f.text_field :concentration, class: 'form-control' %>
+            </div>
+
 
             <div class="form-group">
               <%= f.label :negative_control, 'Negative control' %>
