@@ -47,7 +47,7 @@ class SpeciesController < ApplicationController
 
   def get_bry
     ht=HigherOrderTaxon.find(9)
-    collect_and_send_species
+    collect_and_send_species(ht)
   end
 
   def get_ant
