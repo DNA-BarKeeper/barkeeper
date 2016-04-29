@@ -38,6 +38,34 @@ class SpeciesController < ApplicationController
     redirect_to species_index_path, notice: "Imported."
   end
 
+  def get_mar
+
+    ht=HigherOrderTaxon.find(4)
+
+    collect_and_send_species(ht)
+  end
+
+  def get_bry
+    ht=HigherOrderTaxon.find(9)
+    collect_and_send_species
+  end
+
+  def get_ant
+    ht=HigherOrderTaxon.find(8)
+    collect_and_send_species
+  end
+
+  def collect_and_send_species(ht)
+    str=''
+
+    @species=Species.joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: ht.id}).each do |s|
+      str+=s.id.to_s+"\t"+s.name_for_display+"\n"
+    end
+
+    send_data(str, :filename => "#{ht.name}.txt", :type => "application/txt")
+  end
+
+
   # GET /species/1
   # GET /species/1.json
   def show

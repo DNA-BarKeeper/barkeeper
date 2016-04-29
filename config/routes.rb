@@ -27,6 +27,9 @@ GBOLapp::Application.routes.draw do
     collection do
       post :import
       get :filter
+      get :get_mar
+      get :get_bry
+      get :get_ant
     end
     member do
       get 'show_individuals'
