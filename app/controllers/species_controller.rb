@@ -52,7 +52,7 @@ class SpeciesController < ApplicationController
 
   def get_ant
     ht=HigherOrderTaxon.find(8)
-    collect_and_send_species
+    collect_and_send_species(ht)
   end
 
   def collect_and_send_species(ht)
