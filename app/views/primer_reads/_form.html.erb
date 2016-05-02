@@ -13,7 +13,6 @@
 
   <div class="panel-body">
 
-
     <%= form_for(@primer_read) do |f| %>
 
         <% seq1=@primer_read.sequence %>
@@ -59,11 +58,16 @@
             </p>
 
             <% if @primer_read.primer %>
-                <div class="field">
+                <p><div class="field">
                   Primer: <%= link_to @primer_read.primer.name, edit_primer_path(@primer_read.primer) %> | Marker: <%= link_to @primer_read.contig.marker.name, edit_marker_path(@primer_read.contig.marker) if @primer_read.contig %>
-                </div>
+                </div></p>
             <% end %>
-            <br>
+
+            <div class="form-group">
+              <%= f.label :comment %>
+              <%= f.text_field :comment, class: 'form-control' %>
+            </div>
+            
 
           </div>
 

@@ -39,9 +39,7 @@ class SpeciesController < ApplicationController
   end
 
   def get_mar
-
     ht=HigherOrderTaxon.find(4)
-
     collect_and_send_species(ht)
   end
 

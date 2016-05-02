@@ -193,7 +193,7 @@ class ContigsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def contig_params
-    params.require(:contig).permit(:assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
+    params.require(:contig).permit(:comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
                                    :isolate_name, :verified)
   end
 end
