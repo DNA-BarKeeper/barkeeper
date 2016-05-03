@@ -8,6 +8,13 @@ class PrimerReadsController < ApplicationController
     redirect_to root_url, notice: 'Chromatogram imported.'
   end
 
+  def reads_without_contigs
+    respond_to do |format|
+      format.html
+      format.json { render json: PrimerReadWithoutContigDatatable.new(view_context)}
+    end
+  end
+
   # GET /primer_reads
   # GET /primer_reads.json
   def index

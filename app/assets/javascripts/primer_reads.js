@@ -26,6 +26,16 @@ jQuery(function() {
         ],
         "order": [ 3, 'desc' ]
     });
+    $('#reads_without_contigs').DataTable({
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#reads_without_contigs').data('source'),
+        "columnDefs": [
+            { "orderable": false, "targets": 2 },
+            { "orderable": false, "targets": 4 }
+        ],
+        "order": [ 3, 'desc' ]
+    });
     $('#primer_read_contig_name').autocomplete( {
         source: $('#primer_read_contig_name').data('autocomplete-source')
     });
