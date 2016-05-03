@@ -1,9 +1,9 @@
 <%= show_val_errors(@user)%>
 
 
-<div class="authform">
+<div class="panel panel-default">
 
-  <%= form_for(@user) do |f| %>
+  <div class="panel-body"><%= form_for(@user) do |f| %>
 
       <div class="form-group">
         <%= f.label :name %>
@@ -34,5 +34,5 @@
         <%= f.button :submit %>
       </div>
 
-  <% end %>
+  <% end %></div>
 </div>
