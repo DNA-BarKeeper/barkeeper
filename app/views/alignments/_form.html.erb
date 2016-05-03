@@ -1,9 +1,9 @@
-<%= show_val_errors(@alignment)%>
 
-<div class="authform">
-<h4><%= @alignment.name%></h4>
+<div class="panel panel-default">
+  
+<div class="panel-heading"><h3 class="panel-title"><%= @alignment.name%></h3></div>
 
-  <%= form_for(@alignment) do |f| %>
+  <div class="panel-body"><%= form_for(@alignment) do |f| %>
 
       <div class="form-group">
         <%= f.label :name %>
@@ -17,5 +17,5 @@
 
       <%= f.submit 'Update', :class => 'button right' %>
 
-  <% end %>
+  <% end %></div>
 </div>

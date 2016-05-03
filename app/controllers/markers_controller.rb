@@ -72,6 +72,6 @@ class MarkersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def marker_params
-      params.require(:marker).permit(:is_gbol, :expected_reads, :name, :sequence, :accession, :higher_order_taxon_ids => [])
+      params.require(:marker).permit(:alt_name, :is_gbol, :expected_reads, :name, :sequence, :accession, :higher_order_taxon_ids => [])
     end
 end

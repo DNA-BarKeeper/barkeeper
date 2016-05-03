@@ -13,7 +13,6 @@ namespace :data do
     end
     d=a.select{ |e| a.count(e) > 1 }.uniq
 
-
     # iterate over duplicate lab_nrs:
     d.each do |duplicate|
 

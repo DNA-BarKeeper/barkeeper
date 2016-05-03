@@ -24,6 +24,7 @@
   </div>
 </div>
 
+
 <p>
   Assembly complete for <%= Contig.where(:assembled => true).count %> contigs.
 </p>
@@ -33,5 +34,5 @@
 <%= link_to 'Download .pde files for all', '#' %>
 
 <p>
-<%= link_to ' Duplicate Contigs', duplicates_contigs_path %>
+  <%= link_to ' Duplicate Contigs', duplicates_contigs_path %>
 </p>

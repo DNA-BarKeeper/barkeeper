@@ -1,27 +1,29 @@
 <div class="panel panel-default">
-  <div class="panel-heading"><h4>Authors</h4></div>
+  <div class="panel-heading"><h3  class="panel-title">Alignments</h3></div>
 
-  <table class="table">
-  <thead>
+  <div class="panel-body">
+    <table class="table">
+
+    <thead>
     <tr>
       <th>Name</th>
       <th>Url</th>
-      <th colspan="3"></th>
+      <th colspan="2"></th>
     </tr>
-  </thead>
+    </thead>
 
-  <tbody>
+    <tbody>
     <% @alignments.each do |alignment| %>
-      <tr>
-        <td><%= alignment.name %></td>
-        <td><%= alignment.URL %></td>
-        <td><%= link_to 'Show', alignment %></td>
-        <td><%= link_to 'Edit', edit_alignment_path(alignment) %></td>
-        <td><%= link_to 'Delete', alignment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
+        <tr>
+          <td><%= alignment.name %></td>
+          <td><%= alignment.URL %></td>
+          <td><%= link_to 'Edit', edit_alignment_path(alignment) %></td>
+          <td><%= link_to 'Delete', alignment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        </tr>
     <% end %>
-  </tbody>
-</table>
+    </tbody>
+
+  </table></div>
 </div>
 <%= link_to 'New Alignment', new_alignment_path %>
 

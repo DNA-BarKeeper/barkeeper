@@ -1,7 +1,5 @@
-<%= show_val_errors(@primer)%>
-
-<div class="authform">
-<%= form_for(@primer) do |f| %>
+<div class="panel panel-default">
+<div class="panel-body"><%= form_for(@primer) do |f| %>
       <div class="form-group">
         <%= f.label :name %>
         <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
@@ -48,6 +46,6 @@
       </div>
 
 
-      <%= f.submit 'Update', :class => 'button right' %>
-<% end %>
+      <%= f.submit 'Update', :class => 'btn btn-default' %>
+<% end %></div>
 </div>

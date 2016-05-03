@@ -1,9 +1,44 @@
 class ContigsController < ApplicationController
 
-  before_filter :authenticate_user!, :except => [:edit, :index, :filter]
+  before_filter :authenticate_user!, :except => [:edit, :index, :filter, :change_via_script]
+
+  skip_before_action :verify_authenticity_token
 
   before_action :set_contig, only: [:verify, :pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :overlap_background, :show, :edit,\
    :update, :destroy]
+
+  def change_via_script
+
+    filename=params[:filename]
+    fastastring=params[:fastastring]
+
+    # find matching contig based on 'filename' (first line, *not* starting with >) --> needs to be handed over via fas.string
+
+    contig=identify_contig(filename)
+
+    # overwrite consensus (> that does not match general read pattern)
+    # overwrite single reads (aligned - / manually corrected version (?) ) (> that do match general read pattern; use the exactly matching read or generate new)
+    # [ Clip reads - Use single read extension in fasta-contigs to clip primer reads accordingly in db ]
+    # set read's use_for / assembled etc
+    # mark contig as assembled & verified
+    # add comment 'imported' to contig
+    # generate marker sequence
+
+    # render nothing: true
+    fastastring+=filename
+    send_data(fastastring, :filename => "#{filename}.txt", :type => "application/txt")
+
+  end
+
+  def identify_contig(filename)
+    matches=Contig.where(:name => filename).count
+    if  matches > 0
+      contig = Contig.where(:name => filename).first
+    else
+    #   decompose name
+    end
+    return contig
+  end
 
   # GET /contigs
   # GET /contigs.json
@@ -42,7 +77,7 @@ class ContigsController < ApplicationController
       @contig.update(:verified_by => nil, :verified_at => nil)
       redirect_to edit_contig_path, notice: "Set to non-verified."
     else
-      @contig.update(:verified_by => current_user.id, :verified_at => Time.now)
+      @contig.update(:verified_by => current_user.id, :verified_at => Time.now, :assembled => true)
       redirect_to edit_contig_path, notice: "Verified."
     end
   end
@@ -138,6 +173,7 @@ class ContigsController < ApplicationController
     end
 
     redirect_to contigs_path
+
   end
 
   def pde
@@ -193,7 +229,7 @@ class ContigsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def contig_params
-    params.require(:contig).permit(:comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
+    params.require(:contig).permit(:filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
                                    :isolate_name, :verified)
   end
 end

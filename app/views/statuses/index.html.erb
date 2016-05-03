@@ -1,13 +1,13 @@
 <div class="panel panel-default">
-  <div class="panel-heading"><h4>Statuses</h4></div>
+  <div class="panel-heading"><h3  class="panel-title">Statuses</h3></div>
 
-  <table class="table">
+  <div class="panel-body"><table class="table">
 
 
   <thead>
     <tr>
       <th>Name</th>
-      <th colspan="3"></th>
+      <th colspan="2"></th>
     </tr>
   </thead>
 
@@ -15,13 +15,12 @@
     <% @statuses.each do |status| %>
       <tr>
         <td><%= status.name %></td>
-        <td><%= link_to 'Show', status %></td>
         <td><%= link_to 'Edit', edit_status_path(status) %></td>
         <td><%= link_to 'Delete', status, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
-</table>
+</table></div>
 
 </div>
 

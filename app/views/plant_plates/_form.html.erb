@@ -1,9 +1,6 @@
-<%= show_val_errors(@plant_plate)%>
-
-
-<div class="authform">
-  <h4><%= @plant_plate.name%></h4>
-<%= form_for(@plant_plate) do |f| %>
+<div class="panel panel-default">
+  <div class="panel-heading"><h3 class="panel-title"><%= @plant_plate.name%></h3></div>
+<div class="panel-body"><%= form_for(@plant_plate) do |f| %>
 
       <div class="form-group">
         <%= f.label "Name/Code" %>
@@ -11,5 +8,5 @@
       </div>
 
       <%= f.submit 'Update', :class => 'button right' %>
-<% end %>
+<% end %></div>
 </div>

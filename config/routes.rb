@@ -124,6 +124,7 @@ GBOLapp::Application.routes.draw do
       get 'assemble_all'
       get 'pde_all'
       get 'duplicates'
+      post :change_via_script
     end
     member do
       get 'verify'
