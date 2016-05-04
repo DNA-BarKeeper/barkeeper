@@ -171,7 +171,11 @@ class Species < ActiveRecord::Base
     if self.infraspecific.nil? or self.infraspecific.blank?
       "#{self.genus_name} #{self.species_epithet}".strip
     else
-      "#{self.genus_name} #{self.species_epithet} ssp. #{self.infraspecific}".strip
+      if self.comment and self.comment.include? "- is a variety"
+        "#{self.genus_name} #{self.species_epithet} var. #{self.infraspecific}".strip
+      else
+        "#{self.genus_name} #{self.species_epithet} ssp. #{self.infraspecific}".strip
+      end
     end
   end
 
