@@ -19,7 +19,7 @@ class Species < ActiveRecord::Base
   #
   #   contigs=Contig.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
   #   contigs_i=Contig.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-#
+  #
   #   [contigs.count, contigs.uniq.count, contigs_i.uniq.count]
   # end
 
@@ -32,6 +32,7 @@ class Species < ActiveRecord::Base
 
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
+
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
       valid_keys = ['genus_name',
@@ -44,6 +45,7 @@ class Species < ActiveRecord::Base
                     'german_name'] #only direct attributes; associations are extra:
 
       # update existing spp or create new
+
       sp = find_by_id(row['id']) || new
 
       # add family or assign to existing:
@@ -59,23 +61,35 @@ class Species < ActiveRecord::Base
 
       sp.attributes = row.to_hash.slice(*valid_keys)
       sp.family_id=fa.id
-      sp.composed_name=sp.full_name
-      sp.save!
 
-      if sp.genus_name.nil?
-        components=[]
-        components=sp.composed_name.split(' ')
-        sp.update(:genus_name => components.first)
-
-        if components.size = 3
-          if components[1] == 'x'
-            species_ep=components[1] + ' ' + components.last
-            sp.update(:species_epithet => species_ep)
-          else
-            sp.update(:species_epithet => components[1], :infraspecific => components.last)
-          end
+      unless row['variety'].nil?
+        sp.infraspecific = row['variety']
+        if sp.comment
+          sp.comment+='- is a variety'
+        else
+          sp.comment='- is a variety'
         end
       end
+
+      sp.composed_name=sp.full_name
+      sp.species_component = sp.get_species_component
+
+      sp.save!
+
+      # if sp.genus_name.nil?
+      #   components=[]
+      #   components=sp.composed_name.split(' ')
+      #   sp.update(:genus_name => components.first)
+      #
+      #   if components.size = 3
+      #     if components[1] == 'x'
+      #       species_ep=components[1] + ' ' + components.last
+      #       sp.update(:species_epithet => species_ep)
+      #     else
+      #       sp.update(:species_epithet => components[1], :infraspecific => components.last)
+      #     end
+      #   end
+      # end
 
     end
   end
