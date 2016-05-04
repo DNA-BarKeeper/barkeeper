@@ -25,71 +25,23 @@ class Species < ActiveRecord::Base
 
   # version for Stuttgart
 
-  # def self.import(file)
-  #   #spreadsheet = open_spreadsheet(file)
-  #
-  #   spreadsheet = Roo::Excel.new(file, nil, :ignore)
-  #
-  #   header = spreadsheet.row(1)
-  #   (2..spreadsheet.last_row).each do |i|
-  #     row = Hash[[header, spreadsheet.row(i)].transpose]
-  #
-  #     valid_keys = ['genus_name',
-  #                   'species_epithet',
-  #                   'id',
-  #                   'author',
-  #                   'infraspecific',
-  #                   'commment',
-  #                   'german_name'] #only direct attributes; associations are extra:
-  #
-  #     # update existing spp or create new
-  #     sp = find_by_id(row['id']) || new
-  #
-  #     # add family or assign to existing:
-  #     fa = Family.find_or_create_by(:name => row['family'])
-  #
-  #     # add order or assign to existing:
-  #     ord = Order.find_or_create_by(:name => row['order'])
-  #     fa.update(:order_id => ord.id)
-  #
-  #     # add higher-order or assign to existing:
-  #     hot = HigherOrderTaxon.find_or_create_by(:name => row['higher_order_taxon'])
-  #     ord.update(:higher_order_taxon_id => hot.id)
-  #
-  #     sp.attributes = row.to_hash.slice(*valid_keys)
-  #     sp.family_id=fa.id
-  #     sp.composed_name=sp.full_name
-  #     sp.save!
-  #
-  #     if sp.genus_name.nil?
-  #       components=[]
-  #       components=sp.composed_name.split(' ')
-  #       sp.update(:genus_name => components.first)
-  #
-  #       if components.size = 3
-  #         if components[1] == 'x'
-  #           species_ep=components[1] + ' ' + components.last
-  #           sp.update(:species_epithet => species_ep)
-  #         else
-  #           sp.update(:species_epithet => components[1], :infraspecific => components.last)
-  #         end
-  #       end
-  #     end
-  #
-  #   end
-  # end
-
-
   def self.import(file)
-    #version for Berlin
+    #spreadsheet = open_spreadsheet(file)
 
     spreadsheet = Roo::Excel.new(file, nil, :ignore)
 
     header = spreadsheet.row(1)
-    (3..spreadsheet.last_row).each do |i| #3 because of complicated header line in Ralfs excel
+    (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
-      valid_keys = ['genus_name','species_epithet','id','author','infraspecific','author_infra','commment'] #only direct attributes; associations are extra:
+      valid_keys = ['genus_name',
+                    'species_epithet',
+                    'id',
+                    'author',
+                    'author_infra',
+                    'infraspecific',
+                    'commment',
+                    'german_name'] #only direct attributes; associations are extra:
 
       # update existing spp or create new
       sp = find_by_id(row['id']) || new
@@ -101,33 +53,82 @@ class Species < ActiveRecord::Base
       ord = Order.find_or_create_by(:name => row['order'])
       fa.update(:order_id => ord.id)
 
-      # add order or assign to existing:
-      hot = HigherOrderTaxon.find_or_create_by(:name => 'Magnoliopsida')
+      # add higher-order or assign to existing:
+      hot = HigherOrderTaxon.find_or_create_by(:name => row['higher_order_taxon'])
       ord.update(:higher_order_taxon_id => hot.id)
 
       sp.attributes = row.to_hash.slice(*valid_keys)
       sp.family_id=fa.id
-      sp.save
-      sp.update(:composed_name=>sp.full_name)
-      sp.update(:species_component=>sp.get_species_component)
+      sp.composed_name=sp.full_name
+      sp.save!
 
-      # if sp.genus_name.nil?
-      #   components=[]
-      #   components=sp.composed_name.split(' ')
-      #   sp.update(:genus_name => components.first)
-      #
-      #   if components.size = 3
-      #     if components[1] == 'x'
-      #       species_ep=components[1] + ' ' + components.last
-      #       sp.update(:species_epithet => species_ep)
-      #     else
-      #       sp.update(:species_epithet => components[1], :infraspecific => components.last)
-      #     end
-      #   end
-      # end
+      if sp.genus_name.nil?
+        components=[]
+        components=sp.composed_name.split(' ')
+        sp.update(:genus_name => components.first)
+
+        if components.size = 3
+          if components[1] == 'x'
+            species_ep=components[1] + ' ' + components.last
+            sp.update(:species_epithet => species_ep)
+          else
+            sp.update(:species_epithet => components[1], :infraspecific => components.last)
+          end
+        end
+      end
 
     end
   end
+
+
+  # def self.import(file)
+  #   #version for Berlin
+  #
+  #   spreadsheet = Roo::Excel.new(file, nil, :ignore)
+  #
+  #   header = spreadsheet.row(1)
+  #   (3..spreadsheet.last_row).each do |i| #3 because of complicated header line in Ralfs excel
+  #     row = Hash[[header, spreadsheet.row(i)].transpose]
+  #
+  #     valid_keys = ['genus_name','species_epithet','id','author','infraspecific','author_infra','commment'] #only direct attributes; associations are extra:
+  #
+  #     # update existing spp or create new
+  #     sp = find_by_id(row['id']) || new
+  #
+  #     # add family or assign to existing:
+  #     fa = Family.find_or_create_by(:name => row['family'])
+  #
+  #     # add order or assign to existing:
+  #     ord = Order.find_or_create_by(:name => row['order'])
+  #     fa.update(:order_id => ord.id)
+  #
+  #     # add order or assign to existing:
+  #     hot = HigherOrderTaxon.find_or_create_by(:name => 'Magnoliopsida')
+  #     ord.update(:higher_order_taxon_id => hot.id)
+  #
+  #     sp.attributes = row.to_hash.slice(*valid_keys)
+  #     sp.family_id=fa.id
+  #     sp.save
+  #     sp.update(:composed_name=>sp.full_name)
+  #     sp.update(:species_component=>sp.get_species_component)
+  #
+  #     # if sp.genus_name.nil?
+  #     #   components=[]
+  #     #   components=sp.composed_name.split(' ')
+  #     #   sp.update(:genus_name => components.first)
+  #     #
+  #     #   if components.size = 3
+  #     #     if components[1] == 'x'
+  #     #       species_ep=components[1] + ' ' + components.last
+  #     #       sp.update(:species_epithet => species_ep)
+  #     #     else
+  #     #       sp.update(:species_epithet => components[1], :infraspecific => components.last)
+  #     #     end
+  #     #   end
+  #     # end
+  #
+  #   end
+  # end
 
   def self.open_spreadsheet(file)
     case File.extname(file.original_filename)
