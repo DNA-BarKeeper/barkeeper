@@ -127,6 +127,7 @@ GBOLapp::Application.routes.draw do
       get 'pde_all'
       get 'duplicates'
       post :change_via_script
+      post :compare_contigs
     end
     member do
       get 'verify'

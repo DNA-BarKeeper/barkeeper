@@ -1,11 +1,64 @@
 class ContigsController < ApplicationController
 
-  before_filter :authenticate_user!, :except => [:edit, :index, :filter, :change_via_script]
+  before_filter :authenticate_user!, :except => [:edit, :index, :filter, :change_via_script, :compare_contigs]
 
   skip_before_action :verify_authenticity_token
 
   before_action :set_contig, only: [:verify, :pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :overlap_background, :show, :edit,\
    :update, :destroy]
+
+  def compare_contigs
+    contig_names=params[:contig_names]
+    no_match_list="No matches found for:\n\n"
+    match_list="\n\nMatches found for:\n\n"
+
+    # parse contig_names string into array
+    contig_names_array=contig_names.split
+
+    #loop over contig_names array
+    contig_names_array.each do |c|
+
+      contig_name=c[0...-4]
+
+      #match found?
+      if contig=Contig.find_by_name(contig_name)
+        match_list+="#{c}"
+        if contig.verified
+          match_list+="\tverified"
+        end
+        match_list+="\n"
+      else
+        # extract marker-name,~
+        regex= /(.+)_(.+)$/
+        m=contig_name.match(regex)
+        begin
+          alt_marker_name= m[2]
+          # retry with alt.marker_name
+          if marker=Marker.find_by_alt_name(alt_marker_name)
+            true_marker_name=marker.name
+            true_contig_name=m[1]+"_#{true_marker_name}"
+            if contig=Contig.find_by_name(true_contig_name)
+              match_list+="#{c} (#{true_contig_name})"
+              if contig.verified
+                match_list+="\tverified"
+              end
+              match_list+="\n"
+            else
+              no_match_list+="#{c}\n"
+            end
+          else
+            no_match_list+="#{c}\n"
+          end
+        rescue
+          no_match_list+="#{c}\n"
+        end
+      end
+    end
+
+    no_match_list+=match_list
+
+    send_data(no_match_list, :filename => "no_match_list.txt", :type => "application/txt")
+  end
 
   def change_via_script
 
@@ -35,7 +88,7 @@ class ContigsController < ApplicationController
     if  matches > 0
       contig = Contig.where(:name => filename).first
     else
-    #   decompose name
+      #   decompose name
     end
     return contig
   end
@@ -229,7 +282,7 @@ class ContigsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def contig_params
-    params.require(:contig).permit(:filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
+    params.require(:contig).permit(:contig_names, :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
                                    :isolate_name, :verified)
   end
 end
