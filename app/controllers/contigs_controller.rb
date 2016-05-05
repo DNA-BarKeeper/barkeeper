@@ -16,6 +16,10 @@ class ContigsController < ApplicationController
 
   end
 
+  def analysis_output
+    redirect_to TxtUploader.last.uploaded_file.url
+  end
+
   def change_via_script
 
     filename=params[:filename]
