@@ -1,5 +1,7 @@
 GBOLapp::Application.routes.draw do
 
+  resources :txt_uploaders
+
   resources :individuals
 
   resources :primer_reads

@@ -38,7 +38,7 @@ class CompareContigs
             contig = Contig.where("name ILIKE ?", true_contig_name).first
             if contig
               match_list+="#{c} (found as #{true_contig_name})"
-              if contig.verified
+              if contig.verfied
                 match_list+="\tverified"
               end
               match_list+="\n"

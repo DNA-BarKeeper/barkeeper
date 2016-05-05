@@ -20,7 +20,7 @@ class XmlUploader < ActiveRecord::Base
     file_to_upload = File.open("specimens.xls", "w")
 
     file_to_upload.write(xml_string)
-    file_to_upload.close()
+    file_to_upload.close
     self.uploaded_file = File.open("specimens.xls")
     self.save!
 

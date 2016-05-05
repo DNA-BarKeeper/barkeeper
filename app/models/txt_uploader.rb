@@ -6,7 +6,7 @@ class TxtUploader < ActiveRecord::Base
                     :path => "/output.txt"
 
   # Validate content type
-  validates_attachment_content_type :uploaded_file, :content_type => /\Aapplication\/txt/
+  validates_attachment_content_type :uploaded_file, :content_type => /\Atext\/plain/
 
   # Validate filename
   validates_attachment_file_name :uploaded_file, :matches => [/txt\Z/]
@@ -16,7 +16,7 @@ class TxtUploader < ActiveRecord::Base
     file_to_upload = File.open("output.txt", "w")
 
     file_to_upload.write(text)
-    file_to_upload.close()
+    file_to_upload.close
     self.uploaded_file = File.open("output.txt")
     self.save!
 
