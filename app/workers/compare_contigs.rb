@@ -24,21 +24,21 @@ class CompareContigs
         end
         match_list+="\n"
       else
-
-        # extract marker-name
-        regex= /(^[A-Za-z0-9]+)_(.+)/
+        # retry by extracting one primer name and selecting the marker this primer is assigned to
+        # extract primer_name
+        regex= /(.+)_(.+)$/
         m=contig_name.match(regex)
         begin
-          alt_marker_name= m[2]
-          # retry with alt.marker_name
-          marker=Marker.where("alt_name ILIKE ?", alt_marker_name).first
+          primer_name= m[2]
+          primer=Primer.where("name ILIKE ?", primer_name).first
+          marker=primer.marker
           if marker
             true_marker_name=marker.name
             true_contig_name=m[1]+"_#{true_marker_name}"
             contig = Contig.where("name ILIKE ?", true_contig_name).first
             if contig
               match_list+="#{c} (found as #{true_contig_name})"
-              if contig.verfied
+              if contig.verified
                 match_list+="\tverified"
               end
               match_list+="\n"
