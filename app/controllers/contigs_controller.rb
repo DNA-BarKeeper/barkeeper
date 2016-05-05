@@ -12,7 +12,7 @@ class ContigsController < ApplicationController
 
     CompareContigs.perform_async(contig_names)
 
-    send_data("Comparison started as background process. Writing to file on S3.\n", :filename => "msg.txt", :type => "application/txt")
+    send_data("Comparison started as background process, may take a minute or so. View results under http://gbol5.de/analysis_output\n", :filename => "msg.txt", :type => "application/txt")
 
   end
 
