@@ -21,7 +21,8 @@ class ContigsController < ApplicationController
       contig_name=c[0...-4]
 
       #match found?
-      if contig=Contig.find_by_name(contig_name)
+      contig = Contig.where("name ILIKE ?", contig_name).first
+      if contig
         match_list+="#{c}"
         if contig.verified
           match_list+="\tverified"
@@ -35,10 +36,12 @@ class ContigsController < ApplicationController
         begin
           alt_marker_name= m[2]
           # retry with alt.marker_name
-          if marker=Marker.find_by_alt_name(alt_marker_name)
+          marker=Marker.where("alt_name ILIKE ?", alt_marker_name).first
+          if marker
             true_marker_name=marker.name
             true_contig_name=m[1]+"_#{true_marker_name}"
-            if contig=Contig.find_by_name(true_contig_name)
+            contig = Contig.where("name ILIKE ?", true_contig_name).first
+            if contig
               match_list+="#{c} (found as #{true_contig_name})"
               if contig.verified
                 match_list+="\tverified"
