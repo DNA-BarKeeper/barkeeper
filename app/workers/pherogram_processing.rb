@@ -9,7 +9,7 @@ class PherogramProcessing
       primer_read.auto_trim(true)
     rescue
     end
-    primer_read.update(:processed => true, :used_for_con => true, :assembled => false)
+    primer_read.update(:processed => true, :used_for_con => true, :assembled => false, :comment => "imported")
   end
 
 end
