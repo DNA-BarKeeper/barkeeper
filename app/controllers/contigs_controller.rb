@@ -14,7 +14,6 @@ class ContigsController < ApplicationController
 
     send_data("Comparison started as background process. Writing to file on S3.\n", :filename => "msg.txt", :type => "application/txt")
 
-
   end
 
   def change_via_script
