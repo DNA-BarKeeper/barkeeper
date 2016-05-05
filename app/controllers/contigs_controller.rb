@@ -29,7 +29,7 @@ class ContigsController < ApplicationController
         match_list+="\n"
       else
         # extract marker-name,~
-        regex= /(.+)_(.+)$/
+        regex= /(^[A-Za-z0-9]+)_(.+)/
         m=contig_name.match(regex)
         begin
           alt_marker_name= m[2]
@@ -38,7 +38,7 @@ class ContigsController < ApplicationController
             true_marker_name=marker.name
             true_contig_name=m[1]+"_#{true_marker_name}"
             if contig=Contig.find_by_name(true_contig_name)
-              match_list+="#{c} (#{true_contig_name})"
+              match_list+="#{c} (found as #{true_contig_name})"
               if contig.verified
                 match_list+="\tverified"
               end
