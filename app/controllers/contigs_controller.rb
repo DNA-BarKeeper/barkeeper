@@ -28,7 +28,8 @@ class ContigsController < ApplicationController
         end
         match_list+="\n"
       else
-        # extract marker-name,~
+
+        # extract marker-name
         regex= /(^[A-Za-z0-9]+)_(.+)/
         m=contig_name.match(regex)
         begin
