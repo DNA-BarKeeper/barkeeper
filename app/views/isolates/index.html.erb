@@ -28,14 +28,16 @@
 
     <br>
 
-    <div class="well">
-      Import Isolates / Specimens (Individuals) from Excel file <%= link_to '(Download example / template file)', 'https://s3-eu-west-1.amazonaws.com/gbol5/Isolates_Specimen+upload+template.xls' %>:<p></p>
-      <%= form_tag import_isolates_path, multipart: true do %>
-          <%= file_field_tag :file %>
-          <br>
-          <%= submit_tag "Import" %>
-      <% end %>
-    </div>
+    <% if user_signed_in? %>
+      <div class="well">
+        Import Isolates / Specimens (Individuals) from Excel file <%= link_to '(Download example / template file)', 'https://s3-eu-west-1.amazonaws.com/gbol5/Isolates_Specimen+upload+template.xls' %>:<p></p>
+        <%= form_tag import_isolates_path, multipart: true do %>
+            <%= file_field_tag :file %>
+            <br>
+            <%= submit_tag "Import" %>
+        <% end %>
+      </div>
+    <% end %>
 
   </div>
 
