@@ -4,6 +4,15 @@ class IndividualsController < ApplicationController
 
   before_action :set_individual, :only => [:show, :edit, :update, :destroy]
 
+
+  def specimens_without_species
+
+  end
+
+  def problematic_location_data
+
+  end
+
   def index
     respond_to do |format|
       format.html

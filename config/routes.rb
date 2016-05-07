@@ -19,7 +19,8 @@ GBOLapp::Application.routes.draw do
   get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'specimens_create_xls', action: :create_xls, controller: 'individuals'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'
-
+  get 'specimens_without_species', action: :specimens_without_species, controller: 'individuals'
+  get 'problematic_location_data', action: :problematic_location_data, controller: 'individuals'
   resources :issues
 
   resources :higher_order_taxons do

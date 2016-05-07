@@ -242,10 +242,9 @@ class Isolate < ActiveRecord::Base
       if species
         individual.update(:species_id => species.id)
       else
-        msg="No matching spp found for #{gen_name} #{sp_ep} #{sub_sp}."
+        msg="No matching spp found for #{gen_name} #{sp_ep} #{sub_sp} #{}"
         Issue.create(:title => msg)
       end
-
 
     end
   end

@@ -10,11 +10,15 @@
     <li><%= link_to 'About', about_path %></li>
     <li><%= link_to 'Overview', overview_path %></li>
     <li class="divider"></li>
-    <li class="<%= theClass %>"><%= link_to 'Notifications', issues_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Reads without Contig', reads_without_contigs_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Contigs that need Verification', show_need_verify_contigs_path %></li>
-    <li class="disabled"><%= link_to 'Projects', projects_path %></li>
-    <li class="divider"></li>
+    <% if user_signed_in? %>
+        <li ><%= link_to 'Notifications', issues_path %></li>
+        <li ><%= link_to 'Reads without contig', reads_without_contigs_path %></li>
+        <li ><%= link_to 'Specimens without species', specimens_without_species_path %></li>
+        <li ><%= link_to 'Problematic location data', problematic_location_data_path %></li>
+        <li ><%= link_to 'Contigs that need verification', show_need_verify_contigs_path %></li>
+        <li class="disabled"><%= link_to 'Projects', projects_path %></li>
+        <li class="divider"></li>
+    <% end %>
     <li><%= link_to 'Impressum', impressum_path %></li>
   </ul>
 </li>
