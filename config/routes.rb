@@ -12,7 +12,7 @@ GBOLapp::Application.routes.draw do
   match 'about',   to: 'home#about',   via: 'get'
   match 'impressum',   to: 'home#impressum',   via: 'get'
   match 'contact', to: 'home#contact', via: 'get'
-  match 'search', to: 'home#search', via: 'get'
+  match 'overview', to: 'home#overview', via: 'get'
 
 
   get 'specimens_xls', action: :xls, controller: 'individuals'

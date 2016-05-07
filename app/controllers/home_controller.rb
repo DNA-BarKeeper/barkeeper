@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
 
-  def search
+  def overview
 
   end
 
