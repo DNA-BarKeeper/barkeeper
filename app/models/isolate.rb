@@ -140,36 +140,55 @@ class Isolate < ActiveRecord::Base
 
   def self.import(file)
 
-    spreadsheet = Roo::Excel.new(file, nil, :ignore)
+    spreadsheet = Roo::Excelx.new(file, nil, :ignore)
 
     header = spreadsheet.row(1)
+
     (2..spreadsheet.last_row).each do |i|
+
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
-      #only direct attributes; associations are extra:
+      # update existing isolate or create new, case-insensitiv!
 
-      # update existing isolate or create new
-      isolate = Isolate.find_or_create_by(:lab_nr => row['GBoL Isolation No.'])
+      isolate=Isolate.where("lab_nr ILIKE ?", row['GBoL Isolation No.']).first
+      unless isolate
+        isolate= Isolate.new(:lab_nr => row['GBoL Isolation No.'])
+      end
+
+      plant_plate = PlantPlate.find_or_create_by(:name => row['GBoL5 Tissue Plate No.'].to_i.to_s)
+
+      isolate.plant_plate = plant_plate
 
       isolate.well_pos_plant_plate = row['G5o Well']
       isolate.micronic_tube_id=row['Tube ID 2D (G5o Micronic)']
 
-      if row['DNA Bank No']
-        isolate.dna_bank_id=row['DNA Bank No'].gsub(' ', '')
+      # deactived - relevant for Berlin only:
+      # if row['DNA Bank No']
+      #   isolate.dna_bank_id=row['DNA Bank No'].gsub(' ', '')
+      # end
+
+      isolate.tissue_id = 2 # seems to be always "Leaf (Herbarium)", so no import needed
+
+      if row['Tissue Type']=='control'
+        isolate.negative_control=true
       end
 
       isolate.save!
 
       # assign to existing or new individual:
-      individual = Individual.find_or_create_by(:specimen_id => row['Voucher ID'])
+
+      specimen_id=row['Voucher ID']
+      individual = Individual.find_or_create_by(:specimen_id => specimen_id.to_i.to_s)
 
       individual.collector=row['Collector']
       individual.herbarium=row['Herbarium']
       individual.country=row['Country']
       individual.state_province=row['State/Province']
       individual.locality=row['Locality']
-      individual.latitude=row['Latitude']
-      individual.longitude=row['Longitude']
+      individual.latitude=row['Latitude (calc.)']
+      individual.longitude=row['Longitude (calc.)']
+      individual.latitude_original=row['Rechts-Wert']
+      individual.longitude_original=row['Hoch-Wert']
       individual.elevation=row['Elevation']
       individual.exposition=row['Exposition']
       individual.habitat=row['Habitat']
@@ -187,52 +206,46 @@ class Isolate < ActiveRecord::Base
       isolate.update(:individual_id => individual.id)
 
       # assign individual to existing or new species:
-      sp_name = ''
+
+      gen_name=""
+      sp_ep=""
+      sub_sp=""
 
       unless row['Genus'].nil?
         gen_name = row['Genus']
         gen_name.strip!
-        sp_name += gen_name
       end
 
       unless row['Species'].nil?
         sp_ep= row['Species']
         sp_ep.strip!
-        sp_name += ' '
-        sp_name += sp_ep
       end
 
-      unless row['Subspecies'].nil?
-        sub_sp = row['Subspecies']
-        sub_sp.strip!
-        sp_name += ' '
-        sp_name += sub_sp
-
-      end
-
-      species = Species.find_or_create_by(:composed_name => sp_name)
-
-      # if for whatever weird reason the species is not yet in db, also read & assign its family
-
-      if species.genus_name.nil?
-
-        species.update(:genus_name => gen_name, :species_epithet => sp_ep)
+      if row['Subspecies'].nil? and row['Variety'].nil?
+        species=Species.where("genus_name ILIKE ?", gen_name).where("species_epithet ILIKE ?", sp_ep).where(:infraspecific => nil).first
+      else
 
         unless row['Subspecies'].nil?
-          species.update(:infraspecific => sub_sp)
+          sub_sp = row['Subspecies']
+          sub_sp.strip!
         end
 
-        unless row['Family'].nil?
-          family_name= row['Family'].capitalize
-          family = Family.find_or_create_by(:name => family_name)
-
-          species.update(:family_id => family.id)
+        unless row['Variety'].nil?
+          sub_sp = row['Variety']
+          sub_sp.strip!
         end
+
+        species=Species.where("genus_name ILIKE ?", gen_name).where("species_epithet ILIKE ?", sp_ep).where("infraspecific ILIKE ?", sub_sp).first
+
       end
 
-      species.save!
+      if species
+        individual.update(:species_id => species.id)
+      else
+        msg="No matching spp found for #{gen_name} #{sp_ep} #{sub_sp}."
+        Issue.create(:title => msg)
+      end
 
-      individual.update(:species_id => species.id)
 
     end
   end
