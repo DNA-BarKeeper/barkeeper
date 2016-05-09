@@ -7,7 +7,6 @@ class Isolate < ActiveRecord::Base
   belongs_to :individual
   has_and_belongs_to_many :projects
 
-
   scope :recent, ->  { where('isolates.updated_at > ?', 1.hours.ago)}
   scope :no_controls, -> { where(:negative_control => false)}
 

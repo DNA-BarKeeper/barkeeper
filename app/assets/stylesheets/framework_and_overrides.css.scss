@@ -6,6 +6,20 @@ div.vertical-spacer {
   height: 10px;
 }
 
+div.move-right {
+  display: inline-block;
+  min-width: 20%;
+}
+
+div.isolate-copy {
+  min-width: 45%;
+  display: inline-block;
+  border-radius: 5px;
+  border: 1px solid #eeeeee;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
 a {
   color: inherit;
 
