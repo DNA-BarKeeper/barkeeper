@@ -1,7 +1,13 @@
 class Individual < ActiveRecord::Base
+
+  include PgSearch
+
   has_many :isolates
   belongs_to :species
   has_and_belongs_to_many :projects
+
+
+  pg_search_scope :quick_search, against: [:specimen_id, :herbarium, :collector , :collection_nr]
 
   scope :without_species, -> {where(:species => nil)}
 

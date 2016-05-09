@@ -2,7 +2,10 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-//override crappy default hover color (black background!) by blue:
+div.vertical-spacer {
+  height: 10px;
+}
+
 a {
   color: inherit;
 

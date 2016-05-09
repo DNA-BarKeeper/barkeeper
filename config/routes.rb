@@ -132,6 +132,7 @@ GBOLapp::Application.routes.draw do
       get 'duplicates'
       post :change_via_script
       post :compare_contigs
+      get 'externally_verified'
     end
     member do
       get 'verify'

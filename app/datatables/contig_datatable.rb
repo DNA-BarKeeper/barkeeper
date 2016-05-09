@@ -7,9 +7,10 @@ class ContigDatatable
 
   delegate :params, :link_to, :h, to: :@view
 
-  def initialize(view, need_verify)
+  def initialize(view, need_verify, imported)
     @view = view
     @need_verify = need_verify
+    @imported = imported
   end
 
   def as_json(options = {})
@@ -58,6 +59,8 @@ class ContigDatatable
 
     if @need_verify
       contigs = Contig.assembled_need_verification.order("#{sort_column} #{sort_direction}")
+    elsif @imported
+      contigs=Contig.externally_edited.order("#{sort_column} #{sort_direction}")
     else
       contigs = Contig.order("#{sort_column} #{sort_direction}")
     end

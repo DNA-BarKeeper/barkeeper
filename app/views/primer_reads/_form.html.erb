@@ -103,8 +103,12 @@
               <%= f.check_box :assembled  %>
             </div>
 
-          </div>
+            <div class="field">
+              Aligned read sequence overwritten by externally edited contig file
+              <%= f.check_box :overwritten  %>
+            </div>
 
+          </div>
 
           <div class="tab-pane" id="files">
             <br>
@@ -117,6 +121,7 @@
           </div>
         </div>
 
+        <div class="vertical-spacer"></div>
         <%= f.submit 'Update', :class =>  'btn btn-default' %>
 
 

@@ -55,13 +55,19 @@
           </div>
 
           <div class="tab-pane active" id="assembly">
-            <br>
+            <div class="vertical-spacer"></div>
             <span class="glyphicon glyphicon-align-center"></span> <%= link_to 'Assemble primer reads', overlap_contig_path %> | <%= link_to 'Assemble in background', overlap_background_contig_path %>
-            <br>
-            <div >
+
+            <div class="vertical-spacer"></div>
+            <div>
               <%= f.label :assembled, 'Assembly complete' %>
               <%= f.check_box :assembled  %>
             </div>
+            <div >
+              <%= f.label :imported, 'Externally edited & imported' %>
+              <%= f.check_box :imported  %>
+            </div>
+            <div class="vertical-spacer"></div>
             <div class="form-group">
               <%= f.label 'Marker Sequence' %>
               <% if @contig.marker_sequence %>
@@ -79,12 +85,16 @@
                   <%end%>
                   Verified by <%=  user %> on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %><br><br>
               <% else %>
-                  <%= link_to verify_contig_path(@contig) do %>
-                      <span class = "glyphicon glyphicon-ok"></span> Verify
+                  <% if @contig.verified %>
+                      Verified on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %><br><br>
+                  <% else %>
+                      <%= link_to verify_contig_path(@contig) do %>
+                          <span class = "glyphicon glyphicon-ok"></span> Verify
+                      <% end %>
                   <% end %>
+
                   <br><br>
               <% end %>
-
             </div>
 
           </div>
@@ -99,6 +109,11 @@
         </div>
         <%= f.submit 'Update', :class =>  'btn btn-default'%>
 
+        <div class="vertical-spacer"></div>
+        <% if @contig.imported %>
+            <p style="color: grey; font-size: smaller">Externally edited, imported contig. [Due to lack of information in imported files, no info on the alignment of traces and quality scores
+              is available. App will try a re-alignment of externally edited primer read sequences and internally stored traces and quality scores later.]</p>
+        <% end %>
 
     <% end %>
 

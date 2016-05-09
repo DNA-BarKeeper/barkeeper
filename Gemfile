@@ -23,6 +23,7 @@ gem 'devise'
 gem 'simple_form' # todo check if used anywhere, rm
 gem 'bio'
 gem 'paperclip', github: 'thoughtbot/paperclip'
+gem 'pg_search'
 gem 's3_direct_upload'
 gem 'aws-sdk', '< 2.0'
 gem 'will_paginate', '> 3.0'

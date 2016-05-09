@@ -200,11 +200,12 @@ class PrimerReadsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def primer_read_params
-    params.require(:primer_read).permit(:assembled, :comment,
+    params.require(:primer_read).permit(:overwritten, :assembled, :comment,
                                         :quality_string,
                                         :used_for_con, :file, :name, :sequence, :pherogram_url, :chromatogram, :primer_id, :contig_id,
                                         :contig_name, :isolate_id, :chromatograms, :trimmedReadEnd, :trimmedReadStart,
                                         :min_quality_score, :count_in_window, :window_size,
                                         :position, :base)
   end
+
 end

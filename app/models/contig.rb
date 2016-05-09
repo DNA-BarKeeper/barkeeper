@@ -11,9 +11,12 @@ class Contig < ActiveRecord::Base
 
   scope :assembled, -> { where(:assembled => true)}
   scope :not_assembled, -> { where.not(:assembled => true)}
-  scope :verified, -> { where.not(:verified_by => nil)}
-  scope :need_verification, -> { where(:verified_by => nil)}
   scope :assembled_need_verification, -> { assembled.where(:verified_by => nil)}
+  scope :externally_edited, -> { where(:imported => true)}
+  scope :internally_edited, -> { where(:imported => false )}
+  scope :internally_verified, -> { internally_edited.where.not(:verified_by => nil)}
+  scope :verified, -> { where.not(:verified_by => nil)}
+  scope :need_verification, -> { where(:verified_by => nil) }
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
 

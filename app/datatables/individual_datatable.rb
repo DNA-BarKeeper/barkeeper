@@ -57,9 +57,12 @@ class IndividualDatatable
     individuals = individuals.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      individuals = individuals.where("specimen_id ILIKE :search", search: "%#{params[:sSearch]}%")
+      individuals = individuals.where("specimen_id ILIKE :search OR herbarium ILIKE :search OR collector ILIKE :search OR collection_nr ILIKE :search", search: "%#{params[:sSearch]}%")
+      # individuals = Individual.quick_search(params[:sSearch])
     end
+
     individuals
+
   end
 
   def page

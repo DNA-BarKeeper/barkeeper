@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160507112312) do
+ActiveRecord::Schema.define(version: 20160508150233) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20160507112312) do
     t.integer  "verified_by"
     t.datetime "verified_at"
     t.string   "comment"
+    t.boolean  "imported",                       default: false
   end
 
   create_table "contigs_projects", id: false, force: :cascade do |t|
@@ -330,6 +331,7 @@ ActiveRecord::Schema.define(version: 20160507112312) do
     t.boolean  "processed",                             default: false
     t.integer  "base_count"
     t.string   "comment"
+    t.boolean  "overwritten",                           default: false
   end
 
   create_table "primer_reads_projects", id: false, force: :cascade do |t|
