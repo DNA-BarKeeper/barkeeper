@@ -1,9 +1,9 @@
-<%= show_val_errors(@lab_rack)%>
 
-
-<div class="authform">
-  <h4><%= @lab_rack.rackcode %></h4>
-<%= form_for(@lab_rack) do |f| %>
+<div class="panel panel-default">
+  
+  <div class="panel-heading"><h3 class="panel-title"><%= @lab_rack.rackcode %></h3></div>
+  
+<div class="panel-body"><%= form_for(@lab_rack) do |f| %>
   
       <div class="form-group">
         <%= f.label :rackcode %>
@@ -15,6 +15,6 @@
         <%= f.collection_select(:freezer_id, Freezer.all, :id, :freezercode) %>
       </div>
 
-      <%= f.submit 'Update', :class => 'button right' %>
-<% end %>
+      <%= f.submit 'Update', :class => 'btn btn-default' %>
+<% end %></div>
 </div>

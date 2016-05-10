@@ -5,7 +5,10 @@ class PlantPlatesController < ApplicationController
   # GET /plant_plates
   # GET /plant_plates.json
   def index
-    @plant_plates = PlantPlate.all
+    respond_to do |format|
+      format.html
+      format.json { render json:  PlantPlateDatatable.new(view_context)}
+    end
   end
 
   # GET /plant_plates/1

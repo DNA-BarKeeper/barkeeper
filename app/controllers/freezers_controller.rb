@@ -7,7 +7,10 @@ class FreezersController < ApplicationController
   # GET /freezers
   # GET /freezers.json
   def index
-    @freezers = Freezer.all
+    respond_to do |format|
+      format.html
+      format.json { render json:  FreezerDatatable.new(view_context)}
+    end
   end
 
   # GET /freezers/1

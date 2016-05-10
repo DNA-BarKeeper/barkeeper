@@ -1,27 +1,22 @@
 <div class="panel panel-default">
-  <div class="panel-heading"><h4>Freezers</h4></div>
+  <div class="panel-heading">
+    <h3 class="panel-title">Freezers</h3>
+  </div>
 
-  <table class="table">
-
-
-  <thead>
-    <tr>
-      <th>Freezercode</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @freezers.each do |freezer| %>
-      <tr>
-        <td><%= freezer.freezercode %></td>
-        <td><%= link_to 'Show', freezer %></td>
-        <td><%= link_to 'Edit', edit_freezer_path(freezer) %></td>
-        <td><%= link_to 'Delete', freezer, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div class="panel-body">
+    <div class="wideTable">
+      <table id="freezers" data-source="<%= freezers_url(format: 'json')%>" class="table table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+          <th>Freezercode</th>
+          <th>Lab</th>
+          <th>Updated at</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table></div></div>
 
 
 </div>
