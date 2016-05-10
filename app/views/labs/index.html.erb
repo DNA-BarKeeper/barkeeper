@@ -1,25 +1,25 @@
 <div class="panel panel-default">
+  
   <div class="panel-heading"><h3  class="panel-title">Labs</h3></div>
 
-  <table class="table">
+  <div class="panel-body"><table class="table table-striped table-hover table-bordered">
 
   <thead>
     <tr>
       <th>Labcode</th>
-      <th colspan="2"></th>
+      <th></th>
     </tr>
   </thead>
 
   <tbody>
     <% @labs.each do |lab| %>
       <tr>
-        <td><%= lab.labcode %></td>
-        <td><%= link_to 'Edit', edit_lab_path(lab) %></td>
+        <td><%= link_to lab.labcode, edit_lab_path(lab) %></td>
         <td><%= link_to 'Delete', lab, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
-</table>
+</table></div>
 
 </div>
 

@@ -29,7 +29,7 @@ class TissuesController < ApplicationController
 
     respond_to do |format|
       if @tissue.save
-        format.html { redirect_to @tissue, notice: 'Tissue was successfully created.' }
+        format.html { redirect_to tissues_path, notice: 'Tissue was successfully created.' }
         format.json { render :show, status: :created, location: @tissue }
       else
         format.html { render :new }
@@ -43,7 +43,7 @@ class TissuesController < ApplicationController
   def update
     respond_to do |format|
       if @tissue.update(tissue_params)
-        format.html { redirect_to @tissue, notice: 'Tissue was successfully updated.' }
+        format.html { redirect_to tissues_path, notice: 'Tissue was successfully updated.' }
         format.json { render :show, status: :ok, location: @tissue }
       else
         format.html { render :edit }

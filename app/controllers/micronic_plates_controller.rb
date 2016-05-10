@@ -32,7 +32,7 @@ class MicronicPlatesController < ApplicationController
 
     respond_to do |format|
       if @micronic_plate.save
-        format.html { redirect_to @micronic_plate, notice: 'Micronic plate was successfully created.' }
+        format.html { redirect_to micronic_plates_path, notice: 'Micronic plate was successfully created.' }
         format.json { render :show, status: :created, location: @micronic_plate }
       else
         format.html { render :new }
@@ -46,7 +46,7 @@ class MicronicPlatesController < ApplicationController
   def update
     respond_to do |format|
       if @micronic_plate.update(micronic_plate_params)
-        format.html { redirect_to @micronic_plate, notice: 'Micronic plate was successfully updated.' }
+        format.html { redirect_to micronic_plates_path, notice: 'Micronic plate was successfully updated.' }
         format.json { render :show, status: :ok, location: @micronic_plate }
       else
         format.html { render :edit }

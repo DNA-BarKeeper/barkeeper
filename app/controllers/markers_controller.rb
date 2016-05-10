@@ -31,7 +31,7 @@ class MarkersController < ApplicationController
 
     respond_to do |format|
       if @marker.save
-        format.html { redirect_to @marker, notice: 'Marker was successfully created.' }
+        format.html { redirect_to markers_path, notice: 'Marker was successfully created.' }
         format.json { render :show, status: :created, location: @marker }
       else
         format.html { render :new }
@@ -45,7 +45,7 @@ class MarkersController < ApplicationController
   def update
     respond_to do |format|
       if @marker.update(marker_params)
-        format.html { redirect_to @marker, notice: 'Marker was successfully updated.' }
+        format.html { redirect_to markers_path, notice: 'Marker was successfully updated.' }
         format.json { render :show, status: :ok, location: @marker }
       else
         format.html { render :edit }

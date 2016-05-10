@@ -7,7 +7,10 @@ class LabRacksController < ApplicationController
   # GET /lab_racks
   # GET /lab_racks.json
   def index
-    @lab_racks = LabRack.all
+    respond_to do |format|
+      format.html
+      format.json { render json:  LabRackDatatable.new(view_context)}
+    end
   end
 
   # GET /lab_racks/1
@@ -31,7 +34,7 @@ class LabRacksController < ApplicationController
 
     respond_to do |format|
       if @lab_rack.save
-        format.html { redirect_to @lab_rack, notice: 'Lab rack was successfully created.' }
+        format.html { redirect_to lab_racks_path, notice: 'Lab rack was successfully created.' }
         format.json { render :show, status: :created, location: @lab_rack }
       else
         format.html { render :new }
@@ -45,7 +48,7 @@ class LabRacksController < ApplicationController
   def update
     respond_to do |format|
       if @lab_rack.update(lab_rack_params)
-        format.html { redirect_to @lab_rack, notice: 'Lab rack was successfully updated.' }
+        format.html { redirect_to lab_racks_path, notice: 'Lab rack was successfully updated.' }
         format.json { render :show, status: :ok, location: @lab_rack }
       else
         format.html { render :edit }
@@ -72,6 +75,6 @@ class LabRacksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def lab_rack_params
-      params.require(:lab_rack).permit(:rackcode, :freezer_id)
+      params.require(:lab_rack).permit(:shelf, :rack_position, :rackcode, :freezer_id)
     end
 end

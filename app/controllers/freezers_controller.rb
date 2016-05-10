@@ -34,7 +34,7 @@ class FreezersController < ApplicationController
 
     respond_to do |format|
       if @freezer.save
-        format.html { redirect_to @freezer, notice: 'Freezer was successfully created.' }
+        format.html { redirect_to freezers_path, notice: 'Freezer was successfully created.' }
         format.json { render :show, status: :created, location: @freezer }
       else
         format.html { render :new }
@@ -48,7 +48,7 @@ class FreezersController < ApplicationController
   def update
     respond_to do |format|
       if @freezer.update(freezer_params)
-        format.html { redirect_to @freezer, notice: 'Freezer was successfully updated.' }
+        format.html { redirect_to freezers_path, notice: 'Freezer was successfully updated.' }
         format.json { render :show, status: :ok, location: @freezer }
       else
         format.html { render :edit }

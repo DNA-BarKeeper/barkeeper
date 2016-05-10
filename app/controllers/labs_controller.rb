@@ -31,7 +31,7 @@ class LabsController < ApplicationController
 
     respond_to do |format|
       if @lab.save
-        format.html { redirect_to @lab, notice: 'Lab was successfully created.' }
+        format.html { redirect_to labs_path, notice: 'Lab was successfully created.' }
         format.json { render :show, status: :created, location: @lab }
       else
         format.html { render :new }
@@ -45,7 +45,7 @@ class LabsController < ApplicationController
   def update
     respond_to do |format|
       if @lab.update(lab_params)
-        format.html { redirect_to @lab, notice: 'Lab was successfully updated.' }
+        format.html { redirect_to labs_path, notice: 'Lab was successfully updated.' }
         format.json { render :show, status: :ok, location: @lab }
       else
         format.html { render :edit }

@@ -1,27 +1,30 @@
 <div class="panel panel-default">
-  <div class="panel-heading"><h4>Racks</h4></div>
+  <div class="panel-heading">
+    <h3 class="panel-title">Racks</h3>
+  </div>
 
-  <table class="table">
+  <div class="panel-body">
+    <div class="wideTable">
+      <table id="lab_racks" data-source="<%= lab_racks_url(format: 'json')%>" class="table table-striped table-hover table-bordered">
 
+        <thead>
 
-  <thead>
-    <tr>
-      <th>Rackcode</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+        <tr>
+          <th>Rackcode</th>
+          <th>Rack Position</th>
+          <th>Shelf</th>
+          <th>Freezer</th>
+          <th>Lab</th>
+          <th>Updated at</th>
+          <th></th>
+        </tr>
 
-  <tbody>
-    <% @lab_racks.each do |lab_rack| %>
-      <tr>
-        <td><%= lab_rack.rackcode %></td>
-        <td><%= link_to 'Show', lab_rack %></td>
-        <td><%= link_to 'Edit', edit_lab_rack_path(lab_rack) %></td>
-        <td><%= link_to 'Delete', lab_rack, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+        </thead>
+
+        <tbody>
+
+        </tbody>
+      </table></div></div>
 
 </div>
 

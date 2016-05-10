@@ -71,7 +71,7 @@ class IndividualsController < ApplicationController
 
     respond_to do |format|
       if @individual.save
-        format.html { redirect_to @individual, notice: 'Individual was successfully created.' }
+        format.html { redirect_to individuals_path, notice: 'Individual was successfully created.' }
         format.json { render :show, status: :created, location: @individual }
       else
         format.html { render :new }

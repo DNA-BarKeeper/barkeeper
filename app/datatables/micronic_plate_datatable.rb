@@ -22,19 +22,37 @@ class MicronicPlateDatatable
   private
 
   def data
-    plant_plates.map do |plant_plate|
+    plant_plates.map do |micronic_plate|
 
       name=''
-      if plant_plate.name
-        name = link_to plant_plate.name, edit_micronic_plate_path(plant_plate)
+      if micronic_plate.name
+        name = link_to micronic_plate.name, edit_micronic_plate_path(micronic_plate)
       end
 
+      lab_rack=''
+      rack_position=''
+      shelf=''
+      freezer=''
+
+      if micronic_plate.lab_rack
+        lab_rack = link_to micronic_plate.lab_rack.rackcode, edit_lab_rack_path(micronic_plate.lab_rack)
+        rack_position = micronic_plate.lab_rack.rack_position
+        shelf= micronic_plate.lab_rack.shelf
+        if micronic_plate.lab_rack.freezer
+          freezer=micronic_plate.lab_rack.freezer.freezercode
+        end
+      end
 
       [
           name,
-          plant_plate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', plant_plate, method: :delete, data: { confirm: 'Are you sure?' })
+          lab_rack,
+          rack_position,
+          shelf,
+          freezer,
+          micronic_plate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+          link_to('Delete', micronic_plate, method: :delete, data: { confirm: 'Are you sure?' })
       ]
+
     end
 
   end
@@ -65,7 +83,7 @@ class MicronicPlateDatatable
   end
 
   def sort_column
-    columns = %w[name updated_at]
+    columns = %w[name lab_rack rack_position shelf freezer updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
