@@ -46,12 +46,12 @@
 
             <div class="form-group">
               <%= f.label :tissue_id, 'Tissue type' %>
-              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name) %>
+              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name, :include_blank => '<no selection>') %>
             </div>
 
             <div class="form-group">
               <%= f.label :plant_plate_id, 'Plate (Tissue)' %>
-              <%= f.collection_select(:plant_plate_id, PlantPlate.all.order(:name), :id, :name) %>
+              <%= f.collection_select(:plant_plate_id, PlantPlate.all.order(:name), :id, :name, :include_blank => '<no selection>') %>
             </div>
 
             <div class="form-group">
@@ -63,7 +63,7 @@
 
               <div class="isolate-copy">
 
-                <h4>DNA G5o</h4>
+                <div class="isolate-copy-label">DNA G5o</div>
 
                 <div class="form-group">
                   <%= f.label 'Lab' %>
@@ -95,13 +95,12 @@
 
               <div class="isolate-copy">
 
-                <h4>DNA G5c</h4>
+                <div class="isolate-copy-label">DNA G5c</div>
 
                 <div class="form-group">
                   <%= f.label 'Lab' %>
                   <%= f.collection_select(:lab_id_orig, Lab.all, :id, :labcode, :include_blank => '<no selection>') %>
                 </div>
-
 
                 <div class="form-group">
                   <%= f.label :micronic_plate_id_copy, 'Plate (DNA)' %>
