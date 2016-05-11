@@ -73,6 +73,6 @@ class MicronicPlatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def micronic_plate_params
-      params.require(:micronic_plate).permit(:micronic_plate_id, :name)
+      params.require(:micronic_plate).permit(:location_in_rack, :micronic_plate_id, :name)
     end
 end

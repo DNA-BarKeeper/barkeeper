@@ -72,7 +72,29 @@
 
                 <div  class="form-group">
                   <%= f.label :micronic_plate_id_orig, 'Plate (DNA)' %>
+                  <% if @isolate.micronic_plate_id_orig %>
+                      <%= link_to '', edit_micronic_plate_path(@isolate.micronic_plate_id_orig),:class => 'glyphicon glyphicon-share-alt', :title => "go to micronic plate" %>
+                  <% end %>
                   <%= f.collection_select(:micronic_plate_id_orig, MicronicPlate.all, :id, :micronic_plate_id, :include_blank => '<no selection>') %>
+                </div>
+
+                <div class="form-group" >
+                  <% micronic_plate_orig = MicronicPlate.find(@isolate.micronic_plate_id_orig) %>
+                  <% if micronic_plate_orig %>
+                      <b>Location in Rack:</b>
+                      <%= micronic_plate_orig.location_in_rack %>
+                      <% if micronic_plate_orig.lab_rack %>
+                          -<b> Rack:</b>
+                          <% lab_rack = micronic_plate_orig.lab_rack %>
+                          <%= lab_rack.rackcode %>
+                          -<b> Shelf:</b>
+                          <%= lab_rack.shelf %>
+                          <% if lab_rack.freezer %>
+                              -<b> Freezer:</b>
+                              <%== lab_rack.freezer.freezercode %>
+                          <% end %>
+                      <% end %>
+                  <% end %>
                 </div>
 
                 <div  class="form-group">
@@ -101,9 +123,31 @@
                   <%= f.collection_select(:lab_id_copy, Lab.all, :id, :labcode, :include_blank => '<no selection>') %>
                 </div>
 
-                <div class="form-group">
+                <div  class="form-group">
                   <%= f.label :micronic_plate_id_copy, 'Plate (DNA)' %>
+                  <% if @isolate.micronic_plate_id_copy %>
+                      <%= link_to '', edit_micronic_plate_path(@isolate.micronic_plate_id_copy),:class => 'glyphicon glyphicon-share-alt', :title => "go to micronic plate" %>
+                  <% end %>
                   <%= f.collection_select(:micronic_plate_id_copy, MicronicPlate.all, :id, :micronic_plate_id, :include_blank => '<no selection>') %>
+                </div>
+
+                <div class="form-group" >
+                  <% micronic_plate_copy = MicronicPlate.find(@isolate.micronic_plate_id_copy) %>
+                  <% if micronic_plate_copy %>
+                      <b>Location in Rack:</b>
+                      <%= micronic_plate_copy.location_in_rack %>
+                      <% if micronic_plate_copy.lab_rack %>
+                          <b>Rack:</b>
+                          <% lab_rack = micronic_plate_copy.lab_rack %>
+                          <%= lab_rack.rackcode %>
+                          <b>Shelf:</b>
+                          <%= lab_rack.shelf %>
+                          <% if lab_rack.freezer %>
+                              <b>Freezer:</b>
+                              <%== lab_rack.freezer.freezercode %>
+                          <% end %>
+                      <% end %>
+                  <% end %>
                 </div>
 
                 <div class="form-group">

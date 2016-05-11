@@ -2,15 +2,15 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title"><%= @micronic_plate.name%></h3>
+    <h3 class="panel-title"><%= @micronic_plate.micronic_plate_id%></h3>
 
   </div>
 
   <div class="panel-body"><%= form_for(@micronic_plate) do |f| %>
 
         <div class="form-group">
-          <%= f.label :name %>
-          <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
+          <%= f.label :micronic_plate_id %>
+          <%= f.text_field :micronic_plate_id, :autofocus => true, class: 'form-control' %>
         </div>
 
         <div class="form-group">
