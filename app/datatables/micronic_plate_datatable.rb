@@ -14,7 +14,7 @@ class MicronicPlateDatatable
     {
         sEcho: params[:sEcho].to_i,
         iTotalRecords: PlantPlate.count,
-        iTotalDisplayRecords: plant_plates.total_entries,
+        iTotalDisplayRecords: micronic_plates.total_entries,
         aaData: data
     }
   end
@@ -22,11 +22,11 @@ class MicronicPlateDatatable
   private
 
   def data
-    plant_plates.map do |micronic_plate|
+    micronic_plates.map do |micronic_plate|
 
       micronic_plate_id=''
       if micronic_plate.micronic_plate_id
-        name = link_to micronic_plate.micronic_plate_id, edit_micronic_plate_path(micronic_plate)
+        micronic_plate_id = link_to micronic_plate.micronic_plate_id, edit_micronic_plate_path(micronic_plate)
       end
 
       lab_rack=''
@@ -58,7 +58,7 @@ class MicronicPlateDatatable
 
   end
 
-  def plant_plates
+  def micronic_plates
     @freezers ||= fetch_plant_plates
   end
 
@@ -84,7 +84,7 @@ class MicronicPlateDatatable
   end
 
   def sort_column
-    columns = %w[name lab_rack rack_position shelf freezer updated_at]
+    columns = %w[micronic_plate_id lab_rack rack_position shelf freezer updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

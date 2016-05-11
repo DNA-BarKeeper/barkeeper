@@ -4,9 +4,9 @@ jQuery ->
     bServerSide: true
     sAjaxSource: $('#lab_racks').data('source')
     "columnDefs": [
+      { "orderable": false, "targets": 2 }
       { "orderable": false, "targets": 3 }
-      { "orderable": false, "targets": 4 }
-      { "orderable": false, "targets": 6 }
+      { "orderable": false, "targets": 5 }
     ]
     "order": [ 0, 'desc' ]
   } );

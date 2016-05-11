@@ -30,10 +30,6 @@ class LabRackDatatable
         rackcode = link_to lab_rack.rackcode, edit_lab_rack_path(lab_rack)
       end
 
-      rack_position=''
-      if lab_rack.rack_position
-        rack_position=lab_rack.rack_position
-        end
 
       shelf=''
       if lab_rack.shelf
@@ -52,7 +48,6 @@ class LabRackDatatable
 
       [
           rackcode,
-          rack_position,
           shelf,
           freezer,
           lab,
@@ -75,7 +70,7 @@ class LabRackDatatable
     freezers = freezers.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      freezers = freezers.where("freezercode ILIKE :search", search: "%#{params[:sSearch]}%")
+      freezers = freezers.where("rackcode ILIKE :search", search: "%#{params[:sSearch]}%")
     end
 
     freezers
@@ -90,7 +85,7 @@ class LabRackDatatable
   end
 
   def sort_column
-    columns = %w[rackcode rack_position shelf freezer lab updated_at]
+    columns = %w[rackcode shelf freezer lab updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
