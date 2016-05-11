@@ -36,15 +36,16 @@ class MicronicPlateDatatable
 
       if micronic_plate.lab_rack
         lab_rack = link_to micronic_plate.lab_rack.rackcode, edit_lab_rack_path(micronic_plate.lab_rack)
-        rack_position = micronic_plate.lab_rack.rack_position
         shelf= micronic_plate.lab_rack.shelf
         if micronic_plate.lab_rack.freezer
           freezer=micronic_plate.lab_rack.freezer.freezercode
         end
       end
 
+      rack_position = micronic_plate.location_in_rack
+
       [
-          name,
+          micronic_plate_id,
           lab_rack,
           rack_position,
           shelf,

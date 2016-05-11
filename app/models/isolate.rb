@@ -282,7 +282,6 @@ class Isolate < ActiveRecord::Base
 
       unless row['Rack'].nil? or row['Rack'].blank?
         lab_rack=LabRack.find_or_create_by(:rackcode => row['Rack'])
-        lab_rack.rack_position=row['Rack Position']
         lab_rack.shelf=row['Shelf']
         freezer=Freezer.find_or_create_by(:freezercode => row['Freezer'])
         lab_rack.freezer=freezer
@@ -290,6 +289,9 @@ class Isolate < ActiveRecord::Base
         micronic_plate_orig.lab_rack = lab_rack
         micronic_plate_copy.lab_rack = lab_rack
       end
+
+      micronic_plate_orig.location_in_rack=row['Rack Position']
+      micronic_plate_copy.location_in_rack=row['Rack Position']
 
       micronic_plate_orig.save!
       micronic_plate_copy.save!
@@ -313,8 +315,8 @@ class Isolate < ActiveRecord::Base
 
       isolate.isolation_date=row['Isolation date']
 
-      isolate.lab_id_copy=1 #BGMG
-      isolate.lab_id_orig=2 #NEES
+      isolate.lab_id_copy=2 #BGMG
+      isolate.lab_id_orig=1 #NEES
 
       isolate.save!
 
