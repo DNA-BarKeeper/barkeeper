@@ -24,9 +24,9 @@ class MicronicPlateDatatable
   def data
     plant_plates.map do |micronic_plate|
 
-      name=''
-      if micronic_plate.name
-        name = link_to micronic_plate.name, edit_micronic_plate_path(micronic_plate)
+      micronic_plate_id=''
+      if micronic_plate.micronic_plate_id
+        name = link_to micronic_plate.micronic_plate_id, edit_micronic_plate_path(micronic_plate)
       end
 
       lab_rack=''
