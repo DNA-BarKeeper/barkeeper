@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160510161111) do
+ActiveRecord::Schema.define(version: 20160511191823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -177,7 +177,7 @@ ActiveRecord::Schema.define(version: 20160510161111) do
     t.integer  "individual_id"
     t.string   "dna_bank_id",                  limit: 255
     t.string   "lab_nr",                       limit: 255
-    t.boolean  "negative_control",                         default: false
+    t.boolean  "negative_control",                                                  default: false
     t.integer  "lab_id_orig"
     t.integer  "lab_id_copy"
     t.datetime "isolation_date"
@@ -185,8 +185,8 @@ ActiveRecord::Schema.define(version: 20160510161111) do
     t.integer  "micronic_plate_id_copy"
     t.string   "well_pos_micronic_plate_orig"
     t.string   "well_pos_micronic_plate_copy"
-    t.decimal  "concentration_orig"
-    t.decimal  "concentration_copy"
+    t.decimal  "concentration_orig",                       precision: 15, scale: 2
+    t.decimal  "concentration_copy",                       precision: 15, scale: 2
     t.string   "micronic_tube_id_orig"
     t.string   "micronic_tube_id_copy"
     t.integer  "user_id"
