@@ -1,7 +1,7 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Duplicate Contigs</h3>
+    <h3 class="panel-title">Duplicate Reads</h3>
   </div>
 
   <div class="panel-body">
@@ -20,7 +20,7 @@
 
         <!--get list w duplicates-->
         <% a=[] %>
-        <% Contig.select("name").all.each do |i| %>
+        <% PrimerRead.select("name").all.each do |i| %>
             <% a << i.name %>
         <% end %>
 
@@ -28,7 +28,7 @@
 
         <tbody>
         <% i=0 %>
-        <% d.each do |duplicate_contig| %>
+        <% d.each do |duplicate_read| %>
 
             <% if (i % 2 == 0) %>
                 <% color = "#f5f5f5" %>
@@ -36,11 +36,11 @@
                 <% color = "white" %>
             <% end %>
 
-            <% Contig.where(:name => duplicate_contig).each do |contig| %>
+            <% PrimerRead.where(:name => duplicate_read).each do |read| %>
                 <tr style="background-color: <%=color%>">
-                  <td><%= link_to "#{contig.name} (#{contig.id})", edit_contig_path(contig) %></td>
-                  <td> <%= contig.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
-                  <td><%= link_to 'Delete', contig, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+                  <td><%= link_to "#{read.name} (#{read.id})", edit_primer_read_path(read) %></td>
+                  <td> <%= read.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
+                  <td><%= link_to 'Delete', read, method: :delete, data: {confirm: 'Are you sure?' } %></td>
                 </tr>
             <% end %>
             <% i+=1 %>

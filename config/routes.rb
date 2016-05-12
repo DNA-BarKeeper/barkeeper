@@ -1,10 +1,5 @@
 GBOLapp::Application.routes.draw do
 
-  resources :txt_uploaders
-
-  resources :individuals
-
-  resources :primer_reads
 
   root :to => "home#about"
 
@@ -14,13 +9,55 @@ GBOLapp::Application.routes.draw do
   match 'contact', to: 'home#contact', via: 'get'
   match 'overview', to: 'home#overview', via: 'get'
 
-
   get 'specimens_xls', action: :xls, controller: 'individuals'
   get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'specimens_create_xls', action: :create_xls, controller: 'individuals'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'
   get 'specimens_without_species', action: :specimens_without_species, controller: 'individuals'
   get 'problematic_location_data', action: :problematic_location_data, controller: 'individuals'
+
+  resources :contigs do
+    collection do
+      get 'show_need_verify'
+      get 'filter'
+      get 'assemble_all'
+      get 'pde_all'
+      get 'duplicates'
+      post :change_via_script
+      post :compare_contigs
+      get 'externally_verified'
+    end
+    member do
+      get 'verify'
+      get 'pde'
+      get 'fasta'
+      get 'fasta_trimmed'
+      get 'fasta_raw'
+      get 'overlap'
+      get 'overlap_background'
+    end
+  end
+
+  resources :primer_reads do
+    collection do
+      post :import
+      post :batch_create
+      get 'duplicates'
+    end
+    member do
+      get 'trim'
+      get 'assign'
+      get 'reverse'
+      get 'restore'
+      get 'fasta'
+      post 'change_base'
+    end
+  end
+
+  resources :txt_uploaders
+
+  resources :individuals
+
   resources :issues
 
   resources :higher_order_taxons do
@@ -83,20 +120,6 @@ GBOLapp::Application.routes.draw do
     end
   end
 
-  resources :primer_reads do
-    collection do
-      post :import
-      post :batch_create
-    end
-    member do
-      get 'trim'
-      get 'assign'
-      get 'reverse'
-      get 'restore'
-      get 'fasta'
-      post 'change_base'
-    end
-  end
 
   resources :plant_plates
 
@@ -122,28 +145,6 @@ GBOLapp::Application.routes.draw do
     end
   end
 
-
-  resources :contigs do
-    collection do
-      get 'show_need_verify'
-      get 'filter'
-      get 'assemble_all'
-      get 'pde_all'
-      get 'duplicates'
-      post :change_via_script
-      post :compare_contigs
-      get 'externally_verified'
-    end
-    member do
-      get 'verify'
-      get 'pde'
-      get 'fasta'
-      get 'fasta_trimmed'
-      get 'fasta_raw'
-      get 'overlap'
-      get 'overlap_background'
-    end
-  end
 
   #hack: avoid malicious users to directly type in the sign-up route
   #later: use authorization system to

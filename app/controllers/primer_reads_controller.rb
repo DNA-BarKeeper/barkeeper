@@ -3,6 +3,9 @@ class PrimerReadsController < ApplicationController
 
   before_action :set_primer_read, only: [:edit, :fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
 
+  def duplicates
+  end
+
   def import
     PrimerRead.import(params[:file])
     redirect_to root_url, notice: 'Chromatogram imported.'

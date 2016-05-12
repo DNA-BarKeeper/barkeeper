@@ -32,7 +32,7 @@ class PrimerRead < ActiveRecord::Base
 
   scope :processed, -> {where(:processed => true)}
   scope :unprocessed, -> {where(:processed => false)}
-
+  scope :contig_not_verified, -> {joins(:contig).where(:contigs => {:verified => false, :verified_by => nil})}
 
   validates_attachment_presence :chromatogram
 
