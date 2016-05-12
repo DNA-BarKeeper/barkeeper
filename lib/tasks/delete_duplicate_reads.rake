@@ -17,23 +17,24 @@ namespace :data do
 
     d.each do |duplicate|
 
-      puts "\n"
+      # puts "\n"
       #get  all members of given duplicate list: # REMOVE THOSE FROM VERIFIED CONTIGS FORM THIS DUPLICATE LIST:
       dups=PrimerRead.contig_not_verified.where(:name => duplicate)
 
       #get first
+
       first_dup=dups.first
-      puts "will keep #{first_dup.name} (#{first_dup.id})"
+
+      # puts "will keep #{first_dup.name} (#{first_dup.id})"
 
       #get all others and compare to first
       (1..dups.count-1).each do |i|
 
         curr_dup= dups[i]
 
-        puts "will destroy #{curr_dup.name} (#{curr_dup.id})"
+        # puts "will destroy #{curr_dup.name} (#{curr_dup.id})"
 
-
-        # curr_dup.destroy
+        curr_dup.destroy
 
       end
 
