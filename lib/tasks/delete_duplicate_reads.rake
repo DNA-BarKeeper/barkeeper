@@ -18,7 +18,8 @@ namespace :data do
     d.each do |duplicate|
 
       # puts "\n"
-      #get  all members of given duplicate list: # REMOVE THOSE FROM VERIFIED CONTIGS FORM THIS DUPLICATE LIST:
+      #get  all members of given duplicate list: # IGNORE THOSE FROM VERIFIED CONTIGS IN THIS DUPLICATE LIST
+
       dups=PrimerRead.contig_not_verified.where(:name => duplicate)
 
       #get first
@@ -27,7 +28,10 @@ namespace :data do
 
       # puts "will keep #{first_dup.name} (#{first_dup.id})"
 
-      #get all others and compare to first
+      #get all others
+
+      #TODO: scary loop in which arr.elements are deleted (?) - fix!
+
       (1..dups.count-1).each do |i|
 
         curr_dup= dups[i]
