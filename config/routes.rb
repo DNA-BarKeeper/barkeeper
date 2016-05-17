@@ -1,6 +1,5 @@
 GBOLapp::Application.routes.draw do
 
-
   root :to => "home#about"
 
   match 'help',    to: 'home#help',    via: 'get'
