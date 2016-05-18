@@ -14,7 +14,7 @@ namespace :data do
 
       url = URI.parse(service_url)
       req = Net::HTTP::Get.new(url.to_s)
-      res = Net::HTTP.start(url.host, url.port) {|http|
+      res = Net::HTTP.start(url.host, url.port) { |http|
         http.request(req)
       }
 
@@ -103,6 +103,8 @@ namespace :data do
         end
 
       end
+
+      #todo make case insensitive match:
 
       if gbol_nr
         # inconsistent in DNABank: sometimes lowercase, sometimes uppercase o in GBOL:

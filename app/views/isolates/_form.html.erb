@@ -78,24 +78,26 @@
                   <%= f.collection_select(:micronic_plate_id_orig, MicronicPlate.all, :id, :micronic_plate_id, :include_blank => '<no selection>') %>
                 </div>
 
-                <div class="form-group" >
-                  <% micronic_plate_orig = MicronicPlate.find(@isolate.micronic_plate_id_orig) %>
-                  <% if micronic_plate_orig %>
-                      <b>Location in Rack:</b>
-                      <%= micronic_plate_orig.location_in_rack %>
-                      <% if micronic_plate_orig.lab_rack %>
-                          -<b> Rack:</b>
-                          <% lab_rack = micronic_plate_orig.lab_rack %>
-                          <%= lab_rack.rackcode %>
-                          -<b> Shelf:</b>
-                          <%= lab_rack.shelf %>
-                          <% if lab_rack.freezer %>
-                              -<b> Freezer:</b>
-                              <%== lab_rack.freezer.freezercode %>
-                          <% end %>
-                      <% end %>
-                  <% end %>
-                </div>
+                <% if @isolate.micronic_plate_id_orig %>
+                  <div class="form-group" >
+                    <% micronic_plate_orig = MicronicPlate.includes(:lab_rack).find(@isolate.micronic_plate_id_orig) %>
+                    <% if micronic_plate_orig %>
+                        <b>Location in Rack:</b>
+                        <%= micronic_plate_orig.location_in_rack %>
+                        <% if micronic_plate_orig.lab_rack %>
+                            -<b> Rack:</b>
+                            <% lab_rack = micronic_plate_orig.lab_rack %>
+                            <%= lab_rack.rackcode %>
+                            -<b> Shelf:</b>
+                            <%= lab_rack.shelf %>
+                            <% if lab_rack.freezer %>
+                                -<b> Freezer:</b>
+                                <%== lab_rack.freezer.freezercode %>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+                  </div>
+                <% end %>
 
                 <div  class="form-group">
                   <%= f.label :well_pos_micronic_plate_orig, 'Well position in DNA plate' %>
@@ -131,24 +133,26 @@
                   <%= f.collection_select(:micronic_plate_id_copy, MicronicPlate.all, :id, :micronic_plate_id, :include_blank => '<no selection>') %>
                 </div>
 
-                <div class="form-group" >
-                  <% micronic_plate_copy = MicronicPlate.find(@isolate.micronic_plate_id_copy) %>
-                  <% if micronic_plate_copy %>
-                      <b>Location in Rack:</b>
-                      <%= micronic_plate_copy.location_in_rack %>
-                      <% if micronic_plate_copy.lab_rack %>
-                          <b>Rack:</b>
-                          <% lab_rack = micronic_plate_copy.lab_rack %>
-                          <%= lab_rack.rackcode %>
-                          <b>Shelf:</b>
-                          <%= lab_rack.shelf %>
-                          <% if lab_rack.freezer %>
-                              <b>Freezer:</b>
-                              <%== lab_rack.freezer.freezercode %>
-                          <% end %>
-                      <% end %>
-                  <% end %>
-                </div>
+                <% if @isolate.micronic_plate_id_copy %>
+                  <div class="form-group" >
+                    <% micronic_plate_copy = MicronicPlate.includes(:lab_rack).find(@isolate.micronic_plate_id_copy) %>
+                    <% if micronic_plate_copy %>
+                        <b>Location in Rack:</b>
+                        <%= micronic_plate_copy.location_in_rack %>
+                        <% if micronic_plate_copy.lab_rack %>
+                            <b>Rack:</b>
+                            <% lab_rack = micronic_plate_copy.lab_rack %>
+                            <%= lab_rack.rackcode %>
+                            <b>Shelf:</b>
+                            <%= lab_rack.shelf %>
+                            <% if lab_rack.freezer %>
+                                <b>Freezer:</b>
+                                <%== lab_rack.freezer.freezercode %>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+                  </div>
+                <% end %>
 
                 <div class="form-group">
                   <%= f.label :well_pos_micronic_plate_copy, 'Well position in DNA plate' %>
