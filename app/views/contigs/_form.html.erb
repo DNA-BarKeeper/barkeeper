@@ -37,7 +37,6 @@
               <%= f.text_field :isolate_name , data: {autocomplete_source: filter_isolates_path} , class: 'form-control'%>
             </div>
 
-
             <div class="form-group">
               <%= f.label 'Marker' %>
 
@@ -119,20 +118,39 @@
 
     <!-- draw contig alignment -->
 
-    <div class="alignment">
+    <table style="table-layout: fixed;" width="100%">
+      <tr>
+        <td valign="top" width="250px">
+          <div class="read-names">
+            <div style="height: 60px;">
 
-      <%= content_tag "div", id: "contig", data: {url: @contig.partial_cons.includes(:primer_reads) } do %>
-
-      <% end %>
-
-    </div>
+            </div>
+            <% @contig.primer_reads.assembled.each do |read|%>
+                <div style="height: 60px;">
+                  <%= link_to read.name, edit_primer_read_path(read) %>
+                </div>
+            <%end %>
+            <div style="height: 60px;">
+              <b>Consensus</b>
+            </div>
+          </div>
+        </td>
+        <td >
+          <%= content_tag "div", id: "contig", data: {url: @contig.partial_cons.includes(:primer_reads) } do %>
+          <% end %>
+        </td>
+      </tr>
+    </table>
 
     <!-- list all reads again, grouped by status-->
 
-    <p><b>Assembled:</b><br>
+    <p><b>Assembled:</b>
+      <br>
       <% @contig.primer_reads.assembled.each do |read|%>
-          <%= link_to read.name, edit_primer_read_path(read) %><%= link_to ' (open in new tab)', edit_primer_read_path(read), :target => "_blank" %><br>
-      <%end %></p>
+          <%= link_to read.name, edit_primer_read_path(read) %><%= link_to ' (open in new tab)', edit_primer_read_path(read), :target => "_blank" %>
+          <br>
+      <%end %>
+    </p>
 
     <p><b>Not assembled:</b><br>
       <% @contig.primer_reads.not_assembled.each do |read|%>

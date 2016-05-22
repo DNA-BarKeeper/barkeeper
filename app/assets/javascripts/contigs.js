@@ -48,7 +48,6 @@ jQuery(function() {
 
 function draw_singletons(not_assembled){
     //alert("Singleton draw");
-
 }
 
 function draw_contig(partial_cons){
@@ -83,11 +82,14 @@ function draw_contig(partial_cons){
     var svg=d3.select('#contig')
         .append('svg')
         .attr('width', max_width*10+350)
-        .attr('height', h-30);
+        .attr('height', h-30)
+        .attr('overflow-x', 'auto');
 
     var x=0;
     var y=20;
-    var block_start=300;
+    // var block_start=300; <- previous version where read names drawn by js 
+    var block_start=0;
+
 
     var color = 'gray';
     var font_family = "sans-serif";
@@ -288,29 +290,29 @@ function draw_contig(partial_cons){
 
             //var read_label="pr"+pr.id;
 
-            svg.append("text")
-                .attr("x", x)
-                .attr("y", y)
-                .text(pr.name)
-                .attr("font-family", "sans-serif")
-                .attr("font-size", font_size)
-                .attr("fill", color)
-                .attr("cursor", "pointer")
-                .attr("id", current_read_id)
-                .on('mouseover', function(){
-                    d3.select(this)
-                        .attr('fill','#3072ed')
-
-                })
-                .on('mouseout', function(){
-                    d3.select(this)
-                        .attr('fill','black')
-                })
-                .on('click', function(){
-                    var selected_primer = d3.select(this);
-                    var primer_id = selected_primer.attr("id");
-                    window.location.href = "http://www.gbol5.de/primer_reads/" + primer_id + "/edit";
-                });
+            // svg.append("text")
+            //     .attr("x", x)
+            //     .attr("y", y)
+            //     .text(pr.name)
+            //     .attr("font-family", "sans-serif")
+            //     .attr("font-size", font_size)
+            //     .attr("fill", color)
+            //     .attr("cursor", "pointer")
+            //     .attr("id", current_read_id)
+            //     .on('mouseover', function(){
+            //         d3.select(this)
+            //             .attr('fill','#3072ed')
+            //
+            //     })
+            //     .on('mouseout', function(){
+            //         d3.select(this)
+            //             .attr('fill','black')
+            //     })
+            //     .on('click', function(){
+            //         var selected_primer = d3.select(this);
+            //         var primer_id = selected_primer.attr("id");
+            //         window.location.href = "http://www.gbol5.de/primer_reads/" + primer_id + "/edit";
+            //     });
 
             font_size = '10px';
 
@@ -383,14 +385,14 @@ function draw_contig(partial_cons){
             font_size = '12px';
 
 
-            svg.append("text")
-                .attr("x", x)
-                .attr("y", y)
-                .text('Consensus')
-                .attr("font-family", "sans-serif")
-                .attr("font-size", font_size)
-                .attr("font-weight", "bold")
-                .attr("fill", color);
+            // svg.append("text")
+            //     .attr("x", x)
+            //     .attr("y", y)
+            //     .text('Consensus')
+            //     .attr("font-family", "sans-serif")
+            //     .attr("font-size", font_size)
+            //     .attr("font-weight", "bold")
+            //     .attr("fill", color);
 
             color = 'gray';
             font_size = '10px';
