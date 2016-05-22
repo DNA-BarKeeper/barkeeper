@@ -6,7 +6,11 @@ $(document).on('page:change', function() {
 });
 
 
+
+
 jQuery(function() {
+
+
     $('#contigs').DataTable({
         bProcessing: true,
         bServerSide: true,

@@ -1,4 +1,35 @@
 jQuery(function() {
+
+    $('#scroll-left-button').click( function () {
+
+        $('.alignment').animate({
+            scrollLeft: 0
+        }, 200);
+    });
+
+    $('#scroll-right-button').click( function () {
+
+        //get div chromatogram & its current width
+        var el  = document.getElementById("chromatogram_svg"); // or other selector like querySelector()
+        var rect = el.getBoundingClientRect(); // get the bounding rectangle
+
+        $('.alignment').animate({
+            scrollLeft: rect.width
+        }, 200);
+    });
+
+    $('#scroll-right-slowly-button').click( function () {
+
+        //get div chromatogram & its current width
+        var el  = document.getElementById("chromatogram_svg"); // or other selector like querySelector()
+        var rect = el.getBoundingClientRect(); // get the bounding rectangle
+
+        $('.alignment').animate({
+            scrollLeft: rect.width
+        }, 25000);
+    });
+
+
     $('#new_primer_read').fileupload(
         {
             dataType: "script",
@@ -76,7 +107,8 @@ function draw_chromatogram(){
         var svg = d3.select(div_id)
             .append('svg')
             .attr('width', chromatogram1.atrace.length)
-            .attr('height', 250);
+            .attr('height', 250)
+            .attr('id', 'chromatogram_svg');
 
 
         //adjust clipped areas:
@@ -407,6 +439,7 @@ function change_right_clip(base_index, change_right_clip_read_url) {
 
     return 0;
 }
+
 
 function tempAlert(msg,duration)
 {
