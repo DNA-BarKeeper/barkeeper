@@ -411,7 +411,7 @@ function change_right_clip(base_index, change_right_clip_read_url) {
 function tempAlert(msg,duration)
 {
     var el = document.createElement("div");
-    el.setAttribute("style","position:absolute;top:50%;left:50%;background-color:white;");
+    el.setAttribute("style","position:absolute;top:50%;left:50%;background-color:#fcffcc;");
     el.innerHTML = msg;
     setTimeout(function(){
         el.parentNode.removeChild(el);
