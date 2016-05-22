@@ -77,9 +77,9 @@
             <% if seq1 %>
                 <div >
                   <%= f.label 'Readable bases ' %>
-                  <%= f.text_field :trimmedReadStart, :class => "sequence_position_left" %>
+                  <%= f.text_field :trimmedReadStart, :class => "sequence_position_left", :id => "left_clip" %>
                   <%= f.label ' - ' %>
-                  <%= f.text_field :trimmedReadEnd, :class => "sequence_position_right" %>
+                  <%= f.text_field :trimmedReadEnd, :class => "sequence_position_right", :id => "right_clip" %>
                   out of <%= seq1.length %>
                 </div>
             <% end %>

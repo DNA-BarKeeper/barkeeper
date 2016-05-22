@@ -3,7 +3,7 @@ require 'nokogiri'
 
 namespace :data do
 
-  desc "Get all specimens with <no info available in DNA Bank> as specimen id  and extract all specimen info from DNABank, if corresponding GBOL-Nr exists there."
+  desc "Get all specimens with <no info available in DNA Bank> as specimen id, try to get an isolate from this specimen with a gbol-nr, and extract all specimen info from DNABank, if corresponding GBOL-Nr exists there."
 
   task :get_DNABank_by_specimen_without_id => :environment do
 

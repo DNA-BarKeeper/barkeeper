@@ -16,6 +16,7 @@ jQuery(function() {
             }
         }
     );
+
     $('#primer_reads').DataTable({
         bProcessing: true,
         bServerSide: true,
@@ -40,8 +41,6 @@ jQuery(function() {
         source: $('#primer_read_contig_name').data('autocomplete-source')
     });
 
-//    draw chromatogram
-
     draw_chromatogram();
 
 });
@@ -49,8 +48,9 @@ jQuery(function() {
 
 function draw_chromatogram(){
 
-    // über alle divs einer classe iterieren und die dort jeweiligen read data zum Zeichnen nutzen
+    // über alle divs einer classe iterieren und die dort jeweiligen read data zum Zeichnen nutzen -> should be only 1 here.
     var primer_read_divs = document.getElementsByClassName('chromatogram');
+
 
     for (var e = 0; e < primer_read_divs.length; e++) {
 
@@ -78,22 +78,97 @@ function draw_chromatogram(){
             .attr('width', chromatogram1.atrace.length)
             .attr('height', 250);
 
+
+        //adjust clipped areas:
+
+        var drag_left = d3.behavior.drag()
+            .on('dragstart', function() { left_clip_area.style('fill', '#eeebb5'); })
+            .on('drag', function() {
+                left_clip_area.attr('width', d3.event.x);
+            })
+            .on('dragend', function() {
+                left_clip_area.style('fill', "#d3d3d3");
+
+                var drawn_position=left_clip_area.attr('width');
+
+                // find  peak closest to new x -> in chromatogram1.peak_indices
+                for(var g=0; g < chromatogram1.peak_indices.length; g++) {
+                    // console.log(drawn_position);
+                    console.log(g);
+                    console.log(chromatogram1.peak_indices[g]);
+                    console.log("\n");
+                    console.log(chromatogram1.peak_indices[g]-drawn_position);
+                    if (chromatogram1.peak_indices[g]-drawn_position > 0) {
+                        break;
+                    }
+                }
+
+                // alert(g);
+
+                change_left_clip(g+1, '/primer_reads/' + chromatogram1.id + '/change_left_clip');
+            });
+
+        var drag_right = d3.behavior.drag()
+            .on('dragstart', function() { right_clip_area.style('fill', '#eeebb5'); })
+            .on('drag', function() {
+                right_clip_area.attr('x', d3.event.x).attr('width', chromatogram1.atrace.length - d3.event.x);
+            })
+            .on('dragend', function() {
+                right_clip_area.style('fill', "#d3d3d3");
+
+                var drawn_position=right_clip_area.attr('x');
+
+                // find  peak closest to new x -> in chromatogram1.peak_indices
+                for(var g=chromatogram1.peak_indices.length; g > 0 ; g--) {
+                    // console.log(drawn_position);
+                    console.log(g);
+                    console.log(chromatogram1.peak_indices[g]);
+                    console.log("\n");
+                    console.log(chromatogram1.peak_indices[g]-drawn_position);
+                    if (chromatogram1.peak_indices[g]-drawn_position < 0) {
+                        break;
+                    }
+                }
+
+                // alert(g);
+
+                change_right_clip(g+1, '/primer_reads/' + chromatogram1.id + '/change_right_clip');
+
+            });
+
         //draw clipped areas
+
         if (chromatogram1.trimmedReadStart) {
 
-            svg.append('rect')
+            var left_clip_area=svg.append('rect')
                 .attr("x", 0)
                 .attr("y", 0)
                 .attr("width", chromatogram1.peak_indices[chromatogram1.trimmedReadStart - 1] - 5)
                 .attr("height", ymax)
-                .attr("fill", "#d3d3d3");
+                .attr("fill", "#d3d3d3")
+                .call(drag_left).on({
+                    "mouseover": function(d) {
+                        d3.select(this).style("cursor", "col-resize")
+                    },
+                    "mouseout": function(d) {
+                        d3.select(this).style("cursor", "default");
+                    }
+                });
 
-            svg.append('rect')
+            var right_clip_area=svg.append('rect')
                 .attr("x", chromatogram1.peak_indices[chromatogram1.trimmedReadEnd - 1] + 5)
                 .attr("y", 0)
                 .attr("width", chromatogram1.atrace.length - chromatogram1.peak_indices[chromatogram1.trimmedReadEnd - 1] + 5)
                 .attr("height", ymax)
-                .attr("fill", "#d3d3d3");
+                .attr("fill", "#d3d3d3")
+                .call(drag_right).on({
+                    "mouseover": function(d) {
+                        d3.select(this).style("cursor", "col-resize")
+                    },
+                    "mouseout": function(d) {
+                        d3.select(this).style("cursor", "default")
+                    }
+                });
         }
 
 
@@ -264,6 +339,8 @@ function draw_chromatogram(){
 
         }
     }
+
+
 }
 
 function change_base(base_index, base, change_base_primer_read_url) {
@@ -276,6 +353,9 @@ function change_base(base_index, base, change_base_primer_read_url) {
         type: 'POST',
         url: change_base_primer_read_url,
         success: function () {
+            var visible_index=parseInt(base_index);
+            visible_index+=1;
+            tempAlert("Changed base at position "+visible_index+" to "+base, 2000);
         },
         error: function (response) {
             alert('Not authorized? Could not change base at index '+base_index+' to '+base);
@@ -283,4 +363,58 @@ function change_base(base_index, base, change_base_primer_read_url) {
     });
 
     return 0;
+}
+
+function change_left_clip(base_index, change_left_clip_read_url) {
+    console.log(base_index, change_left_clip_read_url);
+    $.ajax({
+        data: {
+            'position': base_index
+        },
+        type: 'POST',
+        url: change_left_clip_read_url,
+        success: function () {
+            document.getElementById("left_clip").value = base_index;
+
+            tempAlert("Set left clip position to "+base_index, 2000);
+        },
+        error: function (response) {
+            alert('Not authorized? Could not set left clip at index '+base_index);
+        }
+    });
+
+    return 0;
+}
+
+function change_right_clip(base_index, change_right_clip_read_url) {
+    console.log(base_index, change_right_clip_read_url);
+    $.ajax({
+        data: {
+            'position': base_index
+        },
+        type: 'POST',
+        url: change_right_clip_read_url,
+        success: function () {
+
+            document.getElementById("right_clip").value = base_index;
+
+            tempAlert("Set right clip position to "+base_index, 2000);
+        },
+        error: function (response) {
+            alert('Not authorized? Could not set right clip at index '+base_index);
+        }
+    });
+
+    return 0;
+}
+
+function tempAlert(msg,duration)
+{
+    var el = document.createElement("div");
+    el.setAttribute("style","position:absolute;top:50%;left:50%;background-color:white;");
+    el.innerHTML = msg;
+    setTimeout(function(){
+        el.parentNode.removeChild(el);
+    },duration);
+    document.body.appendChild(el);
 }

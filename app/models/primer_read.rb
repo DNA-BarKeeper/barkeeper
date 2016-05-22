@@ -132,7 +132,6 @@ class PrimerRead < ActiveRecord::Base
         else
           msg= "Cannot find primer with name #{prn}."
           create_issue = true
-          create_issue = true
         end
 
       elsif prn == 'M13R-pUC'  or prn=='M13-RP' or prn=='M13-RP-1' #M13R-pU

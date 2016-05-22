@@ -1,7 +1,7 @@
 class PrimerReadsController < ApplicationController
   before_filter :authenticate_user!, :except => [:edit, :index]
 
-  before_action :set_primer_read, only: [:edit, :fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
+  before_action :set_primer_read, only: [:change_left_clip, :change_right_clip, :edit, :fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
 
   def duplicates
   end
@@ -175,6 +175,16 @@ class PrimerReadsController < ApplicationController
     #in all cases (replacement, insertion & deletion) insert string:
     sequence[pos] = base
     @primer_read.update(:sequence => sequence)
+    render :nothing => true
+  end
+
+  def change_left_clip
+    @primer_read.update(:trimmedReadStart => params[:position].to_i)
+    render :nothing => true
+  end
+
+  def change_right_clip
+    @primer_read.update(:trimmedReadEnd => params[:position].to_i)
     render :nothing => true
   end
 

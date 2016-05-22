@@ -50,6 +50,8 @@ GBOLapp::Application.routes.draw do
       get 'restore'
       get 'fasta'
       post 'change_base'
+      post 'change_left_clip'
+      post 'change_right_clip'
     end
   end
 
