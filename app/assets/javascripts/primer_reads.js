@@ -4,7 +4,7 @@ jQuery(function() {
 
         $('.alignment').animate({
             scrollLeft: 0
-        }, 200);
+        }, 0);
     });
 
     $('#scroll-right-button').click( function () {
@@ -15,7 +15,11 @@ jQuery(function() {
 
         $('.alignment').animate({
             scrollLeft: rect.width
-        }, 200);
+        }, 0);
+    });
+    
+    $('#pause-button').click( function () {
+        $('.alignment').stop();
     });
 
     $('#scroll-right-slowly-button').click( function () {
@@ -24,9 +28,16 @@ jQuery(function() {
         var el  = document.getElementById("chromatogram_svg"); // or other selector like querySelector()
         var rect = el.getBoundingClientRect(); // get the bounding rectangle
 
+        var curr_scroll_pos=$('.alignment').scrollLeft();
+
+        //10000 pixel = 10 Sec --> 1000 px / sec
+        var duration = (rect.width - curr_scroll_pos )*3;
+
+        console.log(duration);
+
         $('.alignment').animate({
             scrollLeft: rect.width
-        }, 25000);
+        }, duration, "swing" );
     });
 
 
