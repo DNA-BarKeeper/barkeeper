@@ -5,7 +5,6 @@ class IsolateDatatable
 
   delegate :params, :link_to, :h, to: :@view
 
-
   def initialize(view, no_specimen)
     @view = view
     @no_specimen = no_specimen
@@ -41,7 +40,6 @@ class IsolateDatatable
         individual =link_to isolate.individual.specimen_id, edit_individual_path(isolate.individual)
       end
 
-
       [
           lab_nr,
           species_name,
@@ -49,6 +47,7 @@ class IsolateDatatable
           isolate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
           link_to('Delete', isolate, method: :delete, data: { confirm: 'Are you sure?' })
       ]
+
     end
   end
 
@@ -59,7 +58,7 @@ class IsolateDatatable
   def fetch_isolates
 
     if @no_specimen
-      isolates = Isolate.includes(:individual => :species).where(:individual => nil).order("#{sort_column} #{sort_direction}")
+      isolates = Isolate.includes(:individual => :species).where(:individual => nil).where(:negative_control => false).order("#{sort_column} #{sort_direction}")
     else
       # for standard index view
       isolates = Isolate.includes(:individual => :species).order("#{sort_column} #{sort_direction}")
@@ -68,9 +67,9 @@ class IsolateDatatable
     isolates = isolates.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
       isolates = isolates.where("lab_nr ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
     end
+
     isolates
   end
 
