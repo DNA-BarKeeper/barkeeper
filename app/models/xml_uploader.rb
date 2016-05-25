@@ -9,6 +9,7 @@ class XmlUploader < ActiveRecord::Base
                     :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
                     :path => "/specimens.xls"
 
+
   # Validate content type
   validates_attachment_content_type :uploaded_file, :content_type => /\Aapplication\/xml/
 
@@ -280,18 +281,21 @@ class XmlUploader < ActiveRecord::Base
                 }
 
                 ms=individual.try(:isolates).first.try(:marker_sequences)
+
                 if ms and ms.length > 0
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
                       xml.text('1')
                     }
                   }
+
                 else
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
                       xml.text('0')
                     }
                   }
+
                 end
 
               }

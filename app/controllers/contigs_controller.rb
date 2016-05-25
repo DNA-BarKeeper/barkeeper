@@ -204,7 +204,19 @@ class ContigsController < ApplicationController
       redirect_to edit_contig_path, notice: "Set to non-verified."
     else
       @contig.update(:verified_by => current_user.id, :verified_at => Time.now, :assembled => true, :verified => true)
-      redirect_to edit_contig_path, notice: "Verified."
+
+      # generate / update markersequence
+      # generate marker sequence
+      ms=MarkerSequence.find_or_create_by(:name => @contig.name)
+      partial_cons=@contig.partial_cons.first
+      ms.sequence = partial_cons.aligned_sequence.gsub('-','')
+      ms.sequence = ms.sequence.gsub('?','')
+      ms.contigs << @contig
+      ms.marker = @contig.marker
+      ms.isolate = @contig.isolate
+      ms.save
+
+      redirect_to edit_contig_path, notice: "Verified & linked marker sequence updated."
     end
   end
 
@@ -268,23 +280,18 @@ class ContigsController < ApplicationController
 
 
   def overlap
-
     @contig.auto_overlap
     redirect_to edit_contig_path, notice: 'Assembly finished.'
-
   end
 
   def overlap_background
-
     ContigAssembly.perform_async(@contig.id)
     # @contig.auto_overlap
     redirect_to edit_contig_path, notice: 'Assembly started in background.'
-
   end
 
   def pde_all
     Contig.all.each do |c|
-
       unless c.pde.nil?
         # send_data does not work with muliple
         #send_data(str, :filename => "#{c.name}.pde", :type => "application/txt")
@@ -294,7 +301,6 @@ class ContigsController < ApplicationController
         t=File.new("/Users/kai/Desktop/PDEexport/#{cleaned_name}.pde", "w+")
         t.write(c.pde)
         t.close
-
       end
     end
 

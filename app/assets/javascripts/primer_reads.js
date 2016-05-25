@@ -29,11 +29,8 @@ jQuery(function() {
         var rect = el.getBoundingClientRect(); // get the bounding rectangle
 
         var curr_scroll_pos=$('.alignment').scrollLeft();
-
-        //10000 pixel = 10 Sec --> 1000 px / sec
+        
         var duration = (rect.width - curr_scroll_pos )*3;
-
-        console.log(duration);
 
         $('.alignment').animate({
             scrollLeft: rect.width

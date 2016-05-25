@@ -8,7 +8,7 @@ class IsolatesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json:  IsolateDatatable.new(view_context)}
+      format.json { render json:  IsolateDatatable.new(view_context, false)}
     end
   end
 
@@ -18,7 +18,10 @@ class IsolatesController < ApplicationController
   end
 
   def no_specimen
-    
+    respond_to do |format|
+      format.html
+      format.json { render json:  IsolateDatatable.new(view_context, true)}
+    end
   end
 
 

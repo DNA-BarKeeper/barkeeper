@@ -25,7 +25,9 @@ class Contig < ActiveRecord::Base
     contigs_i=Contig.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
 
     [contigs.count, contigs_s.uniq.count, contigs.uniq.count, contigs_i.uniq.count]
+
   end
+
 
   def isolate_name
     isolate.try(:lab_nr)
@@ -50,7 +52,6 @@ class Contig < ActiveRecord::Base
       self.marker_sequence = MarkerSequence.find_or_create_by(:name => name) if name.present?
     end
   end
-
 
   def generate_name
     if self.marker.present? and self.isolate.present?
@@ -643,6 +644,7 @@ class Contig < ActiveRecord::Base
     }
 
     perc = (diffs.to_f/valids)
+
     if perc <= 0.05
 
       # wenn zu wenig overlap:
@@ -660,6 +662,7 @@ class Contig < ActiveRecord::Base
       nil
 
     end
+
   end
 
 

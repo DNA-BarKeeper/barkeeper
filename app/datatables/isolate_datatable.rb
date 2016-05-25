@@ -6,8 +6,9 @@ class IsolateDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view)
+  def initialize(view, no_specimen)
     @view = view
+    @no_specimen = no_specimen
   end
 
   def as_json(options = {})
@@ -57,7 +58,13 @@ class IsolateDatatable
 
   def fetch_isolates
 
-    isolates = Isolate.includes(:individual => :species).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    if @no_specimen
+      isolates = Isolate.includes(:individual => :species).where(:individual => nil).order("#{sort_column} #{sort_direction}")
+    else
+      # for standard index view
+      isolates = Isolate.includes(:individual => :species).order("#{sort_column} #{sort_direction}")
+    end
+
     isolates = isolates.page(page).per_page(per_page)
 
     if params[:sSearch].present?
