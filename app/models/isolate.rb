@@ -345,6 +345,8 @@ class Isolate < ActiveRecord::Base
 
         isolate.plant_plate = plant_plate
 
+        isolate.tissue_id = 2
+
         isolate.save!
       rescue
       end
