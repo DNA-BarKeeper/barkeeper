@@ -1,4 +1,4 @@
-# write to Excel-XML (xls) for use by ZFMK for their "Portal / db "
+# write to Excel-XML (xls) for use by ZFMK for their "Portal / db : bolgermany.de "
 
 class XmlUploader < ActiveRecord::Base
 

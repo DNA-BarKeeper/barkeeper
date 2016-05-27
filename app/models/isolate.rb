@@ -63,6 +63,7 @@ class Isolate < ActiveRecord::Base
     end
   end
 
+
   def self.import_dnabank_info(file)
     spreadsheet = Roo::Excelx.new(file, nil, :ignore)
 
@@ -138,119 +139,193 @@ class Isolate < ActiveRecord::Base
   end
 
 
-  # variant for specimen data
-  # def self.import(file)
-  #
-  #   spreadsheet = Roo::Excelx.new(file, nil, :ignore)
-  #
-  #   header = spreadsheet.row(1)
-  #
-  #   (2..spreadsheet.last_row).each do |i|
-  #
-  #     row = Hash[[header, spreadsheet.row(i)].transpose]
-  #
-  #     # update existing isolate or create new, case-insensitiv!
-  #
-  #     isolate=Isolate.where("lab_nr ILIKE ?", row['GBoL Isolation No.']).first
-  #     unless isolate
-  #       isolate= Isolate.new(:lab_nr => row['GBoL Isolation No.'])
-  #     end
-  #
-  #     plant_plate = PlantPlate.find_or_create_by(:name => row['GBoL5 Tissue Plate No.'].to_i.to_s)
-  #
-  #     isolate.plant_plate = plant_plate
-  #
-  #     isolate.well_pos_plant_plate = row['G5o Well']
-  #     isolate.micronic_tube_id=row['Tube ID 2D (G5o Micronic)']
-  #
-  #     # deactived - relevant for Berlin only:
-  #     # if row['DNA Bank No']
-  #     #   isolate.dna_bank_id=row['DNA Bank No'].gsub(' ', '')
-  #     # end
-  #
-  #     isolate.tissue_id = 2 # seems to be always "Leaf (Herbarium)", so no import needed
-  #
-  #     if row['Tissue Type']=='control'
-  #       isolate.negative_control=true
-  #     end
-  #
-  #     isolate.save!
-  #
-  #     # assign to existing or new individual:
-  #
-  #     specimen_id=row['Voucher ID']
-  #     individual = Individual.find_or_create_by(:specimen_id => specimen_id.to_i.to_s)
-  #
-  #     individual.collector=row['Collector']
-  #     individual.herbarium=row['Herbarium']
-  #     individual.country=row['Country']
-  #     individual.state_province=row['State/Province']
-  #     individual.locality=row['Locality']
-  #     individual.latitude=row['Latitude (calc.)']
-  #     individual.longitude=row['Longitude (calc.)']
-  #     individual.latitude_original=row['Rechts-Wert']
-  #     individual.longitude_original=row['Hoch-Wert']
-  #     individual.elevation=row['Elevation']
-  #     individual.exposition=row['Exposition']
-  #     individual.habitat=row['Habitat']
-  #     individual.substrate=row['Substrate']
-  #     individual.life_form=row['Life form']
-  #     individual.collection_nr=row['Collection number']
-  #     individual.collection_date=row['Date']
-  #     individual.determination=row['Determination']
-  #     individual.revision=row['Revision']
-  #     individual.confirmation=row['Confirmation']
-  #     individual.comments=row['Comments']
-  #
-  #     individual.save!
-  #
-  #     isolate.update(:individual_id => individual.id)
-  #
-  #     # assign individual to existing or new species:
-  #
-  #     gen_name=""
-  #     sp_ep=""
-  #     sub_sp=""
-  #
-  #     unless row['Genus'].nil?
-  #       gen_name = row['Genus']
-  #       gen_name.strip!
-  #     end
-  #
-  #     unless row['Species'].nil?
-  #       sp_ep= row['Species']
-  #       sp_ep.strip!
-  #     end
-  #
-  #     if row['Subspecies'].nil? and row['Variety'].nil?
-  #       species=Species.where("genus_name ILIKE ?", gen_name).where("species_epithet ILIKE ?", sp_ep).where(:infraspecific => nil).first
-  #     else
-  #
-  #       unless row['Subspecies'].nil?
-  #         sub_sp = row['Subspecies']
-  #         sub_sp.strip!
-  #       end
-  #
-  #       unless row['Variety'].nil?
-  #         sub_sp = row['Variety']
-  #         sub_sp.strip!
-  #       end
-  #
-  #       species=Species.where("genus_name ILIKE ?", gen_name).where("species_epithet ILIKE ?", sp_ep).where("infraspecific ILIKE ?", sub_sp).first
-  #
-  #     end
-  #
-  #     if species
-  #       individual.update(:species_id => species.id)
-  #     else
-  #       msg="No matching spp found for #{gen_name} #{sp_ep} #{sub_sp} #{}"
-  #       Issue.create(:title => msg)
-  #     end
-  #
-  #   end
-  # end
+# variant for specimen data
+# def self.import(file)
+#
+#   spreadsheet = Roo::Excelx.new(file, nil, :ignore)
+#
+#   header = spreadsheet.row(1)
+#
+#   (2..spreadsheet.last_row).each do |i|
+#
+#     row = Hash[[header, spreadsheet.row(i)].transpose]
+#
+#     # update existing isolate or create new, case-insensitiv!
+#
+#     isolate=Isolate.where("lab_nr ILIKE ?", row['GBoL Isolation No.']).first
+#     unless isolate
+#       isolate= Isolate.new(:lab_nr => row['GBoL Isolation No.'])
+#     end
+#
+#     plant_plate = PlantPlate.find_or_create_by(:name => row['GBoL5 Tissue Plate No.'].to_i.to_s)
+#
+#     isolate.plant_plate = plant_plate
+#
+#     isolate.well_pos_plant_plate = row['G5o Well']
+#     isolate.micronic_tube_id=row['Tube ID 2D (G5o Micronic)']
+#
+#     # deactived - relevant for Berlin only:
+#     # if row['DNA Bank No']
+#     #   isolate.dna_bank_id=row['DNA Bank No'].gsub(' ', '')
+#     # end
+#
+#     isolate.tissue_id = 2 # seems to be always "Leaf (Herbarium)", so no import needed
+#
+#     if row['Tissue Type']=='control'
+#       isolate.negative_control=true
+#     end
+#
+#     isolate.save!
+#
+#     # assign to existing or new individual:
+#
+#     specimen_id=row['Voucher ID']
+#     individual = Individual.find_or_create_by(:specimen_id => specimen_id.to_i.to_s)
+#
+#     individual.collector=row['Collector']
+#     individual.herbarium=row['Herbarium']
+#     individual.country=row['Country']
+#     individual.state_province=row['State/Province']
+#     individual.locality=row['Locality']
+#     individual.latitude=row['Latitude (calc.)']
+#     individual.longitude=row['Longitude (calc.)']
+#     individual.latitude_original=row['Rechts-Wert']
+#     individual.longitude_original=row['Hoch-Wert']
+#     individual.elevation=row['Elevation']
+#     individual.exposition=row['Exposition']
+#     individual.habitat=row['Habitat']
+#     individual.substrate=row['Substrate']
+#     individual.life_form=row['Life form']
+#     individual.collection_nr=row['Collection number']
+#     individual.collection_date=row['Date']
+#     individual.determination=row['Determination']
+#     individual.revision=row['Revision']
+#     individual.confirmation=row['Confirmation']
+#     individual.comments=row['Comments']
+#
+#     individual.save!
+#
+#     isolate.update(:individual_id => individual.id)
+#
+#     # assign individual to existing or new species:
+#
+#     gen_name=""
+#     sp_ep=""
+#     sub_sp=""
+#
+#     unless row['Genus'].nil?
+#       gen_name = row['Genus']
+#       gen_name.strip!
+#     end
+#
+#     unless row['Species'].nil?
+#       sp_ep= row['Species']
+#       sp_ep.strip!
+#     end
+#
+#     if row['Subspecies'].nil? and row['Variety'].nil?
+#       species=Species.where("genus_name ILIKE ?", gen_name).where("species_epithet ILIKE ?", sp_ep).where(:infraspecific => nil).first
+#     else
+#
+#       unless row['Subspecies'].nil?
+#         sub_sp = row['Subspecies']
+#         sub_sp.strip!
+#       end
+#
+#       unless row['Variety'].nil?
+#         sub_sp = row['Variety']
+#         sub_sp.strip!
+#       end
+#
+#       species=Species.where("genus_name ILIKE ?", gen_name).where("species_epithet ILIKE ?", sp_ep).where("infraspecific ILIKE ?", sub_sp).first
+#
+#     end
+#
+#     if species
+#       individual.update(:species_id => species.id)
+#     else
+#       msg="No matching spp found for #{gen_name} #{sp_ep} #{sub_sp} #{}"
+#       Issue.create(:title => msg)
+#     end
+#
+#   end
+# end
 
-  # variant for DNA isolate data - eg Voucherlist_GBoL5_upload_v2.xlsx
+# variant for DNA isolate data - eg Voucherlist_GBoL5_upload_v2.xlsx
+#   def self.import(file)
+#
+#     spreadsheet = Roo::Excelx.new(file, nil, :ignore)
+#
+#     header = spreadsheet.row(1)
+#
+#     (2..spreadsheet.last_row).each do |i|
+#
+#       row = Hash[[header, spreadsheet.row(i)].transpose]
+#
+#       # update existing isolate or create new, case-insensitiv!
+#
+#       isolate=Isolate.where("lab_nr ILIKE ?", row['Nr.']).first
+#
+#       unless isolate
+#         isolate= Isolate.new(:lab_nr => row['Nr.'])
+#       end
+#
+#       isolate.micronic_tube_id_orig=row['G5o DNA Tube ID']
+#       isolate.micronic_tube_id_copy=row['G5c DNA Tube ID']
+#       isolate.well_pos_micronic_plate_orig=row['G5o Well Position']
+#       isolate.well_pos_micronic_plate_copy=row['G5c Well Position']
+#
+#       # plate for original
+#       micronic_plate_orig=MicronicPlate.find_or_create_by(:micronic_plate_id => row['G5o DNA Plate ID'])
+#
+#       # plate for copy
+#       micronic_plate_copy=MicronicPlate.find_or_create_by(:micronic_plate_id => row['G5c DNA Plate ID'])
+#
+#       unless row['Rack'].nil? or row['Rack'].blank?
+#         lab_rack=LabRack.find_or_create_by(:rackcode => row['Rack'])
+#         lab_rack.shelf=row['Shelf']
+#         freezer=Freezer.find_or_create_by(:freezercode => row['Freezer'])
+#         lab_rack.freezer=freezer
+#         lab_rack.save!
+#         micronic_plate_orig.lab_rack = lab_rack
+#         micronic_plate_copy.lab_rack = lab_rack
+#       end
+#
+#       micronic_plate_orig.location_in_rack=row['Rack Position']
+#       micronic_plate_copy.location_in_rack=row['Rack Position']
+#
+#       micronic_plate_orig.save!
+#       micronic_plate_copy.save!
+#
+#       isolate.micronic_plate_id_orig=micronic_plate_orig.id
+#       isolate.micronic_plate_id_copy=micronic_plate_copy.id
+#
+#       isolate.concentration_orig=row['DNA ng/μl']
+#       isolate.concentration_copy=row['DNA ng/μl']
+#
+#       isolators=row['Bearbeiter']
+#
+#       if isolators
+#         isolators=isolators.split(';')
+#         isolator=isolators.first[2..-1]
+#         user=User.where('name ILIKE ?', "%#{isolator}%").first
+#         if user
+#           isolate.user_id = user.id
+#         end
+#       end
+#
+#       isolate.isolation_date=row['Isolation date']
+#
+#       isolate.lab_id_copy=2 #BGMG
+#       isolate.lab_id_orig=1 #NEES
+#
+#       isolate.save!
+#
+#     end
+#   end
+
+#variant for correcting plant plate (were in wrong col):
+
   def self.import(file)
 
     spreadsheet = Roo::Excelx.new(file, nil, :ignore)
@@ -263,62 +338,16 @@ class Isolate < ActiveRecord::Base
 
       # update existing isolate or create new, case-insensitiv!
 
-      isolate=Isolate.where("lab_nr ILIKE ?", row['Nr.']).first
+      begin
+        isolate=Isolate.where("lab_nr ILIKE ?", row['Nr.']).first
 
-      unless isolate
-        isolate= Isolate.new(:lab_nr => row['Nr.'])
+        plant_plate = PlantPlate.find_or_create_by(:name => row['GBoL5 Tissue Plate No.'].to_i.to_s)
+
+        isolate.plant_plate = plant_plate
+
+        isolate.save!
+      rescue
       end
-
-      isolate.micronic_tube_id_orig=row['G5o DNA Tube ID']
-      isolate.micronic_tube_id_copy=row['G5c DNA Tube ID']
-      isolate.well_pos_micronic_plate_orig=row['G5o Well Position']
-      isolate.well_pos_micronic_plate_copy=row['G5c Well Position']
-
-      # plate for original
-      micronic_plate_orig=MicronicPlate.find_or_create_by(:micronic_plate_id => row['G5o DNA Plate ID'])
-
-      # plate for copy
-      micronic_plate_copy=MicronicPlate.find_or_create_by(:micronic_plate_id => row['G5c DNA Plate ID'])
-
-      unless row['Rack'].nil? or row['Rack'].blank?
-        lab_rack=LabRack.find_or_create_by(:rackcode => row['Rack'])
-        lab_rack.shelf=row['Shelf']
-        freezer=Freezer.find_or_create_by(:freezercode => row['Freezer'])
-        lab_rack.freezer=freezer
-        lab_rack.save!
-        micronic_plate_orig.lab_rack = lab_rack
-        micronic_plate_copy.lab_rack = lab_rack
-      end
-
-      micronic_plate_orig.location_in_rack=row['Rack Position']
-      micronic_plate_copy.location_in_rack=row['Rack Position']
-
-      micronic_plate_orig.save!
-      micronic_plate_copy.save!
-
-      isolate.micronic_plate_id_orig=micronic_plate_orig.id
-      isolate.micronic_plate_id_copy=micronic_plate_copy.id
-
-      isolate.concentration_orig=row['DNA ng/μl']
-      isolate.concentration_copy=row['DNA ng/μl']
-
-      isolators=row['Bearbeiter']
-
-      if isolators
-        isolators=isolators.split(';')
-        isolator=isolators.first[2..-1]
-        user=User.where('name ILIKE ?', "%#{isolator}%").first
-        if user
-          isolate.user_id = user.id
-        end
-      end
-
-      isolate.isolation_date=row['Isolation date']
-
-      isolate.lab_id_copy=2 #BGMG
-      isolate.lab_id_orig=1 #NEES
-
-      isolate.save!
 
     end
   end

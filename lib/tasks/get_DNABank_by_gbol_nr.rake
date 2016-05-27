@@ -80,6 +80,12 @@ namespace :data do
           if unit_id
             puts unit_id
             individual.update(:DNA_bank_id => unit_id )
+            begin
+              individual.isolates.each do |iso|
+                iso.update(:dna_bank_id => unit_id)
+              end
+            rescue
+            end
           end
 
           puts collector
