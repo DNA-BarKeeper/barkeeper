@@ -40,10 +40,12 @@ class ContigsController < ApplicationController
       output="Match found: #{contig.name}.\n"
 
       # mark contig as imported, assembled & verified
-      contig.imported=true
+      # contig.imported=true
+      contig.imported=false
+
       contig.assembled=true
       contig.verified=true
-      contig.verified_by = User.first.id #unclear who did external verification, but won't be displayed anyway if imported
+      contig.verified_by = 8 #User.first.id #unclear who did external verification, but won't be displayed anyway if imported
       contig.verified_at=Time.zone.now
       contig.save
 
