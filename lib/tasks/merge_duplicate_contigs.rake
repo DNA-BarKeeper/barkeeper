@@ -8,7 +8,7 @@ namespace :data do
 
     # get list w duplicates
     a=[]
-    Contig.select("name").all.each do |i|
+    Contig.select("name").where(:verified_by => nil).each do |i|
       a << i.name
     end
     d=a.select{ |e| a.count(e) > 1 }.uniq
