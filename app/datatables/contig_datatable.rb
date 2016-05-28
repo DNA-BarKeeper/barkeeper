@@ -7,10 +7,11 @@ class ContigDatatable
 
   delegate :params, :link_to, :h, to: :@view
 
-  def initialize(view, need_verify, imported)
+  def initialize(view, need_verify, imported, duplicates)
     @view = view
     @need_verify = need_verify
     @imported = imported
+    @duplicates = duplicates
   end
 
   def as_json(options = {})
@@ -57,7 +58,13 @@ class ContigDatatable
 
   def fetch_contigs
 
-    if @need_verify
+    if @duplicates
+
+      names_with_multiple = Contig.group(:name).having("count(name) > 1").count.keys
+
+      contigs=Contig.where(name: names_with_multiple)
+
+    elsif @need_verify
       contigs = Contig.assembled_need_verification.order("#{sort_column} #{sort_direction}")
     elsif @imported
       contigs=Contig.externally_edited.order("#{sort_column} #{sort_direction}")

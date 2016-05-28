@@ -6,8 +6,6 @@ $(document).on('page:change', function() {
 });
 
 
-
-
 jQuery(function() {
 
 
@@ -20,6 +18,17 @@ jQuery(function() {
             { "orderable": false, "targets": 4 }
         ],
         "order": [ 3, 'desc' ]
+    });
+
+    $('#contigs-duplicates').DataTable({
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#contigs-duplicates').data('source'),
+        "columnDefs": [
+            { "orderable": false, "targets": 1 },
+            { "orderable": false, "targets": 4 }
+        ],
+        "order": [ 0, 'asc' ]
     });
 
 

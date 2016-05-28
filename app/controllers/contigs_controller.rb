@@ -10,7 +10,7 @@ class ContigsController < ApplicationController
   def externally_verified
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, false, true) }
+      format.json { render json: ContigDatatable.new(view_context, false, true, false) }
     end
   end
 
@@ -171,18 +171,21 @@ class ContigsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, false, false) }
+      format.json { render json: ContigDatatable.new(view_context, false, false, false) }
     end
   end
 
   def duplicates
-
+    respond_to do |format|
+      format.html
+      format.json { render json: ContigDatatable.new(view_context, false, false, true) }
+    end
   end
 
   def show_need_verify #assembly finished according to app but still need manual check
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, true, false) }
+      format.json { render json: ContigDatatable.new(view_context, true, false, false) }
     end
   end
 

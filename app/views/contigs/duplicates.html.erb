@@ -8,46 +8,21 @@
 
     <div class="wideTable">
 
-      <table class="table table-bordered">
-
+      <table id="contigs-duplicates" data-source="<%= duplicates_contigs_url(format: "json") %>" class="table table-hover table-bordered">
         <thead>
         <tr>
-          <th>Name (id)</th>
+          <th>Name</th>
+          <th>Species</th>
+          <th>Assembly complete?</th>
           <td>Last updated</td>
           <td></td>
         </tr>
         </thead>
 
-        <!--get list w duplicates-->
-        <% a=[] %>
-        <% Contig.select("name").all.each do |i| %>
-            <% a << i.name %>
-        <% end %>
-
-        <% d=a.select{ |e| a.count(e) > 1 }.uniq %>
-
         <tbody>
-        <% i=0 %>
-        <% d.each do |duplicate_contig| %>
-
-            <% if (i % 2 == 0) %>
-                <% color = "#f5f5f5" %>
-            <% else %>
-                <% color = "white" %>
-            <% end %>
-
-            <% Contig.where(:name => duplicate_contig).each do |contig| %>
-                <tr style="background-color: <%=color%>">
-                  <td><%= link_to "#{contig.name} (#{contig.id})", edit_contig_path(contig) %></td>
-                  <td> <%= contig.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S") %></td>
-                  <td><%= link_to 'Delete', contig, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-                </tr>
-            <% end %>
-            <% i+=1 %>
-        <% end %>
         </tbody>
-
       </table>
+
     </div>
 
     <br>
