@@ -125,6 +125,8 @@ class IndividualsController < ApplicationController
                                        :locality,
                                        :latitude,
                                        :longitude,
+                                       :latitude_original,
+                                       :longitude_original,
                                        :elevation,
                                        :exposition,
                                        :habitat,
