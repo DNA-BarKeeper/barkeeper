@@ -62,7 +62,7 @@ class ContigDatatable
 
       names_with_multiple = Contig.group(:name).having("count(name) > 1").count.keys
 
-      contigs=Contig.where(name: names_with_multiple)
+      contigs=Contig.where(name: names_with_multiple).order("name")
 
     elsif @need_verify
       contigs = Contig.assembled_need_verification.order("#{sort_column} #{sort_direction}")
