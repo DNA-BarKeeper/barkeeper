@@ -49,58 +49,58 @@ class ContigsController < ApplicationController
 
       # get aligned read sequences
 
-      fas_seqs=fastastring.split(">")
-
-
-      fas_seqs[1..-1].each do |fs|
-
-        pair=fs.split("\n")
-
-        # overwrite single reads (aligned - / manually corrected version (?) ) (> that do match general read pattern; use the exactly matching read or generate new)
-
-        read_name=pair[0]
-
-        output+="name:\t#{read_name}\n"
-
-        primer_read=identify_primer_read(read_name)
-
-        if primer_read
-
-          output+="matched read: #{primer_read.name}\n"
-          primer_read.aligned_seq=pair[1]
-          primer_read.overwritten=true
-
-          # set read's use_for / assembled etc
-          primer_read.used_for_con=true
-          primer_read.assembled=true
-
-
-          #todo [ Clip reads - Use single read extension (stretch without leading trailing "????") in fasta-contigs to clip primer reads accordingly in db ]
-
-          primer_read.save
-
-        else
-          output+="no matching read - assumed to be consensus sequence.\n"
-
-          # overwrite consensus (> that does not match general read pattern)
-
-          partial_cons=contig.partial_cons.first
-          partial_cons.aligned_sequence=pair[1]
-          partial_cons.save
-
-          # generate marker sequence
-          ms=MarkerSequence.find_or_create_by(:name => contig.name)
-          ms.sequence = pair[1].gsub('-','')
-          ms.sequence = ms.sequence.gsub('?','')
-          ms.contigs << contig
-          ms.marker = contig.marker
-          ms.isolate = contig.isolate
-          ms.save
-
-          contig.save
-        end
-
-      end
+      # fas_seqs=fastastring.split(">")
+      #
+      #
+      # fas_seqs[1..-1].each do |fs|
+      #
+      #   pair=fs.split("\n")
+      #
+      #   # overwrite single reads (aligned - / manually corrected version (?) ) (> that do match general read pattern; use the exactly matching read or generate new)
+      #
+      #   read_name=pair[0]
+      #
+      #   output+="name:\t#{read_name}\n"
+      #
+      #   primer_read=identify_primer_read(read_name)
+      #
+      #   if primer_read
+      #
+      #     output+="matched read: #{primer_read.name}\n"
+      #     primer_read.aligned_seq=pair[1]
+      #     primer_read.overwritten=true
+      #
+      #     # set read's use_for / assembled etc
+      #     primer_read.used_for_con=true
+      #     primer_read.assembled=true
+      #
+      #
+      #     #todo [ Clip reads - Use single read extension (stretch without leading trailing "????") in fasta-contigs to clip primer reads accordingly in db ]
+      #
+      #     primer_read.save
+      #
+      #   else
+      #     output+="no matching read - assumed to be consensus sequence.\n"
+      #
+      #     # overwrite consensus (> that does not match general read pattern)
+      #
+      #     partial_cons=contig.partial_cons.first
+      #     partial_cons.aligned_sequence=pair[1]
+      #     partial_cons.save
+      #
+      #     # generate marker sequence
+      #     ms=MarkerSequence.find_or_create_by(:name => contig.name)
+      #     ms.sequence = pair[1].gsub('-','')
+      #     ms.sequence = ms.sequence.gsub('?','')
+      #     ms.contigs << contig
+      #     ms.marker = contig.marker
+      #     ms.isolate = contig.isolate
+      #     ms.save
+      #
+      #     contig.save
+      #   end
+      #
+      # end
 
     else
 
@@ -178,7 +178,7 @@ class ContigsController < ApplicationController
   def duplicates
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, false, false, true) }
+      format.json { render json: ContigDatatable.new(view_context, true, false, true) }
     end
   end
 
