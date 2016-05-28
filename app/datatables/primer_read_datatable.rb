@@ -9,8 +9,9 @@ class PrimerReadDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view)
+  def initialize(view, duplicates)
     @view = view
+    @duplicates = duplicates
   end
 
   def as_json(options = {})
@@ -69,30 +70,40 @@ class PrimerReadDatatable
 
   def fetch_reads
 
-    primer_reads = PrimerRead.includes(:contig).select("name, processed, assembled, updated_at, contig_id, id").order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
-    primer_reads = primer_reads.page(page).per_page(per_page)
+    if @duplicates
 
-    if params[:sSearch].present?
-      # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
-      primer_reads = primer_reads.where("name ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      names_with_multiple = PrimerRead.select(:name).group(:name).having("count(name) > 1").count.keys
+
+      primer_reads=PrimerRead.where(name: names_with_multiple).order("#{sort_column} #{sort_direction}")
+
+    else
+
+      primer_reads = PrimerRead.includes(:contig).select("name, processed, assembled, updated_at, contig_id, id").order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     end
-    primer_reads
-  end
 
-  def page
-    params[:iDisplayStart].to_i/per_page + 1
-  end
+      primer_reads = primer_reads.page(page).per_page(per_page)
 
-  def per_page
-    params[:iDisplayLength].to_i > 0 ? params[:iDisplayLength].to_i : 10
-  end
+      if params[:sSearch].present?
+        # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
+        primer_reads = primer_reads.where("name ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      end
+      primer_reads
+    end
 
-  def sort_column
-    columns = %w[name assembled contig_id updated_at]
-    columns[params[:iSortCol_0].to_i]
-  end
+    def page
+      params[:iDisplayStart].to_i/per_page + 1
+    end
 
-  def sort_direction
-    params[:sSortDir_0] == "desc" ? "desc" : "asc"
+    def per_page
+      params[:iDisplayLength].to_i > 0 ? params[:iDisplayLength].to_i : 10
+    end
+
+    def sort_column
+      columns = %w[name assembled contig_id updated_at]
+      columns[params[:iSortCol_0].to_i]
+    end
+
+    def sort_direction
+      params[:sSortDir_0] == "desc" ? "desc" : "asc"
+    end
   end
-end

@@ -66,6 +66,16 @@ jQuery(function() {
         ],
         "order": [ 3, 'desc' ]
     });
+    $('#primer_reads-duplicates').DataTable({
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#primer_reads-duplicates').data('source'),
+        "columnDefs": [
+            { "orderable": false, "targets": 2 },
+            { "orderable": false, "targets": 4 }
+        ],
+        "order": [ 0, 'asc' ]
+    });
     $('#reads_without_contigs').DataTable({
         bProcessing: true,
         bServerSide: true,

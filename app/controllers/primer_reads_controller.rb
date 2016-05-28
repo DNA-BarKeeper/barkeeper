@@ -4,6 +4,10 @@ class PrimerReadsController < ApplicationController
   before_action :set_primer_read, only: [:change_left_clip, :change_right_clip, :edit, :fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
 
   def duplicates
+    respond_to do |format|
+      format.html
+      format.json { render json: PrimerReadDatatable.new(view_context, true)}
+    end
   end
 
   def import
@@ -23,7 +27,7 @@ class PrimerReadsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: PrimerReadDatatable.new(view_context)}
+      format.json { render json: PrimerReadDatatable.new(view_context, false)}
     end
   end
 
