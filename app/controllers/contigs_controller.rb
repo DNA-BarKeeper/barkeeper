@@ -37,6 +37,7 @@ class ContigsController < ApplicationController
     contig=identify_contig(filename)
 
     if contig
+
       output="Match found: #{contig.name}.\n"
 
       # mark contig as imported, assembled & verified
@@ -62,13 +63,14 @@ class ContigsController < ApplicationController
 
         read_name=pair[0]
 
-        output+="name:\t#{read_name}\n"
+        # output+="name:\t#{read_name}\n"
 
         primer_read=identify_primer_read(read_name)
 
         if primer_read
 
-          output+="matched read: #{primer_read.name}\n"
+          # output+="matched read: #{primer_read.name}\n"
+
           primer_read.aligned_seq=pair[1]
           primer_read.overwritten=true
 
@@ -82,7 +84,7 @@ class ContigsController < ApplicationController
           primer_read.save
 
         else
-          output+="no matching read - assumed to be consensus sequence.\n"
+          # output+="no matching read - assumed to be consensus sequence.\n"
 
           # overwrite consensus (> that does not match general read pattern)
 
