@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160511191823) do
+ActiveRecord::Schema.define(version: 20160529123449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20160511191823) do
     t.datetime "verified_at"
     t.string   "comment"
     t.boolean  "imported",                       default: false
+    t.integer  "partial_cons_count"
   end
 
   create_table "contigs_projects", id: false, force: :cascade do |t|
