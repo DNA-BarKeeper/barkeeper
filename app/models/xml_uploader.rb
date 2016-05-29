@@ -280,8 +280,15 @@ class XmlUploader < ActiveRecord::Base
                   }
                 }
 
+                # todo: asusumes that currently only one isolate per indiv. -> call all isolates later
+
                 ms=individual.try(:isolates).first.try(:marker_sequences)
-                ct=individual.try(:isolates).first.try(:contigs).where(:imported => true).count
+                contigs=individual.try(:isolates).first.try(:contigs)
+
+                ct=0
+                if contigs
+                  ct=contigs.where(:imported => true).count
+                end
 
                 if (ms and ms.length > 0) or ct > 0
                   xml.Cell {
