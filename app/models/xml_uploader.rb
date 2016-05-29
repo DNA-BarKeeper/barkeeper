@@ -281,14 +281,14 @@ class XmlUploader < ActiveRecord::Base
                 }
 
                 ms=individual.try(:isolates).first.try(:marker_sequences)
+                ct=individual.try(:isolates).first.try(:contigs).where(:imported => true).count
 
-                if ms and ms.length > 0
+                if (ms and ms.length > 0) or ct > 0
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
                       xml.text('1')
                     }
                   }
-
                 else
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
