@@ -1,7 +1,23 @@
 class PrimerReadsController < ApplicationController
   before_filter :authenticate_user!, :except => [:edit, :index]
 
-  before_action :set_primer_read, only: [:change_left_clip, :change_right_clip, :edit, :fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
+  before_action :set_primer_read, only: [:do_not_use_for_assembly, :use_for_assembly, :change_left_clip, :change_right_clip, :edit, :fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
+
+  def do_not_use_for_assembly
+    @primer_read.update(:used_for_con => false, :assembled => false)
+    if @primer_read.contig
+      @primer_read.contig.auto_overlap
+    end
+    redirect_to :back
+  end
+
+  def use_for_assembly
+    @primer_read.update(:used_for_con => true)
+    if @primer_read.contig
+      @primer_read.contig.auto_overlap
+    end
+    redirect_to :back
+  end
 
   def duplicates
     respond_to do |format|

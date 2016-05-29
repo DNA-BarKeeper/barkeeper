@@ -75,10 +75,14 @@ class Contig < ActiveRecord::Base
 
     msg= nil
 
+    self.primer_reads.use_for_assembly.update_all(:assembled => false)
+
     remaining_reads = Array.new(self.primer_reads.use_for_assembly) #creates local Array to mess around without affecting db
 
     #test how many
     if remaining_reads.size > 10
+
+      # todo: arbitrary, change.
       msg= 'Currently no more than 10 reads allowed for assembly.'
       return
     elsif remaining_reads.size== 1
@@ -88,6 +92,7 @@ class Contig < ActiveRecord::Base
       pc=PartialCon.create(:aligned_sequence => single_read.trimmed_seq, :aligned_qualities => single_read.trimmed_quals, :contig_id => self.id)
       single_read.aligned_qualities=single_read.trimmed_quals
       single_read.aligned_seq=single_read.trimmed_seq
+      single_read.assembled=true
       pc.primer_reads << single_read
       self.partial_cons << pc
       ms=MarkerSequence.find_or_create_by(:name => self.name, :sequence => single_read.trimmed_seq)

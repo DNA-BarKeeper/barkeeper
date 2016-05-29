@@ -117,60 +117,97 @@
 
     <!-- draw contig alignment -->
 
-    <table style="table-layout: fixed;" width="100%">
-      <tr>
-        <td valign="top" width="250px">
-          <div class="read-names">
-            <div style="height: 60px;">
-
+    <% if @contig.primer_reads.assembled.count > 0 %>
+      <table style="table-layout: fixed;" width="100%">
+        <tr>
+          <td valign="top" width="250px">
+            <div class="read-names">
+              <div style="height: 60px;">
+              </div>
+              <% @contig.primer_reads.assembled.each do |read|%>
+                  <div style="height: 60px;">
+                    <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => "Do not use this read in assembly & re-assemble" do %>
+                        <span class="glyphicon glyphicon-remove grey" title="Do not use in assembly"></span>
+                    <% end %>
+                    <%= link_to read.name, edit_primer_read_path(read) %>
+                    <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
+                        <span class="grey glyphicon glyphicon-share-alt"></span>
+                    <% end %>
+                  </div>
+              <%end %>
+              <div style="height: 60px;">
+                <b>Consensus</b>
+              </div>
             </div>
-            <% @contig.primer_reads.assembled.each do |read|%>
-                <div style="height: 60px;">
-                  <%= link_to read.name, edit_primer_read_path(read) %>
-                </div>
-            <%end %>
-            <div style="height: 60px;">
-              <b>Consensus</b>
-            </div>
-          </div>
-        </td>
-        <td >
-          <%= content_tag "div", id: "contig", data: {url: @contig.partial_cons.includes(:primer_reads) } do %>
-          <% end %>
-        </td>
-      </tr>
-    </table>
+          </td>
+          <td >
+            <%= content_tag "div", id: "contig", data: {url: @contig.partial_cons.includes(:primer_reads) } do %>
+            <% end %>
+          </td>
+        </tr>
+      </table>
+    <% end %>
 
     <!-- list all reads again, grouped by status-->
 
-    <p><b>Assembled:</b>
-      <br>
-      <% @contig.primer_reads.assembled.each do |read|%>
-          <%= link_to read.name, edit_primer_read_path(read) %><%= link_to ' (open in new tab)', edit_primer_read_path(read), :target => "_blank" %>
-          <br>
-      <%end %>
-    </p>
+    <% if @contig.primer_reads.not_assembled.count > 0 %>
+        <p>
+          <b>Not assembled:</b><br>
+          <% @contig.primer_reads.not_assembled.each do |read|%>
 
-    <p><b>Not assembled:</b><br>
-      <% @contig.primer_reads.not_assembled.each do |read|%>
-          <%= link_to read.name, edit_primer_read_path(read) %><%= link_to ' (open in new tab)', edit_primer_read_path(read), :target => "_blank" %><br>
-      <%end %></p>
+              <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => "Do not use this read in assembly & re-assemble" do %>
+                  <span class="glyphicon glyphicon-remove grey" title=""></span>
+              <% end %>
+              <%= link_to read.name, edit_primer_read_path(read) %>
+              <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
+                  <span class="grey glyphicon glyphicon-share-alt"></span>
+              <% end %>
+              <br>
+          <%end %>
+        </p>
+    <% end %>
 
-    <p><b>Not to be used in assembly:</b><br>
-      <% @contig.primer_reads.not_used_for_assembly.each do |read|%>
-          <%= link_to read.name, edit_primer_read_path(read) %><%= link_to ' (open in new tab)', edit_primer_read_path(read), :target => "_blank" %><br>
-      <%end %></p>
+    <% if @contig.primer_reads.not_used_for_assembly.count > 0 %>
+        <p>
+          <b>Not to be used in assembly:</b><br>
+          <% @contig.primer_reads.not_used_for_assembly.each do |read|%>
+              <%= link_to  use_for_assembly_primer_read_path(read), :title => "Use this read in assembly & re-assemble" do %>
+                  <span class="glyphicon glyphicon-plus grey" title=""></span>
+              <% end %>
+              <%= link_to read.name, edit_primer_read_path(read) %>
+              <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
+                  <span class="grey glyphicon glyphicon-share-alt"></span>
+              <% end %>
+              <br>
+          <%end %>
+        </p>
+    <% end %>
 
-    <p><b>Not trimmed:</b><br>
-      <% @contig.primer_reads.not_trimmed.each do |read|%>
-          <%= link_to read.name, edit_primer_read_path(read) %><%= link_to ' (open in new tab)', edit_primer_read_path(read), :target => "_blank" %><br>
-      <%end %></p>
+    <% if @contig.primer_reads.not_trimmed.count > 0 %>
+        <p>
+          <b>Not trimmed:</b><br>
+          <% @contig.primer_reads.not_trimmed.each do |read|%>
+              <%= link_to read.name, edit_primer_read_path(read) %>
+              <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
+                  <span class="grey glyphicon glyphicon-share-alt"></span>
+              <% end %>
+              <br>
+          <%end %>
+        </p>
+    <% end %>
 
-    <p><b>Unprocessed:</b><br>
-      <% @contig.primer_reads.unprocessed.each do |read|%>
-          <%= link_to read.name, edit_primer_read_path(read) %><%= link_to ' (open in new tab)', edit_primer_read_path(read), :target => "_blank" %><br>
-      <%end %></p>
+    <% if @contig.primer_reads.unprocessed.count > 0 %>
+        <p>
+          <b>Unprocessed:</b><br>
+          <% @contig.primer_reads.unprocessed.each do |read|%>
+              <%= link_to read.name, edit_primer_read_path(read) %>
+              <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
+                  <span class="grey glyphicon glyphicon-share-alt"></span>
+              <% end %>
+              <br>
+          <%end %>
+        </p>
+    <% end %>
 
   </div>
-</div>
 </div>
