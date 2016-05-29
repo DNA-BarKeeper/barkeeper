@@ -6,15 +6,27 @@ class PrimerReadsController < ApplicationController
   def do_not_use_for_assembly
     @primer_read.update(:used_for_con => false, :assembled => false)
     if @primer_read.contig
-      @primer_read.contig.auto_overlap
+      if @primer_read.contig.primer_reads.where(:used_for_con => true).count <= 2
+        @primer_read.contig.auto_overlap
+        msg='Assembly finished.'
+      else
+        ContigAssembly.perform_async(@primer_read.contig.id)
+        msg='Assembly started in background.'
+      end
     end
-    redirect_to :back
+    redirect_to :back, notice: msg
   end
 
   def use_for_assembly
     @primer_read.update(:used_for_con => true)
     if @primer_read.contig
-      @primer_read.contig.auto_overlap
+      if @primer_read.contig.primer_reads.where(:used_for_con => true).count <= 2
+        @primer_read.contig.auto_overlap
+        msg='Assembly finished.'
+      else
+        ContigAssembly.perform_async(@primer_read.contig.id)
+        msg='Assembly started in background.'
+      end
     end
     redirect_to :back
   end

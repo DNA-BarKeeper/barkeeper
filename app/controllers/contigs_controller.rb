@@ -287,8 +287,17 @@ class ContigsController < ApplicationController
 
 
   def overlap
-    @contig.auto_overlap
-    redirect_to edit_contig_path, notice: 'Assembly finished.'
+
+    if @contig.primer_reads.where(:used_for_con => true).count <= 2
+      @contig.auto_overlap
+      msg='Assembly finished.'
+    else
+      ContigAssembly.perform_async(@contig.id)
+      msg='Assembly started in background.'
+    end
+
+    redirect_to :back, notice: msg
+
   end
 
   def overlap_background
