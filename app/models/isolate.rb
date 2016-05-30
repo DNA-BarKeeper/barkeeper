@@ -251,6 +251,36 @@ class Isolate < ActiveRecord::Base
 #   end
 # end
 
+# variant for correction lat/long:
+  def self.import(file)
+
+    spreadsheet = Roo::Excelx.new(file, nil, :ignore)
+
+    header = spreadsheet.row(1)
+
+    (2..spreadsheet.last_row).each do |i|
+
+      row = Hash[[header, spreadsheet.row(i)].transpose]
+
+      # update existing isolate or create new, case-insensitiv!
+
+      begin
+        specimen_id = row['Voucher ID']
+        individual = Individual.find(specimen_id.to_i.to_s)
+        if individual
+          individual.latitude = row['Latitude (corrected)']
+          individual.longitude = row['Longitude (corrected)']
+          individual.latitude_original = row['Latitude (corrected)']
+          individual.longitude_original = row['Longitude (corrected)']
+          individual.save!
+        end
+      rescue
+        puts "individual #{specimen_id} not found or could not be changed."
+      end
+
+    end
+  end
+
 # variant for DNA isolate data - eg Voucherlist_GBoL5_upload_v2.xlsx
 #   def self.import(file)
 #
@@ -325,33 +355,32 @@ class Isolate < ActiveRecord::Base
 #   end
 
 #variant for correcting plant plate (were in wrong col):
-
-  def self.import(file)
-
-    spreadsheet = Roo::Excelx.new(file, nil, :ignore)
-
-    header = spreadsheet.row(1)
-
-    (2..spreadsheet.last_row).each do |i|
-
-      row = Hash[[header, spreadsheet.row(i)].transpose]
-
-      # update existing isolate or create new, case-insensitiv!
-
-      begin
-        isolate=Isolate.where("lab_nr ILIKE ?", row['Nr.']).first
-
-        plant_plate = PlantPlate.find_or_create_by(:name => row['GBoL5 Tissue Plate No.'].to_i.to_s)
-
-        isolate.plant_plate = plant_plate
-
-        isolate.tissue_id = 2
-
-        isolate.save!
-      rescue
-      end
-
-    end
-  end
+# def self.import(file)
+#
+#   spreadsheet = Roo::Excelx.new(file, nil, :ignore)
+#
+#   header = spreadsheet.row(1)
+#
+#   (2..spreadsheet.last_row).each do |i|
+#
+#     row = Hash[[header, spreadsheet.row(i)].transpose]
+#
+#     # update existing isolate or create new, case-insensitiv!
+#
+#     begin
+#       isolate=Isolate.where("lab_nr ILIKE ?", row['Nr.']).first
+#
+#       plant_plate = PlantPlate.find_or_create_by(:name => row['GBoL5 Tissue Plate No.'].to_i.to_s)
+#
+#       isolate.plant_plate = plant_plate
+#
+#       isolate.tissue_id = 2
+#
+#       isolate.save!
+#     rescue
+#     end
+#
+#   end
+# end
 
 end
