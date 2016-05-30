@@ -266,7 +266,7 @@ class Isolate < ActiveRecord::Base
 
       begin
         specimen_id = row['Voucher ID'].to_i
-        individual = Individual.find(specimen_id)
+        individual = Individual.find_by(:specimen_id => specimen_id)
         if individual
           individual.latitude = row['Latitude (corrected)']
           individual.longitude = row['Longitude (corrected)']
