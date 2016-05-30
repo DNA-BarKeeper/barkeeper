@@ -265,17 +265,19 @@ class Isolate < ActiveRecord::Base
       # update existing isolate or create new, case-insensitiv!
 
       begin
-        specimen_id = row['Voucher ID']
-        individual = Individual.find(specimen_id.to_i.to_s)
+        specimen_id = row['Voucher ID'].to_i.to_s
+        individual = Individual.find(specimen_id)
         if individual
           individual.latitude = row['Latitude (corrected)']
           individual.longitude = row['Longitude (corrected)']
           individual.latitude_original = row['Latitude (corrected)']
           individual.longitude_original = row['Longitude (corrected)']
           individual.save!
+        else
+          puts "#{i}: individual #{specimen_id} could not be changed."
         end
       rescue
-        puts "individual #{specimen_id} not found or could not be changed."
+        puts "#{i}: individual #{specimen_id} not found"
       end
 
     end
