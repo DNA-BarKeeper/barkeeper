@@ -101,6 +101,7 @@ class ContigsController < ApplicationController
           # overwrite consensus (> that does not match general read pattern)
 
           new_partial_con.aligned_sequence=pair[1]
+          new_partial_con.aligned_qualities=[]
           new_partial_con.save
 
           # generate marker sequence
