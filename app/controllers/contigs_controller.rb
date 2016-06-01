@@ -303,7 +303,7 @@ class ContigsController < ApplicationController
 
   def overlap
 
-    if @contig.primer_reads.where(:used_for_con => true).count <= 2
+    if @contig.primer_reads.where(:used_for_con => true).count <= 4
       @contig.auto_overlap
       msg='Assembly finished.'
     else
