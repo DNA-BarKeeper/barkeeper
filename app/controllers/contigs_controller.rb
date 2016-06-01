@@ -27,6 +27,7 @@ class ContigsController < ApplicationController
     redirect_to TxtUploader.last.uploaded_file.url
   end
 
+  # for overwriting with externally edited / verified contigs in fas format (via .pde)
   def change_via_script
 
     filename=params[:filename]
@@ -49,6 +50,17 @@ class ContigsController < ApplicationController
       contig.verified_by = 8 #User.first.id #unclear who did external verification, but won't be displayed anyway if imported
       contig.verified_at=Time.zone.now
       contig.save
+
+      # destroy all current partial_cons
+      contig.partial_cons.destroy_all
+
+      #create a single new partial_con to be overwritten by imported stuff
+      new_partial_con=contig.partial_cons.create
+
+      # assign all "reads to be used" from contig to this partial con:
+      contig.primer_reads.use_for_assembly.each do |r|
+        new_partial_con.primer_reads << r
+      end
 
       # get aligned read sequences
 
@@ -88,9 +100,8 @@ class ContigsController < ApplicationController
 
           # overwrite consensus (> that does not match general read pattern)
 
-          partial_cons=contig.partial_cons.first
-          partial_cons.aligned_sequence=pair[1]
-          partial_cons.save
+          new_partial_con.aligned_sequence=pair[1]
+          new_partial_con.save
 
           # generate marker sequence
           ms=MarkerSequence.find_or_create_by(:name => contig.name)
@@ -123,7 +134,11 @@ class ContigsController < ApplicationController
       return primer_read
     else
       primer_read=PrimerRead.where("name ILIKE ?", "#{read_name}.ab1").first
-      return primer_read
+      if primer_read
+        return primer_read
+      else
+        return nil
+      end
     end
 
     return nil
