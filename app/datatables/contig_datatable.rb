@@ -65,7 +65,7 @@ class ContigDatatable
       contigs=Contig.where(name: names_with_multiple).order("#{sort_column} #{sort_direction}")
 
     elsif @need_verify
-      contigs = Contig.assembled_need_verification.order("#{sort_column} #{sort_direction}")
+      contigs = Contig.need_verification.order("#{sort_column} #{sort_direction}")
     elsif @imported
       contigs=Contig.externally_edited.order("#{sort_column} #{sort_direction}")
     else
