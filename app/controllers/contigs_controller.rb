@@ -80,6 +80,7 @@ class ContigsController < ApplicationController
           # output+="matched read: #{primer_read.name}\n"
 
           primer_read.aligned_seq=pair[1]
+          primer_read.aligned_qualities=[]
           primer_read.overwritten=true
 
           # set read's use_for / assembled etc
@@ -92,8 +93,6 @@ class ContigsController < ApplicationController
             primer_read.trimmedReadStart=1
             primer_read.trimmedReadEnd=primer_read.sequence.length-1
           end
-
-          #todo [ Clip reads - Use single read extension (stretch without leading trailing "????") in fasta-contigs to clip primer reads accordingly in db ]
 
           primer_read.save
 
