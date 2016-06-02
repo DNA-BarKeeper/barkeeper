@@ -117,7 +117,6 @@ class ContigsController < ApplicationController
           ms.isolate = contig.isolate
           ms.save
 
-          contig.save
         end
 
       end
