@@ -80,7 +80,9 @@ class ContigsController < ApplicationController
           # output+="matched read: #{primer_read.name}\n"
 
           primer_read.aligned_seq=pair[1]
-          primer_read.aligned_qualities=[]
+
+          #cannot use aligned qualities since not existing when imported from external alignment:
+          primer_read.aligned_qualities=primer_read.qualities
           primer_read.overwritten=true
 
           # set read's use_for / assembled etc
