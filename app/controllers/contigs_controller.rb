@@ -49,7 +49,6 @@ class ContigsController < ApplicationController
       contig.verified=true
       contig.verified_by = 8 #User.first.id #unclear who did external verification, but won't be displayed anyway if imported
       contig.verified_at=Time.zone.now
-      contig.save
 
       # destroy all current partial_cons
       contig.partial_cons.destroy_all
@@ -122,6 +121,9 @@ class ContigsController < ApplicationController
         end
 
       end
+
+      new_partial_con.save
+      contig.save
 
     else
 
