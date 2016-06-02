@@ -86,10 +86,12 @@ class ContigsController < ApplicationController
           primer_read.used_for_con=true
           primer_read.assembled=true
 
-          # todo: adjust trimmedReadStart etc. based on ???? in seq
-          # primer_read.trimmedReadStart=1
-          # primer_read.trimmedReadEnd=
+          # todo: adjust trimmedReadStart etc. based on ???? in aligned_seq (though this isnt technically correct due to alignemnt of ??? with gappy stretches in other reads)
 
+          if primer_read.trimmedReadStart.nil?
+            primer_read.trimmedReadStart=1
+            primer_read.trimmedReadEnd=primer_read.sequence.length-1
+          end
 
           #todo [ Clip reads - Use single read extension (stretch without leading trailing "????") in fasta-contigs to clip primer reads accordingly in db ]
 
