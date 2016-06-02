@@ -57,10 +57,6 @@ class ContigsController < ApplicationController
       #create a single new partial_con to be overwritten by imported stuff
       new_partial_con=contig.partial_cons.create
 
-      # assign all "reads to be used" from contig to this partial con:
-      contig.primer_reads.use_for_assembly.each do |r|
-        new_partial_con.primer_reads << r
-      end
 
       # get aligned read sequences
 
@@ -90,10 +86,16 @@ class ContigsController < ApplicationController
           primer_read.used_for_con=true
           primer_read.assembled=true
 
+          # todo: adjust trimmedReadStart etc. based on ???? in seq
+          # primer_read.trimmedReadStart=1
+          # primer_read.trimmedReadEnd=
+
 
           #todo [ Clip reads - Use single read extension (stretch without leading trailing "????") in fasta-contigs to clip primer reads accordingly in db ]
 
           primer_read.save
+
+          new_partial_con.primer_reads << primer_read
 
         else
           # output+="no matching read - assumed to be consensus sequence.\n"
