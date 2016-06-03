@@ -421,7 +421,7 @@ class PrimerRead < ActiveRecord::Base
           end
         end
 
-        self.update(:aligned_peak_indices => aligned_peak_indices)
+        self.update_columns(aligned_peak_indices: aligned_peak_indices)
 
       end
     end
