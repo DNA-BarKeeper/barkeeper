@@ -6,7 +6,7 @@ class PrimerReadsController < ApplicationController
   def do_not_use_for_assembly
     @primer_read.update(:used_for_con => false, :assembled => false)
     if @primer_read.contig
-      if @primer_read.contig.primer_reads.where(:used_for_con => true).count <= 2
+      if @primer_read.contig.primer_reads.where(:used_for_con => true).count <= 4
         @primer_read.contig.auto_overlap
         msg='Assembly finished.'
       else
@@ -20,7 +20,7 @@ class PrimerReadsController < ApplicationController
   def use_for_assembly
     @primer_read.update(:used_for_con => true)
     if @primer_read.contig
-      if @primer_read.contig.primer_reads.where(:used_for_con => true).count <= 2
+      if @primer_read.contig.primer_reads.where(:used_for_con => true).count <= 4
         @primer_read.contig.auto_overlap
         msg='Assembly finished.'
       else

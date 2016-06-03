@@ -1,22 +1,25 @@
 $(document).on('page:fetch', function() {
-    $('#page_loading').show();
+    $('.sk-circle').show();
 });
 $(document).on('page:change', function() {
-    $('#page_loading').hide();
+    $('.sk-circle').hide();
 });
 
 
 jQuery(function() {
 
     var $loading = $('#loadingDiv').hide();
+    var $loading2= $('.sk-circle').hide();
     var $buttons = $('#buttons').hide();
 
     $(document)
         .ajaxStart(function () {
             $loading.show();
+            $loading2.show();
         })
         .ajaxStop(function () {
             $loading.hide();
+            $loading2.hide();
             $buttons.show();
         });
 
@@ -187,12 +190,13 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 //        20 for consensus
 //        20 for consensus_qualities
 //        20 for coordinates
+//     var h=partial_contig.primer_reads.length*80+160;
     var h=partial_contig.primer_reads.length*80+80;
 
     var svg=d3.select(container_name)
         .append('svg')
         .attr('width', contig_drawing_width)
-        .attr('height', h-30)
+        .attr('height', h)
         .attr('overflow-x', 'auto');
 
     var x=0;
