@@ -404,24 +404,28 @@ class PrimerRead < ActiveRecord::Base
 
   def get_aligned_peak_indices
 
-    aligned_peak_indices = Array.new
+    if self.trimmedReadStart
 
-    pi=self.trimmedReadStart-2
+      aligned_peak_indices = Array.new
 
-    if self.aligned_qualities
+      pi=self.trimmedReadStart-2
 
-      self.aligned_qualities.each do |aq|
-        if aq==-1
-          aligned_peak_indices << -1
-        else
-          aligned_peak_indices << self.peak_indices[pi]
-          pi+=1
+      if self.aligned_qualities
+
+        self.aligned_qualities.each do |aq|
+          if aq==-1
+            aligned_peak_indices << -1
+          else
+            aligned_peak_indices << self.peak_indices[pi]
+            pi+=1
+          end
         end
+
+        self.update(:aligned_peak_indices => aligned_peak_indices)
+
       end
-
-      self.update(:aligned_peak_indices => aligned_peak_indices)
-
     end
+
   end
 
 
