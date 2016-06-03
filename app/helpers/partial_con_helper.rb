@@ -1,0 +1,2 @@
+module PartialConHelper
+end

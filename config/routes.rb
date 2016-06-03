@@ -15,6 +15,8 @@ GBOLapp::Application.routes.draw do
   get 'specimens_without_species', action: :specimens_without_species, controller: 'individuals'
   get 'problematic_location_data', action: :problematic_location_data, controller: 'individuals'
 
+  get 'partial_cons/:id/:page/:width_in_bases', action: :show_page, controller: 'partial_cons', :defaults => { :format => 'json' }
+
   resources :contigs do
     collection do
       get 'show_need_verify'

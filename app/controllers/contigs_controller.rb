@@ -402,4 +402,5 @@ class ContigsController < ApplicationController
     params.require(:contig).permit(:imported, :contig_names, :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
                                    :isolate_name, :verified)
   end
+
 end

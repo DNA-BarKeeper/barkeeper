@@ -118,14 +118,26 @@
     <!-- draw contig alignment -->
 
     <% if @contig.primer_reads.assembled.count > 0 %>
-        <table style="table-layout: fixed; border-collapse: collapse;" width="100%; ">
-          <tr>
-            <td valign="top" width="250px" style="padding:0; margin:0;">
+        <% @contig.partial_cons.includes(:primer_reads).each do |partial_con| %>
 
-              <div style="height: 45px;padding:0; margin:0;"></div>
+            <table style="table-layout: fixed; border-collapse: collapse;" width="100%; ">
+              <tr>
+                <td width="250px"></td>
+                <td align="right">
+                  <div id="buttons" style="margin: 0px; padding: 0px;">
+                    <button  class="first-page-button btn btn-default btn-sm"><span class="grey glyphicon glyphicon-fast-backward"></span></button>
+                    <button  class="previous-page-button btn btn-default btn-sm"><span class="grey glyphicon glyphicon-step-backward"></span></button>
+                    <button  class="next-page-button btn btn-default btn-sm"><span class="grey glyphicon glyphicon-step-forward"></span></button>
+                    <button  class="last-page-button btn btn-default btn-sm"><span class="grey glyphicon glyphicon-fast-forward"></span></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" width="250px" style="padding:0; margin:0;">
 
-              <div class="read-names">
-                <% @contig.partial_cons.each do |partial_con| %>
+                  <div style="height: 45px;padding:0; margin:0;"></div>
+
+                  <div class="read-names">
                     <div id="partial-con" style="padding:0; margin:0;" >
                       <% partial_con.primer_reads.each do |read|%>
                           <div style="height: 60px;padding:0; margin:0;">
@@ -142,15 +154,20 @@
                         <b>Consensus</b>
                       </div>
                     </div>
-                <% end %>
-              </div>
-            </td>
-            <td valign="top" style="padding:0; margin:0;">
-              <%= content_tag "div", id: "contig", data: {url: @contig.partial_cons.includes(:primer_reads) } do %>
-              <% end %>
-            </td>
-          </tr>
-        </table>
+
+                  </div>
+                </td>
+                <td id="contig-drawing" style="padding:0; margin:0;">
+
+                  <div style="margin: 0px auto; vertical-align: middle; align-content: center; align-self: center; text-align: center" id="loadingDiv"> Loading... </div>
+
+                  <div class="partial_con" id="p-<%= partial_con.id %>"></div>
+
+                </td>
+              </tr>
+            </table>
+
+        <% end %>
     <% end %>
 
     <!-- list all reads again, grouped by status-->

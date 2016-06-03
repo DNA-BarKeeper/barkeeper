@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160529123449) do
+ActiveRecord::Schema.define(version: 20160603084804) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -348,6 +348,7 @@ ActiveRecord::Schema.define(version: 20160529123449) do
     t.integer  "base_count"
     t.string   "comment"
     t.boolean  "overwritten",                           default: false
+    t.integer  "aligned_peak_indices",                                  array: true
   end
 
   create_table "primer_reads_projects", id: false, force: :cascade do |t|

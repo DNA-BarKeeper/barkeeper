@@ -48,6 +48,21 @@ class PrimerRead < ActiveRecord::Base
   #   end
   # end
 
+  def slice_to_json(start_pos, end_pos)
+    {
+        :name => self.name.as_json,
+        :aligned_seq => self.aligned_seq[start_pos..end_pos].as_json,
+        :aligned_qualities => self.aligned_qualities[start_pos..end_pos].as_json,
+        :atrace => self.atrace.as_json,
+        :ctrace => self.ctrace.as_json,
+        :gtrace => self.gtrace.as_json,
+        :ttrace => self.ttrace.as_json,
+        :aligned_peak_indices => self.aligned_peak_indices[start_pos..end_pos].as_json,
+        :trimmedReadStart => self.trimmedReadStart.as_json,
+        :trimmedReadEnd => self.trimmedReadEnd.as_json
+    }
+  end
+
   def self.in_higher_order_taxon(higher_order_taxon_id)
     count=0
 
@@ -384,6 +399,28 @@ class PrimerRead < ActiveRecord::Base
       else
         nil
       end
+    end
+  end
+
+  def get_aligned_peak_indices
+
+    aligned_peak_indices = Array.new
+
+    pi=self.trimmedReadStart-2
+
+    if self.aligned_qualities
+
+      self.aligned_qualities.each do |aq|
+        if aq==-1
+          aligned_peak_indices << -1
+        else
+          aligned_peak_indices << self.peak_indices[pi]
+          pi+=1
+        end
+      end
+
+      self.update(:aligned_peak_indices => aligned_peak_indices)
+
     end
   end
 

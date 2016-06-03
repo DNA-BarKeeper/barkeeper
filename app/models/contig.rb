@@ -86,19 +86,20 @@ class Contig < ActiveRecord::Base
       msg= 'Currently no more than 10 reads allowed for assembly.'
       return
     elsif remaining_reads.size== 1
-      # msg= 'Need >1 reads for overlap.'
-      # self.partial_cons.destroy_all
+
       single_read = self.primer_reads.use_for_assembly.first #Deletes the element at the specified index, returning that element, or nil if the index is out of range.
       pc=PartialCon.create(:aligned_sequence => single_read.trimmed_seq, :aligned_qualities => single_read.trimmed_quals, :contig_id => self.id)
       single_read.aligned_qualities=single_read.trimmed_quals
       single_read.aligned_seq=single_read.trimmed_seq
       single_read.assembled=true
+      single_read.save
       pc.primer_reads << single_read
       self.partial_cons << pc
       ms=MarkerSequence.find_or_create_by(:name => self.name, :sequence => single_read.trimmed_seq)
       ms.contigs << self
       ms.marker = self.marker
       ms.isolate = self.isolate
+      ms.save
       self.marker_sequence=ms
       return
     elsif remaining_reads.size == 0
@@ -122,7 +123,11 @@ class Contig < ActiveRecord::Base
     # format: partial_contigs.push({:reads => assembled_reads, :consensus => growing_consensus })
 
 
+    # -----> ASSEMBLY <------
+
     assemble(growing_consensus, assembled_reads, partial_contigs, remaining_reads)
+
+    # -----> ASSEMBLY <------
 
     current_largest_partial_contig=0
     current_largest_partial_contig_seq=nil
@@ -198,6 +203,9 @@ class Contig < ActiveRecord::Base
           #get original primer_read from db:
           pr=PrimerRead.find(aligned_read[:read].id)
           pr.update(:aligned_seq=>aligned_read[:aligned_seq], :assembled => true, :aligned_qualities => aligned_read[:aligned_qualities])
+
+          pr.get_aligned_peak_indices # <-- uses aligned_qualities to populate aligned_peak_indices array. Needed in new variant of d3.js contig slize
+
           pc.primer_reads << pr
 
           fas_str += "#{aligned_read[:aligned_seq]}\n"
