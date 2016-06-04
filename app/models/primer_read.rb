@@ -96,7 +96,6 @@ class PrimerRead < ActiveRecord::Base
       end
     end
 
-
     {
         :name => self.name.as_json,
         :aligned_seq => self.aligned_seq[start_pos..end_pos].as_json,
