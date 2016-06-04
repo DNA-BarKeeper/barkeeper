@@ -81,7 +81,8 @@ class PrimerRead < ActiveRecord::Base
     # create hash with x-pos as key, ya, yc, … as value
     traces=Hash.new
 
-    if xstart #account for situations where nothing from this read is seen in respecitve contig slice/page:
+    if xstart and xend #account for situations where nothing from this read is seen in respecitve contig slice/page:
+
       xstart-=10
       xend+=10
 
