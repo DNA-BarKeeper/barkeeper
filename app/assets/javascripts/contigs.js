@@ -8,7 +8,7 @@ $(document).on('page:change', function() {
 
 jQuery(function() {
 
-    var $loading = $('#loadingDiv').hide();
+    var $loading = $('.loading-div').hide();
     var $loading2= $('.sk-circle').hide();
     var $buttons = $('#buttons').hide();
 
@@ -101,7 +101,7 @@ jQuery(function() {
     $('.next-page-button').click(function () {
 
         var page=$( "body" ).data("current_page");
-        
+
         page++;
 
         var partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
@@ -158,8 +158,8 @@ function draw_page(id, page){
         var width_in_bases= Math.floor( contig_drawing_width/10 );
 
 
-        // var url='http://0.0.0.0:3000/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
-        var url='http://gbol5.de/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
+        var url='http://0.0.0.0:3000/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
+        // var url='http://gbol5.de/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
 
         $.ajax({
             type: "GET",
@@ -231,6 +231,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             if (pr.aligned_qualities){
                 qual1=pr.aligned_qualities;
             }
+
             var aligned_peak_indices = null;
             if (pr.aligned_peak_indices){
                 aligned_peak_indices=pr.aligned_peak_indices;
@@ -244,20 +245,6 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         font_size = "7px";
 
         x=block_start;
-
-        //compute aligned peak_indices => moved to contig.rb
-        // var aligned_peak_indices = [];
-        //
-        // var pi=pr.trimmedReadStart-2;
-        //
-        // for (var ai=0; ai < pr.aligned_qualities.length; ai++) {
-        //     if (pr.aligned_qualities[ai]==-1) {
-        //         aligned_peak_indices.push(-1);
-        //     } else {
-        //         aligned_peak_indices.push(pr.peak_indices[pi]);
-        //         pi++;
-        //     }
-        // }
 
         //draw traces
 
@@ -325,8 +312,15 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                     //draw trace-segments for each base-call
 
                     //A
-                    //extract segment from array
-                    var atrace_segment = pr.atrace.slice(first_position, second_position+1);
+                    //extract segment from trace:
+                    var atrace_segment = [];
+
+                    for (var xt=first_position; xt < second_position+1; xt++) {
+                        try {
+                            atrace_segment.push(pr.traces[xt.toString()].ay);
+                        } catch(err) {
+                        }
+                    }
 
                     svg.append("path")
                         .attr("d", scaled_line_function(atrace_segment))
@@ -334,18 +328,32 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                         .attr("stroke-width", 0.5)
                         .attr("fill", "none")
                         .attr("text-anchor", 'middle');
+
                     //C
-                    //extract segment from array
-                    var ctrace_segment = pr.ctrace.slice(first_position, second_position+1);
+                    var ctrace_segment = [];
+
+                    for ( xt=first_position; xt < second_position+1; xt++){
+                        try {
+                            ctrace_segment.push(pr.traces[xt.toString()].cy);
+                        } catch (e) {
+                        }
+                    }
                     svg.append("path")
                         .attr("d", scaled_line_function(ctrace_segment))
                         .attr("stroke", "blue")
                         .attr("stroke-width", 0.5)
                         .attr("fill", "none")
                         .attr("text-anchor", 'middle');
+
                     //G
-                    //extract segment from array
-                    var gtrace_segment = pr.gtrace.slice(first_position, second_position+1);
+                    var gtrace_segment = [];
+
+                    for ( xt=first_position; xt < second_position+1; xt++){
+                        try {
+                            gtrace_segment.push(pr.traces[xt.toString()].gy);
+                        } catch (e) {
+                        }
+                    }
                     svg.append("path")
                         .attr("d", scaled_line_function(gtrace_segment))
                         .attr("stroke", "black")
@@ -353,8 +361,15 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                         .attr("fill", "none")
                         .attr("text-anchor", 'middle');
                     //T
-                    //extract segment from array
-                    var ttrace_segment = pr.ttrace.slice(first_position, second_position+1);
+
+                    var ttrace_segment = [];
+
+                    for ( xt=first_position; xt < second_position+1; xt++){
+                        try {
+                            ttrace_segment.push(pr.traces[xt.toString()].ty);
+                        } catch (e) {
+                        }
+                    }
                     svg.append("path")
                         .attr("d", scaled_line_function(ttrace_segment))
                         .attr("stroke", "red")

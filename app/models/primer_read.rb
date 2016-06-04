@@ -49,14 +49,58 @@ class PrimerRead < ActiveRecord::Base
   # end
 
   def slice_to_json(start_pos, end_pos)
+
+    # get trace position corresponding to first / last aligned_peaks index that exists and is not -1:
+
+    start_pos_trace=start_pos
+    end_pos_trace=end_pos
+
+    xstart=self.aligned_peak_indices[start_pos_trace]
+
+    while xstart == -1
+      start_pos_trace+=1
+      xstart=self.aligned_peak_indices[start_pos_trace]
+    end
+
+    # does aligned_peaks index  exist?
+    if self.aligned_peak_indices[end_pos_trace]
+      xend=self.aligned_peak_indices[end_pos_trace]
+      #else use last:
+    else
+      end_pos_trace=self.aligned_peak_indices.count-1
+      xend=self.aligned_peak_indices[end_pos_trace]
+    end
+
+    # find first that isnt -1:
+    while xend == -1 and end_pos_trace > 0
+      end_pos_trace-=1
+      xend=self.aligned_peak_indices[end_pos_trace]
+    end
+
+
+    # create hash with x-pos as key, ya, yc, … as value
+    traces=Hash.new
+
+    if xstart #account for situations where nothing from this read is seen in respecitve contig slice/page:
+      xstart-=10
+      xend+=10
+
+      (xstart..xend).each do |x|
+        traces[x] = {
+            :ay => self.atrace[x],
+            :cy => self.ctrace[x],
+            :gy => self.gtrace[x],
+            :ty => self.ttrace[x]
+        }
+      end
+    end
+
+
     {
         :name => self.name.as_json,
         :aligned_seq => self.aligned_seq[start_pos..end_pos].as_json,
         :aligned_qualities => self.aligned_qualities[start_pos..end_pos].as_json,
-        :atrace => self.atrace.as_json,
-        :ctrace => self.ctrace.as_json,
-        :gtrace => self.gtrace.as_json,
-        :ttrace => self.ttrace.as_json,
+        :traces => traces.as_json,
         :aligned_peak_indices => self.aligned_peak_indices[start_pos..end_pos].as_json,
         :trimmedReadStart => self.trimmedReadStart.as_json,
         :trimmedReadEnd => self.trimmedReadEnd.as_json
