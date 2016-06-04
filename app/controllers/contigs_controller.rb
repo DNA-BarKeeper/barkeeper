@@ -88,7 +88,7 @@ class ContigsController < ApplicationController
           primer_read.used_for_con=true
           primer_read.assembled=true
 
-          # todo: adjust trimmedReadStart etc. based on ???? in aligned_seq (though this isnt technically correct due to alignemnt of ??? with gappy stretches in other reads)
+          # todo: adjust trimmedReadStart etc. based on ???? in aligned_seq (though this is not technically correct due to alignemnt of ??? with gappy stretches in other reads)
 
           if primer_read.trimmedReadStart.nil?
             primer_read.trimmedReadStart=1
