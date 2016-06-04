@@ -1,5 +1,22 @@
 jQuery(function() {
 
+    $('#go-to-button').click( function () {
+        var pos=$('#go-to-pos').val();
+
+        var primer_read_divs = document.getElementsByClassName('chromatogram');
+
+        for (var e = 0; e < primer_read_divs.length; e++) {
+            var div = primer_read_divs[e];
+            var div_id = '#' + div.id;
+            var chromatogram1 = $(div_id).data('url');
+            var scroll_to=chromatogram1.peak_indices[pos-1];
+            console.log(scroll_to);
+            $('.alignment').animate({
+                scrollLeft: scroll_to-5
+            }, 0);
+        }
+    });
+
     $('#scroll-left-button').click( function () {
 
         $('.alignment').animate({
@@ -99,7 +116,6 @@ function draw_chromatogram(){
 
     // über alle divs einer classe iterieren und die dort jeweiligen read data zum Zeichnen nutzen -> should be only 1 here.
     var primer_read_divs = document.getElementsByClassName('chromatogram');
-
 
     for (var e = 0; e < primer_read_divs.length; e++) {
 

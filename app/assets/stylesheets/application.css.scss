@@ -303,3 +303,12 @@ table tfoot td {
       transform: scale(1);
     }
 }
+
+input#go-to-pos {
+  border-bottom: 1px solid lightgrey;
+  width: 60px;
+  text-align: right;
+  color: #acacac;
+  margin-right: 2px;
+  padding-right: 2px;
+}
