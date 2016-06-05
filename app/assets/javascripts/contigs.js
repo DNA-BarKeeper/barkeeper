@@ -240,7 +240,9 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
         x=0;
 
-        //trace row
+
+        //trace row:
+
         color = 'gray';
         font_size = "7px";
 
@@ -249,144 +251,153 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         for (var i=0; i< aligned_peak_indices.length; i++){
 
 
-            x=(-5)+10*i; // -5 to accommodate "middle" text-anchor for associated text
+            x=10*i-5; // -5 to accommodate "middle" text-anchor for associated text
 
             var current_peak = aligned_peak_indices[i];
 
 
-            if (current_peak!=-1 && i<aligned_peak_indices.length-1)  {
+            var next_index=i+1;
 
-                var next_index=i+1;
-                var next_peak=aligned_peak_indices[next_index];
+            var next_peak = aligned_peak_indices[next_index];
 
-                if (next_peak==-1){
-                    while (aligned_peak_indices[next_index]==-1) {
-                        next_index++;
-                        next_peak = aligned_peak_indices[next_index];
-                    }
-                }
+            while (aligned_peak_indices[next_index] == -1) {
 
-                var previous_index=i-1;
-                var previous_peak=aligned_peak_indices[previous_index];
+                next_index++;
 
-                if (previous_peak==-1){
-                    while (aligned_peak_indices[previous_index]==-1) {
-                        previous_index--;
-                        previous_peak = aligned_peak_indices[previous_index];
-                    }
-                }
-
-                //  compute distance to previous peak -
-                var first_position, dist = null;
-                if (i>0) {
-                    dist = current_peak - previous_peak;
-                    first_position = current_peak - Math.round(dist/2);
+                if (aligned_peak_indices[next_index] === undefined) {
+                    next_peak = current_peak;
                 } else {
-                    continue;
+                    next_peak = aligned_peak_indices[next_index];
                 }
-
-                //  compute distance to next peak -
-                var second_position = null;
-                if (i<aligned_peak_indices.length-1) {
-                    dist = next_peak - current_peak;
-                    second_position = current_peak + Math.round(dist / 2);
-                } else {
-                    continue;
-                }
-
-                if (isNaN(second_position)==false && isNaN(first_position)==false) {
-
-                    //fig out actual scaling factor first
-                    var xscale = 10.0 / (second_position - first_position); //10 = width of basecall over which trace segment to be aligned
-
-                    var trace_ymax=50;
-                    var yscale=40;
-
-                    var scaled_line_function = d3.svg.line()
-                        .x(function(d,i) { return x+(xscale*i); })
-                        .y(function(d) { return y-40+(trace_ymax-(d/yscale)); })
-                        .interpolate("linear");
-
-                    //draw trace-segments for each base-call
-
-                    //A
-                    //extract segment from trace:
-                    var atrace_segment = [];
-
-                    for (var xt=first_position; xt < second_position+1; xt++) {
-                        try {
-                            atrace_segment.push(pr.traces[xt.toString()].ay);
-                        } catch(err) {
-                        }
-                    }
-
-                    svg.append("path")
-                        .attr("d", scaled_line_function(atrace_segment))
-                        .attr("stroke", "green")
-                        .attr("stroke-width", 0.5)
-                        .attr("fill", "none")
-                        .attr("text-anchor", 'middle');
-
-                    //C
-                    var ctrace_segment = [];
-
-                    for ( xt=first_position; xt < second_position+1; xt++){
-                        try {
-                            ctrace_segment.push(pr.traces[xt.toString()].cy);
-                        } catch (e) {
-                        }
-                    }
-                    svg.append("path")
-                        .attr("d", scaled_line_function(ctrace_segment))
-                        .attr("stroke", "blue")
-                        .attr("stroke-width", 0.5)
-                        .attr("fill", "none")
-                        .attr("text-anchor", 'middle');
-
-                    //G
-                    var gtrace_segment = [];
-
-                    for ( xt=first_position; xt < second_position+1; xt++){
-                        try {
-                            gtrace_segment.push(pr.traces[xt.toString()].gy);
-                        } catch (e) {
-                        }
-                    }
-                    svg.append("path")
-                        .attr("d", scaled_line_function(gtrace_segment))
-                        .attr("stroke", "black")
-                        .attr("stroke-width", 0.5)
-                        .attr("fill", "none")
-                        .attr("text-anchor", 'middle');
-                    //T
-
-                    var ttrace_segment = [];
-
-                    for ( xt=first_position; xt < second_position+1; xt++){
-                        try {
-                            ttrace_segment.push(pr.traces[xt.toString()].ty);
-                        } catch (e) {
-                        }
-                    }
-                    svg.append("path")
-                        .attr("d", scaled_line_function(ttrace_segment))
-                        .attr("stroke", "red")
-                        .attr("stroke-width", 0.5)
-                        .attr("fill", "none")
-                        .attr("text-anchor", 'middle');
-                }
-
             }
+
+            var previous_index=i-1;
+
+            var previous_peak = aligned_peak_indices[previous_index];
+
+            while (aligned_peak_indices[previous_index] == -1) {
+
+                // correction: traces somehow offset otherwise:
+                x -= 10;
+
+                previous_index--;
+
+                if (aligned_peak_indices[previous_index] === undefined) {
+                    previous_peak = current_peak;
+                } else {
+                    previous_peak = aligned_peak_indices[previous_index];
+                }
+            }
+
+
+            //  compute distance to previous peak -
+            var first_position, dist = null;
+            dist = current_peak - previous_peak;
+            first_position = current_peak - Math.round(dist / 2);
+
+            //  compute distance to next peak -
+            var second_position = null;
+            dist = next_peak - current_peak;
+            second_position = current_peak + Math.round(dist / 2);
+
+
+            //fig out actual scaling factor first:
+            var xscale = 10.0 / (second_position - first_position); //10 = width of basecall over which trace segment to be aligned
+
+            var trace_ymax=50;
+            var yscale=40;
+
+            var scaled_line_function = d3.svg.line()
+                .x(function(d,i) {
+                        if (x > 0) {
+                            return x + (xscale * i);
+                        } else {
+                            return 0;
+                        }
+                    }
+                )
+                .y(function(d) { return y-40+(trace_ymax-(d/yscale)); })
+                .interpolate("linear");
+
+            //draw trace-segments for each base-call:
+
+            //A
+            //extract segment from trace:
+            var atrace_segment = [];
+
+            for (var xt=first_position; xt < second_position+1; xt++) {
+                try {
+                    atrace_segment.push(pr.traces[xt.toString()].ay);
+                } catch(err) {
+                }
+            }
+
+            svg.append("path")
+                .attr("d", scaled_line_function(atrace_segment))
+                .attr("stroke", "green")
+                .attr("stroke-width", 0.5)
+                .attr("fill", "none")
+                .attr("text-anchor", 'middle');
+
+            //C
+            var ctrace_segment = [];
+
+            for ( xt=first_position; xt < second_position+1; xt++){
+                try {
+                    ctrace_segment.push(pr.traces[xt.toString()].cy);
+                } catch (e) {
+                }
+            }
+            svg.append("path")
+                .attr("d", scaled_line_function(ctrace_segment))
+                .attr("stroke", "blue")
+                .attr("stroke-width", 0.5)
+                .attr("fill", "none")
+                .attr("text-anchor", 'middle');
+
+            //G
+            var gtrace_segment = [];
+
+            for ( xt=first_position; xt < second_position+1; xt++){
+                try {
+                    gtrace_segment.push(pr.traces[xt.toString()].gy);
+                } catch (e) {
+                }
+            }
+            svg.append("path")
+                .attr("d", scaled_line_function(gtrace_segment))
+                .attr("stroke", "black")
+                .attr("stroke-width", 0.5)
+                .attr("fill", "none")
+                .attr("text-anchor", 'middle');
+
+            //T
+
+            var ttrace_segment = [];
+
+            for ( xt=first_position; xt < second_position+1; xt++){
+                try {
+                    ttrace_segment.push(pr.traces[xt.toString()].ty);
+                } catch (e) {
+                }
+            }
+            svg.append("path")
+                .attr("d", scaled_line_function(ttrace_segment))
+                .attr("stroke", "red")
+                .attr("stroke-width", 0.5)
+                .attr("fill", "none")
+                .attr("text-anchor", 'middle');
 
         }
 
         y=y+20;
         x=0;
 
+
         //qualities row:
+
         color = 'gray';
         font_size = "5px";
-
 
         for (var q=0; q< qual1.length; q++){
 
