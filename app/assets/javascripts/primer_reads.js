@@ -174,10 +174,10 @@ function draw_chromatogram(){
                 // find  peak closest to new x -> in chromatogram1.peak_indices
                 for(var g=0; g < chromatogram1.peak_indices.length; g++) {
                     // console.log(drawn_position);
-                    console.log(g);
-                    console.log(chromatogram1.peak_indices[g]);
-                    console.log("\n");
-                    console.log(chromatogram1.peak_indices[g]-drawn_position);
+                    // console.log(g);
+                    // console.log(chromatogram1.peak_indices[g]);
+                    // console.log("\n");
+                    // console.log(chromatogram1.peak_indices[g]-drawn_position);
                     if (chromatogram1.peak_indices[g]-drawn_position > 0) {
                         break;
                     }
@@ -446,7 +446,7 @@ function change_base(base_index, base, change_base_primer_read_url) {
         success: function () {
             var visible_index=parseInt(base_index);
             visible_index+=1;
-            tempAlert("Changed base at position "+visible_index+" to "+base, 2000);
+            tempAlert("Changed base at position "+visible_index+" to "+base+", started re-assembly of contig and re-computing consensus", 3000);
         },
         error: function (response) {
             alert('Not authorized? Could not change base at index '+base_index+' to '+base);
@@ -467,7 +467,7 @@ function change_left_clip(base_index, change_left_clip_read_url) {
         success: function () {
             document.getElementById("left_clip").value = base_index;
 
-            tempAlert("Set left clip position to "+base_index, 2000);
+            tempAlert("Set left clip position to "+base_index+", started re-assembly of contig and re-computing consensus", 3000);
         },
         error: function (response) {
             alert('Not authorized? Could not set left clip at index '+base_index);
@@ -489,7 +489,7 @@ function change_right_clip(base_index, change_right_clip_read_url) {
 
             document.getElementById("right_clip").value = base_index;
 
-            tempAlert("Set right clip position to "+base_index, 2000);
+            tempAlert("Set right clip position to "+base_index+ ", started re-assembly of contig and re-computing consensus", 3000);
         },
         error: function (response) {
             alert('Not authorized? Could not set right clip at index '+base_index);

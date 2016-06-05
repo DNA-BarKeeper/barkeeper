@@ -54,8 +54,6 @@
           </div>
 
           <div class="tab-pane active" id="assembly">
-            <div class="vertical-spacer"></div>
-            <span class="glyphicon glyphicon-align-center"></span> <%= link_to 'Assemble primer reads', overlap_contig_path %>
 
             <div class="vertical-spacer"></div>
             <div>
@@ -85,39 +83,49 @@
           </div>
         </div>
 
-        <table><tr><td><%= f.submit 'Save', :class =>  'btn btn-default'%></td>
-        <td style="padding-left: 5px;"><div style="vertical-align: middle";>
-          <% if @contig.verified_by %>
+        <table>
+          <tr>
+            <td>
+              <%= f.submit 'Save', :class =>  'btn btn-default'  %>
 
-              <%begin%>
-                  <%user= User.find(@contig.verified_by).name %>
-              <%rescue%>
-                  <% user= '?'%>
-              <%end%>
-
-              Verified by <%=  user %> on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>.
-
-              <%= link_to  verify_contig_path(@contig), :class => "btn btn-danger btn-xs my-btn" do %>
-                  <span class = "glyphicon glyphicon-remove"></span>
+            </td>
+            <td style="padding-left: 5px;"><%= link_to overlap_contig_path, :class => 'btn btn-default' do %>
+                  <span class="glyphicon glyphicon-align-center grey"></span> Assemble
               <% end %>
+            </td>
+            <td style="padding-left: 5px; ">
+              <div style="vertical-align: middle; line-height: 250%;">
+              <% if @contig.verified_by %>
 
-          <% else %>
-              <% if @contig.verified %>
-                  Verified on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %>
+                  <%begin%>
+                      <%user= User.find(@contig.verified_by).name %>
+                  <%rescue%>
+                      <% user= '?'%>
+                  <%end%>
+
+                  Verified by <%=  user %> on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>.
+
+                  <%= link_to  verify_contig_path(@contig), :class => "btn btn-danger btn-xs my-btn" do %>
+                      <span class = "glyphicon glyphicon-remove"></span>
+                  <% end %>
+
               <% else %>
+                  <% if @contig.verified %>
+                      Verified on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %>
+                  <% else %>
 
-                  <%= link_to verify_contig_path(@contig), :class => 'btn btn-success my-btn' do %>
-                      <span class = "glyphicon glyphicon-ok"></span> Verify
-                  <% end %>
+                      <%= link_to verify_contig_path(@contig), :class => 'btn btn-success my-btn' do %>
+                          <span class = "glyphicon glyphicon-ok"></span> Verify
+                      <% end %>
 
-                  <%= link_to verify_next_contig_path(@contig), :class => 'btn btn-success my-btn' do %>
-                      <span class = "glyphicon glyphicon-ok"></span> Verify & next
+                      <%= link_to verify_next_contig_path(@contig), :class => 'btn btn-success my-btn' do %>
+                          <span class = "glyphicon glyphicon-ok"></span> Verify & next
+                      <% end %>
+
                   <% end %>
 
               <% end %>
-
-          <% end %>
-        </div></td></tr></table>
+            </div></td></tr></table>
 
         <div class="vertical-spacer"></div>
         <% if @contig.imported %>
@@ -136,10 +144,10 @@
                 <td width="250px"></td>
                 <td align="right">
                   <div id="buttons" style="margin: 0px; padding: 0px;">
-                    <button  class="first-page-button btn btn-default btn-sm"><span class="grey glyphicon glyphicon-fast-backward"></span></button>
-                    <button  class="previous-page-button btn btn-default btn-sm"><span class="grey glyphicon glyphicon-step-backward"></span></button>
-                    <button  class="next-page-button btn btn-default btn-sm"><span class="grey glyphicon glyphicon-step-forward"></span></button>
-                    <button  class="last-page-button btn btn-default btn-sm"><span class="grey glyphicon glyphicon-fast-forward"></span></button>
+                    <button  class="first-page-button btn btn-default btn-sm" title="Go to first page"><span class="grey glyphicon glyphicon-fast-backward"></span></button>
+                    <button  class="previous-page-button btn btn-default btn-sm" title="Previous page"><span class="grey glyphicon glyphicon-step-backward"></span></button>
+                    <button  class="next-page-button btn btn-default btn-sm" title="Next page"><span class="grey glyphicon glyphicon-step-forward"></span></button>
+                    <button  class="last-page-button btn btn-default btn-sm" title="Go to last page"><span class="grey glyphicon glyphicon-fast-forward"></span></button>
                   </div>
                 </td>
               </tr>

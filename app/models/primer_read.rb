@@ -122,6 +122,7 @@ class PrimerRead < ActiveRecord::Base
     original_positions
   end
 
+
   def self.in_higher_order_taxon(higher_order_taxon_id)
     count=0
 

@@ -211,16 +211,30 @@ class PrimerReadsController < ApplicationController
     #in all cases (replacement, insertion & deletion) insert string:
     sequence[pos] = base
     @primer_read.update(:sequence => sequence)
+
+    # adjust contig view
+    if @primer_read.contig
+      ContigAssembly.perform_async(@primer_read.contig.id)
+    end
+
     render :nothing => true
   end
 
   def change_left_clip
     @primer_read.update(:trimmedReadStart => params[:position].to_i)
+    # adjust contig view
+    if @primer_read.contig
+      ContigAssembly.perform_async(@primer_read.contig.id)
+    end
     render :nothing => true
   end
 
   def change_right_clip
     @primer_read.update(:trimmedReadEnd => params[:position].to_i)
+    # adjust contig view
+    if @primer_read.contig
+      ContigAssembly.perform_async(@primer_read.contig.id)
+    end
     render :nothing => true
   end
 
