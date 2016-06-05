@@ -32,6 +32,19 @@ a {
   }
 }
 
+a.my-btn {
+
+  color: white;
+
+  &:visited {
+    color: white;
+  }
+  &:hover {
+    color: white;
+    text-decoration: none;
+  }
+}
+
 .column {
   @extend .col-md-6;
   @extend .text-center;

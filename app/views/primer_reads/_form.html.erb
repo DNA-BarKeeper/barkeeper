@@ -141,17 +141,28 @@
       <% end %>
 
     </div>
-    <!--end chromatogram div -->
 
-    <button id="scroll-left-button" class=" btn btn-default btn-sm"><span class="grey glyphicon glyphicon-fast-backward"></span></button>
-    <button id="scroll-right-slowly-button" class=" btn btn-default btn-sm"><span class="grey glyphicon glyphicon-play"></span></button>
-    <button id="pause-button" class=" btn btn-default btn-sm"><span class="grey glyphicon glyphicon-pause"></span></button>
-    <button id="scroll-right-button" class=" btn btn-default btn-sm"><span class="grey glyphicon glyphicon-fast-forward"></span></button>
+    <!--buttons -->
+    <span style="line-height: 250%;">
 
-    <span style="width: 30px; display: inline-block;">    </span>
+      <button id="scroll-left-button" class=" btn btn-default btn-sm"><span class="grey glyphicon glyphicon-fast-backward"></span></button>
+      <button id="scroll-right-slowly-button" class=" btn btn-default btn-sm"><span class="grey glyphicon glyphicon-play"></span></button>
+      <button id="pause-button" class=" btn btn-default btn-sm"><span class="grey glyphicon glyphicon-pause"></span></button>
+      <button id="scroll-right-button" class=" btn btn-default btn-sm"><span class="grey glyphicon glyphicon-fast-forward"></span></button>
 
-    <input type="text" id="go-to-pos">
-    <button id="go-to-button" class="btn btn-default btn-xs"><span style="color: #979797">Go to</span></button>
+      <span style="width: 30px; display: inline-block;">    </span>
+
+      <button id="go-to-button" class="btn btn-default btn-xs"><span style="color: #979797">Go to</span></button>
+      <input type="text" id="go-to-pos">
+      <span style="color: #979797">/ <%=@primer_read.sequence.length%></span>
+
+      <span style="width: 30px; display: inline-block;">    </span>
+
+      <% if @primer_read.contig %>
+          <span style="color: #979797;"><%= link_to "Go to contig #{@primer_read.contig.name}", edit_contig_path(@primer_read.contig), class: 'btn btn-default btn-sm grey' %></span>
+      <% end %>
+
+    </span>
 
 
   </div>

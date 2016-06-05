@@ -31,6 +31,7 @@ GBOLapp::Application.routes.draw do
       get 'externally_verified'
     end
     member do
+      get 'verify_next'
       get 'verify'
       get 'pde'
       get 'fasta'

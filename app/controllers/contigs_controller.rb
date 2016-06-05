@@ -4,7 +4,7 @@ class ContigsController < ApplicationController
 
   skip_before_action :verify_authenticity_token
 
-  before_action :set_contig, only: [:verify, :pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :overlap_background, :show, :edit,\
+  before_action :set_contig, only: [:verify_next, :verify, :pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :overlap_background, :show, :edit,\
    :update, :destroy]
 
   def externally_verified
@@ -247,6 +247,27 @@ class ContigsController < ApplicationController
 
       redirect_to edit_contig_path, notice: "Verified & linked marker sequence updated."
     end
+  end
+
+  def verify_next
+
+    @contig.update(:verified_by => current_user.id, :verified_at => Time.now, :assembled => true, :verified => true)
+
+    # generate / update markersequence
+    # generate marker sequence
+    ms=MarkerSequence.find_or_create_by(:name => @contig.name)
+    partial_cons=@contig.partial_cons.first
+    ms.sequence = partial_cons.aligned_sequence.gsub('-','')
+    ms.sequence = ms.sequence.gsub('?','')
+    ms.contigs << @contig
+    ms.marker = @contig.marker
+    ms.isolate = @contig.isolate
+    ms.save
+
+    @next_contig=Contig.need_verification.first
+
+    redirect_to edit_contig_path(@next_contig), notice: "Verified & linked marker sequence updated for #{@contig.name}. Showing #{@next_contig.name}."
+
   end
 
   # GET /contigs/1

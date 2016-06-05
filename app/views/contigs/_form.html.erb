@@ -74,28 +74,6 @@
               <% end %>
               <%= f.text_field :marker_sequence_name , data: {autocomplete_source: filter_marker_sequences_path} , class: 'form-control'%>
             </div>
-
-            <div >
-              <% if @contig.verified_by %>
-                  <%begin%>
-                      <%user= User.find(@contig.verified_by).name %>
-                  <%rescue%>
-                      <% user= '?'%>
-                  <%end%>
-                  Verified by <%=  user %> on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %><br><br>
-              <% else %>
-                  <% if @contig.verified %>
-                      Verified on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %><br><br>
-                  <% else %>
-                      <%= link_to verify_contig_path(@contig) do %>
-                          <span class = "glyphicon glyphicon-ok"></span> Verify
-                      <% end %>
-                  <% end %>
-
-                  <br><br>
-              <% end %>
-            </div>
-
           </div>
 
           <div class="tab-pane" id="downloads">
@@ -106,7 +84,40 @@
               <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download raw sequences as Fasta file',  fasta_raw_contig_path %><br></div>
           </div>
         </div>
-        <%= f.submit 'Update', :class =>  'btn btn-default'%>
+
+        <table><tr><td><%= f.submit 'Save', :class =>  'btn btn-default'%></td>
+        <td style="padding-left: 5px;"><div style="vertical-align: middle";>
+          <% if @contig.verified_by %>
+
+              <%begin%>
+                  <%user= User.find(@contig.verified_by).name %>
+              <%rescue%>
+                  <% user= '?'%>
+              <%end%>
+
+              Verified by <%=  user %> on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>.
+
+              <%= link_to  verify_contig_path(@contig), :class => "btn btn-danger btn-xs my-btn" do %>
+                  <span class = "glyphicon glyphicon-remove"></span>
+              <% end %>
+
+          <% else %>
+              <% if @contig.verified %>
+                  Verified on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %>
+              <% else %>
+
+                  <%= link_to verify_contig_path(@contig), :class => 'btn btn-success my-btn' do %>
+                      <span class = "glyphicon glyphicon-ok"></span> Verify
+                  <% end %>
+
+                  <%= link_to verify_next_contig_path(@contig), :class => 'btn btn-success my-btn' do %>
+                      <span class = "glyphicon glyphicon-ok"></span> Verify & next
+                  <% end %>
+
+              <% end %>
+
+          <% end %>
+        </div></td></tr></table>
 
         <div class="vertical-spacer"></div>
         <% if @contig.imported %>
@@ -186,22 +197,22 @@
     <!-- list all reads again, grouped by status-->
 
     <div class="read-names">
-    <% if @contig.primer_reads.not_assembled.count > 0 %>
-        <p>
-          <b>Not assembled:</b><br>
-          <% @contig.primer_reads.not_assembled.each do |read|%>
+      <% if @contig.primer_reads.not_assembled.count > 0 %>
+          <p>
+            <b>Not assembled:</b><br>
+            <% @contig.primer_reads.not_assembled.each do |read|%>
 
-              <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => "Do not use this read in assembly & re-assemble" do %>
-                  <span class="glyphicon glyphicon-remove grey" title=""></span>
-              <% end %>
-              <%= link_to read.name, edit_primer_read_path(read) %>
-              <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
-                  <span class="grey glyphicon glyphicon-share-alt"></span>
-              <% end %>
-              <br>
-          <%end %>
-        </p>
-    <% end %>
+                <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => "Do not use this read in assembly & re-assemble" do %>
+                    <span class="glyphicon glyphicon-remove grey" title=""></span>
+                <% end %>
+                <%= link_to read.name, edit_primer_read_path(read) %>
+                <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
+                    <span class="grey glyphicon glyphicon-share-alt"></span>
+                <% end %>
+                <br>
+            <%end %>
+          </p>
+      <% end %>
 
 
       <% if @contig.primer_reads.not_used_for_assembly.count > 0 %>

@@ -120,8 +120,6 @@ function draw_page(id, page){
         var width_in_bases= Math.floor( contig_drawing_width/10 );
 
         var url='/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
-        // var url='http://0.0.0.0:3000/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
-        // var url='http://gbol5.de/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
 
         $.ajax({
             type: "GET",
