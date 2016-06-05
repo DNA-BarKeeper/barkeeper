@@ -17,6 +17,8 @@ GBOLapp::Application.routes.draw do
 
   get 'partial_cons/:id/:page/:width_in_bases', action: :show_page, controller: 'partial_cons', :defaults => { :format => 'json' }
 
+  get 'primer_reads/:id/edit/:pos', action: :go_to_pos, controller: 'primer_reads'
+
   resources :contigs do
     collection do
       get 'show_need_verify'

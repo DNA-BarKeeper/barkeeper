@@ -36,17 +36,6 @@ class PrimerRead < ActiveRecord::Base
 
   validates_attachment_presence :chromatogram
 
-  # reactivate this only after absolute-primer-position-mess (strandedness etc) clarified:
-  # def expected_read_start
-  #   if self.reverse
-  #     if self.trimmedReadEnd and self.trimmedReadStart
-  #       readable_read_length = self.trimmedReadEnd - self.trimmedReadStart
-  #       self.primer.position-readable_read_length
-  #     end
-  #   else
-  #     self.primer.position
-  #   end
-  # end
 
   def slice_to_json(start_pos, end_pos)
 
@@ -81,7 +70,7 @@ class PrimerRead < ActiveRecord::Base
     # create hash with x-pos as key, ya, yc, … as value
     traces=Hash.new
 
-    if xstart and xend #account for situations where nothing from this read is seen in respecitve contig slice/page:
+    if xstart and xend #account for situations where nothing from this read is seen in respective contig slice/page:
 
       xstart-=10
       xend+=10
@@ -96,15 +85,41 @@ class PrimerRead < ActiveRecord::Base
       end
     end
 
+    # get position in original, non-trimmed, non-aligned primer read:
+
+
+    # return json
+
     {
+        :id => self.id.as_json,
         :name => self.name.as_json,
         :aligned_seq => self.aligned_seq[start_pos..end_pos].as_json,
         :aligned_qualities => self.aligned_qualities[start_pos..end_pos].as_json,
         :traces => traces.as_json,
         :aligned_peak_indices => self.aligned_peak_indices[start_pos..end_pos].as_json,
         :trimmedReadStart => self.trimmedReadStart.as_json,
-        :trimmedReadEnd => self.trimmedReadEnd.as_json
+        :trimmedReadEnd => self.trimmedReadEnd.as_json,
+        :original_positions => self.original_positions[start_pos..end_pos].as_json
     }
+  end
+
+  def original_positions
+    original_positions=Array.new
+
+    i=self.trimmedReadStart
+
+    self.aligned_qualities.each do |aq|
+
+      if aq == -1
+        original_positions << -1
+      else
+        original_positions << i
+        i+=1
+      end
+
+    end
+
+    original_positions
   end
 
   def self.in_higher_order_taxon(higher_order_taxon_id)

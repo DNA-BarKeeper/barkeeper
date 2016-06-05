@@ -59,15 +59,15 @@
 
             <% if @primer_read.primer %>
                 <p><div class="field">
-                  Primer: <%= link_to @primer_read.primer.name, edit_primer_path(@primer_read.primer) %> | Marker: <%= link_to @primer_read.contig.marker.name, edit_marker_path(@primer_read.contig.marker) if @primer_read.contig %>
-                </div></p>
+            Primer: <%= link_to @primer_read.primer.name, edit_primer_path(@primer_read.primer) %> | Marker: <%= link_to @primer_read.contig.marker.name, edit_marker_path(@primer_read.contig.marker) if @primer_read.contig %>
+          </div></p>
             <% end %>
 
             <div class="form-group">
               <%= f.label :comment %>
               <%= f.text_field :comment, class: 'form-control' %>
             </div>
-            
+
 
           </div>
 
@@ -129,7 +129,10 @@
 
     <hr>
 
-    <div class="alignment" id="chromatogram_container">
+    <% if @pos %>
+    <% end %>
+
+    <div class="alignment" id="chromatogram_container" data-pos="<%=@pos%>">
 
       <% div_id="primer_read_#{@primer_read.id}" %>
 

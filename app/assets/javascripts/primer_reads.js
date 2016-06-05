@@ -1,20 +1,26 @@
 jQuery(function() {
 
-    $('#go-to-button').click( function () {
-        var pos=$('#go-to-pos').val();
 
+    function scroll_to(pos) {
         var primer_read_divs = document.getElementsByClassName('chromatogram');
 
         for (var e = 0; e < primer_read_divs.length; e++) {
             var div = primer_read_divs[e];
             var div_id = '#' + div.id;
             var chromatogram1 = $(div_id).data('url');
-            var scroll_to=chromatogram1.peak_indices[pos-1];
-            console.log(scroll_to);
+            var scroll_to = chromatogram1.peak_indices[pos - 1];
+
+
             $('.alignment').animate({
-                scrollLeft: scroll_to-5
+                scrollLeft: scroll_to - 7
             }, 0);
         }
+    }
+
+    $('#go-to-button').click( function () {
+        var pos=$('#go-to-pos').val();
+
+        scroll_to(pos);
     });
 
     $('#scroll-left-button').click( function () {
@@ -108,6 +114,14 @@ jQuery(function() {
     });
 
     draw_chromatogram();
+
+    var pos=$('#chromatogram_container').data("pos");
+
+    if (pos > 0) {
+
+        scroll_to(pos);
+
+    }
 
 });
 
@@ -236,6 +250,17 @@ function draw_chromatogram(){
                     }
                 });
         }
+
+        var highlighted_base=$('#chromatogram_container').data("pos");
+
+        var highlight_pos = chromatogram1.peak_indices[highlighted_base - 1];
+
+       var highlight = svg.append('rect')
+           .attr("x", highlight_pos-7)
+           .attr("y", 15)
+           .attr("width", 12)
+           .attr("height", 20)
+           .attr("fill", "#fcff00");
 
 
         //draw traces
@@ -410,7 +435,7 @@ function draw_chromatogram(){
 }
 
 function change_base(base_index, base, change_base_primer_read_url) {
-    console.log(base_index, base, change_base_primer_read_url);
+    // console.log(base_index, base, change_base_primer_read_url);
     $.ajax({
         data: {
             'position': base_index,

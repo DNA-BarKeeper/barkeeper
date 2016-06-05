@@ -185,6 +185,7 @@
 
     <!-- list all reads again, grouped by status-->
 
+    <div class="read-names">
     <% if @contig.primer_reads.not_assembled.count > 0 %>
         <p>
           <b>Not assembled:</b><br>
@@ -202,7 +203,7 @@
         </p>
     <% end %>
 
-    <div class="read-names">
+
       <% if @contig.primer_reads.not_used_for_assembly.count > 0 %>
           <p>
             <b>Not to be used in assembly:</b><br>

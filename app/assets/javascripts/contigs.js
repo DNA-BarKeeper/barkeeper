@@ -119,8 +119,8 @@ function draw_page(id, page){
         var contig_drawing_width = $('#contig-drawing').width();
         var width_in_bases= Math.floor( contig_drawing_width/10 );
 
-        // var url='http://0.0.0.0:3000/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
-        var url='http://gbol5.de/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
+        var url='http://0.0.0.0:3000/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
+        // var url='http://gbol5.de/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
 
         $.ajax({
             type: "GET",
@@ -173,29 +173,27 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
     var used_reads = partial_contig.primer_reads;
 
+
     for (var j=0; j < used_reads.length; j++){
         var pr= used_reads[j];
 
-        if (pr){
+        var seq1 = null;
+        if (pr.aligned_seq){
+            seq1=pr.aligned_seq;
+        } else if (pr.trimmed_seq){
+            seq1=pr.trimmed_seq;
+        } else {
+            seq1=pr.sequence;
+        }
 
-            var seq1 = null;
-            if (pr.aligned_seq){
-                seq1=pr.aligned_seq;
-            } else if (pr.trimmed_seq){
-                seq1=pr.trimmed_seq;
-            } else {
-                seq1=pr.sequence;
-            }
+        var qual1= null;
+        if (pr.aligned_qualities){
+            qual1=pr.aligned_qualities;
+        }
 
-            var qual1= null;
-            if (pr.aligned_qualities){
-                qual1=pr.aligned_qualities;
-            }
-
-            var aligned_peak_indices = null;
-            if (pr.aligned_peak_indices){
-                aligned_peak_indices=pr.aligned_peak_indices;
-            }
+        var aligned_peak_indices = null;
+        if (pr.aligned_peak_indices){
+            aligned_peak_indices=pr.aligned_peak_indices;
         }
 
         x=0;
@@ -347,13 +345,13 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         color = 'gray';
         font_size = "5px";
 
+
         for (var q=0; q< qual1.length; q++){
+
             var ch= qual1[q];
             x=x+10;
 
             if (qual1[q]>-1){
-
-                //ctx.strokeText(ch, x, y);
 
                 svg.append("text")
                     .attr("x", x)
@@ -400,7 +398,15 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                 .attr("font-family", "sans-serif")
                 .attr("font-size", font_size)
                 .attr("fill", color)
-                .attr("text-anchor", 'middle');
+                .attr("text-anchor", 'middle')
+                .attr("id", pr.id + "-" + pr.original_positions[s])
+                .style("cursor", "crosshair")
+                .on('click', function () {
+                    // alert(d3.select(this).attr("id"));
+                    var coordinates = d3.select(this).attr("id").split("-");
+                    var url='http://0.0.0.0:3000/primer_reads/'+coordinates[0]+'/edit/'+coordinates[1];
+                    window.open(url, '_blank');
+                });
         }
 
         y=y+20;

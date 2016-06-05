@@ -1,7 +1,7 @@
 class PrimerReadsController < ApplicationController
   before_filter :authenticate_user!, :except => [:edit, :index]
 
-  before_action :set_primer_read, only: [:do_not_use_for_assembly, :use_for_assembly, :change_left_clip, :change_right_clip, :edit, :fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
+  before_action :set_primer_read, only: [:go_to_pos, :do_not_use_for_assembly, :use_for_assembly, :change_left_clip, :change_right_clip, :edit, :fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
 
   def do_not_use_for_assembly
     @primer_read.update(:used_for_con => false, :assembled => false)
@@ -142,6 +142,10 @@ class PrimerReadsController < ApplicationController
     #@primer_read = PrimerRead.includes(:primer, :contig).find(params[:id]) #TODO Add select statement here to initially NOT load chromatogram?
   end
 
+  def go_to_pos
+    @pos = params[:pos]
+  end
+
   # POST /primer_reads
   # POST /primer_reads.json
 
@@ -245,7 +249,7 @@ class PrimerReadsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def primer_read_params
-    params.require(:primer_read).permit(:overwritten, :assembled, :comment,
+    params.require(:primer_read).permit(:pos, :overwritten, :assembled, :comment,
                                         :quality_string,
                                         :used_for_con, :file, :name, :sequence, :pherogram_url, :chromatogram, :primer_id, :contig_id,
                                         :contig_name, :isolate_id, :chromatograms, :trimmedReadEnd, :trimmedReadStart,
