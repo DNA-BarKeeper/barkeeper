@@ -119,8 +119,9 @@ function draw_page(id, page){
         var contig_drawing_width = $('#contig-drawing').width();
         var width_in_bases= Math.floor( contig_drawing_width/10 );
 
+        var url='/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
         // var url='http://0.0.0.0:3000/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
-        var url='http://gbol5.de/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
+        // var url='http://gbol5.de/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
 
         $.ajax({
             type: "GET",
@@ -404,8 +405,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                 .on('click', function () {
                     // alert(d3.select(this).attr("id"));
                     var coordinates = d3.select(this).attr("id").split("-");
-                    var url='http://gbol5.de/primer_reads/'+coordinates[0]+'/edit/'+coordinates[1];
-                    // var url='http://0.0.0.0:3000/primer_reads/'+coordinates[0]+'/edit/'+coordinates[1];
+                    var url='/primer_reads/'+coordinates[0]+'/edit/'+coordinates[1];
                     window.open(url, '_blank');
                 });
         }
