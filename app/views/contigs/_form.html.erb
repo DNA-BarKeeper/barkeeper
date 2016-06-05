@@ -143,7 +143,15 @@
               <tr>
                 <td width="250px"></td>
                 <td align="right">
-                  <div id="buttons" style="margin: 0px; padding: 0px;">
+
+
+                  <div id="buttons" style="margin: 0; padding: 0;">
+
+                    <button class="go-to-button-partial-con btn btn-default btn-xs"><span style="color: #979797">Go to</span></button>
+                    <input type="text" class="go-to-pos">
+                    <span style="color: #979797">/ <%=partial_con.aligned_sequence.length%></span>
+
+                    <span style="width: 30px; display: inline-block;">    </span>
                     <button  class="first-page-button btn btn-default btn-sm" title="Go to first page"><span class="grey glyphicon glyphicon-fast-backward"></span></button>
                     <button  class="previous-page-button btn btn-default btn-sm" title="Previous page"><span class="grey glyphicon glyphicon-step-backward"></span></button>
                     <button  class="next-page-button btn btn-default btn-sm" title="Next page"><span class="grey glyphicon glyphicon-step-forward"></span></button>

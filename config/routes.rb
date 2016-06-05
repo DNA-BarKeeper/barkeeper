@@ -16,6 +16,7 @@ GBOLapp::Application.routes.draw do
   get 'problematic_location_data', action: :problematic_location_data, controller: 'individuals'
 
   get 'partial_cons/:id/:page/:width_in_bases', action: :show_page, controller: 'partial_cons', :defaults => { :format => 'json' }
+  get 'partial_cons_pos/:id/:position/:width_in_bases', action: :show_position, controller: 'partial_cons', :defaults => { :format => 'json' }
 
   get 'primer_reads/:id/edit/:pos', action: :go_to_pos, controller: 'primer_reads'
 

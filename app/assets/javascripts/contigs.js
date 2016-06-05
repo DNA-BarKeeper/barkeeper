@@ -20,6 +20,7 @@ jQuery(function() {
             $buttons.show();
         });
 
+
     $('#contigs').DataTable({
         bProcessing: true,
         bServerSide: true,
@@ -51,6 +52,14 @@ jQuery(function() {
     });
 
     // do for all div with class partial_con
+
+    $('.go-to-button-partial-con').click( function () {
+
+        var partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
+        var partial_con_go_to =$(this).closest('table').find('.go-to-pos').val();
+
+        draw_position(partial_con_container_id, partial_con_go_to);
+    });
 
     $('.first-page-button').click(function () {
 
@@ -130,6 +139,40 @@ function draw_page(id, page){
                 mm_container.empty();
                 draw_partial_con(data, container_name, contig_drawing_width);
                 $( "body" ).data("current_page", data.page);
+            },
+            error: function (result) {
+                alert("no data");
+            }
+        });
+    }
+}
+
+function draw_position(id, position){
+    // var id = $(this).attr("id");
+
+    // get id without "p-..."
+    var partial_con_id = id.substr(2);
+
+    var container_name='#'+id;
+
+    var mm_container = $(container_name);
+
+    if (mm_container.length > 0) {
+
+        var contig_drawing_width = $('#contig-drawing').width();
+        var width_in_bases= Math.floor( contig_drawing_width/10 );
+
+        var url='/partial_cons_pos/'+partial_con_id+'/'+position+'/'+width_in_bases;
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: url,
+            dataType: 'json',
+            success: function (data) {
+                mm_container.empty();
+                draw_partial_con(data, container_name, contig_drawing_width);
+                $( "body" ).data("current_position", data.position);
             },
             error: function (result) {
                 alert("no data");

@@ -50,4 +50,29 @@ class PartialCon < ActiveRecord::Base
 
   end
 
+  def to_json_for_position(position_string, width_in_bases)
+
+    start_pos = position_string.to_i
+
+    start_pos = 0 if start_pos < 0
+
+    end_pos=start_pos+(width_in_bases.to_i-1)
+
+    if end_pos > self.aligned_qualities.length
+      end_pos = self.aligned_qualities.length-1;
+    end
+
+    # corresponds to which full page?:
+    page = (start_pos/aligned_qualities.length).to_i
+
+    {
+        :page => page.as_json,
+        :aligned_sequence => self.aligned_sequence[start_pos..end_pos].as_json,
+        :aligned_qualities => self.aligned_qualities[start_pos..end_pos].as_json,
+        :start_pos => start_pos.as_json,
+        :end_pos => end_pos.as_json,
+        :primer_reads => self.primer_reads.map { |pr| pr.slice_to_json(start_pos, end_pos) }
+    }
+  end
+
 end
