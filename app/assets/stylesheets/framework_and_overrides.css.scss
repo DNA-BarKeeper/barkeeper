@@ -144,9 +144,12 @@ body {
   background-color: #ededed;
 }
 
+div.about-background {
+  background-color: #fffffa;
+}
+
 body.about_page {
-  background-image: url('species_images/IMG_3438.jpg');
-  background-attachment: fixed;
+  background: url('species_images/IMG_3438.jpg') fixed;
 }
 
 .isolate-copy-label {
