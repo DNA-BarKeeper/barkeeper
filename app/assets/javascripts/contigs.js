@@ -387,7 +387,6 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                 .attr("stroke-width", 0.5)
                 .attr("fill", "none")
                 .attr("text-anchor", 'middle');
-
         }
 
         y=y+20;
