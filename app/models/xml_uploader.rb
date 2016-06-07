@@ -1,4 +1,4 @@
-# write to Excel-XML (xls) for use by ZFMK for their "Portal / db : bolgermany.de "
+# write SPECIMENS & STATUS  to Excel-XML (xls) for use by ZFMK for their "Portal / db : bolgermany.de "
 
 class XmlUploader < ActiveRecord::Base
 
@@ -8,7 +8,6 @@ class XmlUploader < ActiveRecord::Base
                     :storage => :s3,
                     :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
                     :path => "/specimens.xls"
-
 
   # Validate content type
   validates_attachment_content_type :uploaded_file, :content_type => /\Aapplication\/xml/

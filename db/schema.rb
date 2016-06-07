@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160603084804) do
+ActiveRecord::Schema.define(version: 20160607140336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -411,6 +411,15 @@ ActiveRecord::Schema.define(version: 20160603084804) do
     t.string   "synonym",           limit: 255
     t.string   "composed_name",     limit: 255
     t.string   "species_component"
+  end
+
+  create_table "species_xml_uploaders", force: :cascade do |t|
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.string   "uploaded_file_file_name"
+    t.string   "uploaded_file_content_type"
+    t.integer  "uploaded_file_file_size"
+    t.datetime "uploaded_file_updated_at"
   end
 
   create_table "statuses", force: :cascade do |t|

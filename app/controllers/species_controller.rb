@@ -5,6 +5,15 @@ class SpeciesController < ApplicationController
 
   before_action :set_species, only: [:show, :edit, :update, :destroy]
 
+  def create_xls
+    SpeciesExport.perform_async
+    redirect_to individuals_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Project > Last species export."
+  end
+
+  def xls
+    redirect_to SpeciesXmlUploader.last.uploaded_file.url
+  end
+
   # GET /species
   # GET /species.json
   def index

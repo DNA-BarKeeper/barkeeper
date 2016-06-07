@@ -22,7 +22,7 @@ class IndividualsController < ApplicationController
 
   def create_xls
     SpecimenExport.perform_async
-    redirect_to individuals_path, notice: "Writing Excel file to S3 in background."
+    redirect_to individuals_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Project > Last specimens export."
   end
 
   def xls

@@ -9,8 +9,10 @@ GBOLapp::Application.routes.draw do
   match 'overview', to: 'home#overview', via: 'get'
 
   get 'specimens_xls', action: :xls, controller: 'individuals'
-  get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'specimens_create_xls', action: :create_xls, controller: 'individuals'
+  get 'species_xls', action: :xls, controller: 'species'
+  get 'species_create_xls', action: :create_xls, controller: 'species'
+  get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'
   get 'specimens_without_species', action: :specimens_without_species, controller: 'individuals'
   get 'problematic_location_data', action: :problematic_location_data, controller: 'individuals'
