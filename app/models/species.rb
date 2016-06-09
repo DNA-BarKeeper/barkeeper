@@ -23,7 +23,7 @@ class Species < ActiveRecord::Base
   #   [contigs.count, contigs.uniq.count, contigs_i.uniq.count]
   # end
 
-  # version for Stuttgart
+  # version for setting Klasse from Stuttgart:
 
   def self.import(file)
     #spreadsheet = open_spreadsheet(file)
@@ -35,64 +35,92 @@ class Species < ActiveRecord::Base
 
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
-      valid_keys = ['genus_name',
-                    'species_epithet',
-                    'id',
-                    'author',
-                    'author_infra',
-                    'infraspecific',
-                    'commment',
-                    'german_name'] #only direct attributes; associations are extra:
+      order = Order.find_by_name(row['order'])
 
-      # update existing spp or create new
-
-      sp = find_by_id(row['id']) || new
-
-      # add family or assign to existing:
-      fa = Family.find_or_create_by(:name => row['family'])
-
-      # add order or assign to existing:
-      ord = Order.find_or_create_by(:name => row['order'])
-      fa.update(:order_id => ord.id)
-
-      # add higher-order or assign to existing:
-      hot = HigherOrderTaxon.find_or_create_by(:name => row['higher_order_taxon'])
-      ord.update(:higher_order_taxon_id => hot.id)
-
-      sp.attributes = row.to_hash.slice(*valid_keys)
-      sp.family_id=fa.id
-
-      unless row['variety'].nil?
-        sp.infraspecific = row['variety']
-        if sp.comment
-          sp.comment+='- is a variety'
-        else
-          sp.comment='- is a variety'
+      if order
+        taxonomic_class = TaxonomicClass.find_or_create_by(:name => row['class'])
+        if taxonomic_class
+          order.update(:taxonomic_class_id => taxonomic_class.id)
+          subdivision= Subdivision.find_or_create_by(:name => row['subdivision'])
+          if subdivision
+            taxonomic_class.update(:subdivision_id => subdivision.id)
+          end
         end
       end
 
-      sp.composed_name=sp.full_name
-      sp.species_component = sp.get_species_component
-
-      sp.save!
-
-      # if sp.genus_name.nil?
-      #   components=[]
-      #   components=sp.composed_name.split(' ')
-      #   sp.update(:genus_name => components.first)
-      #
-      #   if components.size = 3
-      #     if components[1] == 'x'
-      #       species_ep=components[1] + ' ' + components.last
-      #       sp.update(:species_epithet => species_ep)
-      #     else
-      #       sp.update(:species_epithet => components[1], :infraspecific => components.last)
-      #     end
-      #   end
-      # end
-
     end
   end
+
+  # version for Stuttgart
+
+  # def self.import(file)
+  #   #spreadsheet = open_spreadsheet(file)
+  #
+  #   spreadsheet = Roo::Excel.new(file, nil, :ignore)
+  #
+  #   header = spreadsheet.row(1)
+  #   (2..spreadsheet.last_row).each do |i|
+  #
+  #     row = Hash[[header, spreadsheet.row(i)].transpose]
+  #
+  #     valid_keys = ['genus_name',
+  #                   'species_epithet',
+  #                   'id',
+  #                   'author',
+  #                   'author_infra',
+  #                   'infraspecific',
+  #                   'commment',
+  #                   'german_name'] #only direct attributes; associations are extra:
+  #
+  #     # update existing spp or create new
+  #
+  #     sp = find_by_id(row['id']) || new
+  #
+  #     # add family or assign to existing:
+  #     fa = Family.find_or_create_by(:name => row['family'])
+  #
+  #     # add order or assign to existing:
+  #     ord = Order.find_or_create_by(:name => row['order'])
+  #     fa.update(:order_id => ord.id)
+  #
+  #     # add higher-order or assign to existing:
+  #     hot = HigherOrderTaxon.find_or_create_by(:name => row['higher_order_taxon'])
+  #     ord.update(:higher_order_taxon_id => hot.id)
+  #
+  #     sp.attributes = row.to_hash.slice(*valid_keys)
+  #     sp.family_id=fa.id
+  #
+  #     unless row['variety'].nil?
+  #       sp.infraspecific = row['variety']
+  #       if sp.comment
+  #         sp.comment+='- is a variety'
+  #       else
+  #         sp.comment='- is a variety'
+  #       end
+  #     end
+  #
+  #     sp.composed_name=sp.full_name
+  #     sp.species_component = sp.get_species_component
+  #
+  #     sp.save!
+  #
+  #     # if sp.genus_name.nil?
+  #     #   components=[]
+  #     #   components=sp.composed_name.split(' ')
+  #     #   sp.update(:genus_name => components.first)
+  #     #
+  #     #   if components.size = 3
+  #     #     if components[1] == 'x'
+  #     #       species_ep=components[1] + ' ' + components.last
+  #     #       sp.update(:species_epithet => species_ep)
+  #     #     else
+  #     #       sp.update(:species_epithet => components[1], :infraspecific => components.last)
+  #     #     end
+  #     #   end
+  #     # end
+  #
+  #   end
+  # end
 
 
   # def self.import(file)
