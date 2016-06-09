@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160607140336) do
+ActiveRecord::Schema.define(version: 20160609131329) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,12 @@ ActiveRecord::Schema.define(version: 20160607140336) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+
+  create_table "divisions", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "families", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -281,6 +287,7 @@ ActiveRecord::Schema.define(version: 20160607140336) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "higher_order_taxon_id"
+    t.integer  "taxonomic_class_id"
   end
 
   create_table "orders_projects", id: false, force: :cascade do |t|
@@ -427,6 +434,19 @@ ActiveRecord::Schema.define(version: 20160607140336) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "contig_id"
+  end
+
+  create_table "subdivisions", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "taxonomic_classes", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.integer  "subdivision_id"
   end
 
   create_table "tissues", force: :cascade do |t|

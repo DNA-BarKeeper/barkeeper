@@ -2,6 +2,7 @@ class Order < ActiveRecord::Base
   has_many :families
   has_many :species, :through => :families
   belongs_to :higher_order_taxon
+  belongs_to :taxonomic_class
   validates_presence_of :name
   has_and_belongs_to_many :projects
 
