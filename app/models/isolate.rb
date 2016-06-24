@@ -139,150 +139,157 @@ class Isolate < ActiveRecord::Base
   end
 
 
-# variant for specimen data
-# def self.import(file)
-#
-#   spreadsheet = Roo::Excelx.new(file, nil, :ignore)
-#
-#   header = spreadsheet.row(1)
-#
-#   (2..spreadsheet.last_row).each do |i|
-#
-#     row = Hash[[header, spreadsheet.row(i)].transpose]
-#
-#     # update existing isolate or create new, case-insensitiv!
-#
-#     isolate=Isolate.where("lab_nr ILIKE ?", row['GBoL Isolation No.']).first
-#     unless isolate
-#       isolate= Isolate.new(:lab_nr => row['GBoL Isolation No.'])
-#     end
-#
-#     plant_plate = PlantPlate.find_or_create_by(:name => row['GBoL5 Tissue Plate No.'].to_i.to_s)
-#
-#     isolate.plant_plate = plant_plate
-#
-#     isolate.well_pos_plant_plate = row['G5o Well']
-#     isolate.micronic_tube_id=row['Tube ID 2D (G5o Micronic)']
-#
-#     # deactived - relevant for Berlin only:
-#     # if row['DNA Bank No']
-#     #   isolate.dna_bank_id=row['DNA Bank No'].gsub(' ', '')
-#     # end
-#
-#     isolate.tissue_id = 2 # seems to be always "Leaf (Herbarium)", so no import needed
-#
-#     if row['Tissue Type']=='control'
-#       isolate.negative_control=true
-#     end
-#
-#     isolate.save!
-#
-#     # assign to existing or new individual:
-#
-#     specimen_id=row['Voucher ID']
-#     individual = Individual.find_or_create_by(:specimen_id => specimen_id.to_i.to_s)
-#
-#     individual.collector=row['Collector']
-#     individual.herbarium=row['Herbarium']
-#     individual.country=row['Country']
-#     individual.state_province=row['State/Province']
-#     individual.locality=row['Locality']
-#     individual.latitude=row['Latitude (calc.)']
-#     individual.longitude=row['Longitude (calc.)']
-#     individual.latitude_original=row['Rechts-Wert']
-#     individual.longitude_original=row['Hoch-Wert']
-#     individual.elevation=row['Elevation']
-#     individual.exposition=row['Exposition']
-#     individual.habitat=row['Habitat']
-#     individual.substrate=row['Substrate']
-#     individual.life_form=row['Life form']
-#     individual.collection_nr=row['Collection number']
-#     individual.collection_date=row['Date']
-#     individual.determination=row['Determination']
-#     individual.revision=row['Revision']
-#     individual.confirmation=row['Confirmation']
-#     individual.comments=row['Comments']
-#
-#     individual.save!
-#
-#     isolate.update(:individual_id => individual.id)
-#
-#     # assign individual to existing or new species:
-#
-#     gen_name=""
-#     sp_ep=""
-#     sub_sp=""
-#
-#     unless row['Genus'].nil?
-#       gen_name = row['Genus']
-#       gen_name.strip!
-#     end
-#
-#     unless row['Species'].nil?
-#       sp_ep= row['Species']
-#       sp_ep.strip!
-#     end
-#
-#     if row['Subspecies'].nil? and row['Variety'].nil?
-#       species=Species.where("genus_name ILIKE ?", gen_name).where("species_epithet ILIKE ?", sp_ep).where(:infraspecific => nil).first
-#     else
-#
-#       unless row['Subspecies'].nil?
-#         sub_sp = row['Subspecies']
-#         sub_sp.strip!
-#       end
-#
-#       unless row['Variety'].nil?
-#         sub_sp = row['Variety']
-#         sub_sp.strip!
-#       end
-#
-#       species=Species.where("genus_name ILIKE ?", gen_name).where("species_epithet ILIKE ?", sp_ep).where("infraspecific ILIKE ?", sub_sp).first
-#
-#     end
-#
-#     if species
-#       individual.update(:species_id => species.id)
-#     else
-#       msg="No matching spp found for #{gen_name} #{sp_ep} #{sub_sp} #{}"
-#       Issue.create(:title => msg)
-#     end
-#
-#   end
-# end
+# variant for ggf. new specimen data + ggf new isolates
+def self.import(file)
+
+  spreadsheet = Roo::Excelx.new(file, nil, :ignore)
+
+  header = spreadsheet.row(1)
+
+  (2..spreadsheet.last_row).each do |i|
+
+    row = Hash[[header, spreadsheet.row(i)].transpose]
+
+    # update existing isolate or create new, case-insensitiv!
+
+    isolate=Isolate.where("lab_nr ILIKE ?", row['GBoL Isolation No.']).first
+    unless isolate
+      isolate= Isolate.new(:lab_nr => row['GBoL Isolation No.'])
+    end
+
+    plant_plate = PlantPlate.find_or_create_by(:name => row['GBoL5 Tissue Plate No.'].to_i.to_s)
+
+    isolate.plant_plate = plant_plate
+
+    isolate.well_pos_plant_plate = row['G5o Well']
+    isolate.micronic_tube_id=row['Tube ID 2D (G5o Micronic)']
+
+    # deactivated - relevant for Berlin only:
+    # if row['DNA Bank No']
+    #   isolate.dna_bank_id=row['DNA Bank No'].gsub(' ', '')
+    # end
+
+    isolate.tissue_id = 2 # seems to be always "Leaf (Herbarium)", so no import needed
+
+    if row['Tissue Type']=='control'
+      isolate.negative_control=true
+    end
+
+    isolate.save!
+
+    # assign to existing or new individual:
+
+    specimen_id=row['Voucher ID']
+    individual = Individual.find_or_create_by(:specimen_id => specimen_id.to_i.to_s)
+
+    individual.collector=row['Collector']
+    individual.herbarium=row['Herbarium']
+    individual.country=row['Country']
+    individual.state_province=row['State/Province']
+    individual.locality=row['Locality']
+    individual.latitude=row['Latitude']
+    individual.longitude=row['Longitude']
+    individual.latitude_original=row['Latitude (original)']
+    individual.longitude_original=row['Longitude (original)']
+    individual.elevation=row['Elevation']
+    individual.exposition=row['Exposition']
+    individual.habitat=row['Habitat']
+    individual.substrate=row['Substrate']
+    individual.life_form=row['Life form']
+    individual.collection_nr=row['Collection number']
+    individual.collection_date=row['Date']
+    individual.determination=row['Determination']
+    individual.revision=row['Revision']
+    individual.confirmation=row['Confirmation']
+    individual.comments=row['Comments']
+
+    individual.save!
+
+    isolate.update(:individual_id => individual.id)
+
+    # # assign individual to existing or new species:
+    #
+    # gen_name=""
+    # sp_ep=""
+    # sub_sp=""
+    #
+    # unless row['Genus'].nil?
+    #   gen_name = row['Genus']
+    #   gen_name.strip!
+    # end
+    #
+    # unless row['Species'].nil?
+    #   sp_ep= row['Species']
+    #   sp_ep.strip!
+    # end
+    #
+    # if row['Subspecies'].nil? and row['Variety'].nil?
+    #   species=Species.where("genus_name ILIKE ?", gen_name).where("species_epithet ILIKE ?", sp_ep).where(:infraspecific => nil).first
+    # else
+    #
+    #   unless row['Subspecies'].nil?
+    #     sub_sp = row['Subspecies']
+    #     sub_sp.strip!
+    #   end
+    #
+    #   unless row['Variety'].nil?
+    #     sub_sp = row['Variety']
+    #     sub_sp.strip!
+    #   end
+    #
+    #   species=Species.where("genus_name ILIKE ?", gen_name).where("species_epithet ILIKE ?", sp_ep).where("infraspecific ILIKE ?", sub_sp).first
+    #
+    # end
+
+    species=nil
+    species_id=row['GBoL5_TaxID'].to_i
+    begin
+      species = Species.find(species_id)
+    rescue
+    end
+
+    if species
+      individual.update(:species_id => species.id)
+    else
+      msg="No matching spp found for #{species_id}"
+      Issue.create(:title => msg)
+    end
+
+  end
+end
 
 # variant for correction lat/long:
-  def self.import(file)
-
-    spreadsheet = Roo::Excelx.new(file, nil, :ignore)
-
-    header = spreadsheet.row(1)
-
-    (2..spreadsheet.last_row).each do |i|
-
-      row = Hash[[header, spreadsheet.row(i)].transpose]
-
-      # update existing isolate or create new, case-insensitiv!
-
-      begin
-        specimen_id = row['Voucher ID'].to_i
-        individual = Individual.find_by(:specimen_id => specimen_id)
-        if individual
-          individual.latitude = row['Latitude (corrected)']
-          individual.longitude = row['Longitude (corrected)']
-          individual.latitude_original = row['Latitude (corrected)']
-          individual.longitude_original = row['Longitude (corrected)']
-          individual.save!
-          puts "#{i}: individual #{specimen_id} updated."
-        else
-          puts "#{i}: individual #{specimen_id} could not be changed."
-        end
-      rescue
-        puts "#{i}: individual #{specimen_id} not found"
-      end
-
-    end
-  end
+#   def self.import(file)
+#
+#     spreadsheet = Roo::Excelx.new(file, nil, :ignore)
+#
+#     header = spreadsheet.row(1)
+#
+#     (2..spreadsheet.last_row).each do |i|
+#
+#       row = Hash[[header, spreadsheet.row(i)].transpose]
+#
+#       # update existing isolate or create new, case-insensitiv!
+#
+#       begin
+#         specimen_id = row['Voucher ID'].to_i
+#         individual = Individual.find_by(:specimen_id => specimen_id)
+#         if individual
+#           individual.latitude = row['Latitude (corrected)']
+#           individual.longitude = row['Longitude (corrected)']
+#           individual.latitude_original = row['Latitude (corrected)']
+#           individual.longitude_original = row['Longitude (corrected)']
+#           individual.save!
+#           puts "#{i}: individual #{specimen_id} updated."
+#         else
+#           puts "#{i}: individual #{specimen_id} could not be changed."
+#         end
+#       rescue
+#         puts "#{i}: individual #{specimen_id} not found"
+#       end
+#
+#     end
+#   end
 
 # variant for DNA isolate data - eg Voucherlist_GBoL5_upload_v2.xlsx
 #   def self.import(file)
