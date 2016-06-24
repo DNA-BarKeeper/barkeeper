@@ -52,7 +52,6 @@ namespace :data do
         individual = Individual.create(:specimen_id => "<no info available in DNA Bank>")
       end
 
-
       if individual.DNA_bank_id.nil?
         individual.update(:DNA_bank_id => "DB #{unit_id}")
       end
