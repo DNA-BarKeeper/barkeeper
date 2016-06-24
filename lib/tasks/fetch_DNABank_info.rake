@@ -207,9 +207,9 @@ namespace :data do
 
     list_with_UnitIDs.each do |unit_id|
 
-      if ctr > 10
-        break
-      end
+      # if ctr > 10
+      #   break
+      # end
 
       service_url="http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/UnitID'>#{unit_id}</like></filter><count>false</count></search></request>"
 
