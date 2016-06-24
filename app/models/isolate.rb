@@ -180,7 +180,8 @@ def self.import(file)
     # assign to existing or new individual:
 
     specimen_id=row['Voucher ID']
-    individual = Individual.find_or_create_by(:specimen_id => specimen_id.to_i.to_s)
+    # individual = Individual.find_or_create_by(:specimen_id => specimen_id.to_i.to_s)
+    individual = Individual.find_or_create_by(:specimen_id => specimen_id)
 
     individual.collector=row['Collector']
     individual.herbarium=row['Herbarium']
