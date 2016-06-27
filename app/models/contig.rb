@@ -200,13 +200,9 @@ class Contig < ActiveRecord::Base
         fas_str+= ">#{self.name} - consensus\n"
       end
       fas_str+=partial_con.aligned_sequence
-
       ctr+=1
-
     end
-
     fas_str
-
   end
 
   def auto_overlap
@@ -715,7 +711,8 @@ class Contig < ActiveRecord::Base
     if perc <= 0.05
 
       # wenn zu wenig overlap:
-      if valids < 15
+      # if valids < 15
+      if valids < 9
         #return nil
         nil
       else
