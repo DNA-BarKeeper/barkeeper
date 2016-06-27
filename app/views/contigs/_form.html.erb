@@ -46,6 +46,13 @@
               <% end %>
             </div>
 
+            <div >
+              <%= f.label 'Minimum overlap length: ' %>
+              <%= f.text_field :overlap_length, :class => "sequence_position_right" %>
+              <%= f.label 'Maximum % mismatch in overlap: ' %>
+              <%= f.text_field :allowed_mismatch_percent, :class => "sequence_position_right" %>
+            </div>
+
             <div class="form-group">
               <%= f.label :comment %>
               <%= f.text_field :comment, class: 'form-control' %>

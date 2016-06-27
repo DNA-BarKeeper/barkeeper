@@ -708,11 +708,12 @@ class Contig < ActiveRecord::Base
 
     perc = (diffs.to_f/valids)
 
-    if perc <= 0.05
+    # if perc <= 0.05
+    if perc <= self.allowed_mismatch_percent
 
       # wenn zu wenig overlap:
       # if valids < 15
-      if valids < 9
+      if valids < self.overlap_length
         #return nil
         nil
       else

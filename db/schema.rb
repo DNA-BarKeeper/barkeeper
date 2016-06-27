@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160609133011) do
+ActiveRecord::Schema.define(version: 20160627170221) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 20160609133011) do
   end
 
   create_table "contigs", force: :cascade do |t|
-    t.string   "name",               limit: 255
+    t.string   "name",                     limit: 255
     t.text     "consensus"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -36,15 +36,17 @@ ActiveRecord::Schema.define(version: 20160609133011) do
     t.text     "partial_cons1"
     t.text     "partial_cons2"
     t.boolean  "assembly_tried"
-    t.string   "aligned_cons",       limit: 255
+    t.string   "aligned_cons",             limit: 255
     t.text     "pde"
     t.text     "fas"
-    t.boolean  "verified",                       default: false
+    t.boolean  "verified",                             default: false
     t.integer  "verified_by"
     t.datetime "verified_at"
     t.string   "comment"
-    t.boolean  "imported",                       default: false
+    t.boolean  "imported",                             default: false
     t.integer  "partial_cons_count"
+    t.integer  "overlap_length",                       default: 15
+    t.integer  "allowed_mismatch_percent",             default: 5
   end
 
   create_table "contigs_projects", id: false, force: :cascade do |t|
