@@ -253,7 +253,9 @@ class PrimerRead < ActiveRecord::Base
 
           isolate_component = m[1]
 
-          if isolate_component == 'CAR'
+          # BGBM cases:
+
+          if %w{POA CAR AST}.include? isolate_component
             regex = /^_([A-Za-z0-9]+)_(.+)$/
             matches2 = m[2].match(regex)
             isolate_component = matches2[1]

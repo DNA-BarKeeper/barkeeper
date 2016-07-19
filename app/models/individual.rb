@@ -8,13 +8,13 @@ class Individual < ActiveRecord::Base
 
   pg_search_scope :quick_search, against: [:specimen_id, :herbarium, :collector , :collection_nr]
 
-  scope :without_species, -> {where(:species => nil)}
+  scope :without_species, -> { where(:species => nil) }
 
-  scope :without_isolates, ->{joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
+  scope :without_isolates, ->{ joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
       select('individuals.id').
       group('individuals.id').having('count(isolates.id) = 0')}
 
-  scope :no_species_isolates, ->{without_species.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
+  scope :no_species_isolates, ->{ without_species.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
       select('individuals.id').
       group('individuals.id').having('count(isolates.id) = 0')}
 
