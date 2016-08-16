@@ -95,7 +95,7 @@ class SpeciesController < ApplicationController
     respond_to do |format|
       if @species.save
         @species.update(:species_component => @species.get_species_component)
-        @species.update(:composed_name=>sp.full_name)
+        @species.update(:composed_name=>@species.full_name)
         format.html { redirect_to species_index_path, notice: 'Species was successfully created.' }
         format.json { render :show, status: :created, location: @species }
       else
