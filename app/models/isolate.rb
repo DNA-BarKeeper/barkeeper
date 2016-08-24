@@ -11,6 +11,21 @@ class Isolate < ActiveRecord::Base
   scope :recent, ->  { where('isolates.updated_at > ?', 1.hours.ago)}
   scope :no_controls, -> { where(:negative_control => false)}
 
+  def self.isolates_in_order(order_id)
+
+    puts "Web app ID\tGBOL-Nr\tArtname\tmicronic plate id copy\twell pos micronic plate copy\tmicronic_tube_id_copy\tconcentration copy\tLocation in Rack\tRack\tShelf\tFreezer"
+
+    Isolate.includes(:individual).joins(:individual => {:species => {:family => :order}}).where(families: {order_id: order_id}).each do |i|
+      if i.micronic_plate_id_copy
+
+        micronic_plate_copy = MicronicPlate.includes(:lab_rack).find(i.micronic_plate_id_copy)
+
+        puts "#{i.id}\t#{i.lab_nr}\t#{i.individual.species.composed_name}\t#{micronic_plate_copy.micronic_plate_id}\t#{i.micronic_plate_id_copy}\t#{i.well_pos_micronic_plate_copy}\t#{i.micronic_tube_id_copy}\t#{i.concentration_copy}#{micronic_plate_copy.location_in_rack}\t#{micronic_plate_copy.lab_rack.rackcode}\t#{micronic_plate_copy.lab_rack.shelf}\t#{micronic_plate_copy.lab_rack.freezer.freezercode}"
+      end
+    end
+
+  end
+
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
 
     isolates=Isolate.select("species_id").includes(:individual).joins(:individual => {:species => {:family => {:order => :higher_order_taxon}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
@@ -19,6 +34,7 @@ class Isolate < ActiveRecord::Base
 
     [isolates.count, isolates_s.uniq.count, isolates.uniq.count, isolates_i.uniq.count]
   end
+
 
   def individual_name
     individual.try(:specimen_id)

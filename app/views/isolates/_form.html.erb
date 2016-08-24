@@ -140,13 +140,13 @@
                         <b>Location in Rack:</b>
                         <%= micronic_plate_copy.location_in_rack %>
                         <% if micronic_plate_copy.lab_rack %>
-                            <b>Rack:</b>
+                            -<b> Rack:</b>
                             <% lab_rack = micronic_plate_copy.lab_rack %>
                             <%= lab_rack.rackcode %>
-                            <b>Shelf:</b>
+                            -<b> Shelf:</b>
                             <%= lab_rack.shelf %>
                             <% if lab_rack.freezer %>
-                                <b>Freezer:</b>
+                                -<b> Freezer:</b>
                                 <%== lab_rack.freezer.freezercode %>
                             <% end %>
                         <% end %>
