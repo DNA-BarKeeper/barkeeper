@@ -20,7 +20,7 @@ class Isolate < ActiveRecord::Base
 
         micronic_plate_copy = MicronicPlate.includes(:lab_rack).find(i.micronic_plate_id_copy)
 
-        puts "#{i.id}\t#{i.lab_nr}\t#{i.individual.species.composed_name}\t#{micronic_plate_copy.micronic_plate_id}\t#{i.micronic_plate_id_copy}\t#{i.well_pos_micronic_plate_copy}\t#{i.micronic_tube_id_copy}\t#{i.concentration_copy}#{micronic_plate_copy.location_in_rack}\t#{micronic_plate_copy.lab_rack.rackcode}\t#{micronic_plate_copy.lab_rack.shelf}\t#{micronic_plate_copy.lab_rack.freezer.freezercode}"
+        puts "#{i.id}\t#{i.lab_nr}\t#{i.individual.species.composed_name}\t#{micronic_plate_copy.micronic_plate_id}\t#{i.micronic_plate_id_copy}\t#{i.well_pos_micronic_plate_copy}\t#{i.micronic_tube_id_copy}\t#{i.concentration_copy}#{micronic_plate_copy.location_in_rack}\t#{micronic_plate_copy.try(:lab_rack).try(:rackcode)}\t#{micronic_plate_copy.try(:lab_rack).try(:shelf)}\t#{micronic_plate_copy.try(:lab_rack).try(:freezer).try(:freezercode)}"
       end
     end
 
