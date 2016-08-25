@@ -13,7 +13,9 @@ class Isolate < ActiveRecord::Base
 
   def self.isolates_in_order(order_id)
 
-    puts "Web app ID\tGBOL-Nr\tArtname\tmicronic plate id copy\twell pos micronic plate copy\tmicronic_tube_id_copy\tconcentration copy\tLocation in Rack\tRack\tShelf\tFreezer\tContigs"
+    markers=Marker.gbol_marker.map { |m| m.name + "\t" }.join
+
+    puts "Web app ID\tGBOL-Nr\tArtname\tmicronic plate id copy\twell pos micronic plate copy\tmicronic_tube_id_copy\tconcentration copy\tLocation in Rack\tRack\tShelf\tFreezer\t#{markers}"
 
     Isolate.includes(:individual).joins(:individual => {:species => {:family => :order}}).where(families: {order_id: order_id}).each do |i|
 
@@ -21,7 +23,14 @@ class Isolate < ActiveRecord::Base
 
         micronic_plate_copy = MicronicPlate.includes(:lab_rack).find(i.micronic_plate_id_copy)
 
-        puts "#{i.id}\t#{i.lab_nr}\t#{i.individual.species.composed_name}\t#{micronic_plate_copy.micronic_plate_id}\t#{i.well_pos_micronic_plate_copy}\t#{i.micronic_tube_id_copy.to_i}\t#{i.concentration_copy}\t#{micronic_plate_copy.location_in_rack}\t#{micronic_plate_copy.try(:lab_rack).try(:rackcode)}\t#{micronic_plate_copy.try(:lab_rack).try(:shelf)}\t#{micronic_plate_copy.try(:lab_rack).try(:freezer).try(:freezercode)}\t#{i.contigs.count}"
+        marker_contig_counts = ""
+
+        Marker.gbol_marker.each do |m|
+          marker_contig_counts += "#{i.contigs.where(:marker_id => m.id).count}\t"
+        end
+
+
+        puts "#{i.id}\t#{i.lab_nr}\t#{i.individual.species.composed_name}\t#{micronic_plate_copy.micronic_plate_id}\t#{i.well_pos_micronic_plate_copy}\t#{i.micronic_tube_id_copy.to_i}\t#{i.concentration_copy}\t#{micronic_plate_copy.location_in_rack}\t#{micronic_plate_copy.try(:lab_rack).try(:rackcode)}\t#{micronic_plate_copy.try(:lab_rack).try(:shelf)}\t#{micronic_plate_copy.try(:lab_rack).try(:freezer).try(:freezercode)}\t#{marker_contig_counts}"
       end
 
     end
