@@ -1,4 +1,4 @@
-class IndividualDatatable
+class IndividualStatusDatatable
 
   #ToDo: fig out if this inclusion is necessary. Found on https://gist.github.com/jhjguxin/4544826, but unclear if makes sense. "delegate" statement alone does not work.
 
