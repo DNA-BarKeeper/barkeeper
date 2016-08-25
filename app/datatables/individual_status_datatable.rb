@@ -38,7 +38,7 @@ class IndividualDatatable
       isolate=''
 
       if individual
-        isolate=individual.isolate.last.lab_nr
+        isolate=individual.isolates.last.lab_nr
       end
 
       [
