@@ -223,7 +223,8 @@ class Contig < ActiveRecord::Base
       return
     elsif remaining_reads.size== 1
 
-      single_read = self.primer_reads.use_for_assembly.first #Deletes the element at the specified index, returning that element, or nil if the index is out of range.
+      single_read = self.primer_reads.use_for_assembly.first
+      single_read.get_aligned_peak_indices
       pc=PartialCon.create(:aligned_sequence => single_read.trimmed_seq, :aligned_qualities => single_read.trimmed_quals, :contig_id => self.id)
       single_read.aligned_qualities=single_read.trimmed_quals
       single_read.aligned_seq=single_read.trimmed_seq
@@ -238,6 +239,7 @@ class Contig < ActiveRecord::Base
       ms.save
       self.marker_sequence=ms
       return
+
     elsif remaining_reads.size == 0
       msg= 'Need at least 1 read for creating consensus sequence.'
       return
