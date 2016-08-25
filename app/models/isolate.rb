@@ -13,7 +13,7 @@ class Isolate < ActiveRecord::Base
 
   def self.isolates_in_order(order_id)
 
-    markers=Marker.gbol_marker.map { |m| m.name + "\t" }.join
+    markers=Marker.gbol_marker.order(:name).map { |m| m.name + "\t" }.join
 
     puts "Web app ID\tGBOL-Nr\tArtname\tmicronic plate id copy\twell pos micronic plate copy\tmicronic_tube_id_copy\tconcentration copy\tLocation in Rack\tRack\tShelf\tFreezer\t#{markers}"
 
@@ -25,7 +25,7 @@ class Isolate < ActiveRecord::Base
 
         marker_contig_counts_string = ""
 
-        Marker.gbol_marker.each do |m|
+        Marker.gbol_marker.order(:name).each do |m|
           marker_contig_counts_string += "#{i.contigs.assembled.where(:marker_id => m.id).count}\t"
         end
 
