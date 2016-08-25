@@ -11,7 +11,7 @@ jQuery ->
       { "orderable": false, "targets": 2 }
       { "orderable": false, "targets": 4 }
     ],
-    "order": [ 5, 'desc' ]
+    "order": [ 3, 'desc' ]
   } );
   $('#species_family_name').autocomplete source: $('#species_family_name').data('autocomplete-source')
   $('#wiki').width($(document).width()).height($(document).height())
