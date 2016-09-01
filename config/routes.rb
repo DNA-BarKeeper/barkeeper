@@ -23,6 +23,7 @@ GBOLapp::Application.routes.draw do
   get 'primer_reads/:id/edit/:pos', action: :go_to_pos, controller: 'primer_reads'
 
   resources :contigs do
+
     collection do
       get 'show_need_verify'
       get 'filter'
@@ -31,8 +32,10 @@ GBOLapp::Application.routes.draw do
       get 'duplicates'
       post :change_via_script
       post :compare_contigs
+      post :as_fasq
       get 'externally_verified'
     end
+
     member do
       get 'verify_next'
       get 'verify'
@@ -43,6 +46,7 @@ GBOLapp::Application.routes.draw do
       get 'overlap'
       get 'overlap_background'
     end
+
   end
 
   resources :primer_reads do
