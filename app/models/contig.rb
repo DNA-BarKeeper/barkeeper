@@ -226,7 +226,7 @@ class Contig < ActiveRecord::Base
 
     # header
 
-    fasq_str = "@#{self.name} | #{sprintf '%.2f', coverage}\n"
+    fasq_str = "@#{self.name} | #{sprintf '%.2f', coverage}"
 
     # seq
 
