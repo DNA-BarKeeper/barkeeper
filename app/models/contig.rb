@@ -241,6 +241,7 @@ class Contig < ActiveRecord::Base
     #qual
 
     ctr=0
+
     pc.aligned_qualities.each do |q|
       if q > 0
         fasq_str+= (q+33).chr
@@ -251,7 +252,7 @@ class Contig < ActiveRecord::Base
     #check that seq + qual have same length -> for externally verified this needs not be true
 
     unless seq_no_gaps.length == ctr
-      puts "Error: seq + qual do not have same length"
+      puts "Error: seq (#{seq_no_gaps.length}) + qual (#{ctr}) do not have same length"
       return
     end
 
