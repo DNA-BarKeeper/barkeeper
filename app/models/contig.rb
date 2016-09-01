@@ -205,6 +205,63 @@ class Contig < ActiveRecord::Base
     fas_str
   end
 
+  def as_fasq
+
+    fasq_str=''
+
+    # restrict to cases with partial_cons count == 1
+    if self.partial_cons.count > 1 or self.partial_cons.count < 1
+      puts "Must have 1 partial_cons."
+      return
+    end
+
+    pc = self.partial_cons.first
+
+    # compute coverage
+
+    used_nucleotides_count=0
+
+    pc.primer_reads.each do |r|
+      used_nucleotides_count += (r.aligned_seq.length - r.aligned_seq.count('-'))
+    end
+
+    coverage =(used_nucleotides_count.to_f/pc.aligned_sequence.length)
+
+    # header
+
+    fasq_str+= "@#{self.name} | #{sprintf '%.2f', coverage}\n"
+
+    # seq
+
+    raw_cons = pc.aligned_sequence
+
+    seq_no_gaps = raw_cons.gsub(/-/, '')
+    fasq_str+= seq_no_gaps + "\n"
+    fasq_str+= "+\n"
+
+    #qual
+
+    ctr=0
+    pc.aligned_qualities.each do |q|
+      if q > 0
+        fasq_str+= (q+33).chr
+        ctr+=1
+      end
+    end
+
+    #check that seq + qual have same length
+    unless seq_no_gaps.length == ctr
+      puts "Error: seq + qual do not have same length"
+      return
+    end
+
+    fasq_str += "\n"
+
+    puts fasq_str
+
+  end
+
+
   def auto_overlap
 
     self.partial_cons.destroy_all

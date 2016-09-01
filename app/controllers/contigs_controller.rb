@@ -1,6 +1,6 @@
 class ContigsController < ApplicationController
 
-  before_filter :authenticate_user!, :except => [:edit, :index, :filter, :change_via_script, :compare_contigs]
+  before_filter :authenticate_user!, :except => [:edit, :index, :filter, :change_via_script, :compare_contigs, :as_fasq]
 
   skip_before_action :verify_authenticity_token
 
@@ -12,6 +12,24 @@ class ContigsController < ApplicationController
       format.html
       format.json { render json: ContigDatatable.new(view_context, false, true, false) }
     end
+  end
+
+
+  def as_fasq
+    contig_names=params[:contig_names]
+
+    # add rpl16
+
+    contig_names_array=contig_names.split
+
+    contig_names_array.map do |contig|
+      contig += "_rpl16"
+    end
+
+    contig_names_array.join("\n")
+
+    send_data(contig_names_array, :filename => "fasq.txt", :type => "application/txt")
+
   end
 
   def compare_contigs
