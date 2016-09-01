@@ -206,8 +206,6 @@ class Contig < ActiveRecord::Base
 
   def as_fasq
 
-    fasq_str=''
-
     # restrict to cases with partial_cons count == 1
     if self.partial_cons.count > 1 or self.partial_cons.count < 1
       puts "Must have 1 partial_cons."
@@ -228,37 +226,35 @@ class Contig < ActiveRecord::Base
 
     # header
 
-    fasq_str+= "@#{self.name} | #{sprintf '%.2f', coverage}\n"
+    fasq_str = "@#{self.name} | #{sprintf '%.2f', coverage}\n"
 
     # seq
 
     raw_cons = pc.aligned_sequence
 
-    seq_no_gaps = raw_cons.gsub(/-/, '')
-    fasq_str+= seq_no_gaps + "\n"
-    fasq_str+= "+\n"
+    # seq_no_gaps = raw_cons.gsub(/-/, '') #-> does not work like this, quality scrore array may contain > 0 values where cons. has gap
 
-    #qual
+    cons_seq=''
+    qual_str=''
 
     ctr=0
 
     pc.aligned_qualities.each do |q|
       if q > 0
-        fasq_str+= (q+33).chr
+        cons_seq += raw_cons[ctr]
+        qual_str+= (q+33).chr
         ctr+=1
       end
     end
 
     #check that seq + qual have same length -> for externally verified this needs not be true
 
-    unless seq_no_gaps.length == ctr
+    unless cons_seq.length == qual_str.length
       puts "Error: seq (#{seq_no_gaps.length}) + qual (#{ctr}) do not have same length"
       return
     end
 
-    fasq_str += "\n"
-
-    fasq_str
+    "#{fasq_str}\n#{cons_seq}\n+\n#{qual_str}\n"
 
   end
 
