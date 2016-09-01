@@ -177,7 +177,6 @@ class Contig < ActiveRecord::Base
       pde_matrix+="#{seq}\\FF\n"
     end
 
-
     pde_closure="</block></matrix></alignment></phyde>"
 
     final_pde_str=pde_beginning+pde_dimensions+pde_header+"<matrix>"+pde_matrix_dimensions+pde_matrix+pde_closure
@@ -249,7 +248,8 @@ class Contig < ActiveRecord::Base
       end
     end
 
-    #check that seq + qual have same length
+    #check that seq + qual have same length -> for externally verified this needs not be true
+
     unless seq_no_gaps.length == ctr
       puts "Error: seq + qual do not have same length"
       return

@@ -39,8 +39,18 @@ class ContigsController < ApplicationController
 
       if contig
 
-        if contig.verified?
-          fasq_str += contig.as_fasq
+        if contig.verified
+          if contig.imported
+            not_included_str += "#{contig_name}: Externally verified -> no quality scores.\n"
+          else
+            begin
+              fasq = contig.as_fasq
+              fasq_str += fasq
+            rescue
+              not_included_str += "#{contig_name}: Unknown issue.\n"
+            end
+          end
+
         else
           not_included_str += "#{contig_name}: not verified.\n"
         end
