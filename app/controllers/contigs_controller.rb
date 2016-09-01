@@ -51,7 +51,7 @@ class ContigsController < ApplicationController
 
     end
 
-    send_data(fasq_str, :filename => "fasq.txt", :type => "application/txt")
+    send_data(fasq_str+not_included_str, :filename => "fasq.txt", :type => "application/txt")
 
   end
 
