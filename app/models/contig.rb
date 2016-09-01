@@ -257,7 +257,7 @@ class Contig < ActiveRecord::Base
 
     fasq_str += "\n"
 
-    puts fasq_str
+    fasq_str
 
   end
 
