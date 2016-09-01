@@ -16,19 +16,42 @@ class ContigsController < ApplicationController
 
 
   def as_fasq
+
     contig_names=params[:contig_names]
 
-    # add rpl16
+    marker=params[:marker]
+
 
     contig_names_array=contig_names.split
 
-    contig_names_array.map do |contig|
-      contig += "_rpl16"
+    fasq_str=""
+
+    not_included_str="\n\n\n--------------------------------------------------------------------\n\n\n"
+
+    contig_names_array.map do |contig_name|
+
+      contig_name += "_#{marker}"
+
+      # mk case insensitiv
+      contig=Contig.where("name ILIKE ?", contig_name).first
+
+      #ignore if not verified
+
+      if contig
+
+        if contig.verified?
+          fasq_str += contig.as_fasq
+        else
+          not_included_str += "#{contig_name}: not verified.\n"
+        end
+
+      else
+        not_included_str += "#{contig_name}: no record in GBOL5 Web App.\n"
+      end
+
     end
 
-    contig_names_array.join("\n")
-
-    send_data(contig_names_array, :filename => "fasq.txt", :type => "application/txt")
+    send_data(fasq_str, :filename => "fasq.txt", :type => "application/txt")
 
   end
 
@@ -438,7 +461,7 @@ class ContigsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def contig_params
-    params.require(:contig).permit(:overlap_length, :allowed_mismatch_percent, :imported, :contig_names, :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
+    params.require(:contig).permit(:marker, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names, :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
                                    :isolate_name, :verified)
   end
 
