@@ -204,7 +204,13 @@ class Contig < ActiveRecord::Base
     fas_str
   end
 
-  def as_fasq
+  def as_fasq(mira)
+
+    use_mira=false
+
+    if mira == "1" or mira == 1
+      use_mira=true
+    end
 
     # restrict to cases with partial_cons count == 1
     if self.partial_cons.count > 1 or self.partial_cons.count < 1
@@ -239,13 +245,20 @@ class Contig < ActiveRecord::Base
 
     ctr=0
 
-    pc.aligned_qualities.each do |q|
+    if use_mira
+      qualities_to_use=pc.aligned_qualities
+    else
+      qualities_to_use=pc.mira_consensus_qualities
+    end
+
+    qualities_to_use.each do |q|
       if q > 0
         cons_seq += raw_cons[ctr]
         qual_str+= (q+33).chr
         ctr+=1
       end
     end
+
 
     #check that seq + qual have same length -> for externally verified this needs not be true
 
@@ -257,6 +270,7 @@ class Contig < ActiveRecord::Base
     "#{fasq_str}\n#{cons_seq}\n+\n#{qual_str}\n"
 
   end
+
 
 
   def auto_overlap
@@ -790,7 +804,6 @@ class Contig < ActiveRecord::Base
   def not_assembled
     self.primer_reads.not_assembled.as_json
   end
-
 
   def compute_consensus(seq1, qual1, seq2, qual2)
     consensus_seq=''

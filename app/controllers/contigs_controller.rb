@@ -21,6 +21,8 @@ class ContigsController < ApplicationController
 
     marker=params[:marker]
 
+    mira=params[:mira]
+
 
     contig_names_array=contig_names.split
 
@@ -40,11 +42,12 @@ class ContigsController < ApplicationController
       if contig
 
         if contig.verified
+
           if contig.imported
             not_included_str += "#{contig_name}: Externally verified -> no quality scores.\n"
           else
             begin
-              fasq = contig.as_fasq
+              fasq = contig.as_fasq(mira)
               fasq_str += fasq
             rescue
               not_included_str += "#{contig_name}: Unknown issue.\n"
@@ -471,7 +474,7 @@ class ContigsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def contig_params
-    params.require(:contig).permit(:marker, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names, :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
+    params.require(:contig).permit(:mira, :marker, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names, :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
                                    :isolate_name, :verified)
   end
 

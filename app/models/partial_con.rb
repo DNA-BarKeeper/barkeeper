@@ -2,6 +2,47 @@ class PartialCon < ActiveRecord::Base
   belongs_to :contig, counter_cache: true
   has_many :primer_reads
 
+  def mira_consensus_qualities
+
+    group_probs_all_pos=[]
+
+    # for each position:
+    (0...aligned_sequence.length).each do |i|
+
+      unless aligned_qualities[i] < 0 #cases with gap in consensus, -1 or -10
+
+        #get group probabilities for consensus character:
+
+        group_prob=0
+
+        primer_reads.each do |r|
+
+          if r.aligned_seq[i]==aligned_sequence[i]
+
+            group_prob += r.aligned_qualities[i]
+
+          end
+
+        end
+
+        if group_prob > 93
+          group_probs_all_pos << 93
+        else
+          group_probs_all_pos << group_prob
+        end
+
+      end
+
+    end
+
+    group_probs_all_pos
+
+  end
+
+  def test_name
+    puts id
+  end
+
   def as_json(options={})
     super(:include => [:primer_reads])
   end
