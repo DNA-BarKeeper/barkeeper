@@ -15,13 +15,21 @@ class PartialCon < ActiveRecord::Base
 
         group_prob=0
 
+        ctr=0
+
         primer_reads.each do |r|
+
+          if ctr>1
+            break
+          end
 
           if r.aligned_seq[i]==aligned_sequence[i]
 
             group_prob += r.aligned_qualities[i]
 
           end
+
+          ctr+=1
 
         end
 

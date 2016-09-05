@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160627170221) do
+ActiveRecord::Schema.define(version: 20160905163301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -199,6 +199,8 @@ ActiveRecord::Schema.define(version: 20160627170221) do
     t.string   "micronic_tube_id_orig"
     t.string   "micronic_tube_id_copy"
     t.integer  "user_id"
+    t.text     "comment_orig"
+    t.text     "comment_copy"
   end
 
   create_table "isolates_projects", id: false, force: :cascade do |t|

@@ -114,6 +114,11 @@
                   <%= f.text_field :concentration_orig, class: 'form-control' %>
                 </div>
 
+                <div class="form-group">
+                  <%= f.label :comment_orig, 'Comment' %>
+                  <%= f.text_area :comment_orig, class: 'form-control' %>
+                </div>
+
               </div>
 
               <div class="isolate-copy">
@@ -168,6 +173,12 @@
                   <%= f.label :concentration_copy, 'Concentration (ng/µl)' %>
                   <%= f.text_field :concentration_copy, class: 'form-control' %>
                 </div>
+
+                <div class="form-group">
+                  <%= f.label :comment_copy, 'Comment' %>
+                  <%= f.text_area :comment_copy, class: 'form-control' %>
+                </div>
+
               </div>
 
             </div>

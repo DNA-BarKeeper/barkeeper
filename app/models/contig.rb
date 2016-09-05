@@ -289,6 +289,7 @@ class Contig < ActiveRecord::Base
       # todo: arbitrary, change.
       msg= 'Currently no more than 10 reads allowed for assembly.'
       return
+
     elsif remaining_reads.size== 1
 
       single_read = self.primer_reads.use_for_assembly.first
