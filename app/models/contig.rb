@@ -365,7 +365,6 @@ class Contig < ActiveRecord::Base
 
         pc=PartialCon.create(:aligned_sequence => growing_consensus[:consensus], :aligned_qualities => growing_consensus[:consensus_qualities])
 
-
         growing_consensus[:reads].each do |aligned_read|
 
           #get original primer_read from db:
@@ -780,7 +779,7 @@ class Contig < ActiveRecord::Base
     perc = (diffs.to_f/valids)
 
     # if perc <= 0.05
-    if perc <= self.allowed_mismatch_percent
+    if perc <= self.allowed_mismatch_percent/100.0
 
       # wenn zu wenig overlap:
       # if valids < 15
