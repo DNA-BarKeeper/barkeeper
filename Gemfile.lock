@@ -92,7 +92,7 @@ GEM
       xpath (~> 2.0)
     celluloid (0.16.0)
       timers (~> 4.0.0)
-    childprocess (0.5.5)
+    childprocess (0.6.3)
       ffi (~> 1.0, >= 1.0.11)
     chosen-rails (1.4.1)
       coffee-rails (>= 3.2)
@@ -134,7 +134,7 @@ GEM
     docile (1.1.5)
     erubis (2.7.0)
     execjs (2.2.2)
-    ffi (1.9.6)
+    ffi (1.9.18)
     fssm (0.2.10)
     globalid (0.3.0)
       activesupport (>= 4.1.0)
@@ -279,9 +279,8 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    selenium-webdriver (2.44.0)
+    selenium-webdriver (3.3.0)
       childprocess (~> 0.5)
-      multi_json (~> 1.0)
       rubyzip (~> 1.0)
       websocket (~> 1.0)
     sexp_processor (4.4.5)
@@ -294,9 +293,9 @@ GEM
     simple_form (3.1.0)
       actionpack (~> 4.0)
       activemodel (~> 4.0)
-    simplecov (0.11.2)
+    simplecov (0.14.1)
       docile (~> 1.1.0)
-      json (~> 1.8)
+      json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
     sinatra (1.4.5)
@@ -337,7 +336,7 @@ GEM
       nokogiri (>= 1.2.0)
       rack (>= 1.0)
       rack-test (>= 0.5.3)
-    websocket (1.2.1)
+    websocket (1.2.4)
     whenever (0.9.4)
       chronic (>= 0.6.3)
     will_paginate (3.0.7)
@@ -401,3 +400,9 @@ DEPENDENCIES
   will_paginate (> 3.0)
   will_paginate-bootstrap
   yard
+
+RUBY VERSION
+   ruby 2.2.0p0
+
+BUNDLED WITH
+   1.14.6

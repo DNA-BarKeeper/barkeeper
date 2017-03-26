@@ -201,7 +201,7 @@ class XmlUploader < ActiveRecord::Base
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
 
-                    if individual.country == 'Germany'
+                    if individual.country == 'Germany' or individual.country == 'Deutschland'
                       # tests first if is a Bundesland; outputs nothing if other crap was entered in this field:
 
                       if @states.include? individual.state_province

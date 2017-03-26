@@ -19,7 +19,6 @@ namespace :data do
       gbol_nrs=[]
       gbol_nrs[0] = gbol_nr_1
 
-
       if gbol_nr_1[2]=='O'
         gbol_nr_2=gbol_nr_1.clone
         gbol_nr_2[2]='o'
@@ -64,7 +63,9 @@ namespace :data do
           locality=unit.at_xpath('//abcd21:LocalityText').content
           longitude=unit.at_xpath('//abcd21:LongitudeDecimal').content
           latitude=unit.at_xpath('//abcd21:LatitudeDecimal').content
+
         rescue
+
         end
 
         if unit_id
@@ -138,7 +139,7 @@ namespace :data do
             isolate.update(:individual => individual)
           end
 
-          break # no need to try alternative "gbOl" spelling if already found a match
+          break # no need to try alternative "gbol" spelling if already found a match
 
         end
 
