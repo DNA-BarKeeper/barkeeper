@@ -8,5 +8,6 @@
 //= require chosen.jquery
 //= require turbolinks
 //= require jquery.turbolinks
+//= require d3
 //= require bootstrap
 //= require_tree .
