@@ -7,11 +7,10 @@ class ContigDatatable
 
   delegate :params, :link_to, :h, to: :@view
 
-  def initialize(view, need_verify, imported, duplicates)
+  # def initialize(view, need_verify, imported, duplicates)
+  def initialize(view, contigs_to_show)
     @view = view
-    @need_verify = need_verify
-    @imported = imported
-    @duplicates = duplicates
+    @contigs_to_show = contigs_to_show
   end
 
   def as_json(options = {})
@@ -58,18 +57,29 @@ class ContigDatatable
 
   def fetch_contigs
 
-    if @duplicates
+    case @contigs_to_show
 
-      names_with_multiple = Contig.group(:name).having("count(name) > 1").count.keys
-
-      contigs=Contig.where(name: names_with_multiple).order("#{sort_column} #{sort_direction}")
-
-    elsif @need_verify
-      contigs = Contig.need_verification.order("#{sort_column} #{sort_direction}")
-    elsif @imported
-      contigs=Contig.externally_edited.order("#{sort_column} #{sort_direction}")
-    else
-      contigs = Contig.order("#{sort_column} #{sort_direction}")
+      when "duplicates"
+        names_with_multiple = Contig.group(:name).having("count(name) > 1").count.keys
+        contigs=Contig.where(name: names_with_multiple).order("#{sort_column} #{sort_direction}")
+      when "need_verification"
+        contigs = Contig.need_verification.order("#{sort_column} #{sort_direction}")
+      when "imported"
+        contigs=Contig.externally_edited.order("#{sort_column} #{sort_direction}")
+      when "caryophyllales_verified"
+        contigs=Contig.caryophyllales.verified.order("#{sort_column} #{sort_direction}")
+      when "caryophyllales_need_verification"
+        contigs=Contig.caryophyllales.need_verification.order("#{sort_column} #{sort_direction}")
+      when "caryophyllales_not_assembled"
+        contigs=Contig.caryophyllales.not_assembled.order("#{sort_column} #{sort_direction}")
+      when "festuca_verified"
+        contigs=Contig.festuca.verified.order("#{sort_column} #{sort_direction}")
+      when "festuca_need_verification"
+        contigs=Contig.festuca.need_verification.order("#{sort_column} #{sort_direction}")
+      when "festuca_not_assembled"
+        contigs=Contig.festuca.not_assembled.order("#{sort_column} #{sort_direction}")
+      else
+        contigs = Contig.order("#{sort_column} #{sort_direction}")
     end
 
     contigs = contigs.page(page).per_page(per_page)
@@ -79,6 +89,7 @@ class ContigDatatable
     end
     contigs
   end
+
 
   def page
     params[:iDisplayStart].to_i/per_page + 1

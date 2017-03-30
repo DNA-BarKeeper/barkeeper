@@ -9,6 +9,10 @@ class Contig < ActiveRecord::Base
   has_many :partial_cons
   has_and_belongs_to_many :projects
 
+  #how to add "includes" statement here?
+  scope :caryophyllales, -> { includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => :order }}}).where(orders: {name: "Caryophyllales"})}
+  scope :festuca, -> { includes(:isolate => :individual).joins(:isolate => {:individual => :species}).where(species: {genus_name: "Festuca"})}
+
   scope :assembled, -> { where(:assembled => true)}
   scope :not_assembled, -> { where.not(:assembled => true)}
   scope :externally_edited, -> { where(:imported => true)}
@@ -20,6 +24,7 @@ class Contig < ActiveRecord::Base
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
 
+    # todo (how to) includes spp. etc (on top of individual)
     contigs=Contig.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     contigs_s=Contig.select("species_component").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     contigs_i=Contig.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})

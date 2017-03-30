@@ -10,7 +10,7 @@ class ContigsController < ApplicationController
   def externally_verified
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, false, true, false) }
+      format.json { render json: ContigDatatable.new(view_context, "imported") }
     end
   end
 
@@ -251,23 +251,69 @@ class ContigsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, false, false, false) }
+      format.json { render json: ContigDatatable.new(view_context, "all") }
     end
   end
 
   def duplicates
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, true, false, true) }
+      format.json { render json: ContigDatatable.new(view_context, "duplicates") }
     end
   end
 
   def show_need_verify #assembly finished according to app but still need manual check
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, true, false, false) }
+      format.json { render json: ContigDatatable.new(view_context, "need_verification") }
     end
   end
+
+
+  def caryophyllales_need_verification #assembly finished according to app but still need manual check
+    respond_to do |format|
+      format.html
+      format.json { render json: ContigDatatable.new(view_context, "caryophyllales_need_verification") }
+    end
+  end
+
+  def caryophyllales_not_assembled #assembly finished according to app but still need manual check
+    respond_to do |format|
+      format.html
+      format.json { render json: ContigDatatable.new(view_context, "caryophyllales_not_assembled") }
+    end
+  end
+
+  def caryophyllales_verified #assembly finished according to app but still need manual check
+    respond_to do |format|
+      format.html
+      format.json { render json: ContigDatatable.new(view_context, "caryophyllales_verified") }
+    end
+  end
+
+  def festuca_need_verification #assembly finished according to app but still need manual check
+    respond_to do |format|
+      format.html
+      format.json { render json: ContigDatatable.new(view_context, "festuca_need_verification") }
+    end
+  end
+
+  def festuca_not_assembled #assembly finished according to app but still need manual check
+    respond_to do |format|
+      format.html
+      format.json { render json: ContigDatatable.new(view_context, "festuca_not_assembled") }
+    end
+  end
+
+  def festuca_verified #assembly finished according to app but still need manual check
+    respond_to do |format|
+      format.html
+      format.json { render json: ContigDatatable.new(view_context, "festuca_verified") }
+    end
+  end
+
+
+
 
   def assemble_all
     Contig.where(:assembled => false).each do |c|

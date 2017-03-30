@@ -431,7 +431,6 @@ function draw_chromatogram(){
         }
     }
 
-
 }
 
 function change_base(base_index, base, change_base_primer_read_url) {
@@ -453,11 +452,12 @@ function change_base(base_index, base, change_base_primer_read_url) {
         }
     });
 
+    //todo ?:
     return 0;
 }
 
 function change_left_clip(base_index, change_left_clip_read_url) {
-    console.log(base_index, change_left_clip_read_url);
+
     $.ajax({
         data: {
             'position': base_index
@@ -469,7 +469,7 @@ function change_left_clip(base_index, change_left_clip_read_url) {
 
             tempAlert("Set left clip position to "+base_index+", started re-assembly of contig and re-computing consensus", 3000);
         },
-        error: function (response) {
+        error: function () {
             alert('Not authorized? Could not set left clip at index '+base_index);
         }
     });
@@ -478,7 +478,7 @@ function change_left_clip(base_index, change_left_clip_read_url) {
 }
 
 function change_right_clip(base_index, change_right_clip_read_url) {
-    console.log(base_index, change_right_clip_read_url);
+
     $.ajax({
         data: {
             'position': base_index
@@ -491,7 +491,7 @@ function change_right_clip(base_index, change_right_clip_read_url) {
 
             tempAlert("Set right clip position to "+base_index+ ", started re-assembly of contig and re-computing consensus", 3000);
         },
-        error: function (response) {
+        error: function () {
             alert('Not authorized? Could not set right clip at index '+base_index);
         }
     });

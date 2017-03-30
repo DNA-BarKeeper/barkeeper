@@ -26,6 +26,12 @@ GBOLapp::Application.routes.draw do
 
     collection do
       get 'show_need_verify'
+      get 'caryophyllales_need_verification'
+      get 'caryophyllales_not_assembled'
+      get 'caryophyllales_verified'
+      get 'festuca_need_verification'
+      get 'festuca_not_assembled'
+      get 'festuca_verified'
       get 'filter'
       get 'assemble_all'
       get 'pde_all'
