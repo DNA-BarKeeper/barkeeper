@@ -53,6 +53,16 @@ jQuery(function() {
 
     // do for all div with class partial_con
 
+    $('.single-page-button').click(function () {
+
+        //todo: rm all other buttons for page navigation
+
+        var partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
+        var page=0;
+
+        draw_as_single_page(partial_con_container_id, page);
+    });
+
     $('.go-to-button-partial-con').click( function () {
 
         var partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
@@ -112,6 +122,40 @@ jQuery(function() {
     });
 
 });
+
+function draw_as_single_page(id, page){
+    // var id = $(this).attr("id");
+
+    // get id without "p-..."
+    var partial_con_id = id.substr(2);
+
+    var container_name='#'+id;
+
+    var mm_container = $(container_name);
+
+    if (mm_container.length > 0) {
+
+        var contig_drawing_width = null; //set to sth way beyonad expected max width; will be corrected to actual needed width by draw_partial_con
+        var width_in_bases= 100000; //set to sth way beyond expected max width; will be corrected to actual max width by to_json_for_page(page, width_in_bases)  in partial_con
+
+        var url='/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: url,
+            dataType: 'json',
+            success: function (data) {
+                mm_container.empty();
+                draw_partial_con(data, container_name, contig_drawing_width);
+                $( "body" ).data("current_page", data.page);
+            },
+            error: function (result) {
+                alert("no data");
+            }
+        });
+    }
+}
 
 function draw_page(id, page){
     // var id = $(this).attr("id");
@@ -196,15 +240,22 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 //        20 for consensus_qualities
 //        20 for coordinates
 
-//     var h=partial_contig.primer_reads.length*80+160;
     var h=partial_contig.primer_reads.length*80+80;
+
+    // when single page drawing requested, compute actual needed width:
+    if (contig_drawing_width===null){
+        var primer_read = partial_contig.primer_reads[0];
+        if (primer_read.aligned_seq){
+            contig_drawing_width=primer_read.aligned_seq.length*10;
+        } else {
+            contig_drawing_width=100000;
+        }
+    }
 
     var svg=d3.select(container_name)
         .append('svg')
         .attr('width', contig_drawing_width)
-        .attr('height', h)
-        .attr('overflow-x', 'auto');
-
+        .attr('height', h);
     var x=0;
     var y=20;
 
@@ -260,7 +311,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
             var next_peak = aligned_peak_indices[next_index];
 
-            while (aligned_peak_indices[next_index] == -1) {
+            while (aligned_peak_indices[next_index] === -1) {
 
                 next_index++;
 
@@ -275,7 +326,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
             var previous_peak = aligned_peak_indices[previous_index];
 
-            while (aligned_peak_indices[previous_index] == -1) {
+            while (aligned_peak_indices[previous_index] === -1) {
 
                 // correction: traces somehow offset otherwise:
                 x -= 10;
@@ -326,9 +377,13 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             var atrace_segment = [];
 
             for (var xt=first_position; xt < second_position+1; xt++) {
-                try {
-                    atrace_segment.push(pr.traces[xt.toString()].ay);
-                } catch(err) {
+
+                if (pr.traces[xt.toString()] !== undefined ) {
+                    try {
+                        atrace_segment.push(pr.traces[xt.toString()].ay);
+                    } catch(e) {
+                        alert(e);
+                    }
                 }
             }
 
@@ -343,9 +398,12 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             var ctrace_segment = [];
 
             for ( xt=first_position; xt < second_position+1; xt++){
-                try {
-                    ctrace_segment.push(pr.traces[xt.toString()].cy);
-                } catch (e) {
+                if (pr.traces[xt.toString()] !== undefined ) {
+                    try {
+                        ctrace_segment.push(pr.traces[xt.toString()].cy);
+                    } catch (e) {
+                        alert(e);
+                    }
                 }
             }
             svg.append("path")
@@ -359,9 +417,12 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             var gtrace_segment = [];
 
             for ( xt=first_position; xt < second_position+1; xt++){
-                try {
-                    gtrace_segment.push(pr.traces[xt.toString()].gy);
-                } catch (e) {
+                if (pr.traces[xt.toString()] !== undefined ) {
+                    try {
+                        gtrace_segment.push(pr.traces[xt.toString()].gy);
+                    } catch (e) {
+                        alert(e);
+                    }
                 }
             }
             svg.append("path")
@@ -376,9 +437,12 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             var ttrace_segment = [];
 
             for ( xt=first_position; xt < second_position+1; xt++){
-                try {
-                    ttrace_segment.push(pr.traces[xt.toString()].ty);
-                } catch (e) {
+                if (pr.traces[xt.toString()] !== undefined ) {
+                    try {
+                        ttrace_segment.push(pr.traces[xt.toString()].ty);
+                    } catch (e) {
+                        alert(e);
+                    }
                 }
             }
             svg.append("path")

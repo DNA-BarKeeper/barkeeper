@@ -55,6 +55,7 @@ class PartialCon < ActiveRecord::Base
     super(:include => [:primer_reads])
   end
 
+
   def to_json_for_page(page, width_in_bases)
 
     # 0..width-in-bases slice

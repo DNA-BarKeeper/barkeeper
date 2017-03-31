@@ -154,9 +154,12 @@
 
                   <div id="buttons" style="margin: 0; padding: 0;">
 
-                    <button class="go-to-button-partial-con btn btn-default btn-xs"><span style="color: #979797">Go to</span></button>
-                    <input type="text" class="go-to-pos">
-                    <span style="color: #979797">/ <%=partial_con.aligned_sequence.length%></span>
+                    <button  class="single-page-button btn btn-default btn-sm" title="Show entire contig, scrollable"><span class="grey glyphicon glyphicon-resize-horizontal"></span></button>
+                    <span style="width: 30px; display: inline-block;">    </span>
+                    <span style="color: #979797">Go to position </span>
+                    <input style="border-bottom: dotted; border-width: thin; width: 40px;" type="text"  class="go-to-pos">
+                    <span style="color: #979797">out of <%=partial_con.aligned_sequence.length%></span>
+                    <button class="go-to-button-partial-con btn btn-default btn-xs"><span style="color: #979797">Go!</span></button>
 
                     <span style="width: 30px; display: inline-block;">    </span>
                     <button  class="first-page-button btn btn-default btn-sm" title="Go to first page"><span class="grey glyphicon glyphicon-fast-backward"></span></button>
@@ -167,7 +170,7 @@
                 </td>
               </tr>
               <tr>
-                <td valign="top" width="250px" style="padding:0; margin:0;">
+                <td valign="top" width="250px" style="padding:0; margin:0; ">
 
                   <div style="height: 45px;padding:0; margin:0;"></div>
 
@@ -185,13 +188,13 @@
                           </div>
                       <%end %>
                       <div style="height: 60px; padding:0; margin:0;">
-                        <b>Consensus</b>
+                        <b>Consensus</b> <span class="grey">(id: <%= partial_con.id %>)</span>
                       </div>
                     </div>
 
                   </div>
                 </td>
-                <td id="contig-drawing" style="padding:0; margin:0; position: relative;">
+                <td id="contig-drawing" style="padding:0; margin:0; overflow: scroll; position: relative;">
 
                   <div class="sk-circle trace-loading">
                     <div class="sk-circle1 sk-child"></div>

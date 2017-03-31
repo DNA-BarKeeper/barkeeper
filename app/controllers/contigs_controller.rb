@@ -313,8 +313,6 @@ class ContigsController < ApplicationController
   end
 
 
-
-
   def assemble_all
     Contig.where(:assembled => false).each do |c|
       ContigAssembly.perform_async(c.id)
