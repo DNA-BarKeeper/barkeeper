@@ -121,13 +121,12 @@
                       Verified on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %>
                   <% else %>
 
-                      <%= link_to verify_contig_path(@contig), :class => 'btn btn-success my-btn' do %>
-                          <span class = "glyphicon glyphicon-ok"></span> Verify
-                      <% end %>
-
-                      <%= link_to verify_next_contig_path(@contig), :class => 'btn btn-success my-btn' do %>
-                          <span class = "glyphicon glyphicon-ok"></span> Verify & next
-                      <% end %>
+                        <%= link_to verify_next_contig_path(@contig), :class => 'btn btn-default' do %>
+                            <span class = "glyphicon glyphicon-ok grey"></span> Verify & next
+              <% end %>
+                        <%= link_to verify_contig_path(@contig), :class => 'btn btn-success my-btn' do %>
+                            <span class = "glyphicon glyphicon-ok"></span> Verify
+              <% end %>
 
                   <% end %>
 

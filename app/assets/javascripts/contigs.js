@@ -242,7 +242,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
     var h=partial_contig.primer_reads.length*80+80;
 
-    // when single page drawing requested, compute actual needed width:
+    // when single page drawing requested (and, thus, requested drawing width [=viewport width] set to null), compute actually needed width:
     if (contig_drawing_width===null){
         var primer_read = partial_contig.primer_reads[0];
         if (primer_read.aligned_seq){
@@ -267,26 +267,37 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
     var used_reads = partial_contig.primer_reads;
 
 
-    for (var j=0; j < used_reads.length; j++){
-        var pr= used_reads[j];
+    function all_zero(trace_segment) {
+
+        for (var i = 0; i < trace_segment.length; i++) {
+
+            if (trace_segment[i] !== 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    for (var used_read_index=0; used_read_index < used_reads.length; used_read_index++){
+        var used_read= used_reads[used_read_index];
 
         var seq1 = null;
-        if (pr.aligned_seq){
-            seq1=pr.aligned_seq;
-        } else if (pr.trimmed_seq){
-            seq1=pr.trimmed_seq;
+        if (used_read.aligned_seq){
+            seq1=used_read.aligned_seq;
+        } else if (used_read.trimmed_seq){
+            seq1=used_read.trimmed_seq;
         } else {
-            seq1=pr.sequence;
+            seq1=used_read.sequence;
         }
 
         var qual1= null;
-        if (pr.aligned_qualities){
-            qual1=pr.aligned_qualities;
+        if (used_read.aligned_qualities){
+            qual1=used_read.aligned_qualities;
         }
 
         var aligned_peak_indices = null;
-        if (pr.aligned_peak_indices){
-            aligned_peak_indices=pr.aligned_peak_indices;
+        if (used_read.aligned_peak_indices){
+            aligned_peak_indices=used_read.aligned_peak_indices;
         }
 
         x=0;
@@ -299,15 +310,18 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
         //draw traces
 
-        for (var i=0; i< aligned_peak_indices.length; i++){
+        for (var aligned_peak_index=0; aligned_peak_index< aligned_peak_indices.length; aligned_peak_index++){
 
 
-            x=10*i-5; // -5 to accommodate "middle" text-anchor for associated text
+            x=10*aligned_peak_index-5; // -5 to accommodate "middle" text-anchor for associated text
 
-            var current_peak = aligned_peak_indices[i];
+            var current_peak = aligned_peak_indices[aligned_peak_index];
 
 
-            var next_index=i+1;
+            // get scaling factor to force trace over a current basecall onto width of base letter in alignment:
+
+            //get next peak by jumping over -1 (=alignement gaps, no sequence/trace info for that position):
+            var next_index=aligned_peak_index+1;
 
             var next_peak = aligned_peak_indices[next_index];
 
@@ -322,12 +336,14 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                 }
             }
 
-            var previous_index=i-1;
+            // get previous peak:
+            var previous_index=aligned_peak_index-1;
 
             var previous_peak = aligned_peak_indices[previous_index];
 
             while (aligned_peak_indices[previous_index] === -1) {
 
+                //TODO: fix that offset correction, doesn't make sense:
                 // correction: traces somehow offset otherwise:
                 x -= 10;
 
@@ -378,79 +394,75 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
             for (var xt=first_position; xt < second_position+1; xt++) {
 
-                if (pr.traces[xt.toString()] !== undefined ) {
-                    try {
-                        atrace_segment.push(pr.traces[xt.toString()].ay);
-                    } catch(e) {
-                        alert(e);
-                    }
+                if (used_read.traces[xt.toString()] !== undefined ) {
+                    var a_y = used_read.traces[xt.toString()].ay;
+                    atrace_segment.push(a_y);
+                    // atrace_segment.push(used_read.traces[xt.toString()].ay);
                 }
             }
-
-            svg.append("path")
-                .attr("d", scaled_line_function(atrace_segment))
-                .attr("stroke", "green")
-                .attr("stroke-width", 0.5)
-                .attr("fill", "none")
-                .attr("text-anchor", 'middle');
+            if (atrace_segment.length !== 0 && !all_zero(atrace_segment)) {
+                svg.append("path")
+                    .attr("d", scaled_line_function(atrace_segment))
+                    .attr("stroke", "green")
+                    .attr("stroke-width", 0.5)
+                    .attr("fill", "none")
+                    .attr("text-anchor", 'middle');
+            }
 
             //C
             var ctrace_segment = [];
 
             for ( xt=first_position; xt < second_position+1; xt++){
-                if (pr.traces[xt.toString()] !== undefined ) {
-                    try {
-                        ctrace_segment.push(pr.traces[xt.toString()].cy);
-                    } catch (e) {
-                        alert(e);
-                    }
+                if (used_read.traces[xt.toString()] !== undefined ) {
+                    var c_y = used_read.traces[xt.toString()].cy;
+                    ctrace_segment.push(c_y);
                 }
             }
-            svg.append("path")
-                .attr("d", scaled_line_function(ctrace_segment))
-                .attr("stroke", "blue")
-                .attr("stroke-width", 0.5)
-                .attr("fill", "none")
-                .attr("text-anchor", 'middle');
+            if (ctrace_segment.length !==0 && !all_zero(ctrace_segment)) {
+                svg.append("path")
+                    .attr("d", scaled_line_function(ctrace_segment))
+                    .attr("stroke", "blue")
+                    .attr("stroke-width", 0.5)
+                    .attr("fill", "none")
+                    .attr("text-anchor", 'middle');
+            }
 
             //G
             var gtrace_segment = [];
 
             for ( xt=first_position; xt < second_position+1; xt++){
-                if (pr.traces[xt.toString()] !== undefined ) {
-                    try {
-                        gtrace_segment.push(pr.traces[xt.toString()].gy);
-                    } catch (e) {
-                        alert(e);
-                    }
+                if (used_read.traces[xt.toString()] !== undefined ) {
+                    var g_y = used_read.traces[xt.toString()].gy;
+                    gtrace_segment.push(g_y);
                 }
             }
-            svg.append("path")
-                .attr("d", scaled_line_function(gtrace_segment))
-                .attr("stroke", "black")
-                .attr("stroke-width", 0.5)
-                .attr("fill", "none")
-                .attr("text-anchor", 'middle');
+            if (gtrace_segment.length !== 0 && !all_zero(gtrace_segment)) {
+                svg.append("path")
+                    .attr("d", scaled_line_function(gtrace_segment))
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 0.5)
+                    .attr("fill", "none")
+                    .attr("text-anchor", 'middle');
+            }
 
             //T
 
             var ttrace_segment = [];
 
             for ( xt=first_position; xt < second_position+1; xt++){
-                if (pr.traces[xt.toString()] !== undefined ) {
-                    try {
-                        ttrace_segment.push(pr.traces[xt.toString()].ty);
-                    } catch (e) {
-                        alert(e);
-                    }
+                if (used_read.traces[xt.toString()] !== undefined ) {
+                    var t_y = used_read.traces[xt.toString()].ty;
+                    ttrace_segment.push(t_y);
                 }
             }
-            svg.append("path")
-                .attr("d", scaled_line_function(ttrace_segment))
-                .attr("stroke", "red")
-                .attr("stroke-width", 0.5)
-                .attr("fill", "none")
-                .attr("text-anchor", 'middle');
+            if (ttrace_segment.length !== 0 && !all_zero(ttrace_segment)) {
+                svg.append("path")
+                    .attr("d", scaled_line_function(ttrace_segment))
+                    .attr("stroke", "red")
+                    .attr("stroke-width", 0.5)
+                    .attr("fill", "none")
+                    .attr("text-anchor", 'middle');
+            }
         }
 
         y=y+20;
@@ -473,7 +485,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                     .attr("x", x)
                     .attr("y", y)
                     .text(ch)
-                    .attr("font-family", "sans-serif")
+                    .attr("font-family", font_family)
                     .attr("font-size", font_size)
                     .attr("fill", color)
                     .attr("text-anchor", 'middle');
@@ -515,7 +527,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                 .attr("font-size", font_size)
                 .attr("fill", color)
                 .attr("text-anchor", 'middle')
-                .attr("id", pr.id + "-" + pr.original_positions[s])
+                .attr("id", used_read.id + "-" + used_read.original_positions[s])
                 .style("cursor", "crosshair")
                 .on('click', function () {
                     // alert(d3.select(this).attr("id"));
