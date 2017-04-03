@@ -343,9 +343,8 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
             while (aligned_peak_indices[previous_index] === -1) {
 
-                //TODO: fix that offset elsewhere, doesn't make sense here (?):
-                // correction: traces somehow offset otherwise:
-                x -= 10;
+
+                // x -= 10;
 
                 previous_index--;
 
