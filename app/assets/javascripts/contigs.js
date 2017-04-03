@@ -135,7 +135,7 @@ function draw_as_single_page(id, page){
 
     if (mm_container.length > 0) {
 
-        var contig_drawing_width = null; //set to sth way beyonad expected max width; will be corrected to actual needed width by draw_partial_con
+        var contig_drawing_width = null; //set to sth way beyond expected max width; will be corrected to actual needed width by draw_partial_con
         var width_in_bases= 100000; //set to sth way beyond expected max width; will be corrected to actual max width by to_json_for_page(page, width_in_bases)  in partial_con
 
         var url='/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
@@ -267,18 +267,10 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
     var used_reads = partial_contig.primer_reads;
 
 
-    function all_zero(trace_segment) {
-
-        for (var i = 0; i < trace_segment.length; i++) {
-
-            if (trace_segment[i] !== 0) {
-                return false;
-            }
-        }
-        return true;
-    }
+    //for each read to show in assembly:
 
     for (var used_read_index=0; used_read_index < used_reads.length; used_read_index++){
+
         var used_read= used_reads[used_read_index];
 
         var seq1 = null;
@@ -304,11 +296,19 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
 
         //trace row:
-
         color = 'gray';
         font_size = "7px";
 
         //draw traces
+
+        //NEW:
+        var atrace_line_data = [];
+        var ctrace_line_data = [];
+        var gtrace_line_data = [];
+        var ttrace_line_data = [];
+
+
+        //for each "alignment/contig" position:
 
         for (var aligned_peak_index=0; aligned_peak_index< aligned_peak_indices.length; aligned_peak_index++){
 
@@ -343,7 +343,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
             while (aligned_peak_indices[previous_index] === -1) {
 
-                //TODO: fix that offset correction, doesn't make sense:
+                //TODO: fix that offset elsewhere, doesn't make sense here (?):
                 // correction: traces somehow offset otherwise:
                 x -= 10;
 
@@ -374,96 +374,80 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             var trace_ymax=50;
             var yscale=40;
 
-            var scaled_line_function = d3.svg.line()
-                .x(function(d,i) {
-                        if (x > 0) {
-                            return x + (xscale * i);
-                        } else {
-                            return 0;
-                        }
-                    }
-                )
-                .y(function(d) { return y-40+(trace_ymax-(d/yscale)); })
-                .interpolate("linear");
+            var scaled_y=y;
 
             //draw trace-segments for each base-call:
 
-            //A
-            //extract segment from trace:
-            var atrace_segment = [];
-
+            var ctr=0;
             for (var xt=first_position; xt < second_position+1; xt++) {
 
                 if (used_read.traces[xt.toString()] !== undefined ) {
+
+                    var scaled_x=0;
+                    if (x > 0) {
+                        scaled_x = x + (xscale * ctr);
+                    }
+
+                    //A
                     var a_y = used_read.traces[xt.toString()].ay;
-                    atrace_segment.push(a_y);
-                    // atrace_segment.push(used_read.traces[xt.toString()].ay);
-                }
-            }
-            if (atrace_segment.length !== 0 && !all_zero(atrace_segment)) {
-                svg.append("path")
-                    .attr("d", scaled_line_function(atrace_segment))
-                    .attr("stroke", "green")
-                    .attr("stroke-width", 0.5)
-                    .attr("fill", "none")
-                    .attr("text-anchor", 'middle');
-            }
+                    scaled_y=y-40+(trace_ymax-(a_y/yscale));
+                    var coordinates= { "x": scaled_x,   "y": scaled_y};
+                    atrace_line_data.push(coordinates);
 
-            //C
-            var ctrace_segment = [];
-
-            for ( xt=first_position; xt < second_position+1; xt++){
-                if (used_read.traces[xt.toString()] !== undefined ) {
+                    //C
                     var c_y = used_read.traces[xt.toString()].cy;
-                    ctrace_segment.push(c_y);
-                }
-            }
-            if (ctrace_segment.length !==0 && !all_zero(ctrace_segment)) {
-                svg.append("path")
-                    .attr("d", scaled_line_function(ctrace_segment))
-                    .attr("stroke", "blue")
-                    .attr("stroke-width", 0.5)
-                    .attr("fill", "none")
-                    .attr("text-anchor", 'middle');
-            }
+                    scaled_y=y-40+(trace_ymax-(c_y/yscale));
+                    coordinates= { "x": scaled_x,   "y": scaled_y};
+                    ctrace_line_data.push(coordinates);
 
-            //G
-            var gtrace_segment = [];
-
-            for ( xt=first_position; xt < second_position+1; xt++){
-                if (used_read.traces[xt.toString()] !== undefined ) {
+                    //G
                     var g_y = used_read.traces[xt.toString()].gy;
-                    gtrace_segment.push(g_y);
-                }
-            }
-            if (gtrace_segment.length !== 0 && !all_zero(gtrace_segment)) {
-                svg.append("path")
-                    .attr("d", scaled_line_function(gtrace_segment))
-                    .attr("stroke", "black")
-                    .attr("stroke-width", 0.5)
-                    .attr("fill", "none")
-                    .attr("text-anchor", 'middle');
-            }
+                    scaled_y=y-40+(trace_ymax-(g_y/yscale));
+                    coordinates= { "x": scaled_x,   "y": scaled_y};
+                    gtrace_line_data.push(coordinates);
 
-            //T
-
-            var ttrace_segment = [];
-
-            for ( xt=first_position; xt < second_position+1; xt++){
-                if (used_read.traces[xt.toString()] !== undefined ) {
+                    //T
                     var t_y = used_read.traces[xt.toString()].ty;
-                    ttrace_segment.push(t_y);
+                    scaled_y=y-40+(trace_ymax-(t_y/yscale));
+                    coordinates= { "x": scaled_x,   "y": scaled_y};
+                    ttrace_line_data.push(coordinates);
+
                 }
+                ctr++;
             }
-            if (ttrace_segment.length !== 0 && !all_zero(ttrace_segment)) {
-                svg.append("path")
-                    .attr("d", scaled_line_function(ttrace_segment))
-                    .attr("stroke", "red")
-                    .attr("stroke-width", 0.5)
-                    .attr("fill", "none")
-                    .attr("text-anchor", 'middle');
-            }
+
         }
+
+
+        // console.log(atrace_line_data);
+        var lineFunction = d3.svg.line()
+                                 .x(function(d) { return d.x; })
+                                 .y(function(d) { return d.y; })
+                                .interpolate("linear");
+
+
+        //draw line SVG Path for all visible alignment positions simultaneously:
+        svg.append("path")
+            .attr("d", lineFunction(atrace_line_data))
+            .attr("stroke", "green")
+            .attr("stroke-width", 0.5)
+            .attr("fill", "none");
+        svg.append("path")
+            .attr("d", lineFunction(ctrace_line_data))
+            .attr("stroke", "blue")
+            .attr("stroke-width", 0.5)
+            .attr("fill", "none");
+        svg.append("path")
+            .attr("d", lineFunction(gtrace_line_data))
+            .attr("stroke", "black")
+            .attr("stroke-width", 0.5)
+            .attr("fill", "none");
+        svg.append("path")
+            .attr("d", lineFunction(ttrace_line_data))
+            .attr("stroke", "red")
+            .attr("stroke-width", 0.5)
+            .attr("fill", "none");
+
 
         y=y+20;
         x=0;
