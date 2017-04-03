@@ -281,7 +281,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         } else {
             seq1=used_read.sequence;
         }
-        
+
 
         var aligned_peak_indices = null;
         if (used_read.aligned_peak_indices){
@@ -470,7 +470,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         //     }
         // }
 
-        y=y+20;
+        y=y+10;
         //font_size = "10px";
 
         //sequence row:
@@ -514,7 +514,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                 });
         }
 
-        y=y+20;
+        y=y+30;
 
         //end for through used_reads:
     }
