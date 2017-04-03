@@ -88,8 +88,7 @@ jQuery(function() {
     });
 
     $('.next-page-button').click(function () {
-
-        var page=$( "body" ).data("current_page");
+        var page = $("body").data("current_page");
 
         page++;
 
@@ -97,6 +96,7 @@ jQuery(function() {
 
         draw_page(partial_con_container_id, page);
     });
+
 
     $('.previous-page-button').click(function () {
 
@@ -650,4 +650,40 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         y+=20;
 
     }
+}
+
+//  keyboard shortcuts:
+
+shortcut.add("Right", function() {
+    next_page();
+},{
+    'disable_in_input':true
+});
+shortcut.add("Left", function() {
+    previous_page();
+},{
+    'disable_in_input':true
+});
+shortcut.add("Shift+Left", function() {
+    first_page();
+},{
+    'disable_in_input':true
+});
+shortcut.add("Shift+Right", function() {
+    last_page();
+},{
+    'disable_in_input':true
+});
+
+function next_page() {
+    $('.next-page-button').first().click();
+}
+function previous_page() {
+    $('.previous-page-button').first().click();
+}
+function first_page() {
+    $('.first-page-button').first().click();
+}
+function last_page() {
+    $('.last-page-button').first().click();
 }

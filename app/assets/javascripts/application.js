@@ -10,4 +10,5 @@
 //= require jquery.turbolinks
 //= require d3.min
 //= require bootstrap
+//= require keyboard_shortcuts
 //= require_tree .
