@@ -281,11 +281,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         } else {
             seq1=used_read.sequence;
         }
-
-        var qual1= null;
-        if (used_read.aligned_qualities){
-            qual1=used_read.aligned_qualities;
-        }
+        
 
         var aligned_peak_indices = null;
         if (used_read.aligned_peak_indices){
@@ -342,7 +338,6 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             var previous_peak = aligned_peak_indices[previous_index];
 
             while (aligned_peak_indices[previous_index] === -1) {
-
 
                 // x -= 10;
 
@@ -452,28 +447,28 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         x=0;
 
 
-        //qualities row:
-
-        color = 'gray';
-        font_size = "5px";
-
-        for (var q=0; q< qual1.length; q++){
-
-            var ch= qual1[q];
-            x=x+10;
-
-            if (qual1[q]>-1){
-
-                svg.append("text")
-                    .attr("x", x)
-                    .attr("y", y)
-                    .text(ch)
-                    .attr("font-family", font_family)
-                    .attr("font-size", font_size)
-                    .attr("fill", color)
-                    .attr("text-anchor", 'middle');
-            }
-        }
+        // //qualities row:
+        //
+        // color = 'gray';
+        // font_size = "5px";
+        //
+        // for (var q=0; q< qual1.length; q++){
+        //
+        //     var ch= qual1[q];
+        //     x=x+10;
+        //
+        //     if (qual1[q]>-1){
+        //
+        //         svg.append("text")
+        //             .attr("x", x)
+        //             .attr("y", y)
+        //             .text(ch)
+        //             .attr("font-family", font_family)
+        //             .attr("font-size", font_size)
+        //             .attr("fill", color)
+        //             .attr("text-anchor", 'middle');
+        //     }
+        // }
 
         y=y+20;
         //font_size = "10px";
@@ -486,7 +481,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
         for (var s=0; s< seq1.length; s++){
 
-            ch= seq1[s];
+            var ch= seq1[s];
 
             if (ch == 'A') {
                 color = 'green';
@@ -513,7 +508,6 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                 .attr("id", used_read.id + "-" + used_read.original_positions[s])
                 .style("cursor", "crosshair")
                 .on('click', function () {
-                    // alert(d3.select(this).attr("id"));
                     var coordinates = d3.select(this).attr("id").split("-");
                     var url='/primer_reads/'+coordinates[0]+'/edit/'+coordinates[1];
                     window.open(url, '_blank');
@@ -532,23 +526,6 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         x=0;
         y+=20;
         font_size = '5px';
-
-        // if (partial_contig.aligned_qualities != null) {
-        //     for (s = 0; s < partial_contig.aligned_qualities.length; s++) {
-        //         ch = partial_contig.aligned_qualities[s];
-        //         x = x + 10;
-        //         if (partial_contig.aligned_qualities[s] > -10) {
-        //             d3.select('svg').append("text")
-        //                 .attr("x", x)
-        //                 .attr("y", y)
-        //                 .text(ch)
-        //                 .attr("font-family", "sans-serif")
-        //                 .attr("font-size", font_size)
-        //                 .attr("fill", color)
-        //                 .attr("text-anchor", 'middle');
-        //         }
-        //     }
-        // }
 
         x=0;
         y+=20;

@@ -92,7 +92,7 @@ class PartialCon < ActiveRecord::Base
     {
         :page => page.as_json,
         :aligned_sequence => self.aligned_sequence[start_pos..end_pos].as_json,
-        :aligned_qualities => self.aligned_qualities[start_pos..end_pos].as_json,
+        # :aligned_qualities => self.aligned_qualities[start_pos..end_pos].as_json,
         :start_pos => start_pos.as_json,
         :end_pos => end_pos.as_json,
         :primer_reads => self.primer_reads.map { |pr| pr.slice_to_json(start_pos, end_pos) }
@@ -118,7 +118,7 @@ class PartialCon < ActiveRecord::Base
     {
         :page => page.as_json,
         :aligned_sequence => self.aligned_sequence[start_pos..end_pos].as_json,
-        :aligned_qualities => self.aligned_qualities[start_pos..end_pos].as_json,
+        # :aligned_qualities => self.aligned_qualities[start_pos..end_pos].as_json,
         :start_pos => start_pos.as_json,
         :end_pos => end_pos.as_json,
         :primer_reads => self.primer_reads.map { |pr| pr.slice_to_json(start_pos, end_pos) }
