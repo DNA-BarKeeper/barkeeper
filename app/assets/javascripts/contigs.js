@@ -521,28 +521,11 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
     // render aligned consensus sequence:
     if (partial_contig.aligned_sequence != null) {
-        //qual row:
-        color = 'gray';
-        x=0;
-        y+=20;
-        font_size = '5px';
 
         x=0;
-        y+=20;
+        y+=40;
 
         //sequence row:
-        color = 'black';
-        font_size = '12px';
-
-
-        // svg.append("text")
-        //     .attr("x", x)
-        //     .attr("y", y)
-        //     .text('Consensus')
-        //     .attr("font-family", "sans-serif")
-        //     .attr("font-size", font_size)
-        //     .attr("font-weight", "bold")
-        //     .attr("fill", color);
 
         color = 'gray';
         font_size = '10px';
