@@ -384,25 +384,25 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
                     //A
                     var a_y = used_read.traces[xt.toString()].ay;
-                    scaled_y=y-40+(trace_ymax-(a_y/yscale));
+                    scaled_y=y-30+(trace_ymax-(a_y/yscale));
                     var coordinates= { "x": scaled_x,   "y": scaled_y};
                     atrace_line_data.push(coordinates);
 
                     //C
                     var c_y = used_read.traces[xt.toString()].cy;
-                    scaled_y=y-40+(trace_ymax-(c_y/yscale));
+                    scaled_y=y-30+(trace_ymax-(c_y/yscale));
                     coordinates= { "x": scaled_x,   "y": scaled_y};
                     ctrace_line_data.push(coordinates);
 
                     //G
                     var g_y = used_read.traces[xt.toString()].gy;
-                    scaled_y=y-40+(trace_ymax-(g_y/yscale));
+                    scaled_y=y-30+(trace_ymax-(g_y/yscale));
                     coordinates= { "x": scaled_x,   "y": scaled_y};
                     gtrace_line_data.push(coordinates);
 
                     //T
                     var t_y = used_read.traces[xt.toString()].ty;
-                    scaled_y=y-40+(trace_ymax-(t_y/yscale));
+                    scaled_y=y-30+(trace_ymax-(t_y/yscale));
                     coordinates= { "x": scaled_x,   "y": scaled_y};
                     ttrace_line_data.push(coordinates);
 
@@ -470,7 +470,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         //     }
         // }
 
-        y=y+10;
+        y=y+18;
         //font_size = "10px";
 
         //sequence row:
@@ -514,7 +514,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                 });
         }
 
-        y=y+30;
+        y=y+20;
 
         //end for through used_reads:
     }
