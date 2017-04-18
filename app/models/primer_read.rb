@@ -34,6 +34,9 @@ class PrimerRead < ActiveRecord::Base
   scope :unprocessed, -> {where(:processed => false)}
   scope :contig_not_verified, -> {joins(:contig).where(:contigs => {:verified => false, :verified_by => nil})}
 
+  scope :in2016, ->  { where('primer_reads.created_at > ? AND primer_reads.created_at < ?',  1.years.ago.beginning_of_year, Time.zone.now.beginning_of_year)}
+  scope :in2016_until_now, ->  { where('primer_reads.created_at > ? AND primer_reads.created_at < ?',  1.years.ago.beginning_of_year, Time.zone.now)}
+
   validates_attachment_presence :chromatogram
 
 
