@@ -9,7 +9,7 @@ Web application for mass assembly of primer reads generated in the GBOL5 project
 
 ### License
 
-YAPA is Copyright (c) 2014-2016 Kai Müller.
+GBOL5 Web App is Copyright (c) 2014-2017 Kai Müller.
 
 ### Warranty
 
