@@ -28,7 +28,7 @@ class Contig < ActiveRecord::Base
   scope :verified_in2016, ->  { where('contigs.verified_at > ? AND contigs.verified_at < ?',  1.years.ago.beginning_of_year, Time.zone.now.beginning_of_year)}
   scope :verified_in2016_until_now, ->  { where('contigs.verified_at > ? AND contigs.verified_at < ?',  1.years.ago.beginning_of_year, Time.zone.now)}
 
-
+  scope :verified_in2015, ->  { where('contigs.verified_at > ? AND contigs.verified_at < ?',  2.years.ago.beginning_of_year, 2.years.ago.end_of_year)}
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
 

@@ -412,7 +412,6 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
         }
 
-
         // console.log(atrace_line_data);
         var lineFunction = d3.svg.line()
                                  .x(function(d) { return d.x; })
