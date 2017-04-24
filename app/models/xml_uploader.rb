@@ -314,6 +314,33 @@ class XmlUploader < ActiveRecord::Base
 
                 end
 
+                Marker.gbol_marker.each do |marker|
+                  #URL zum contig in GBOL5 WebApp
+                  xml.Cell {
+                    xml.Data('ss:Type' => "String") {
+                      xml.text(marker.url)
+                    }
+                  }
+
+                  #Markersequenz
+                  xml.Cell {
+                    xml.Data('ss:Type' => "String") {
+                      xml.text(marker.marker_sequence)
+                    }
+                  }
+
+                  #Sequences withhold
+                  xml.Cell {
+                    xml.Data('ss:Type' => "String") {
+                      if false #wenn Sequenz noch unveröffentlicht
+                        xml.text('1')
+                      else
+                        xml.text('0')
+                      end
+                    }
+                  }
+                end
+
               }
             end
           }
