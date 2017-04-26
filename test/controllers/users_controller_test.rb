@@ -2,14 +2,7 @@ require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
 
-  test "as kai, should get new" do
-    @user = users(:kai)
-    sign_in @user
-    get :new
-    assert_response :success
-  end
-
-  test "should get users index if user is Kai" do
+  test "should get users index if user is kai" do
     @user = users(:kai)
     sign_in @user
     get :index
@@ -28,6 +21,13 @@ class UsersControllerTest < ActionController::TestCase
   test "should not get users if user not logged in, show sign-in page instead" do
     get :index
     assert_redirected_to '/users/sign_in'
+    end
+
+  test "should show user" do
+    @shown_user = users(:default)
+
+    get :show, id: @shown_user
+    assert_response :success
   end
 
   test "should not get user/edit if user not kai, show flash message instead" do
@@ -69,7 +69,14 @@ class UsersControllerTest < ActionController::TestCase
     end
   end
 
-  test 'kai should be able to create new users' do
+  test "as kai, should get new" do
+    @user = users(:kai)
+    sign_in @user
+    get :new
+    assert_response :success
+  end
+
+  test "kai should be able to create new users" do
     @user = users(:kai)
     sign_in @user
 
