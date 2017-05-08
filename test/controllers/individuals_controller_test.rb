@@ -4,7 +4,7 @@ class IndividualsControllerTest < ActionController::TestCase
 
   setup do
     @project = projects(:gbol5)
-    @individual = individuals(:second_specimen)
+    @individual = individuals(:specimen1)
 
     user_log_in
   end
@@ -24,7 +24,7 @@ class IndividualsControllerTest < ActionController::TestCase
       post :create, individual: { specimen_id: 'sadlgkjhlkj2' }
     end
 
-    assert_redirected_to individual_path(assigns(:individual))
+    assert_redirected_to individuals_path
   end
 
   test "should show individual" do

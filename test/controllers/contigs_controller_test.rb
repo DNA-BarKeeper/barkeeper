@@ -2,7 +2,7 @@ require 'test_helper'
 
 class ContigsControllerTest < ActionController::TestCase
   setup do
-    @contig = contigs(:gbol5127_matk)
+    @contig = contigs(:unverified_contig)
     user_log_in
   end
 
@@ -31,6 +31,6 @@ class ContigsControllerTest < ActionController::TestCase
       delete :destroy, id: @contig
     end
 
-    assert_redirected_to individuals_path
+    assert_redirected_to contigs_url
   end
 end

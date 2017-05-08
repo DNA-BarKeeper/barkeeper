@@ -22,7 +22,7 @@ class FreezersControllerTest < ActionController::TestCase
   end
 
   test "should get edit" do
-    get :edit, contig: @freezer
+    get :edit, freezer: @freezer
     assert_response :success
   end
 
@@ -35,7 +35,7 @@ class FreezersControllerTest < ActionController::TestCase
   end
 
   test "should update freezer" do
-    patch :update, id: @contig, freezer: { name: 'test_3' }
+    patch :update, id: @freezer, freezer: { name: 'test_3' }
     assert_redirected_to freezers_path
   end
 

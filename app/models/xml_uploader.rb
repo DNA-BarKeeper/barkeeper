@@ -334,7 +334,7 @@ class XmlUploader < ActiveRecord::Base
                   #Sequences withhold
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      #if false #wenn Sequenz noch unveröffentlicht
+                      #if Sequenz noch unveröffentlicht
                       #  xml.text('1')
                       #else
                         xml.text('0')

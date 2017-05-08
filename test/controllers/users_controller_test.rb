@@ -27,7 +27,7 @@ class UsersControllerTest < ActionController::TestCase
     @shown_user = users(:default)
 
     get :show, id: @shown_user
-    assert_response :success
+    assert_response :redirect
   end
 
   test "should not get user/edit if user not kai, show flash message instead" do
@@ -52,9 +52,9 @@ class UsersControllerTest < ActionController::TestCase
 
     @edited_user = users(:default)
 
-    puts @edited_user.projects.count
+    #puts 'Current project count: ' + @edited_user.projects.count.to_s
 
-    assert_difference ->{@edited_user.projects.count}, 1, 'no project was added.' do
+    assert_difference ->{@edited_user.projects.count}, 1, 'no project was added' do
       patch :update, id: @edited_user, user: {project_ids: projects(:gbol5, :t3)}
     end
 

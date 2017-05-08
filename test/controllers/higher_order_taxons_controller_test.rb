@@ -1,8 +1,8 @@
 require 'test_helper'
 
-class HigherOrderTaxonsControllerTest < ActtionController::TestCase
+class HigherOrderTaxonsControllerTest < ActionController::TestCase
   setup do
-    @higher_order_taxon = higher_order_taxa(:gbol5127_matk)
+    @higher_order_taxon = higher_order_taxons(:magnoliopsida)
     user_log_in
   end
 

@@ -1,2 +1,49 @@
-gbol5127_matk:
+verified_contig:
+  aligned_cons:
+  allowed_mismatch_percent: 10
+  assembled: true
+  assembly_tried: true
+  comment: some text
+  consensus: AAGAAAAAAACTTAGTAATTATAGAAAATTAACTAATAACCAAC
+  created_at: 2017-02-20 10:00:00
+  fas:
+  id: 1
+  imported: false
+  isolate_id: gbol2119.id
+  marker_id: ITS.id
+  marker_sequence_id: GBoL3635_ITS.id
   name: gbol5127_matk
+  overlap_length: 10
+  overlaps: 2
+  partial_cons1: partial_con1.sequence
+  partial_cons2: partial_con2.sequence
+  partial_cons_count: 2
+  pde:
+  updated_at: 2017-02-22 10:00:00
+  verified: true
+  verified_at: 2017-02-23 10:00:00
+  verified_by: 2
+
+unverified_contig:
+  aligned_cons:
+  allowed_mismatch_percent: 10
+  assembled: false
+  assembly_tried: true
+  comment: some text
+  consensus: AAGAAAAAAACTTAGTAATTATAGAAAATTAACTAATAACCAAC
+  created_at: 2017-02-20 10:00:00
+  fas:
+  id: 2
+  imported: false
+  isolate_id: gbol2119.id
+  marker_id: ITS.id
+  marker_sequence_id: GBoL3635_ITS.id
+  name: gbol5127_matk
+  overlap_length: 10
+  overlaps: 2
+  partial_cons1: partial_con1.sequence
+  partial_cons2: partial_con2.sequence
+  partial_cons_count: 2
+  pde:
+  updated_at: 2017-02-22 10:00:00
+  verified: false

@@ -1,0 +1,15 @@
+its4:
+  alt_name: nr4
+  author: White_et_al_1990
+  id: 726
+  labcode: bonn.labcode
+  marker_id: ITS.id
+  name: ITS4
+  notes:
+  position:
+  reverse: true
+  sequence: TCCTCCGCTTATTGATATGC
+  target_group: universal
+  tm:
+  created_at: 2016-08-04 13:45:23
+  updated_at: 2016-09-27 09:18:24
