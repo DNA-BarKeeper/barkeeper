@@ -12,18 +12,23 @@ class ContigsControllerTest < ActionController::TestCase
   end
 
   test "should show contig" do
-    get :show, contig: @contig
+    get :show, id: @contig
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, contig: @contig
+    get :edit, id: @contig
+    assert_response :success
+  end
+
+  test "should get new" do
+    get :new
     assert_response :success
   end
 
   test "should update contig" do
     patch :update, id: @contig, contig: { name: 'gbol5127_rpl16' }
-    assert_redirected_to contig_path(assigns(:contig))
+    assert_redirected_to edit_contig_path(@contig)
   end
 
   test "should destroy contig" do
@@ -32,5 +37,13 @@ class ContigsControllerTest < ActionController::TestCase
     end
 
     assert_redirected_to contigs_url
+  end
+
+  test "should create contig" do
+    assert_difference('Contig.count') do
+      post :create, contig: {name: 'GBoL3544_trnK-matK'}
+    end
+
+    assert_redirected_to
   end
 end

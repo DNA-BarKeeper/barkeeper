@@ -12,8 +12,8 @@ class FamiliesControllerTest  < ActionController::TestCase
   end
 
   test "should show family" do
-    #get :show, family: @family
-    #assert_response :success
+    get :show, id: @family
+    assert_response :success
   end
 
   test "should get new" do
@@ -22,8 +22,8 @@ class FamiliesControllerTest  < ActionController::TestCase
   end
 
   test "should get edit" do
-    #get :edit, family: @family
-    #assert_response :success
+    get :edit, id: @family
+    assert_response :success
   end
 
   test "should create family" do

@@ -7,7 +7,6 @@ verified_contig:
   consensus: AAGAAAAAAACTTAGTAATTATAGAAAATTAACTAATAACCAAC
   created_at: 2017-02-20 10:00:00
   fas:
-  id: 1
   imported: false
   isolate_id: gbol2119.id
   marker_id: ITS.id
@@ -33,7 +32,6 @@ unverified_contig:
   consensus: AAGAAAAAAACTTAGTAATTATAGAAAATTAACTAATAACCAAC
   created_at: 2017-02-20 10:00:00
   fas:
-  id: 2
   imported: false
   isolate_id: gbol2119.id
   marker_id: ITS.id

@@ -12,7 +12,7 @@ class HigherOrderTaxonsControllerTest < ActionController::TestCase
   end
 
   test "should show higher order taxon" do
-    get :show, contig: @higher_order_taxon
+    get :show, id: @higher_order_taxon
     assert_response :success
   end
 
@@ -22,12 +22,12 @@ class HigherOrderTaxonsControllerTest < ActionController::TestCase
   end
 
   test "should get edit" do
-    get :edit, contig: @higher_order_taxon
+    get :edit, id: @higher_order_taxon
     assert_response :success
   end
 
   test "should create higher order taxon" do
-    assert_difference('Higher_order_taxon.count') do
+    assert_difference('HigherOrderTaxon.count') do
       post :create, higher_order_taxon: { name: 'Coniferopsida' }
     end
 
@@ -40,7 +40,7 @@ class HigherOrderTaxonsControllerTest < ActionController::TestCase
   end
 
   test "should destroy higher order taxon" do
-    assert_difference('Higher_order_taxon.count', -1) do
+    assert_difference('HigherOrderTaxon.count', -1) do
       delete :destroy, id: @higher_order_taxon
     end
 

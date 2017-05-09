@@ -12,7 +12,7 @@ class FreezersControllerTest < ActionController::TestCase
   end
 
   test "should show freezer" do
-    get :show, freezer: @freezer
+    get :show, id: @freezer
     assert_response :success
   end
 
@@ -22,7 +22,7 @@ class FreezersControllerTest < ActionController::TestCase
   end
 
   test "should get edit" do
-    get :edit, freezer: @freezer
+    get :edit, id: @freezer
     assert_response :success
   end
 

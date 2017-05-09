@@ -22,6 +22,7 @@ module FixtureFileHelpers
 end
 
 ActiveRecord::FixtureSet.context_class.send :include, FixtureFileHelpers
+#ActiveRecord::FixtureSet.context_class.include FixtureFileHelpers
 
 def user_log_in
   @user = users(:default)

@@ -1,6 +1,5 @@
 tax_class1:
   name: taxonomic class 1
-  id: 1
   german_name: taxonomische Klasse 1
   subdivision_id: subdivision1.id
   created_at: 2017-01-21 17:23:20
