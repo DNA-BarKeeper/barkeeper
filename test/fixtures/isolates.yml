@@ -7,10 +7,10 @@ gbol2119:
   created_at: 2016-09-11 10:13:23
   updated_at: 2017-02-11 23:04:34
   isCopy: false
-  tissue_id: seed.id
-  micronic_plate_id: G5c1000131.id
-  plant_plate_id: plant_plate1.id
-  individual_id: specimen1.id
+  tissue: seed
+  micronic_plate: G5c1000131
+  plant_plate: plant_plate1
+  individual: specimen1
   dna_bank_id: 234
   lab_nr: 32
   negative_control: false

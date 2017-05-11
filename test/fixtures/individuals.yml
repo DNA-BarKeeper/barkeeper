@@ -13,7 +13,6 @@ specimen1:
   exposition:
   habitat:
   herbarium: BONN
-  id: 1
   latitude: 50.70995
   latitude_original: 50.70995
   life_form: Plant
@@ -22,7 +21,7 @@ specimen1:
   longitude_original: 7.03483
   revision:
   silica_gel: true
-  species_id: urtica_dioica.id
+  species: urtica_dioica
   state_province: NW-Tiefland
   substrate:
   voucher:

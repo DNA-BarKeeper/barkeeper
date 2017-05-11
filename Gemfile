@@ -67,3 +67,6 @@ gem 'mime-types'
 gem 'newrelic_rpm'
 
 gem 'redis'
+
+# only necessary on windows
+gem 'tzinfo-data'

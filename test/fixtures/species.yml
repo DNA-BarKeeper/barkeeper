@@ -3,10 +3,9 @@ urtica_dioica:
   author: Linnaeus
   author_infra:
   comment:
-  family_id: urticaceae.id
+  family: urticaceae
   genus_name: Urtica
   german_name: Große Brennnessel
-  id: 11449
   infraspecific:
   species_component: dioica
   species_epithet:

@@ -16,10 +16,10 @@ class FamiliesControllerTest  < ActionController::TestCase
     assert_response :success
   end
 
-  test "should get new" do
-    get :new
-    assert_response :success
-  end
+  # test "should get new" do
+  #   get :new
+  #   assert_response :success
+  # end
 
   test "should get edit" do
     get :edit, id: @family
@@ -36,7 +36,7 @@ class FamiliesControllerTest  < ActionController::TestCase
 
   test "should update family" do
     patch :update, id: @family, family: { name: 'Calceolariaceae' }
-    assert_redirected_to family_path(assigns(:family))
+    assert_redirected_to families_path
   end
 
   test "should destroy family" do

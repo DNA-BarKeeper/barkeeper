@@ -5,12 +5,11 @@ verified_contig:
   assembly_tried: true
   comment: some text
   consensus: AAGAAAAAAACTTAGTAATTATAGAAAATTAACTAATAACCAAC
-  created_at: 2017-02-20 10:00:00
   fas:
   imported: false
-  isolate_id: gbol2119.id
-  marker_id: ITS.id
-  marker_sequence_id: GBoL3635_ITS.id
+  isolate: gbol2119
+  marker: ITS
+  marker_sequence: GBoL3635_ITS
   name: gbol5127_matk
   overlap_length: 10
   overlaps: 2
@@ -18,10 +17,11 @@ verified_contig:
   partial_cons2: partial_con2.sequence
   partial_cons_count: 2
   pde:
-  updated_at: 2017-02-22 10:00:00
   verified: true
   verified_at: 2017-02-23 10:00:00
   verified_by: 2
+  created_at: 2017-02-20 10:00:00
+  updated_at: 2017-02-22 10:00:00
 
 unverified_contig:
   aligned_cons:
@@ -30,12 +30,11 @@ unverified_contig:
   assembly_tried: true
   comment: some text
   consensus: AAGAAAAAAACTTAGTAATTATAGAAAATTAACTAATAACCAAC
-  created_at: 2017-02-20 10:00:00
   fas:
   imported: false
-  isolate_id: gbol2119.id
-  marker_id: ITS.id
-  marker_sequence_id: GBoL3635_ITS.id
+  isolate: gbol2119
+  marker: ITS
+  marker_sequence: GBoL3635_ITS
   name: gbol5127_matk
   overlap_length: 10
   overlaps: 2
@@ -43,5 +42,6 @@ unverified_contig:
   partial_cons2: partial_con2.sequence
   partial_cons_count: 2
   pde:
-  updated_at: 2017-02-22 10:00:00
   verified: false
+  created_at: 2017-02-20 10:00:00
+  updated_at: 2017-02-22 10:00:00

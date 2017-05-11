@@ -41,9 +41,9 @@ class ContigsControllerTest < ActionController::TestCase
 
   test "should create contig" do
     assert_difference('Contig.count') do
-      post :create, contig: {name: 'GBoL3544_trnK-matK'}
+      post :create, contig: {id: 5, name: 'GBoL3544_trnK-matK', pde: ''}
     end
 
-    assert_redirected_to
+    assert_redirected_to contig_path(assigns(:contig))
   end
 end

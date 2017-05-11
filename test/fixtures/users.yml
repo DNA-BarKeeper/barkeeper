@@ -1,5 +1,4 @@
 default:
-  id: 1
   email: default@example.com
   name: Testuser no.1
   encrypted_password: <%= encrypted_password %>
@@ -8,14 +7,12 @@ default:
   projects: gbol5
 
 kai:
-  id: 2
   email: kaimueller@uni-muenster.de
   name: Kai Müller
   encrypted_password: <%= encrypted_password %>
   projects: gbol5
 
 invalid_user:
-  id: 3
   email: invalid@anywhere.com
   name: invalid
   encrypted_password: <%= encrypted_password %>

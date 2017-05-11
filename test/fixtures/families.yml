@@ -1,12 +1,13 @@
 lentibulariaceae:
   name: Lentibulariaceae
   author: Louis Claude Richard
+  order: lamiales
   created_at: 2017-03-17 22:39:23
-  order_id: lamiales.id
+  updated_at: 2017-03-17 22:39:23
 
 urticaceae:
   name: Urticaceae
   author: Linnaeus
+  order: rosales
   created_at: 2016-04-01 22:39:23
-  order_id: rosales.id
   updated_at: 2016-11-01 10:39:45

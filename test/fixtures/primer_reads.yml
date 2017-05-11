@@ -7,19 +7,18 @@ gbol5127_uv17_uv18_T7promoter:
   atrace:
   base_count: 1005
   comment:
-  contig_id: verified_contig.id
+  contig: verified_contig
   count_in_window:
   ctrace:
   gtrace:
-  id: 37898
   isolate_id: gbol2119.id
   min_quality_score: 30
   overwritten: false
-  partial_con_id: partial_con1.id
+  partial_con: partial_con1
   peak_indices:
   pherogram_url: gbol5127_uv17_uv18_T7.scf
   position:
-  primer_id: its4.id
+  primer: its4
   processed: true
   qualities:
   quality_string:

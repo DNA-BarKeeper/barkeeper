@@ -1,9 +1,8 @@
 its4:
   alt_name: nr4
   author: White_et_al_1990
-  id: 726
   labcode: bonn.labcode
-  marker_id: ITS.id
+  marker: ITS
   name: ITS4
   notes:
   position:
