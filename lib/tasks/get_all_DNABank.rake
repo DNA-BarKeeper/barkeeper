@@ -1,10 +1,11 @@
 require 'net/http'
 require 'nokogiri'
 
+# not to be used for regular background processes; only for manually crafted queries  where DNA-Bank number known and a specific range of DNA-Bank numbers manually entered below:
 
 namespace :data do
 
-  desc "Get all DNA-Bank numbers related to GBOL and extract all specimen info and associated isolates (GBOL-Nrs.)"
+  desc "Get range of DNA-Bank numbers related to GBOL and extract all specimen info and associated isolates (GBOL-Nrs.)"
 
   task :get_all_DNABank => :environment do
 
