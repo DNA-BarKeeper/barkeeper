@@ -13,7 +13,7 @@ namespace :data do
     ctr=1
 
     Isolate.all.each do |i|
-
+    # Isolate.find([10131]).each do |i|
       progress = "#{ctr} / #{c}" + "\r"
       puts progress
 
@@ -90,7 +90,7 @@ namespace :data do
 
         if unit_id
 
-          if unit_id == i.dna_bank_id
+          if unit_id.gsub(/\s+/, "") == i.dna_bank_id
             break #don't do anything - DNABank query will not change anything
           else
             outputstr+=  "#{i.id}\t#{i.lab_nr}\t#{i.dna_bank_id}\t#{specimen}\t#{species}\t"
@@ -142,12 +142,12 @@ namespace :data do
 
             if full_name
 
-              regex = /^(\w+\s+\w+)/
-              matches = full_name.match(regex)
-              if matches
-                species_component = matches[1]
+              # regex = /^(\w+\s+\w+)/
+              # matches = full_name.match(regex)
+              # if matches
+              #   species_component = matches[1]
 
-                outputstr+= "#{species_component}\n"
+
 
                 # sp=individual.species
                 #
@@ -157,7 +157,9 @@ namespace :data do
                 #   sp= Species.find_or_create_by(:species_component => species_component)
                 #   individual.update(:species => sp)
                 # end
-              end
+              # end
+
+              outputstr+= "#{full_name}\n"
 
             end
 
