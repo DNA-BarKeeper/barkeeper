@@ -7,17 +7,15 @@ namespace :data do
 
   task :reset_DNABank_by_gbol_nr => :environment do
 
-
-    # TODO: list of offending gbol nrs here
-    arr=[]
-    arr << 9986
-
-
     outputstr=  "Isolate ID\tGBOL-Nr (Lab-Nr)\tcurrent DNA-Bank-Nr\tcurrent specimen\tcurrent species\tfuture DNA-Bank-Nr\tfuture specimen\tfuture species\n"
 
-    # get all gbol-nr where no specimen
-    #Isolate.find(arr).each do |i|
+    c=Isolate.all.count
+    ctr=1
+
     Isolate.all.each do |i|
+
+      progress = "#{ctr} / #{c}" + "\r"
+      puts progress
 
       specimen=""
       species=""
@@ -175,10 +173,9 @@ namespace :data do
 
         end
 
-
-
-
       end
+
+      ctr=ctr+1
 
     end
 
