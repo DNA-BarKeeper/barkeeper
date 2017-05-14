@@ -13,7 +13,7 @@ namespace :data do
     ctr=1
 
     Isolate.all.each do |i|
-    # Isolate.find([10168, 12576]).each do |i|
+    # Isolate.find([11302, 11317, 9986]).each do |i|
       progress = "#{ctr} / #{c}" + "\r"
       puts progress
 
@@ -97,10 +97,10 @@ namespace :data do
 
       puts
 
-      if unit_id
+      if unit_id && i.dna_bank_id
 
         if unit_id.gsub(/\s+/, "") == i.dna_bank_id.gsub(/\s+/, "")
-           #don't do anything - DNABank query will not change anything
+           #don't output anything - DNABank query will not change anything
         else
           outputstr+=  "#{i.id}\t#{i.lab_nr}\t#{i.dna_bank_id}\t#{specimen}\t#{species}\t"
           outputstr+= "#{unit_id}\t" #future dna_bank_id
