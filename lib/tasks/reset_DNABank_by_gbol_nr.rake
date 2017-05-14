@@ -13,7 +13,7 @@ namespace :data do
     ctr=1
 
     Isolate.all.each do |i|
-    # Isolate.find([10131]).each do |i|
+    # Isolate.find([10168, 12576]).each do |i|
       progress = "#{ctr} / #{c}" + "\r"
       puts progress
 
@@ -26,7 +26,7 @@ namespace :data do
         end
       end
 
-      # for each number, do a call for GBOL and GBoL versions:
+      # for each number, do a call for versions "GBOL" and "GBoL":
 
       gbol_nr=i.lab_nr
 
@@ -47,9 +47,19 @@ namespace :data do
 
       gbol_nrs[1] = gbol_nr_2
 
+      unit = nil
+      unit_id=nil
+      specimen_id=nil
+      full_name= nil
+      herbarium=nil
+      collector= nil
+      locality=nil
+      longitude=nil
+      latitude=nil
+
       gbol_nrs.each do |gbol_nr|
 
-        # puts "Query for #{gbol_nr}...\n"
+        puts "Query for #{gbol_nr}..."
 
         service_url="http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/SpecimenUnit/Preparations/preparation/sampleDesignations/sampleDesignation'>#{gbol_nr}</like></filter><count>false</count></search></request>"
 
@@ -61,15 +71,6 @@ namespace :data do
 
         doc= Nokogiri::XML(res.body)
 
-        unit = nil
-        unit_id=nil
-        specimen_id=nil
-        full_name= nil
-        herbarium=nil
-        collector= nil
-        locality=nil
-        longitude=nil
-        latitude=nil
 
         begin
           unit = doc.at_xpath('//abcd21:Unit')
@@ -89,13 +90,20 @@ namespace :data do
         end
 
         if unit_id
+          break # no need to try alternative "gbol" spelling if already found a matching unit_id
+        end
 
-          if unit_id.gsub(/\s+/, "") == i.dna_bank_id
-            break #don't do anything - DNABank query will not change anything
-          else
-            outputstr+=  "#{i.id}\t#{i.lab_nr}\t#{i.dna_bank_id}\t#{specimen}\t#{species}\t"
-            outputstr+= "#{unit_id}\t" #future dna_bank_id
-          end
+      end
+
+      puts
+
+      if unit_id
+
+        if unit_id.gsub(/\s+/, "") == i.dna_bank_id.gsub(/\s+/, "")
+           #don't do anything - DNABank query will not change anything
+        else
+          outputstr+=  "#{i.id}\t#{i.lab_nr}\t#{i.dna_bank_id}\t#{specimen}\t#{species}\t"
+          outputstr+= "#{unit_id}\t" #future dna_bank_id
 
           if specimen_id
 
@@ -149,14 +157,14 @@ namespace :data do
 
 
 
-                # sp=individual.species
-                #
-                # if sp.nil?
-                #   #todo: unify species_component and composed name
-                # end
-                #   sp= Species.find_or_create_by(:species_component => species_component)
-                #   individual.update(:species => sp)
-                # end
+              # sp=individual.species
+              #
+              # if sp.nil?
+              #   #todo: unify species_component and composed name
+              # end
+              #   sp= Species.find_or_create_by(:species_component => species_component)
+              #   individual.update(:species => sp)
+              # end
               # end
 
               outputstr+= "#{full_name}\n"
@@ -170,10 +178,8 @@ namespace :data do
             # end
 
           end
-
-          break # no need to try alternative "gbol" spelling if already found a matching unit_id
-
         end
+
 
       end
 
