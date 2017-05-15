@@ -17,8 +17,6 @@ gbol2119:
   lab_id_orig: 456
   lab_id_copy: 456b
   isolation_date: 2016-09-11
-  micronic_plate_id_orig: 1
-  micronic_plate_id_copy: 1
   well_pos_micronic_plate_orig: 2
   well_pos_micronic_plate_copy: 2
   concentration_orig: 10,00

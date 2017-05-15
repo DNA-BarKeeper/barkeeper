@@ -100,7 +100,8 @@ class XmlUploader < ActiveRecord::Base
               end
 
             }
-            @individuals.each do |individual|
+            #@individuals.each do |individual|
+            individual = @individuals.first
               xml.Row{
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
@@ -287,18 +288,38 @@ class XmlUploader < ActiveRecord::Base
 
                 # todo: assumes that currently only one isolate per indiv. -> call all isolates later:
 
-                # individual.try(:isolates).each do |iso|
-                #...
-                # end
+                # -for each specimen, iterate over all isolates
+                # - for each isolate, iterate over gbol markers
+                # - for given current isolate, iterate over markersequences, stop when its marker-id == current_marker-id
+                # - remember the longest markersequence (usually the only one that isn't nil)
 
-                ms=individual.try(:isolates).first.try(:marker_sequences)
-                contigs=individual.try(:isolates).first.try(:contigs)
+                longest_sequence = nil
 
-                ct=0
-                if contigs
-                  ct=contigs.where(:imported => true).count
+                individual.try(:isolates).each do |iso|
+                  ms = iso.try(:marker_sequences)
+                  contigs = iso.try(:contigs)
+
+                  ct = 0
+                  if contigs
+                    ct = contigs.where(:imported => true).count
+                  end
+
+                  ms each do |sequence| # why are there more than one marker sequences per isolate?
+                    if !sequence.nil? && (sequence.length > longest_sequence.length)
+                      longest_sequence = sequence
+                    end
+                  end
                 end
 
+                # ms=individual.try(:isolates).first.try(:marker_sequences)
+                # contigs=individual.try(:isolates).first.try(:contigs)
+                #
+                # ct=0
+                # if contigs
+                #   ct=contigs.where(:imported => true).count
+                # end
+
+                # wird Spalte "Sequenz vorhanden?" noch gebraucht oder redundant durch spätere Angabe der MS?
                 if (ms and ms.length > 0) or ct > 0
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
@@ -311,22 +332,21 @@ class XmlUploader < ActiveRecord::Base
                       xml.text('0')
                     }
                   }
-
                 end
 
                 Marker.gbol_marker.each do |marker|
                   #URL zum contig in GBOL5 WebApp
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      xml.text(marker_url(marker))
+                      xml.text("gbol5.de/contigs/#{marker.contigs.first.id}/edit") # which contig url should be written here?
                     }
                   }
 
                   #Markersequenz
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      if marker.marker_sequences.length == 0
-                        xml.text(marker.marker_sequences.first)
+                      if !longest_sequence.nil? && !longest_sequence.empty?
+                        xml.text(longest_sequence)
                       end
                     }
                   }
@@ -334,17 +354,17 @@ class XmlUploader < ActiveRecord::Base
                   #Sequences withhold
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      #if Sequenz noch unveröffentlicht
-                      #  xml.text('1')
-                      #else
+                      if (marker.marker_sequences.length > 0) && (!marker.marker_sequences.first.genbank.nil?)
                         xml.text('0')
-                      #end
+                      else
+                        xml.text('1')
+                      end
                     }
                   }
                 end
 
               }
-            end
+            #end
           }
         }
       }

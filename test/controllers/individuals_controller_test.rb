@@ -3,7 +3,6 @@ require 'test_helper'
 class IndividualsControllerTest < ActionController::TestCase
 
   setup do
-    @project = projects(:gbol5)
     @individual = individuals(:specimen1)
 
     user_log_in
