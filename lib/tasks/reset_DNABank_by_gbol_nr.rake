@@ -26,26 +26,7 @@ namespace :data do
         end
       end
 
-      # for each number, do a call for versions "GBOL" and "GBoL":
-
       gbol_nr=i.lab_nr
-
-      gbol_nr_1=gbol_nr
-
-      gbol_nrs=[]
-      gbol_nrs[0] = gbol_nr_1
-
-      if gbol_nr_1[2]=='O'
-        gbol_nr_2=gbol_nr_1.clone
-        gbol_nr_2[2]='o'
-        gbol_nrs[1]=gbol_nr_2
-      else
-        gbol_nr_2=gbol_nr_1.clone
-        gbol_nr_2[2]='O'
-        gbol_nrs[1]=gbol_nr_2
-      end
-
-      gbol_nrs[1] = gbol_nr_2
 
       unit = nil
       unit_id=nil
@@ -57,41 +38,33 @@ namespace :data do
       longitude=nil
       latitude=nil
 
-      gbol_nrs.each do |gbol_nr|
+      puts "Query for #{gbol_nr}..."
 
-        puts "Query for #{gbol_nr}..."
+      service_url="http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/SpecimenUnit/Preparations/preparation/sampleDesignations/sampleDesignation'>#{gbol_nr}</like></filter><count>false</count></search></request>"
 
-        service_url="http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/SpecimenUnit/Preparations/preparation/sampleDesignations/sampleDesignation'>#{gbol_nr}</like></filter><count>false</count></search></request>"
+      url = URI.parse(service_url)
+      req = Net::HTTP::Get.new(url.to_s)
+      res = Net::HTTP.start(url.host, url.port) { |http|
+        http.request(req)
+      }
 
-        url = URI.parse(service_url)
-        req = Net::HTTP::Get.new(url.to_s)
-        res = Net::HTTP.start(url.host, url.port) { |http|
-          http.request(req)
-        }
-
-        doc= Nokogiri::XML(res.body)
+      doc= Nokogiri::XML(res.body)
 
 
-        begin
-          unit = doc.at_xpath('//abcd21:Unit')
-          unit_id=doc.at_xpath('//abcd21:Unit/abcd21:UnitID').content # = DNA Bank nr
-          specimen_id=unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content
-          full_name= unit.at_xpath('//abcd21:FullScientificNameString').content
-          herbarium=unit.at_xpath('//abcd21:SourceInstitutionCode').content
-          collector= unit.at_xpath('//abcd21:GatheringAgent').content
-          locality=unit.at_xpath('//abcd21:LocalityText').content
-          longitude=unit.at_xpath('//abcd21:LongitudeDecimal').content
-          latitude=unit.at_xpath('//abcd21:LatitudeDecimal').content
+      begin
+        unit = doc.at_xpath('//abcd21:Unit')
+        unit_id=doc.at_xpath('//abcd21:Unit/abcd21:UnitID').content # = DNA Bank nr
+        specimen_id=unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content
+        full_name= unit.at_xpath('//abcd21:FullScientificNameString').content
+        herbarium=unit.at_xpath('//abcd21:SourceInstitutionCode').content
+        collector= unit.at_xpath('//abcd21:GatheringAgent').content
+        locality=unit.at_xpath('//abcd21:LocalityText').content
+        longitude=unit.at_xpath('//abcd21:LongitudeDecimal').content
+        latitude=unit.at_xpath('//abcd21:LatitudeDecimal').content
 
-        rescue
+      rescue
 
-          # puts "Extraction not possible."
-
-        end
-
-        if unit_id
-          break # no need to try alternative "gbol" spelling if already found a matching unit_id
-        end
+        # puts "Extraction not possible."
 
       end
 
@@ -100,7 +73,7 @@ namespace :data do
       if unit_id && i.dna_bank_id
 
         if unit_id.gsub(/\s+/, "") == i.dna_bank_id.gsub(/\s+/, "")
-           #don't output anything - DNABank query will not change anything
+           #don't output anything - correction from upcoming DNABank query will not change anything
         else
           outputstr+=  "#{i.id}\t#{i.lab_nr}\t#{i.dna_bank_id}\t#{specimen}\t#{species}\t"
           outputstr+= "#{unit_id}\t" #future dna_bank_id
