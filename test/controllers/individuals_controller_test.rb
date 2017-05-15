@@ -13,6 +13,16 @@ class IndividualsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should get specimens without species" do
+    get :specimens_without_species
+    assert_response :success
+  end
+
+  test "should get individuals with problematic location data" do
+    get :problematic_location_data
+    assert_response :success
+  end
+
   test "should get new" do
     get :new
     assert_response :success
