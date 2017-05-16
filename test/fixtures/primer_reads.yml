@@ -1,5 +1,5 @@
-gbol5127_uv17_uv18_T7promoter:
-  name: gbol5127_uv17_uv18_T7promoter
+original_read:
+  name: original primer read
   aligned_peak_indices:
   aligned_qualities:
   aligned_seq:
@@ -22,12 +22,46 @@ gbol5127_uv17_uv18_T7promoter:
   processed: true
   qualities:
   quality_string:
-  reverse:
-  sequence:
+  reverse: false
+  sequence: GACCAGCGAACACGTTCAAACATGTGGGGGAAGGGTGTGTCCCCGGGGTGACTTGTCACGCCGCCACCCAACCCCTAGCCT
   trimmedReadEnd: 989
   trimmedReadStart: 207
   ttrace:
   used_for_con: true
   window_size:
   created_at: 2016-08-09 12:45:12
+  updated_at: 2016-08-09 12:45:12
+
+reverse_read:
+  name: reverse primer read
+  aligned_peak_indices:
+  aligned_qualities:
+  aligned_seq:
+  assembled: true
+  atrace:
+  base_count: 1005
+  comment:
+  contig: verified_contig
+  count_in_window:
+  ctrace:
+  gtrace:
+  isolate_id: gbol2119.id
+  min_quality_score: 30
+  overwritten: false
+  partial_con: partial_con1
+  peak_indices:
+  pherogram_url: gbol5127_uv17_uv18_T7.scf
+  position:
+  primer: its4
+  processed: true
+  qualities:
+  quality_string:
+  reverse: true
+  sequence: GACCAGCGAACACGTTCAAACATGTGGGGGAAGGGTGTGTCCCCGGGGTGACTTGTCACGCCGCCACCCAACCCCTAGCCT
+  trimmedReadEnd: 989
+  trimmedReadStart: 207
+  ttrace:
+  used_for_con: true
+  window_size:
+  created_at: 2016-10-05 16:28:19
   updated_at: 2016-10-05 16:28:19

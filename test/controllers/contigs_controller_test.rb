@@ -20,11 +20,11 @@ class ContigsControllerTest < ActionController::TestCase
     get :edit, id: @contig
     assert_response :success
   end
-
-  test "should get new" do
-    get :new
-    assert_response :success
-  end
+  #
+  # test "should get new" do
+  #   get :new
+  #   assert_response :success
+  # end
 
   test "should update contig" do
     patch :update, id: @contig, contig: { name: 'gbol5127_rpl16' }

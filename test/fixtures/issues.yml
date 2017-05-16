@@ -1,7 +1,7 @@
 some_crap_happened:
   title: some_crap_happened
-  contig_id: unverified_contig.id
+  contig: unverified_contig
   description: some crap happened
-  primer_read_id: gbol5127_uv17_uv18_T7promoter.id
+  primer_read: gbol5127_uv17_uv18_T7promoter
   created_at: 2017-03-23 17:40:56
   updated_at: 2017-04-28 19:34:21

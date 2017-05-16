@@ -69,8 +69,7 @@ class XmlUploader < ActiveRecord::Base
                      "Habitat",
                      "Sammler",
                      "Nummer",
-                     "Behörde",
-                     "Sequenz vorhanden?"
+                     "Behörde"
     ]
 
     Marker.gbol_marker.each do |m|
@@ -101,7 +100,7 @@ class XmlUploader < ActiveRecord::Base
 
             }
             #@individuals.each do |individual|
-            individual = @individuals.first
+            @individuals.take(25).each do |individual|
               xml.Row{
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
@@ -286,59 +285,21 @@ class XmlUploader < ActiveRecord::Base
                   }
                 }
 
-                # todo: assumes that currently only one isolate per indiv. -> call all isolates later:
-
-                # -for each specimen, iterate over all isolates
-                # - for each isolate, iterate over gbol markers
-                # - for given current isolate, iterate over markersequences, stop when its marker-id == current_marker-id
-                # - remember the longest markersequence (usually the only one that isn't nil)
-
-                longest_sequence = nil
-
+                # Find longest marker sequence for given individual
+                longest_sequence = ''
                 individual.try(:isolates).each do |iso|
-                  ms = iso.try(:marker_sequences)
-                  contigs = iso.try(:contigs)
-
-                  ct = 0
-                  if contigs
-                    ct = contigs.where(:imported => true).count
-                  end
-
-                  ms each do |sequence| # why are there more than one marker sequences per isolate?
-                    if !sequence.nil? && (sequence.length > longest_sequence.length)
-                      longest_sequence = sequence
+                  iso.try(:marker_sequences).each do |marker_sequence| # why are there more than one marker sequences per isolate?
+                    if marker_sequence.sequence && (marker_sequence.sequence.length > longest_sequence.length)
+                      longest_sequence = marker_sequence.sequence
                     end
                   end
-                end
-
-                # ms=individual.try(:isolates).first.try(:marker_sequences)
-                # contigs=individual.try(:isolates).first.try(:contigs)
-                #
-                # ct=0
-                # if contigs
-                #   ct=contigs.where(:imported => true).count
-                # end
-
-                # wird Spalte "Sequenz vorhanden?" noch gebraucht oder redundant durch spätere Angabe der MS?
-                if (ms and ms.length > 0) or ct > 0
-                  xml.Cell {
-                    xml.Data('ss:Type' => "String") {
-                      xml.text('1')
-                    }
-                  }
-                else
-                  xml.Cell {
-                    xml.Data('ss:Type' => "String") {
-                      xml.text('0')
-                    }
-                  }
                 end
 
                 Marker.gbol_marker.each do |marker|
                   #URL zum contig in GBOL5 WebApp
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      xml.text("gbol5.de/contigs/#{marker.contigs.first.id}/edit") # which contig url should be written here?
+                      xml.text("gbol5.de/contigs/#{marker.contigs.first.id}/edit") # edit_contig_path(marker.contigs.first)
                     }
                   }
 
@@ -364,7 +325,7 @@ class XmlUploader < ActiveRecord::Base
                 end
 
               }
-            #end
+            end
           }
         }
       }
