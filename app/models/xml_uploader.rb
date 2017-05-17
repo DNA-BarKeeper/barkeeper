@@ -35,7 +35,7 @@ class XmlUploader < ActiveRecord::Base
 
   def xml_string
     # get all indiv.
-    @individuals=Individual.includes(:species => :family).all
+    @individuals=Individual.includes(:species => :family).all #alternativ: find_in_batches
 
     @states=["Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen","Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Nordrhein-Westfalen","Rheinland-Pfalz","Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","Thüringen"]
 
@@ -100,7 +100,7 @@ class XmlUploader < ActiveRecord::Base
 
             }
             #@individuals.each do |individual|
-            @individuals.take(25).each do |individual|
+            @individuals.take(25).each do |individual| # nur zu testzwecken, alternativ: find in batches
               xml.Row{
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
@@ -294,12 +294,15 @@ class XmlUploader < ActiveRecord::Base
                     end
                   end
                 end
+                #welchem marker gehört diese marker sequenz zu?
+                # für current marker nach der diesem marker zugeordneten sequenz fragen (isolate.marker_sequences where marker_sequences.id.equals currentmarker.id)
+                # url zum contig, das zur längsten markersequenz gehört
 
-                Marker.gbol_marker.each do |marker|
+                Marker.gbol_marker.each do |marker| #gbol marker des jeweiligen isolats verwenden
                   #URL zum contig in GBOL5 WebApp
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      xml.text("gbol5.de/contigs/#{marker.contigs.first.id}/edit") # edit_contig_path(marker.contigs.first)
+                      xml.text(edit_contig_path(marker.contigs.first)) #"gbol5.de/contigs/#{marker.contigs.first.id}/edit"
                     }
                   }
 
