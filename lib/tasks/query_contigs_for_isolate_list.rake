@@ -71,9 +71,9 @@ GBoL3740
       isolate.contigs.each do |c|
 
         if c.verified_at.nil?
-          outputstr += "#{c.marker.name} (verified)"
+          outputstr += "#{c.marker.name} "
         else
-          outputstr += "#{c.marker.name}"
+          outputstr += "#{c.marker.name} (verified)"
         end
 
         outputstr += "\t"
