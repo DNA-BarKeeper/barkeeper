@@ -1,6 +1,7 @@
 # write SPECIMENS & STATUS  to Excel-XML (xls) for use by ZFMK for their "Portal / db : bolgermany.de "
 
 class XmlUploader < ActiveRecord::Base
+  include ActionView::Helpers
 
   #todo later rename  :uploaded_file to xml_File or s.th.
 
@@ -34,8 +35,9 @@ class XmlUploader < ActiveRecord::Base
   end
 
   def xml_string
-    # get all indiv.
-    @individuals=Individual.includes(:species => :family).all #alternativ: find_in_batches
+    # get all Individuals
+    @individuals=Individual.includes(:species => :family).all
+    #@individuals = Individual.includes(:species => :family).take(25) # zu Testzwecken, alternativ find_in_batches nutzen
 
     @states=["Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen","Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Nordrhein-Westfalen","Rheinland-Pfalz","Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","Thüringen"]
 
@@ -99,8 +101,7 @@ class XmlUploader < ActiveRecord::Base
               end
 
             }
-            #@individuals.each do |individual|
-            @individuals.take(25).each do |individual| # nur zu testzwecken, alternativ: find in batches
+            @individuals.each do |individual|
               xml.Row{
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
@@ -285,32 +286,37 @@ class XmlUploader < ActiveRecord::Base
                   }
                 }
 
-                # Find longest marker sequence for given individual
-                longest_sequence = ''
+                # Find longest marker sequence per GBoL marker for each individual
+                longest_sequences = Hash.new
                 individual.try(:isolates).each do |iso|
-                  iso.try(:marker_sequences).each do |marker_sequence| # why are there more than one marker sequences per isolate?
-                    if marker_sequence.sequence && (marker_sequence.sequence.length > longest_sequence.length)
-                      longest_sequence = marker_sequence.sequence
+                  Marker.gbol_marker.each do |current_marker|
+                    iso.try(:marker_sequences).each do |current_marker_sequence|
+                      if current_marker_sequence.marker.id == current_marker.id # für current marker nach der diesem marker zugeordneten sequenz fragen (isolate.marker_sequences where marker_sequences.id.equals currentmarker.id)
+                        longest_sequences[current_marker.id] ||= current_marker_sequence
+                        if current_marker_sequence.sequence && (current_marker_sequence.sequence.length > longest_sequences[current_marker.id].sequence.length)
+                          longest_sequences[current_marker.id] = current_marker_sequence
+                        end
+                      end
                     end
                   end
                 end
-                #welchem marker gehört diese marker sequenz zu?
-                # für current marker nach der diesem marker zugeordneten sequenz fragen (isolate.marker_sequences where marker_sequences.id.equals currentmarker.id)
-                # url zum contig, das zur längsten markersequenz gehört
 
-                Marker.gbol_marker.each do |marker| #gbol marker des jeweiligen isolats verwenden
+                Marker.gbol_marker.each do |marker|
+                  current_sequence = longest_sequences[marker.id]
                   #URL zum contig in GBOL5 WebApp
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      xml.text(edit_contig_path(marker.contigs.first)) #"gbol5.de/contigs/#{marker.contigs.first.id}/edit"
+                      if current_sequence
+                        xml.text("gbol5.de/contigs/#{current_sequence.contigs.first.id}/edit") #edit_contig_path(current_sequence.contigs.first)
+                      end
                     }
                   }
 
                   #Markersequenz
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      if !longest_sequence.nil? && !longest_sequence.empty?
-                        xml.text(longest_sequence)
+                      if current_sequence && current_sequence.sequence
+                        xml.text(current_sequence.sequence)
                       end
                     }
                   }
@@ -318,7 +324,7 @@ class XmlUploader < ActiveRecord::Base
                   #Sequences withhold
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      if (marker.marker_sequences.length > 0) && (!marker.marker_sequences.first.genbank.nil?)
+                      if current_sequence && current_sequence.sequence && current_sequence.genbank
                         xml.text('0')
                       else
                         xml.text('1')
@@ -326,7 +332,6 @@ class XmlUploader < ActiveRecord::Base
                     }
                   }
                 end
-
               }
             end
           }
