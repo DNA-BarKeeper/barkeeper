@@ -1,8 +1,4 @@
-if environment == 'development'
-  workers Integer(ENV['WEB_CONCURRENCY'] || 1)
-else
-  workers Integer(ENV['WEB_CONCURRENCY'] || 2)
-end
+workers(ENV['RACK_ENV'] == 'production' ? Integer(ENV['WEB_CONCURRENCY'] || 2) : 0)
 
 threads_count = Integer(ENV['MAX_THREADS'] || 5)
 threads threads_count, threads_count
