@@ -306,7 +306,7 @@ class XmlUploader < ActiveRecord::Base
                   #URL zum contig in GBOL5 WebApp
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      if current_sequence
+                      if current_sequence && (current_sequence.contigs.length > 0)
                         xml.text("gbol5.de/contigs/#{current_sequence.contigs.first.id}/edit") #edit_contig_path(current_sequence.contigs.first)
                       end
                     }
