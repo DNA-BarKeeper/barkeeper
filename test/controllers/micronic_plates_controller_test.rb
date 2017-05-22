@@ -19,30 +19,30 @@ class MicronicPlatesControllerTest < ActionController::TestCase
 
   test "should create micronic plate" do
     assert_difference('MicronicPlate.count') do
-      post :create, micronic_plate: { name: 'G5c1000124', lab_rack: 'GBoL5_1' }
+      post :create, params: { micronic_plate: { name: 'G5c1000124', lab_rack: 'GBoL5_1' } }
     end
 
     assert_redirected_to micronic_plates_path
   end
 
   test "should show micronic plate" do
-    get :show, id: @micronic_plate
+    get :show, params: { id: @micronic_plate }
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @micronic_plate
+    get :edit, params: { id: @micronic_plate }
     assert_response :success
   end
 
   test "should update micronic plate" do
-    patch :update, id: @micronic_plate, micronic_plate: { name: 'G5o1000144' }
+    patch :update, params: { id: @micronic_plate, micronic_plate: { name: 'G5o1000144' } }
     assert_redirected_to micronic_plates_path
   end
 
   test "should destroy micronic plate" do
     assert_difference('MicronicPlate.count', -1) do
-      delete :destroy, id: @micronic_plate
+      delete :destroy, params: { id: @micronic_plate }
     end
 
     assert_redirected_to micronic_plates_url

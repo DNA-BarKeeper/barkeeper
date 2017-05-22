@@ -12,7 +12,7 @@ class TissuesControllerTest < ActionController::TestCase
   end
 
   test "should show tissue" do
-    get :show, id: @tissue
+    get :show, params: { id: @tissue }
     assert_response :success
   end
 
@@ -22,26 +22,26 @@ class TissuesControllerTest < ActionController::TestCase
   end
 
   test "should get edit" do
-    get :edit, id: @tissue
+    get :edit, params: { id: @tissue }
     assert_response :success
   end
 
   test "should create tissue" do
     assert_difference('Tissue.count') do
-      post :create, tissue: { name: 'pollen' }
+      post :create, params: { tissue: { name: 'pollen' } }
     end
 
     assert_redirected_to tissues_path
   end
 
   test "should update tissue" do
-    patch :update, id: @tissue, tissue: { name: 'Seed' }
+    patch :update, params: { id: @tissue, tissue: { name: 'Seed' } }
     assert_redirected_to tissues_path
   end
 
   test "should destroy tissue" do
     assert_difference('Tissue.count', -1) do
-      delete :destroy, id: @tissue
+      delete :destroy, params: { id: @tissue }
     end
 
     assert_redirected_to tissues_url

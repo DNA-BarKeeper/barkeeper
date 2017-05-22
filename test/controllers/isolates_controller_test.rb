@@ -30,30 +30,30 @@ class IsolatesControllerTest < ActionController::TestCase
 
   test "should create isolate" do
     assert_difference('Isolate.count') do
-      post :create, isolate: { lab_nr: 'GBOL7012', tissue: 'seed', isCopy: false }
+      post :create, params: {isolate: { lab_nr: 'GBOL7012', tissue: 'seed', isCopy: false } }
     end
 
     assert_redirected_to isolates_path
   end
 
   test "should show isolate" do
-    get :show, id: @isolate
+    get :show, params: { id: @isolate }
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @isolate
+    get :edit, params: { id: @isolate }
     assert_response :success
   end
 
   test "should update isolate" do
-    patch :update, id: @isolate, isolate: { lab_nr: 'GBoL3456', tissue: 'pollen', individual: 'specimen1' }
+    patch :update, params: { id: @isolate, isolate: { lab_nr: 'GBoL3456', tissue: 'pollen', individual: 'specimen1' } }
     assert_redirected_to isolates_path
   end
 
   test "should destroy isolate" do
     assert_difference('Isolate.count', -1) do
-      delete :destroy, id: @isolate
+      delete :destroy, params: { id: @isolate }
     end
 
     assert_redirected_to isolates_path

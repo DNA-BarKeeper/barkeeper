@@ -6,6 +6,6 @@ class XmlUploaderTest < ActiveSupport::TestCase
   end
 
   def test_valid
-    assert txt_uploader.valid?
+    assert xml_uploader.valid?
   end
 end

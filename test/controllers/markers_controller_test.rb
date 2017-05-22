@@ -19,30 +19,30 @@ class MarkersControllerTest < ActionController::TestCase
 
   test "should create marker" do
     assert_difference('Marker.count') do
-      post :create, marker: { name: 'rbcL', is_gbol: false, expected_reads: 1 }
+      post :create, params: { marker: { name: 'rbcL', is_gbol: false, expected_reads: 1 } }
     end
 
     assert_redirected_to markers_path
   end
 
   test "should show marker" do
-    get :show, id: @marker
+    get :show, params: { id: @marker }
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @marker
+    get :edit, params: { id: @marker }
     assert_response :success
   end
 
   test "should update marker" do
-    patch :update, id: @marker, marker: { alt_name: 'NR5_NR4' }
+    patch :update, params: { id: @marker, marker: { alt_name: 'NR5_NR4' } }
     assert_redirected_to markers_path
   end
 
   test "should destroy marker" do
     assert_difference('Marker.count', -1) do
-      delete :destroy, id: @marker
+      delete :destroy, params: { id: @marker }
     end
 
     assert_redirected_to markers_url

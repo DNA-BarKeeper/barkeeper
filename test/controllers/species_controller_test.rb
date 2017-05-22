@@ -12,7 +12,7 @@ class SpeciesControllerTest < ActionController::TestCase
   end
 
   test "should show species" do
-    get :show, id: @species
+    get :show, params: { id: @species }
     assert_response :success
   end
 
@@ -22,26 +22,26 @@ class SpeciesControllerTest < ActionController::TestCase
   end
 
   test "should get edit" do
-    get :edit, id: @species
+    get :edit, params: { id: @species }
     assert_response :success
   end
 
   test "should create species" do
     assert_difference('Species.count') do
-      post :create, species: { name: 'test_species', author: 'unknown', family: 'test' }
+      post :create, params: { species: { name: 'test_species', author: 'unknown', family: 'test' } }
     end
 
     assert_redirected_to species_index_path
   end
 
   test "should update species" do
-    patch :update, id: @species, species: { author: 'Linné' }
+    patch :update, params: { id: @species, species: { author: 'Linné' } }
     assert_redirected_to species_index_path
   end
 
   test "should destroy species" do
     assert_difference('Species.count', -1) do
-      delete :destroy, id: @species
+      delete :destroy, params: { id: @species }
     end
 
     assert_redirected_to species_index_url

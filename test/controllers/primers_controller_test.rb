@@ -12,7 +12,7 @@ class PrimersControllerTest < ActionController::TestCase
   end
 
   test "should show primer" do
-    get :show, id: @primer
+    get :show, params: { id: @primer }
     assert_response :success
   end
 
@@ -22,26 +22,26 @@ class PrimersControllerTest < ActionController::TestCase
   end
 
   test "should get edit" do
-    get :edit, id: @primer
+    get :edit, params: { id: @primer }
     assert_response :success
   end
 
   test "should create primer" do
     assert_difference('Primer.count') do
-      post :create, primer: { name: 'ITS5', alt_name: 'nr5', reverse: false }
+      post :create, params: { primer: { name: 'ITS5', alt_name: 'nr5', reverse: false } }
     end
 
     assert_redirected_to primers_path
   end
 
   test "should update primer" do
-    patch :update, id: @primer, primer: { reverse: false }
+    patch :update, params: { id: @primer, primer: { reverse: false } }
     assert_redirected_to primers_path
   end
 
   test "should destroy primer" do
     assert_difference('Primer.count', -1) do
-      delete :destroy, id: @primer
+      delete :destroy, params: { id: @primer }
     end
 
     assert_redirected_to primers_url

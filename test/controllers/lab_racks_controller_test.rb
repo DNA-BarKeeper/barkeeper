@@ -20,30 +20,30 @@ class LabRacksControllerTest < ActionController::TestCase
 
   test "should create lab rack" do
     assert_difference('LabRack.count') do
-      post :create, lab_rack: { freezer: 'freezer1', shelf: 'shelf1', rackcode: 'GBoL5_2' }
+      post :create, params: { lab_rack: { freezer: 'freezer1', shelf: 'shelf1', rackcode: 'GBoL5_2' } }
     end
 
     assert_redirected_to lab_racks_path
   end
 
   test "should show lab rack" do
-    get :show, id: @lab_rack
+    get :show, params: { id: @lab_rack }
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @lab_rack
+    get :edit, params: { id: @lab_rack }
     assert_response :success
   end
 
   test "should update lab rack" do
-    patch :update, id: @lab_rack, lab_rack: { rackcode: 'GBoL5_0' }
+    patch :update, params: { id: @lab_rack, lab_rack: { rackcode: 'GBoL5_0' } }
     assert_redirected_to lab_racks_path
   end
 
   test "should destroy lab rack" do
     assert_difference('LabRack.count', -1) do
-      delete :destroy, id: @lab_rack
+      delete :destroy, params: { id: @lab_rack }
     end
 
     assert_redirected_to lab_racks_url

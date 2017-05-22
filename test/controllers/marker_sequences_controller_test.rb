@@ -19,30 +19,30 @@ class MarkerSequencesControllerTest < ActionController::TestCase
 
   test "should create marker sequence" do
     assert_difference('MarkerSequence.count') do
-      post :create, marker_sequence: { name: 'GBoL3635_ITS', marker: 'ITS' }
+      post :create, params: { marker_sequence: { name: 'GBoL3635_ITS', marker: 'ITS' } }
     end
 
     assert_redirected_to marker_sequences_path
   end
 
   test "should show marker sequence" do
-    get :show, id: @marker_sequence
+    get :show, params: { id: @marker_sequence }
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @marker_sequence
+    get :edit, params: { id: @marker_sequence }
     assert_response :success
   end
 
   test "should update marker sequence" do
-    patch :update, id: @marker_sequence, marker_sequence: { name: 'GBoL1516_ITS' }
+    patch :update, params: { id: @marker_sequence, marker_sequence: { name: 'GBoL1516_ITS' } }
     assert_redirected_to edit_marker_sequence_path
   end
 
   test "should destroy marker sequence" do
     assert_difference('MarkerSequence.count', -1) do
-      delete :destroy, id: @marker_sequence
+      delete :destroy, params: { id: @marker_sequence }
     end
 
     assert_redirected_to marker_sequences_url

@@ -20,28 +20,28 @@ class IssuesControllerTest < ActionController::TestCase
 
   test "should create issue" do
     assert_difference('Issue.count') do
-      post :create, issue: { title: 'unexpected error', description: 'an unexpected event caused an error' }
+      post :create, params: { issue: { title: 'unexpected error', description: 'an unexpected event caused an error' } }
     end
   end
 
   test "should show issue" do
-    get :show, id: @issue
+    get :show, params: { id: @issue }
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @issue
+    get :edit, params: { id: @issue }
     assert_response :success
   end
 
   test "should update issue" do
-    patch :update, id: @issue, issue: { title: 'fatal error', description: 'A fatal error occurred.' }
+    patch :update, params: { id: @issue, issue: { title: 'fatal error', description: 'A fatal error occurred.' } }
     assert_redirected_to issues_path
   end
 
   test "should destroy issue" do
     assert_difference('Issue.count', -1) do
-      delete :destroy, id: @issue
+      delete :destroy, params: { id: @issue }
     end
 
     assert_redirected_to issues_url

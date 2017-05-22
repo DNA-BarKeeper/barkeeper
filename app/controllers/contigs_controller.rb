@@ -1,6 +1,6 @@
 class ContigsController < ApplicationController
 
-  before_filter :authenticate_user!, :except => [:edit, :index, :filter, :change_via_script, :compare_contigs, :as_fasq]
+  before_action :authenticate_user!, :except => [:edit, :index, :filter, :change_via_script, :compare_contigs, :as_fasq]
 
   skip_before_action :verify_authenticity_token
 

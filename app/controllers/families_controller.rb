@@ -1,6 +1,6 @@
 class FamiliesController < ApplicationController
 
-  before_filter :authenticate_user!, :except => [:edit, :index, :filter, :show_species]
+  before_action :authenticate_user!, :except => [:edit, :index, :filter, :show_species]
 
   before_action :set_family, only: [:show, :edit, :update, :destroy]
 

@@ -1,5 +1,5 @@
 class PlantPlatesController < ApplicationController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
   before_action :set_plant_plate, only: [:show, :edit, :update, :destroy]
 
   # GET /plant_plates

@@ -19,30 +19,30 @@ class LabsControllerTest < ActionController::TestCase
 
   test "should create lab" do
     assert_difference('Lab.count') do
-      post :create, lab: { labcode: 'NEES' }
+      post :create, params: { lab: { labcode: 'NEES' } }
     end
 
     assert_redirected_to labs_path
   end
 
   test "should show lab" do
-    get :show, id: @lab
+    get :show, params: { id: @lab }
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @lab
+    get :edit, params: { id: @lab }
     assert_response :success
   end
 
   test "should update lab" do
-    patch :update, id: @lab, lab: { labcode: 'BGBM' }
+    patch :update, params: { id: @lab, lab: { labcode: 'BGBM' } }
     assert_redirected_to labs_path
   end
 
   test "should destroy lab" do
     assert_difference('Lab.count', -1) do
-      delete :destroy, id: @lab
+      delete :destroy, params: { id: @lab }
     end
 
     assert_redirected_to labs_url

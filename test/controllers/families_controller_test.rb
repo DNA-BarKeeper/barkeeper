@@ -12,36 +12,31 @@ class FamiliesControllerTest  < ActionController::TestCase
   end
 
   test "should show family" do
-    get :show, id: @family
+    get :show, params: { id: @family }
     assert_response :success
   end
 
-  # test "should get new" do
-  #   get :new
-  #   assert_response :success
-  # end
-
   test "should get edit" do
-    get :edit, id: @family
+    get :edit, params: { id: @family }
     assert_response :success
   end
 
   test "should create family" do
     assert_difference('Family.count') do
-      post :create, family: { name: 'Byblidaceae' }
+      post :create, params: { family: { name: 'Byblidaceae' } }
     end
 
     assert_redirected_to families_path
   end
 
   test "should update family" do
-    patch :update, id: @family, family: { name: 'Calceolariaceae' }
+    patch :update, params: { id: @family, family: { name: 'Calceolariaceae' } }
     assert_redirected_to families_path
   end
 
   test "should destroy family" do
     assert_difference('Family.count', -1) do
-      delete :destroy, id: @family
+      delete :destroy, params: { id: @family }
     end
 
     assert_redirected_to families_path

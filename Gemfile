@@ -1,31 +1,33 @@
 source 'https://rubygems.org'
 ruby '2.3.3'
-gem 'rails', '4.2.0'
+gem 'rails', '5.0.0'
 
 #gem 'rack-mini-profiler', group: :development
 gem 'rails_12factor', group: :production
 gem 'pg'
 
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.0.0'
-gem 'jquery-rails', '~> 2.3.0'
+gem 'coffee-rails', '~> 4.2'
+gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'jbuilder', '~> 2.0'
-gem 'sdoc', '~> 0.4.0',          group: :doc
+gem 'jbuilder', '~> 2.5'
+# Use Redis adapter to run Action Cable in production
+# gem 'redis', '~> 3.0'
+#gem 'sdoc', '~> 0.4.0',          group: :doc
 # gem 'spring',        group: :development
 gem 'populator'
-gem 'turbolinks'
+gem 'turbolinks', '~> 5'
 gem 'jquery-turbolinks'
 gem 'bootstrap-sass'
 gem 'sprockets-rails', :require => 'sprockets/railtie'
 gem 'devise'
-gem 'simple_form' # todo check if used anywhere, rm
+gem 'simple_form' #todo check if used anywhere, rm
 gem 'bio'
 gem 'paperclip', github: 'thoughtbot/paperclip'
 gem 'pg_search'
 gem 's3_direct_upload'
-gem 'aws-sdk', '< 2.0'
+gem 'aws-sdk', '~> 2'
 gem 'will_paginate', '> 3.0'
 gem 'will_paginate-bootstrap'
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
@@ -34,8 +36,9 @@ gem 'roo'
 gem 'sidekiq'
 gem 'whenever', :require => false
 gem 'chosen-rails'
+gem 'bcrypt', '~> 3.1.7'
 
-gem 'puma', :group => 'production'
+gem 'puma', '~> 3.0', :group => 'production'
 
 group :development, :test do
   gem 'better_errors'
@@ -56,8 +59,8 @@ group :test do
   gem 'simplecov'
   gem 'selenium-webdriver'
   gem 'binding_of_caller'
+  gem 'rails-controller-testing'
 end
-
 
 # needed to monitor sidekiq jobs:
 gem 'sinatra', :require => nil
@@ -68,5 +71,5 @@ gem 'newrelic_rpm'
 
 gem 'redis'
 
-# only necessary on windows
-gem 'tzinfo-data'
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

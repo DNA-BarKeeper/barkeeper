@@ -1,5 +1,5 @@
 class AuthorsController < ApplicationController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
   before_action :set_author, only: [:show, :edit, :update, :destroy]
 
   # GET /authors

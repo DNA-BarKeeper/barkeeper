@@ -12,7 +12,7 @@ class OrdersControllerTest < ActionController::TestCase
   end
 
   test "should show order" do
-    get :show, id: @order
+    get :show, params: { id: @order }
     assert_response :success
   end
 
@@ -22,26 +22,26 @@ class OrdersControllerTest < ActionController::TestCase
   end
 
   test "should get edit" do
-    get :edit, id: @order
+    get :edit, params: { id: @order }
     assert_response :success
   end
 
   test "should create order" do
     assert_difference('Order.count') do
-      post :create, order: { name: 'Apiales' }
+      post :create, params: { order: { name: 'Apiales' } }
     end
 
     assert_redirected_to orders_path
   end
 
   test "should update order" do
-    patch :update, id: @order, order: { name: 'Asterales' }
+    patch :update, params: { id: @order, order: { name: 'Asterales' } }
     assert_redirected_to orders_path
   end
 
   test "should destroy order" do
     assert_difference('Order.count', -1) do
-      delete :destroy, id: @order
+      delete :destroy, params: { id: @order }
     end
 
     assert_redirected_to orders_path

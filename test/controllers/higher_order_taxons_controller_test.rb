@@ -12,36 +12,31 @@ class HigherOrderTaxonsControllerTest < ActionController::TestCase
   end
 
   test "should show higher order taxon" do
-    get :show, id: @higher_order_taxon
+    get :show, params: { id: @higher_order_taxon }
     assert_response :success
   end
 
-  # test "should get new" do
-  #   get :new
-  #   assert_response :success
-  # end
-
   test "should get edit" do
-    get :edit, id: @higher_order_taxon
+    get :edit, params: { id: @higher_order_taxon }
     assert_response :success
   end
 
   test "should create higher order taxon" do
     assert_difference('HigherOrderTaxon.count') do
-      post :create, higher_order_taxon: { name: 'Coniferopsida' }
+      post :create, params: { higher_order_taxon: { name: 'Coniferopsida' } }
     end
 
     assert_redirected_to higher_order_taxons_path
   end
 
   test "should update higher order taxon" do
-    patch :update, id: @higher_order_taxon, higher_order_taxon: { name: 'Equisetophytina' }
+    patch :update, params: { id: @higher_order_taxon, higher_order_taxon: { name: 'Equisetophytina' } }
     assert_redirected_to higher_order_taxons_path
   end
 
   test "should destroy higher order taxon" do
     assert_difference('HigherOrderTaxon.count', -1) do
-      delete :destroy, id: @higher_order_taxon
+      delete :destroy,  params: { id: @higher_order_taxon }
     end
 
     assert_redirected_to higher_order_taxons_path

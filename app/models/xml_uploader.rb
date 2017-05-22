@@ -8,6 +8,7 @@ class XmlUploader < ActiveRecord::Base
   has_attached_file :uploaded_file,
                     :storage => :s3,
                     :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
+                    :s3_region => ENV["eu-central-1"],
                     :path => "/specimens.xls"
 
   # Validate content type
@@ -37,7 +38,6 @@ class XmlUploader < ActiveRecord::Base
   def xml_string
     # get all Individuals
     @individuals=Individual.includes(:species => :family).all
-    #@individuals = Individual.includes(:species => :family).take(25) # zu Testzwecken, alternativ find_in_batches nutzen
 
     @states=["Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen","Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Nordrhein-Westfalen","Rheinland-Pfalz","Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","Thüringen"]
 

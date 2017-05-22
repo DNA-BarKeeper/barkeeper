@@ -12,7 +12,7 @@ class PrimerPosOnGenomesControllerTest < ActionController::TestCase
   end
 
   test "should show primer position on genome" do
-    get :show, id: @primer_pos_on_genome
+    get :show, params: { id: @primer_pos_on_genome }
     assert_response :success
   end
 
@@ -35,13 +35,13 @@ class PrimerPosOnGenomesControllerTest < ActionController::TestCase
   # end
 
   test "should update primer position on genome" do
-    patch :update, id: @primer_pos_on_genome, primer_pos_on_genome: { position: '334' }
+    patch :update, params: { id: @primer_pos_on_genome, primer_pos_on_genome: { position: '334' } }
     assert_redirected_to primer_pos_on_genome_path
   end
 
   test "should destroy primer position on genome" do
     assert_difference('PrimerPosOnGenome.count', -1) do
-      delete :destroy, id: @primer_pos_on_genome
+      delete :destroy, params: { id: @primer_pos_on_genome }
     end
 
     assert_redirected_to primer_pos_on_genomes_url

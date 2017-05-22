@@ -1,5 +1,5 @@
 class AlignmentsController < ApplicationController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
   before_action :set_alignment, only: [:show, :edit, :update, :destroy]
 
