@@ -28,7 +28,7 @@ class SpeciesControllerTest < ActionController::TestCase
 
   test "should create species" do
     assert_difference('Species.count') do
-      post :create, params: { species: { name: 'test_species', author: 'unknown', family: 'test' } }
+      post :create, params: { species: { name: 'Pilea cadierei', author: 'unknown', family: 'urticaceae' } }
     end
 
     assert_redirected_to species_index_path

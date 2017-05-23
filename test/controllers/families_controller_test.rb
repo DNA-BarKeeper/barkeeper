@@ -21,14 +21,6 @@ class FamiliesControllerTest  < ActionController::TestCase
     assert_response :success
   end
 
-  test "should create family" do
-    assert_difference('Family.count') do
-      post :create, params: { family: { name: 'Byblidaceae' } }
-    end
-
-    assert_redirected_to families_path
-  end
-
   test "should update family" do
     patch :update, params: { id: @family, family: { name: 'Calceolariaceae' } }
     assert_redirected_to families_path

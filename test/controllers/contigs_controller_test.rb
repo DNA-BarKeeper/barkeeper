@@ -21,11 +21,6 @@ class ContigsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  # test "should get new" do
-  #   get :new
-  #   assert_response :success
-  # end
-
   test "should update contig" do
     patch :update, params: { id: @contig, contig: { name: 'gbol5127_rpl16' } }
     assert_redirected_to edit_contig_path(@contig)
@@ -37,13 +32,5 @@ class ContigsControllerTest < ActionController::TestCase
     end
 
     assert_redirected_to contigs_url
-  end
-
-  test "should create contig" do
-    assert_difference('Contig.count') do
-      post :create, params: { contig: {id: 5, name: 'GBoL3544_trnK-matK', pde: ''} }
-    end
-
-    assert_redirected_to contig_path(assigns(:contig))
   end
 end
