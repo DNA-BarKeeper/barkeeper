@@ -307,7 +307,7 @@ class XmlUploader < ActiveRecord::Base
                 Marker.gbol_marker.each do |marker|
                   current_sequence = longest_sequences[marker.id]
 
-                  # URL zum contig in GBOL5 WebApp
+                  # URL zum contig in GBoL5 WebApp
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
                       if current_sequence && current_sequence.contigs.any?

@@ -6,7 +6,6 @@
 //= require jquery-fileupload/basic
 //= require jquery-fileupload/vendor/tmpl
 //= require chosen.jquery
-//= require turbolinks
 //= require jquery.turbolinks
 //= require d3.min
 //= require bootstrap
