@@ -1,6 +1,5 @@
 jQuery(function() {
 
-
     function scroll_to(pos) {
         var primer_read_divs = document.getElementsByClassName('chromatogram');
 

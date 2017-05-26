@@ -1,6 +1,7 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
+// require turbolinks
 //= require dataTables/jquery.dataTables
 //= require jquery.autosize
 //= require jquery-fileupload/basic

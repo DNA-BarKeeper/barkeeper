@@ -392,6 +392,7 @@ DEPENDENCIES
   sinatra
   slim
   sprockets-rails
+  turbolinks (~> 5)
   tzinfo-data
   uglifier (>= 1.3.0)
   webrat
