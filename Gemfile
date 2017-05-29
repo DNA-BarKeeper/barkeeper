@@ -21,6 +21,11 @@ gem 'jbuilder', '~> 2.5'
 gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
+gem 'jquery-rails'
+gem 'jquery-turbolinks'
+gem 'jquery-ui-rails'
+gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
+gem 'jquery-fileupload-rails'
 gem 'populator'
 gem 'bootstrap-sass'
 gem 'sprockets-rails', :require => 'sprockets/railtie'
@@ -38,13 +43,6 @@ gem 'roo'
 gem 'sidekiq'
 gem 'whenever', :require => false
 gem 'chosen-rails'
-
-#todo jquery is no longer a default dependency, check if these gems are still needed
-gem 'jquery-rails'
-gem 'jquery-turbolinks'
-gem 'jquery-ui-rails'
-gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
-gem 'jquery-fileupload-rails'
 
 group :development, :test do
   gem 'better_errors'
