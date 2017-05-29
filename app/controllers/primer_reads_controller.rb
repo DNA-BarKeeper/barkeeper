@@ -1,5 +1,5 @@
 class PrimerReadsController < ApplicationController
-  before_filter :authenticate_user!, :except => [:edit, :index]
+  before_action :authenticate_user!, :except => [:edit, :index]
 
   before_action :set_primer_read, only: [:go_to_pos, :do_not_use_for_assembly, :use_for_assembly, :change_left_clip, :change_right_clip, :edit, :fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
 

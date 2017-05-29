@@ -1,6 +1,6 @@
 class PrimerPosOnGenomesController < ApplicationController
 
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
   before_action :set_primer_pos_on_genome, only: [:show, :edit, :update, :destroy]
 

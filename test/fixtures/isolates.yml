@@ -1,2 +1,28 @@
-gbol5127:
-  lab_nr: GBoL5127
+gbol2119:
+  lab_nr: GBoL2119
+  well_pos_plant_plate: 25
+  micronic_tube_id: 12
+  well_pos_micronic_plate: 2
+  concentration: 10.0
+  created_at: 2016-09-11 10:13:23
+  updated_at: 2017-02-11 23:04:34
+  isCopy: false
+  tissue: seed
+  micronic_plate: G5c1000131
+  plant_plate: plant_plate1
+  individual: specimen1
+  dna_bank_id: 234
+  lab_nr: 32
+  negative_control: false
+  lab_id_orig: 456
+  lab_id_copy: 456b
+  isolation_date: 2016-09-11
+  well_pos_micronic_plate_orig: 2
+  well_pos_micronic_plate_copy: 2
+  concentration_orig: 10,00
+  concentration_copy: 10,00
+  micronic_tube_id_orig: 12
+  micronic_tube_id_copy: 12
+  user_id: default.id
+  comment_orig:
+  comment_copy:

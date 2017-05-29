@@ -1,12 +1,14 @@
 # write SPECIMENS & STATUS  to Excel-XML (xls) for use by ZFMK for their "Portal / db : bolgermany.de "
 
 class XmlUploader < ActiveRecord::Base
+  include ActionView::Helpers
 
   #todo later rename  :uploaded_file to xml_File or s.th.
 
   has_attached_file :uploaded_file,
                     :storage => :s3,
                     :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
+                    :s3_region => ENV["eu-central-1"],
                     :path => "/specimens.xls"
 
   # Validate content type
@@ -34,7 +36,7 @@ class XmlUploader < ActiveRecord::Base
   end
 
   def xml_string
-    # get all indiv.
+    # get all Individuals
     @individuals=Individual.includes(:species => :family).all
 
     @states=["Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen","Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Nordrhein-Westfalen","Rheinland-Pfalz","Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","Thüringen"]
@@ -69,14 +71,13 @@ class XmlUploader < ActiveRecord::Base
                      "Habitat",
                      "Sammler",
                      "Nummer",
-                     "Behörde",
-                     "Sequenz vorhanden?"
+                     "Behörde"
     ]
 
     Marker.gbol_marker.each do |m|
       @header_cells << "#{m.name} - URL"
       @header_cells << "#{m.name} - Marker Sequence"
-      @header_cells << "#{m.name} - Sequences Withhold"
+      @header_cells << "#{m.name} - Genbank ID"
     end
 
     builder = Nokogiri::XML::Builder.new do |xml|
@@ -240,12 +241,12 @@ class XmlUploader < ActiveRecord::Base
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text(individual.latitude)
+                    xml.text(number_with_precision(individual.latitude, precision:5))
                   }
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text(individual.longitude)
+                    xml.text(number_with_precision(individual.longitude, precision:5))
                   }
                 }
                 xml.Cell {
@@ -255,7 +256,7 @@ class XmlUploader < ActiveRecord::Base
                 }
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    xml.text("")
+                    xml.text('')
                   }
                 }
                 xml.Cell {
@@ -285,64 +286,58 @@ class XmlUploader < ActiveRecord::Base
                   }
                 }
 
-                # todo: assumes that currently only one isolate per indiv. -> call all isolates later:
-
-                # individual.try(:isolates).each do |iso|
-                #...
-                # end
-
-                ms=individual.try(:isolates).first.try(:marker_sequences)
-                contigs=individual.try(:isolates).first.try(:contigs)
-
-                ct=0
-                if contigs
-                  ct=contigs.where(:imported => true).count
-                end
-
-                if (ms and ms.length > 0) or ct > 0
-                  xml.Cell {
-                    xml.Data('ss:Type' => "String") {
-                      xml.text('1')
-                    }
-                  }
-                else
-                  xml.Cell {
-                    xml.Data('ss:Type' => "String") {
-                      xml.text('0')
-                    }
-                  }
-
+                # Find longest marker sequence per GBoL marker for each individual
+                longest_sequences = Hash.new
+                individual.try(:isolates).each do |iso|
+                  Marker.gbol_marker.each do |current_marker|
+                    iso.try(:contigs).each do |current_contig|
+                      if current_contig.marker.id == current_marker.id
+                        if current_contig.marker_sequence
+                          current_seq = current_contig.marker_sequence.sequence
+                        end
+                        longest_sequences[current_marker.id] ||= current_contig.marker_sequence
+                        if current_seq && (current_seq.length > longest_sequences[current_marker.id].sequence.length)
+                          longest_sequences[current_marker.id] = current_contig.marker_sequence
+                        end
+                      end
+                    end
+                  end
                 end
 
                 Marker.gbol_marker.each do |marker|
-                  #URL zum contig in GBOL5 WebApp
-                  xml.Cell {
-                    xml.Data('ss:Type' => "String") {
-                      xml.text(marker_url(marker))
-                    }
-                  }
+                  current_sequence = longest_sequences[marker.id]
 
-                  #Markersequenz
+                  # URL zum contig in GBoL5 WebApp
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      if marker.marker_sequences.length == 0
-                        xml.text(marker.marker_sequences.first)
+                      if current_sequence && current_sequence.contigs.any?
+                        xml.text("gbol5.de/contigs/#{current_sequence.contigs.first.id}/edit") #edit_contig_path(current_sequence.contigs.first)
+                      else
+                        if current_sequence
+                          xml.text(current_sequence.contigs.length)
+                        end
                       end
                     }
                   }
 
-                  #Sequences withhold
+                  # Markersequenz
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      #if false #wenn Sequenz noch unveröffentlicht
-                      #  xml.text('1')
-                      #else
-                        xml.text('0')
-                      #end
+                      if current_sequence && current_sequence.sequence
+                        xml.text(current_sequence.sequence)
+                      end
+                    }
+                  }
+
+                  # Genbank ID
+                  xml.Cell {
+                    xml.Data('ss:Type' => "String") {
+                      if current_sequence && current_sequence.sequence && current_sequence.genbank
+                        xml.text(current_sequence.genbank)
+                      end
                     }
                   }
                 end
-
               }
             end
           }

@@ -12,7 +12,7 @@ class FreezersControllerTest < ActionController::TestCase
   end
 
   test "should show freezer" do
-    get :show, freezer: @freezer
+    get :show, params: { id: @freezer }
     assert_response :success
   end
 
@@ -22,26 +22,26 @@ class FreezersControllerTest < ActionController::TestCase
   end
 
   test "should get edit" do
-    get :edit, contig: @freezer
+    get :edit, params: { id: @freezer }
     assert_response :success
   end
 
   test "should create freezer" do
     assert_difference('Freezer.count') do
-      post :create, freezer: { freezercode: 'test_2' }
+      post :create, params: { freezer: { freezercode: 'test_2' } }
     end
 
     assert_redirected_to freezers_path
   end
 
   test "should update freezer" do
-    patch :update, id: @contig, freezer: { name: 'test_3' }
+    patch :update, params: { id: @freezer, freezer: { name: 'test_3' } }
     assert_redirected_to freezers_path
   end
 
   test "should destroy freezer" do
     assert_difference('Freezer.count', -1) do
-      delete :destroy, id: @freezer
+      delete :destroy, params: { id: @freezer }
     end
 
     assert_redirected_to freezers_path

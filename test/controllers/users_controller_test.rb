@@ -26,14 +26,14 @@ class UsersControllerTest < ActionController::TestCase
   test "should show user" do
     @shown_user = users(:default)
 
-    get :show, id: @shown_user
-    assert_response :success
+    get :show, params: { id: @shown_user }
+    assert_response :redirect
   end
 
   test "should not get user/edit if user not kai, show flash message instead" do
     @user = users(:default)
     sign_in @user
-    get :edit, id: @user
+    get :edit, params: { id: @user }
     assert_redirected_to root_path
     assert_equal 'Access not allowed.', flash[:alert]
   end
@@ -41,7 +41,7 @@ class UsersControllerTest < ActionController::TestCase
   test "should get user/edit if user is kai" do
     @user = users(:kai)
     sign_in @user
-    get :edit, id: users(:default)
+    get :edit, params: { id: users(:default) }
     assert_template :edit
     assert_select 'select'
   end
@@ -52,10 +52,10 @@ class UsersControllerTest < ActionController::TestCase
 
     @edited_user = users(:default)
 
-    puts @edited_user.projects.count
+    #puts 'Current project count: ' + @edited_user.projects.count.to_s
 
-    assert_difference ->{@edited_user.projects.count}, 1, 'no project was added.' do
-      patch :update, id: @edited_user, user: {project_ids: projects(:gbol5, :t3)}
+    assert_difference ->{@edited_user.projects.count}, 1, 'no project was added' do
+      patch :update, params: { id: @edited_user, user: { project_ids: projects(:gbol5, :t3) } }
     end
 
   end
@@ -65,7 +65,7 @@ class UsersControllerTest < ActionController::TestCase
     sign_in @user
 
     assert_no_difference ->{@user.projects.count} do
-      patch :update, id: @user, user: {project_ids: projects(:gbol5, :t3)}
+      patch :update, params: { id: @user, user: {project_ids: projects(:gbol5, :t3)} }
     end
   end
 
@@ -81,7 +81,7 @@ class UsersControllerTest < ActionController::TestCase
     sign_in @user
 
     assert_difference('User.count') do
-      post :create, user: { :name => 'test_user', :email => 'test@example.com', :password => 'password', :password_confirmation => 'password'}
+      post :create, params: { user: { :name => 'test_user', :email => 'test@example.com', :password => 'password', :password_confirmation => 'password'} }
     end
 
     assert_redirected_to user_path(assigns(:user))

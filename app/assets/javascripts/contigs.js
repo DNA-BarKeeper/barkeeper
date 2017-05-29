@@ -1,22 +1,15 @@
-$(document).on('page:fetch', function() {
-    $('.sk-circle').show();
-});
-$(document).on('page:change', function() {
-    $('.sk-circle').hide();
-});
-
-
 jQuery(function() {
 
-    var $loading2= $('.sk-circle.trace-loading').hide();
+    //initially hide global spinner
+    var $global_spinner=$(".sk-circle").hide();
     var $buttons = $('#buttons').hide();
 
     $(document)
         .ajaxStart(function () {
-            $loading2.show();
+            $global_spinner.show();
         })
         .ajaxStop(function () {
-            $loading2.hide();
+            $global_spinner.hide();
             $buttons.show();
         });
 

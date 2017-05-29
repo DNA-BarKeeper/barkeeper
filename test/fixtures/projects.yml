@@ -1,5 +1,15 @@
 gbol5:
   name: gbol5
+  description:
+  due: 2019-01-01 00:00:00
+  start: 2015-01-01 00:00:00
+  created_at: 2015-06-30 19:00:00
+  updated_at: 2016-08-21 14:49:27
 
 t3:
   name: t3
+  description: test project
+  due: 2016-01-01 00:00:00
+  start: 2015-07-01 00:00:00
+  created_at: 2015-06-30 19:00:00
+  updated_at: 2015-08-21 14:49:27

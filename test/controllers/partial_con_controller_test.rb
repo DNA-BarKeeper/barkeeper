@@ -1,7 +1,11 @@
-require "test_helper"
+require 'test_helper'
 
-class PartialConControllerTest < ActionController::TestCase
-  def test_sanity
-    flunk "Need real tests"
+class PartialConsControllerTest < ActionController::TestCase
+  setup do
+    @partial_con = partial_cons(:partial_con1)
+
+    user_log_in
   end
+
+  #todo: do real tests
 end

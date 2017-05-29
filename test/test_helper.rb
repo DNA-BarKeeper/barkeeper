@@ -22,6 +22,7 @@ module FixtureFileHelpers
 end
 
 ActiveRecord::FixtureSet.context_class.send :include, FixtureFileHelpers
+#ActiveRecord::FixtureSet.context_class.include FixtureFileHelpers
 
 def user_log_in
   @user = users(:default)
@@ -29,5 +30,6 @@ def user_log_in
 end
 
 class ActionController::TestCase
-  include Devise::TestHelpers
+  #include Devise::TestHelpers
+  include Devise::Test::ControllerHelpers
 end
