@@ -8,7 +8,8 @@ class XmlUploader < ActiveRecord::Base
   has_attached_file :uploaded_file,
                     :storage => :s3,
                     :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
-                    :s3_region => ENV["eu-west-1"],
+                    # :s3_region => ENV["eu-west-1"], <= das würde den Wert der env variablen "eu-west-1" abfragen, gäbe es die
+                    :s3_region => 'eu-west-1',
                     :path => "/specimens.xls"
 
   # Validate content type
@@ -29,7 +30,7 @@ class XmlUploader < ActiveRecord::Base
     # puts xml_string
   end
 
-  #todo remove s3 credentials from code everywhere
+  #todo remove s3 credentials from code everywhere, use ENV
 
   def s3_credentials
     {:bucket => "gbol5", :access_key_id => "AKIAINH5TDSKSWQ6J62A", :secret_access_key => "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"}
@@ -39,7 +40,7 @@ class XmlUploader < ActiveRecord::Base
     # get all Individuals
     @individuals=Individual.includes(:species => :family).all
 
-    @states=["Baden-Württemberg","Bayern","Berlin","Brandenburg","Bremen","Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Nordrhein-Westfalen","Rheinland-Pfalz","Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","Thüringen"]
+    @states=%w(Baden-Württemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein Thüringen)
 
     @header_cells = ["GBOL5 specimen ID",
                      "Feldnummer",
