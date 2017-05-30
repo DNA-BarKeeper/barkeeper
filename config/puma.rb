@@ -23,7 +23,7 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 # Workers do not work on JRuby or Windows (both of which do not support
 # processes).
 #
-workers(ENV['RACK_ENV'] == 'production' ? (ENV.fetch("WEB_CONCURRENCY") || 2) : 0)
+workers(ENV.fetch('RACK_ENV') == 'production' ? Integer(ENV.fetch('WEB_CONCURRENCY') || 2) : 0)
 
 # Use the `preload_app!` method when specifying a `workers` number.
 # This directive tells Puma to first boot the application and load code
