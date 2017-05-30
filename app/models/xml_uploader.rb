@@ -30,7 +30,8 @@ class XmlUploader < ActiveRecord::Base
     # puts xml_string
   end
 
-  #todo remove s3 credentials from code everywhere, use ENV
+  #todo remove s3 credentials from code everywhere, set & use  ENV['AWS_BUCKET'], ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY']
+
 
   def s3_credentials
     {:bucket => "gbol5", :access_key_id => "AKIAINH5TDSKSWQ6J62A", :secret_access_key => "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"}
@@ -102,6 +103,7 @@ class XmlUploader < ActiveRecord::Base
               end
 
             }
+
             @individuals.each do |individual|
               xml.Row{
                 xml.Cell {
@@ -288,20 +290,31 @@ class XmlUploader < ActiveRecord::Base
                 }
 
                 # Find longest marker sequence per GBoL marker for each individual
-                longest_sequences = Hash.new
+                longest_sequences = {}
+
                 individual.try(:isolates).each do |iso|
                   Marker.gbol_marker.each do |current_marker|
-                    iso.try(:contigs).each do |current_contig|
-                      if current_contig.marker.id == current_marker.id
-                        if current_contig.marker_sequence
-                          current_seq = current_contig.marker_sequence.sequence
-                        end
-                        longest_sequences[current_marker.id] ||= current_contig.marker_sequence
-                        if current_seq && (current_seq.length > longest_sequences[current_marker.id].sequence.length)
-                          longest_sequences[current_marker.id] = current_contig.marker_sequence
-                        end
+
+                    # iso.try(:contigs).each do |current_contig|
+                    #   if current_contig.marker.id == current_marker.id
+                    #     if current_contig.marker_sequence
+                    #       current_seq = current_contig.marker_sequence.sequence
+                    #     end
+                    #     longest_sequences[current_marker.id] ||= current_contig.marker_sequence
+                    #     if current_seq && (current_seq.length > longest_sequences[current_marker.id].sequence.length)
+                    #       longest_sequences[current_marker.id] = current_contig.marker_sequence
+                    #     end
+                    #   end
+                    # end
+
+                    current_contig = iso.try(:contigs).where(:marker_id => current_marker.id).first
+                    if current_contig&.marker_sequence&.sequence
+                      longest_sequences[current_marker.id] ||= current_contig.marker_sequence
+                      if current_contig.marker_sequence.sequence.length > longest_sequences[current_marker.id].sequence.length
+                        longest_sequences[current_marker.id] = current_contig.marker_sequence
                       end
                     end
+
                   end
                 end
 
