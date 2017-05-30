@@ -8,7 +8,7 @@ class PrimerRead < ActiveRecord::Base
   has_attached_file :chromatogram,
                     :storage => :s3,
                     :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
-                    :s3_region => ENV["eu-central-1"],
+                    :s3_region => ENV["eu-west-1"],
                     :default_url => "/chromatograms/primer_read.scf"
 
   #do_not_validate_attachment_file_type :chromatogram

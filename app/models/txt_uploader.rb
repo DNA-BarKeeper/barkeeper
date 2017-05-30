@@ -3,7 +3,7 @@ class TxtUploader < ActiveRecord::Base
   has_attached_file :uploaded_file,
                     :storage => :s3,
                     :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
-                    :s3_region => ENV["eu-central-1"],
+                    :s3_region => ENV["eu-west-1"],
                     :path => "/output.txt"
 
   # Validate content type
