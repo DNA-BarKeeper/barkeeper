@@ -153,7 +153,7 @@ div.about-background {
 }
 
 body.about_page {
-  background: url('species_images/IMG_3438.jpg') fixed;
+  background: asset-data-url('species_images/IMG_3438.jpg') fixed;
 }
 
 .isolate-copy-label {
