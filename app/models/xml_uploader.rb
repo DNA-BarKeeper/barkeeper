@@ -35,8 +35,6 @@ class XmlUploader < ActiveRecord::Base
   end
 
   def xml_string
-    # get all indiv.
-    @individuals=Individual.includes(:species => :family).all
 
     @states=["Baden-WÃ¼rttemberg","Bayern","Berlin","Brandenburg","Bremen","Hamburg","Hessen","Mecklenburg-Vorpommern","Niedersachsen","Nordrhein-Westfalen","Rheinland-Pfalz","Saarland","Sachsen","Sachsen-Anhalt","Schleswig-Holstein","ThÃ¼ringen"]
 
@@ -95,7 +93,9 @@ class XmlUploader < ActiveRecord::Base
               end
 
             }
-            @individuals.each do |individual|
+
+            # get all indiv.
+            Individual.includes(:species => :family).find_each do |individual|
               xml.Row{
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
