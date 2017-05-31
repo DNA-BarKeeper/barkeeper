@@ -34,7 +34,7 @@ gem 'simple_form' #todo check if used anywhere, rm
 gem 'bio'
 gem 'paperclip', github: 'thoughtbot/paperclip'
 gem 's3_direct_upload'
-gem 'aws-sdk', '2.6.44'
+gem 'aws-sdk', '~> 2'
 gem 'pg_search'
 gem 'will_paginate', '> 3.0'
 gem 'will_paginate-bootstrap'

@@ -349,7 +349,7 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
-  aws-sdk (= 2.6.44)
+  aws-sdk (~> 2)
   better_errors
   binding_of_caller
   bio
