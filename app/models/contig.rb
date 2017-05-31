@@ -9,8 +9,8 @@ class Contig < ActiveRecord::Base
   has_many :partial_cons
   has_and_belongs_to_many :projects
 
-  #how to add "includes" statement here?
   scope :caryophyllales, -> { includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => :order }}}).where(orders: {name: "Caryophyllales"})}
+  scope :caryo_matK, -> { caryophyllales.includes(:marker).where(:marker_id => 7) }
   scope :festuca, -> { includes(:isolate => :individual).joins(:isolate => {:individual => :species}).where(species: {genus_name: "Festuca"})}
 
   scope :assembled, -> { where(:assembled => true)}

@@ -1,10 +1,9 @@
 class ContigDatatable
 
   #ToDo: fig out if this inclusion is necessary. Found on https://gist.github.com/jhjguxin/4544826, but unclear if makes sense. "delegate" statement alone does not work.
-
   include Rails.application.routes.url_helpers
-  delegate :url_helpers, to: 'Rails.application.routes'
 
+  delegate :url_helpers, to: 'Rails.application.routes'
   delegate :params, :link_to, :h, to: :@view
 
   # def initialize(view, need_verify, imported, duplicates)
@@ -67,11 +66,11 @@ class ContigDatatable
       when "imported"
         contigs=Contig.externally_edited.order("#{sort_column} #{sort_direction}")
       when "caryophyllales_verified"
-        contigs=Contig.caryophyllales.verified.order("#{sort_column} #{sort_direction}")
+        contigs=Contig.caryo_matK.verified.order("#{sort_column} #{sort_direction}")
       when "caryophyllales_need_verification"
-        contigs=Contig.caryophyllales.need_verification.order("#{sort_column} #{sort_direction}")
+        contigs=Contig.caryo_matK.need_verification.order("#{sort_column} #{sort_direction}")
       when "caryophyllales_not_assembled"
-        contigs=Contig.caryophyllales.not_assembled.order("#{sort_column} #{sort_direction}")
+        contigs=Contig.caryo_matK.not_assembled.order("#{sort_column} #{sort_direction}")
       when "festuca_verified"
         contigs=Contig.festuca.verified.order("#{sort_column} #{sort_direction}")
       when "festuca_need_verification"
