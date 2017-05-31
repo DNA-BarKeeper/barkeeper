@@ -103,7 +103,7 @@ class XmlUploader < ActiveRecord::Base
             }
 
             # get all Individuals
-            Individual.includes(:species => :family).find_each do |individual|
+            Individual.includes(:species => :family).find_each(:batch_size => 50) do |individual|
 
               xml.Row{
                 xml.Cell {
