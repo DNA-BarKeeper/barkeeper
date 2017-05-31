@@ -286,7 +286,6 @@ class Contig < ActiveRecord::Base
   end
 
 
-
   def auto_overlap
 
     self.partial_cons.destroy_all
