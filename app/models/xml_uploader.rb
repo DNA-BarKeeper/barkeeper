@@ -8,7 +8,6 @@ class XmlUploader < ActiveRecord::Base
   has_attached_file :uploaded_file,
                     :storage => :s3,
                     :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
-                    # :s3_region => ENV["eu-west-1"], <= das wÃ¼rde den Wert der env variablen "eu-west-1" abfragen, gÃ¤be es die
                     :s3_region => 'eu-west-1',
                     :path => "/specimens.xls"
 
@@ -294,18 +293,6 @@ class XmlUploader < ActiveRecord::Base
 
                 individual.try(:isolates).each do |iso|
                   Marker.gbol_marker.each do |current_marker|
-
-                    # iso.try(:contigs).each do |current_contig|
-                    #   if current_contig.marker.id == current_marker.id
-                    #     if current_contig.marker_sequence
-                    #       current_seq = current_contig.marker_sequence.sequence
-                    #     end
-                    #     longest_sequences[current_marker.id] ||= current_contig.marker_sequence
-                    #     if current_seq && (current_seq.length > longest_sequences[current_marker.id].sequence.length)
-                    #       longest_sequences[current_marker.id] = current_contig.marker_sequence
-                    #     end
-                    #   end
-                    # end
 
                     current_contig = iso.try(:contigs).where(:marker_id => current_marker.id).first
                     if current_contig&.marker_sequence&.sequence
