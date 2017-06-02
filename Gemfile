@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 ruby '2.3.3'
 gem 'rails', '5.0.0'
 
-# nedded to connect to postgres DB
 gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.0' #, :group => 'production'
