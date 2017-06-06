@@ -21,6 +21,9 @@ module GBOLapp
     config.assets.paths << "#{Rails}/app/assets/fonts"
     config.assets.paths << "#{Rails}/vendor/assets/fonts"
 
+    # necessary for Digital Ocean:
+    config.assets.initialize_on_precompile = false
+
     # config.assets.enabled = true
     # config.assets.precompile += %w(*.png *.jpg *.jpeg *.gif)
   end
