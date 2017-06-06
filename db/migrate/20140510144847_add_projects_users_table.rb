@@ -1,4 +1,4 @@
-class AddProjectsUsersTable < ActiveRecord::Migration
+class AddProjUsersTable < ActiveRecord::Migration
 
   def change
     create_table :projects_users, :id => false do |t|
