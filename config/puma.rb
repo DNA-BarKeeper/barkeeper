@@ -1,8 +1,8 @@
-# only uses puma workers in production environment
+# Change to match your CPU core count
 workers(ENV.fetch('RACK_ENV') == 'production' ? 2 : 0)
 
 # Min and Max threads per worker
-threads 1, 6
+threads 1, 5
 
 app_dir = File.expand_path("../..", __FILE__)
 shared_dir = "#{app_dir}/shared"
@@ -27,4 +27,3 @@ on_worker_boot do
   ActiveRecord::Base.connection.disconnect! rescue ActiveRecord::ConnectionNotEstablished
   ActiveRecord::Base.establish_connection(YAML.load_file("#{app_dir}/config/database.yml")[rails_env])
 end
-
