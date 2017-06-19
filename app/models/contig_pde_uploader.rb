@@ -24,7 +24,7 @@ class ContigPdeUploader < ActiveRecord::Base
     temp_folder = "#{Rails.root}/tmp/contigs_caryo_matK"
     archive_file = "#{Rails.root}/tmp/contigs_caryo_matK.zip"
     Dir.mkdir("#{temp_folder}") if !File.exists?(temp_folder)
-    FileUtils.rm_r "#{temp_folder}" if File.exists?(archive_file)
+    FileUtils.rm_r "#{archive_file}" if File.exists?(archive_file)
 
     caryo_matK_contigs = Contig.caryo_matK.need_verification
 
@@ -43,7 +43,7 @@ class ContigPdeUploader < ActiveRecord::Base
 
     FileUtils.rm_r "#{temp_folder}" if File.exists?(temp_folder)
 
-    self.uploaded_file = File.open("contigs_caryo_matK.zip")
+    self.uploaded_file = File.open(archive_file)
     self.save!
   end
 end

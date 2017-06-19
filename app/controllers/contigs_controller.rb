@@ -279,7 +279,7 @@ class ContigsController < ApplicationController
 
   def upload_caryo_matK_contigs
     CaryoContigExport.perform_async
-    redirect_to individuals_path, notice: "Writing zip file to S3 in background. May take a minute or so."
+    redirect_to caryophyllales_need_verification_contigs_path, notice: "Writing zip file to S3 in background. May take a minute or so."
   end
 
   def zip
