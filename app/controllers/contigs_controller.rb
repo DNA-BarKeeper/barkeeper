@@ -277,6 +277,15 @@ class ContigsController < ApplicationController
     end
   end
 
+  def upload_caryo_matK_contigs
+    CaryoContigExport.perform_async
+    redirect_to individuals_path, notice: "Writing zip file to S3 in background. May take a minute or so."
+  end
+
+  def zip
+    redirect_to ContigPdeUploader.last.uploaded_file.url
+  end
+
   def caryophyllales_not_assembled #assembly finished according to app but still need manual check
     respond_to do |format|
       format.html

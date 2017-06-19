@@ -25,5 +25,10 @@
 </div>
 
 <p>
+  <%= link_to 'Export contigs to zip…', create_caryo_contigs_zip_path %>
+  <%= link_to 'Last contig export', caryo_contigs_zip_path %>
+</p>
+
+<p>
   Assembly verified for <%= Contig.verified.count %> contigs.
 </p>
