@@ -38,9 +38,8 @@ class ContigPdeUploader < ActiveRecord::Base
 
         # Write chromatogram to a file and add this to the zip file
         contig.primer_reads.each do | read |
-          file_name = read.name + "_"
-          File.open("#{temp_folder}/#{read.name}", 'wb') { | file | file.write(URI.parse("http:#{read.chromatogram.url}").read) } #todo maybe copying files within AWS is possible: s3.buckets['bucket-name'].objects['source'].copy_to('target'‌​)
-          archive.add(read.name, "#{temp_folder}/#{read.name}")
+          File.open("#{temp_folder}/#{read.file_name_id}", 'wb') { | file | file.write(URI.parse("http:#{read.chromatogram.url}").read) } #todo copy files within AWS to increase performance: s3.buckets['bucket-name'].objects['source'].copy_to('target'‌​)
+          archive.add(read.file_name_id, "#{temp_folder}/#{read.file_name_id}")
         end
       end
     end
