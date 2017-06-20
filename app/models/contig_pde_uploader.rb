@@ -21,28 +21,33 @@ class ContigPdeUploader < ActiveRecord::Base
   end
 
   def create_uploaded_file
-    temp_folder = "#{Rails.root}/tmp/contigs_caryo_matK"
-    archive_file = "#{Rails.root}/tmp/contigs_caryo_matK.zip"
+    temp_folder = "#{Rails.root}/tmp/caryophyllales_matK_contigs_that_need_verification"
+    archive_file = "#{Rails.root}/caryophyllales_matK_contigs_that_need_verification.zip"
+    caryo_matK_contigs = Contig.caryo_matK.need_verification
+
     Dir.mkdir("#{temp_folder}") if !File.exists?(temp_folder)
     FileUtils.rm_r "#{archive_file}" if File.exists?(archive_file)
 
-    caryo_matK_contigs = Contig.caryo_matK.need_verification
-
-    Zip::File.open(archive_file, Zip::File::CREATE) do |zipfile|
+    # Create archive file
+    Zip::File.open(archive_file, Zip::File::CREATE) do | archive |
       caryo_matK_contigs.each do |contig|
-          File.open("#{temp_folder}/#{contig.name}.pde", 'w') { |file| file.write("#{contig.pde}") }
-          zipfile.add("#{contig.name}.pde", "#{temp_folder}/#{contig.name}.pde")
+        # Write contig PDE to a file and add this to the zip file
+        file_name = "#{contig.name}.pde"
+        File.open("#{temp_folder}/#{file_name}", 'w') { | file | file.write(contig.pde) }
+        archive.add("#{file_name}", "#{temp_folder}/#{file_name}")
 
-          contig.primer_reads.each do |read|
-            url = "http:#{read.chromatogram.url}"
-            File.open("#{temp_folder}/#{read.name}", 'w') { |file| file.write(URI.parse(url).read.force_encoding(Encoding::UTF_8)) }
-            zipfile.add(read.name, "#{temp_folder}/#{read.name}")
-          end
+        # Write chromatogram to a file and add this to the zip file
+        contig.primer_reads.where(:assembled => true).each do | read | # only use assembled primer reads
+          File.open("#{temp_folder}/#{read.name}", 'wb') { | file | file.write(URI.parse("http:#{read.chromatogram.url}").read) }
+          archive.add(read.name, "#{temp_folder}/#{read.name}")
+        end
       end
     end
 
+    # Remove temporary folder
     FileUtils.rm_r "#{temp_folder}" if File.exists?(temp_folder)
 
+    # Upload created file
     self.uploaded_file = File.open(archive_file)
     self.save!
   end
