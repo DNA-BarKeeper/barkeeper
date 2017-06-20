@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170619101312) do
+ActiveRecord::Schema.define(version: 20170620124842) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,7 +46,6 @@ ActiveRecord::Schema.define(version: 20170619101312) do
     t.text     "partial_cons2"
     t.boolean  "assembly_tried"
     t.string   "aligned_cons",             limit: 255
-    t.text     "pde"
     t.text     "fas"
     t.boolean  "verified",                             default: false
     t.integer  "verified_by"
