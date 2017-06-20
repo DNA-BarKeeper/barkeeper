@@ -33,12 +33,13 @@ class ContigPdeUploader < ActiveRecord::Base
       caryo_matK_contigs.each do |contig|
         # Write contig PDE to a file and add this to the zip file
         file_name = "#{contig.name}.pde"
-        File.open("#{temp_folder}/#{file_name}", 'w') { | file | file.write(contig.pde) }
+        File.open("#{temp_folder}/#{file_name}", 'w') { | file | file.write(contig.as_pde) }
         archive.add("#{file_name}", "#{temp_folder}/#{file_name}")
 
         # Write chromatogram to a file and add this to the zip file
-        contig.primer_reads.where(:assembled => true).each do | read | # only use assembled primer reads
-          File.open("#{temp_folder}/#{read.name}", 'wb') { | file | file.write(URI.parse("http:#{read.chromatogram.url}").read) }
+        contig.primer_reads.each do | read |
+          file_name = read.name + "_"
+          File.open("#{temp_folder}/#{read.name}", 'wb') { | file | file.write(URI.parse("http:#{read.chromatogram.url}").read) } #todo maybe copying files within AWS is possible: s3.buckets['bucket-name'].objects['source'].copy_to('target'‌​)
           archive.add(read.name, "#{temp_folder}/#{read.name}")
         end
       end
@@ -47,7 +48,7 @@ class ContigPdeUploader < ActiveRecord::Base
     # Remove temporary folder
     FileUtils.rm_r "#{temp_folder}" if File.exists?(temp_folder)
 
-    # Upload created file
+    # Upload created archive
     self.uploaded_file = File.open(archive_file)
     self.save!
   end

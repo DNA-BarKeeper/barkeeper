@@ -456,23 +456,23 @@ class ContigsController < ApplicationController
     redirect_to edit_contig_path, notice: 'Assembly started in background.'
   end
 
-  def pde_all
-    Contig.all.each do |c|
-      unless c.pde.nil?
-        # send_data does not work with muliple
-        #send_data(str, :filename => "#{c.name}.pde", :type => "application/txt")
-
-        cleaned_name=c.name.gsub('/', '_')
-
-        t=File.new("/Users/kai/Desktop/PDEexport/#{cleaned_name}.pde", "w+")
-        t.write(c.pde)
-        t.close
-      end
-    end
-
-    redirect_to contigs_path
-
-  end
+  # def pde_all
+  #   Contig.all.each do |c|
+  #     unless c.pde.nil?
+  #       # send_data does not work with muliple
+  #       #send_data(str, :filename => "#{c.name}.pde", :type => "application/txt")
+  #
+  #       cleaned_name=c.name.gsub('/', '_')
+  #
+  #       t=File.new("/Users/kai/Desktop/PDEexport/#{cleaned_name}.pde", "w+")
+  #       t.write(c.pde)
+  #       t.close
+  #     end
+  #   end
+  #
+  #   redirect_to contigs_path
+  #
+  # end
 
   def pde
     str=@contig.as_pde

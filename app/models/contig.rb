@@ -343,8 +343,6 @@ class Contig < ActiveRecord::Base
     # format: partial_contigs.push({:reads => assembled_reads, :consensus => growing_consensus })
 
 
-    # -----> ASSEMBLY <------
-
     assemble(growing_consensus, assembled_reads, partial_contigs, remaining_reads)
 
     # -----> ASSEMBLY <------
