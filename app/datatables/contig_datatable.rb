@@ -84,7 +84,7 @@ class ContigDatatable
     contigs = contigs.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      contigs = contigs.where("name ILIKE :search", search: "%#{params[:sSearch]}%")
+      contigs = contigs.where("contigs.name ILIKE :search", search: "%#{params[:sSearch]}%")
     end
     contigs
   end
