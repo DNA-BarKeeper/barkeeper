@@ -1,6 +1,5 @@
 /coverage
 .idea/
-database.yml
 tmp/
 log/
 .DS_Store
