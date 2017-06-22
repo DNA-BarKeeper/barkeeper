@@ -27,5 +27,5 @@ production:
   encoding: unicode
   database: gbol_production
   pool: 5
-  username: <%= ENV['GBOL5_DATABASE_USER'] %>
-  password: <%= ENV['GBOL5_DATABASE_PASSWORD'] %>
+  username: gbol5
+  password: passwordDB
