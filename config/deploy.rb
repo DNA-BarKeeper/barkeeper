@@ -4,8 +4,8 @@ server '46.101.149.34', port: 22, roles: [:web, :app, :db], primary: true
 set :repo_url,        'ssh://Sarah_Wiechers@bitbucket.org/kai42/gbol5.git'
 set :application,     'gbol5'
 set :user,            'sarah'
-set :puma_threads,    [4, 16]
-set :puma_workers,    0
+set :puma_threads,    [1, 5]
+set :puma_workers,    2
 
 # Always deploy currently checked out branch
 set :branch, $1 if `git branch` =~ /\* (\S+)\s/m
