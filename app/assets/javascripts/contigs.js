@@ -32,7 +32,8 @@ jQuery(function() {
         sAjaxSource: $('#contigs-duplicates').data('source'),
         "columnDefs": [
             { "orderable": false, "targets": 1 },
-            { "orderable": false, "targets": 4 }
+            { "orderable": false, "targets": 2 },
+            { "orderable": false, "targets": 5 }
         ],
         "order": [ 0, 'asc' ]
     });
