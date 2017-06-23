@@ -33,16 +33,21 @@ class ContigDatatable
 
       species_name=''
       species_id=0
+      individual_name=''
+      individual_id=0
 
       if contig.try(:isolate).try(:individual).try(:species)
         species_name=contig.isolate.individual.species.name_for_display
         species_id=contig.isolate.individual.species.id
+        individual_name=contig.isolate.individual.specimen_id
+        individual_id=contig.isolate.individual.id
       end
 
       [
           # check_box_tag("contig_ids[]", contig.id),
           link_to(contig.name, edit_contig_path(contig)),
           link_to(species_name, edit_species_path(species_id)),
+          link_to(individual_name, edit_individual_path(individual_id)),
           assembled,
           contig.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
           link_to('Delete', contig, method: :delete, data: { confirm: 'Are you sure?' })
@@ -89,7 +94,6 @@ class ContigDatatable
     contigs
   end
 
-
   def page
     params[:iDisplayStart].to_i/per_page + 1
   end
@@ -99,7 +103,7 @@ class ContigDatatable
   end
 
   def sort_column
-    columns = %w[name species_id assembled updated_at]
+    columns = %w[name species_id individual_id assembled updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
