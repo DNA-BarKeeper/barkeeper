@@ -3,6 +3,7 @@
 tmp/
 log/
 secrets.yml
+database.yml
 .DS_Store
 rails_best_practices_output.html
 dump.rdb
