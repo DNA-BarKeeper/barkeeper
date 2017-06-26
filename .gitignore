@@ -1,9 +1,9 @@
 /coverage
 .idea/
 tmp/
-log/
-secrets.yml
 database.yml
+secrets.yml
+log/
 .DS_Store
 rails_best_practices_output.html
 dump.rdb
