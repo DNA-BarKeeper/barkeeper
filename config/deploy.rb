@@ -95,7 +95,7 @@ task :symlink_config_files do
   }
 
   on roles(:app) do
-    run symlinks.map{|from, to| "ln -nfs #{from} #{to}"}.join(" && ")
+    execute symlinks.map{|from, to| "ln -nfs #{from} #{to}"}.join(" && ")
   end
 end
 
