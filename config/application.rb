@@ -23,8 +23,5 @@ module GBOLapp
 
     # config.assets.enabled = true
     # config.assets.precompile += %w(*.png *.jpg *.jpeg *.gif)
-
-    # look for secret key base in env var
-    config.secret_key_base = ENV["SECRET_KEY_BASE"]
   end
 end
