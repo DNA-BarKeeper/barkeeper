@@ -1,12 +1,4 @@
 GIT
-  remote: git://github.com/jankmet/capistrano-redis.git
-  revision: a6482bd90f00f1f58e46c7eab408e3adbb816893
-  specs:
-    capistrano-redis (0.0.1)
-      capistrano (>= 3.0.0, < 4.0.0)
-      redis (~> 3.2.0)
-
-GIT
   remote: git://github.com/rweng/jquery-datatables-rails.git
   revision: d486b31b192a2924b1913e080ad23460e6b96d31
   specs:
@@ -394,7 +386,6 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano-rbenv
-  capistrano-redis!
   capistrano-sidekiq
   capistrano3-puma
   chosen-rails
