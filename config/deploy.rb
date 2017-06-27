@@ -30,6 +30,7 @@ set :puma_worker_timeout, nil
 set :puma_init_active_record, true  # Change to false when not using ActiveRecord
 
 set :sidekiq_log => File.join(release_path, 'log', 'sidekiq.log')
+set :sidekiq_config => File.join(shared_path, 'config', 'sidekiq.yml')
 
 ## Defaults:
 # set :scm,           :git
