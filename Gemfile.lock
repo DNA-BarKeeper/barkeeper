@@ -9,6 +9,15 @@ GIT
       sass-rails
 
 GIT
+  remote: git://github.com/seuros/capistrano-puma.git
+  revision: 00708fa18a029cb34f46aef60f920106c0c00107
+  specs:
+    capistrano3-puma (3.1.0)
+      capistrano (~> 3.7)
+      capistrano-bundler
+      puma (~> 3.4)
+
+GIT
   remote: git://github.com/thoughtbot/paperclip.git
   revision: 093b4da18444d883de826f58628089c2f480d461
   specs:
@@ -109,10 +118,6 @@ GEM
     capistrano-sidekiq (0.10.0)
       capistrano
       sidekiq (>= 3.4)
-    capistrano3-puma (3.1.0)
-      capistrano (~> 3.7)
-      capistrano-bundler
-      puma (~> 3.4)
     capybara (2.14.4)
       addressable
       mime-types (>= 1.16)
@@ -387,7 +392,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rbenv
   capistrano-sidekiq
-  capistrano3-puma
+  capistrano3-puma!
   chosen-rails
   coffee-rails (~> 4.2)
   devise
