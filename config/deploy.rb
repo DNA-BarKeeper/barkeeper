@@ -31,6 +31,13 @@ set :puma_init_active_record, true  # Change to false when not using ActiveRecor
 
 set :sidekiq_log => File.join(release_path, 'log', 'sidekiq.log')
 set :sidekiq_config => File.join(shared_path, 'config', 'sidekiq.yml')
+#
+# set :default_env, {
+#     'VERSION' => '',
+#     'RELEASE_DATE' => '',
+#     'LAST_COMMIT_ID' => '',
+#     'LAST_COMMIT_AUTHOR' => ''
+# }
 
 ## Defaults:
 # set :scm,           :git
@@ -101,6 +108,12 @@ task :symlink_config_files do
     execute symlinks.map{|from, to| "ln -nfs #{from} #{to}"}.join(" && ")
   end
 end
+#
+# desc "Set new version info"
+# task :set_version_info do
+#   # needed: version number, release time, last commit id, person who did this commit
+#
+# end
 
 # ps aux | grep puma    # Get puma pid
 # kill -s SIGUSR2 pid   # Restart puma
