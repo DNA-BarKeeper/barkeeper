@@ -31,12 +31,6 @@ set :puma_init_active_record, true  # Change to false when not using ActiveRecor
 
 set :sidekiq_log => File.join(release_path, 'log', 'sidekiq.log')
 set :sidekiq_config => File.join(shared_path, 'config', 'sidekiq.yml')
-# set :sidekiq_monit_templates_path => 'config/deploy/templates'
-# set :sidekiq_monit_conf_dir => '/etc/monit/conf.d'
-# set :sidekiq_monit_use_sudo => true
-# set :monit_bin => '/usr/bin/monit'
-# set :sidekiq_monit_default_hooks => true
-# set :sidekiq_service_name => "sidekiq_#{fetch(:application)}_#{fetch(:sidekiq_env)}"
 
 ## Defaults:
 # set :scm,           :git
