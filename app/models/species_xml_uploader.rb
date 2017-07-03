@@ -6,9 +6,6 @@ class SpeciesXmlUploader < ActiveRecord::Base
 #todo later rename  :uploaded_file to xml_File or s.th.
 
   has_attached_file :uploaded_file,
-                    :storage => :s3,
-                    :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
-                    :s3_region => 'eu-west-1',
                     :path => "/species.xls"
 
   # Validate content type
@@ -27,12 +24,6 @@ class SpeciesXmlUploader < ActiveRecord::Base
     self.save!
 
     # puts xml_string
-  end
-
-  #todo remove s3 credentials from code everywhere
-
-  def s3_credentials
-    {:bucket => "gbol5", :access_key_id => "AKIAINH5TDSKSWQ6J62A", :secret_access_key => "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"}
   end
 
   def xml_string

@@ -9,7 +9,7 @@ end
 
 if ENV['HEROKU_RELEASE_CREATED_AT']
   gbol5_app_release_date = ENV['HEROKU_RELEASE_CREATED_AT']
-  gbol5_app_release_date=Time.zone.parse(gbol5_app_release_date)
+  gbol5_app_release_date = Time.zone.parse(gbol5_app_release_date)
 else
   gbol5_app_release_date = ''
 end
