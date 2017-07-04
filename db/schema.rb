@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -15,6 +14,7 @@ ActiveRecord::Schema.define(version: 20160905163301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "pg_stat_statements"
 
   create_table "alignments", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -76,9 +76,8 @@ ActiveRecord::Schema.define(version: 20160905163301) do
     t.string   "queue",      limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
   end
-
-  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
   create_table "divisions", force: :cascade do |t|
     t.string   "name"
@@ -485,10 +484,9 @@ ActiveRecord::Schema.define(version: 20160905163301) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name",                   limit: 255
+    t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
-
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   create_table "xml_uploaders", force: :cascade do |t|
     t.string   "uploaded_file_file_name"
