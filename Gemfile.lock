@@ -9,17 +9,8 @@ GIT
       sass-rails
 
 GIT
-  remote: git://github.com/seuros/capistrano-puma.git
-  revision: 00708fa18a029cb34f46aef60f920106c0c00107
-  specs:
-    capistrano3-puma (3.1.0)
-      capistrano (~> 3.7)
-      capistrano-bundler
-      puma (~> 3.4)
-
-GIT
   remote: git://github.com/thoughtbot/paperclip.git
-  revision: 093b4da18444d883de826f58628089c2f480d461
+  revision: 82cd3781b4bbfe20778fe5f9a6802d348cd5ee1a
   specs:
     paperclip (5.1.0)
       activemodel (>= 4.2.0)
@@ -74,15 +65,15 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     ansi (1.5.0)
     arel (7.1.4)
-    autoprefixer-rails (7.1.1.2)
+    autoprefixer-rails (7.1.1.3)
       execjs
-    aws-sdk (2.10.4)
-      aws-sdk-resources (= 2.10.4)
-    aws-sdk-core (2.10.4)
+    aws-sdk (2.10.7)
+      aws-sdk-resources (= 2.10.7)
+    aws-sdk-core (2.10.7)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.10.4)
-      aws-sdk-core (= 2.10.4)
+    aws-sdk-resources (2.10.7)
+      aws-sdk-core (= 2.10.7)
     aws-sigv4 (1.0.0)
     bcrypt (3.1.11)
     bcrypt (3.1.11-x86-mingw32)
@@ -118,6 +109,10 @@ GEM
     capistrano-sidekiq (0.10.0)
       capistrano
       sidekiq (>= 3.4)
+    capistrano3-puma (3.1.0)
+      capistrano (~> 3.7)
+      capistrano-bundler
+      puma (~> 3.4)
     capybara (2.14.4)
       addressable
       mime-types (>= 1.16)
@@ -341,7 +336,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sshkit (1.13.1)
+    sshkit (1.14.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     temple (0.8.0)
@@ -392,7 +387,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rbenv
   capistrano-sidekiq
-  capistrano3-puma!
+  capistrano3-puma
   chosen-rails
   coffee-rails (~> 4.2)
   devise
