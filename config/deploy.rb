@@ -96,8 +96,6 @@ namespace :deploy do
 end
 
 before 'deploy:assets:precompile', :symlink_config_files
-# before "monit:unmonitor", "puma:monit:stop"
-# after  "monit:monitor",   "puma:monit:start"
 
 desc "Link shared files"
 task :symlink_config_files do
