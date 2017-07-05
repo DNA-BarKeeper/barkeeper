@@ -66,7 +66,7 @@ group :development do
   gem 'capistrano-rails',   require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-puma',    require: false
-  gem 'capistrano-pumaio',  require: false
+  # gem 'capistrano-pumaio',  require: false
   gem 'capistrano-sidekiq', require: false
  # gem 'capistrano-redis',   require: false, github: 'jankmet/capistrano-redis'
 end
