@@ -8,6 +8,7 @@ require 'capistrano/rails'
 require 'capistrano/bundler'
 require 'capistrano/rbenv'
 require 'capistrano/puma'
+install_plugin Capistrano::Puma
 
 require 'capistrano/sidekiq'
 require 'capistrano/sidekiq/monit'
