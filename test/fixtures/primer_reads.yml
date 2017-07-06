@@ -16,7 +16,7 @@ original_read:
   overwritten: false
   partial_con: partial_con1
   peak_indices:
-  pherogram_url: gbol5127_uv17_uv18_T7.scf
+  pherogram_url: GBoL486_matK13.scf
   position:
   primer: its4
   processed: true
@@ -50,7 +50,7 @@ reverse_read:
   overwritten: false
   partial_con: partial_con1
   peak_indices:
-  pherogram_url: gbol5127_uv17_uv18_T7.scf
+  pherogram_url: GBoL486_matK13.scf
   position:
   primer: its4
   processed: true

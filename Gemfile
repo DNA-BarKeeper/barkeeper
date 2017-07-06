@@ -38,7 +38,6 @@ gem 'aws-sdk', '~> 2'
 gem 'pg_search'
 gem 'will_paginate', '> 3.0'
 gem 'will_paginate-bootstrap'
-
 gem 'roo'
 gem 'sidekiq'
 gem 'whenever', :require => false
@@ -80,8 +79,6 @@ end
 gem 'sinatra', :require => nil
 gem 'slim'
 gem 'mime-types'
-
-gem 'newrelic_rpm'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
