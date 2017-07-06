@@ -8,18 +8,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <% if ENV['HEROKU_RELEASE_VERSION'] %>
-          <% version = ENV['HEROKU_RELEASE_VERSION'] %>
-      <% else %>
-          <% version = 'v123' %>
-      <% end %>
-      <% if ENV['HEROKU_RELEASE_CREATED_AT'] %>
-          <% date = ENV['HEROKU_RELEASE_CREATED_AT'] %>
-          <% date=Time.zone.parse(date) %>
-      <% else %>
-          <% date = Time.zone.now %>
-      <% end %>
-      <%= link_to  about_path, class: 'navbar-brand', :title => "Released #{distance_of_time_in_words(Time.zone.now, date)} ago"  do %>
+      <%= link_to  about_path, class: 'navbar-brand'  do %>
           GBOL5 <span style="color: #616161">Web App</span>
       <% end %>
     </div>
