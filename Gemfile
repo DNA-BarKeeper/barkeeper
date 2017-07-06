@@ -7,14 +7,12 @@ gem 'pg'
 gem 'puma', '~> 3.0' #, :group => 'production'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
-# gem 'rack-mini-profiler', group: :development
-gem 'rails_12factor', group: :production
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-# gem 'turbolinks', '~> 5' #does not work unless first changes to js code, in particular data-tables (see http://guides.rubyonrails.org/working_with_javascript_in_rails.html#turbolinks)
+# gem 'turbolinks', '~> 5' #todo does not work unless first changes to js code, in particular data-tables (see http://guides.rubyonrails.org/working_with_javascript_in_rails.html#turbolinks)
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
@@ -40,27 +38,23 @@ gem 'will_paginate', '> 3.0'
 gem 'will_paginate-bootstrap'
 gem 'roo'
 gem 'sidekiq'
-gem 'whenever', :require => false
 gem 'chosen-rails'
 
-group :development, :test do
-  gem 'better_errors'
-  gem 'yard'
-  # check for n+1 queries:
-  gem 'bullet'
-  gem 'rails_best_practices'
-  gem 'meta_request' # Supporting gem for Rails Panel (Google Chrome extension for Rails development)., https://github.com/dejan/rails_panel/tree/master/meta_request
-  gem 'launchy'
-end
+# needed to monitor sidekiq jobs:
+gem 'sinatra', :require => nil
+gem 'slim'
+gem 'mime-types'
+
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 group :development do
   gem 'capistrano',         require: false
   gem 'capistrano-rbenv',   require: false
   gem 'capistrano-rails',   require: false
   gem 'capistrano-bundler', require: false
-  gem 'capistrano3-puma',   require: false, github: "seuros/capistrano-puma"
+  gem 'capistrano3-puma',   require: false, github: "seuros/capistrano-puma" #todo remove github once fixed version is officially deployed
   gem 'capistrano-sidekiq', require: false
- # gem 'capistrano-redis',   require: false, github: 'jankmet/capistrano-redis'
 end
 
 group :test do
@@ -75,10 +69,12 @@ group :test do
   gem 'rails-controller-testing'
 end
 
-# needed to monitor sidekiq jobs:
-gem 'sinatra', :require => nil
-gem 'slim'
-gem 'mime-types'
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+group :development, :test do
+  gem 'better_errors'
+  gem 'yard'
+  # check for n+1 queries:
+  gem 'bullet'
+  gem 'rails_best_practices'
+  gem 'meta_request' # Supporting gem for Rails Panel (Google Chrome extension for Rails development)., https://github.com/dejan/rails_panel/tree/master/meta_request
+  gem 'launchy'
+end
