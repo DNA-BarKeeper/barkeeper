@@ -1,7 +1,8 @@
 /coverage
 .idea/
-database.yml
 tmp/
+database.yml
+secrets.yml
 log/
 .DS_Store
 rails_best_practices_output.html

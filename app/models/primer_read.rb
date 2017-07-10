@@ -6,9 +6,6 @@ class PrimerRead < ActiveRecord::Base
   has_and_belongs_to_many :projects
 
   has_attached_file :chromatogram,
-                    :storage => :s3,
-                    :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
-                    :s3_region => 'eu-west-1',
                     :default_url => "/chromatograms/primer_read.scf"
 
   #do_not_validate_attachment_file_type :chromatogram
@@ -345,10 +342,6 @@ class PrimerRead < ActiveRecord::Base
     end
 
     pp
-  end
-
-  def s3_credentials
-    {:bucket => "gbol5", :access_key_id => "AKIAINH5TDSKSWQ6J62A", :secret_access_key => "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"}
   end
 
   def copy_to_db
