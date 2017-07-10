@@ -55,15 +55,6 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  config.paperclip_defaults = {
-      :storage => :s3,
-      :s3_credentials => {
-          :bucket => ENV['S3_BUCKET_NAME'],
-          :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-          :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
-      }
-  }
-
   BetterErrors.editor = :subl
 
   config.after_initialize do
@@ -76,6 +67,6 @@ Rails.application.configure do
     Bullet.add_footer = true
   end
 
-  ENV["REDISTOGO_URL"] = 'redis://redistogo:9f39a5b8a1b376f818dd3edc74c600b6@chubb.redistogo.com:9618/'
+  # ENV["REDISTOGO_URL"] = 'redis://redistogo:9f39a5b8a1b376f818dd3edc74c600b6@chubb.redistogo.com:9618/'
 
 end
