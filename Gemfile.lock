@@ -383,6 +383,7 @@ DEPENDENCIES
   rails_best_practices
   redis (~> 3.0)
   roo
+  rubyzip
   s3_direct_upload
   sass-rails (~> 5.0)
   selenium-webdriver

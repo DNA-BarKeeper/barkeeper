@@ -105,7 +105,7 @@ class Contig < ActiveRecord::Base
     self.partial_cons.each do |partial_con|
 
       partial_con.primer_reads.each do |read|
-        pde_header+="<seq idx=\"#{height}\"><e id=\"1\">#{read.name}</e><e id=\"2\">#{read.name}</e><e id=\"32\">#{app_url}primer_reads/#{read.id}/edit</e></seq>\n"
+        pde_header+="<seq idx=\"#{height}\"><e id=\"1\">#{read.file_name_id}</e><e id=\"2\">#{read.file_name_id}</e><e id=\"32\">#{app_url}primer_reads/#{read.id}/edit</e></seq>\n"
 
         block_seqs << read.aligned_seq
         height+=1
@@ -127,7 +127,7 @@ class Contig < ActiveRecord::Base
 
     if self.primer_reads.not_assembled.count > 0
       self.primer_reads.not_assembled.each do |read|
-        pde_header+="<seq idx=\"#{height}\"><e id=\"1\">#{read.name}</e><e id=\"2\">#{read.name}</e><e id=\"32\">#{app_url}primer_reads/#{read.id}/edit</e></seq>\n"
+        pde_header+="<seq idx=\"#{height}\"><e id=\"1\">#{read.file_name_id}</e><e id=\"2\">#{read.file_name_id}</e><e id=\"32\">#{app_url}primer_reads/#{read.id}/edit</e></seq>\n"
 
         block_seqs << read.sequence
         height+=1
@@ -139,7 +139,7 @@ class Contig < ActiveRecord::Base
 
     if self.primer_reads.not_used_for_assembly.count > 0
       self.primer_reads.not_used_for_assembly.each do |read|
-        pde_header+="<seq idx=\"#{height}\"><e id=\"1\">#{read.name}</e><e id=\"2\">#{read.name}</e><e id=\"32\">#{app_url}primer_reads/#{read.id}/edit</e></seq>\n"
+        pde_header+="<seq idx=\"#{height}\"><e id=\"1\">#{read.file_name_id}</e><e id=\"2\">#{read.file_name_id}</e><e id=\"32\">#{app_url}primer_reads/#{read.id}/edit</e></seq>\n"
 
         block_seqs << read.sequence
         height+=1
@@ -151,7 +151,7 @@ class Contig < ActiveRecord::Base
 
     if self.primer_reads.not_trimmed.count > 0
       self.primer_reads.not_trimmed.each do |read|
-        pde_header+="<seq idx=\"#{height}\"><e id=\"1\">#{read.name}</e><e id=\"2\">#{read.name}</e><e id=\"32\">#{app_url}primer_reads/#{read.id}/edit</e></seq>\n"
+        pde_header+="<seq idx=\"#{height}\"><e id=\"1\">#{read.file_name_id}</e><e id=\"2\">#{read.file_name_id}</e><e id=\"32\">#{app_url}primer_reads/#{read.id}/edit</e></seq>\n"
 
         block_seqs << read.sequence
         height+=1
@@ -163,7 +163,7 @@ class Contig < ActiveRecord::Base
 
     if self.primer_reads.unprocessed.count > 0
       self.primer_reads.unprocessed.each do |read|
-        pde_header+="<seq idx=\"#{height}\"><e id=\"1\">#{read.name}</e><e id=\"2\">#{read.name}</e><e id=\"32\">#{app_url}primer_reads/#{read.id}/edit</e></seq>\n"
+        pde_header+="<seq idx=\"#{height}\"><e id=\"1\">#{read.file_name_id}</e><e id=\"2\">#{read.file_name_id}</e><e id=\"32\">#{app_url}primer_reads/#{read.id}/edit</e></seq>\n"
 
         block_seqs << read.sequence
         height+=1
@@ -342,8 +342,6 @@ class Contig < ActiveRecord::Base
     # themselves are isolated (including the single & final contig if everything could be overlapped)
     # format: partial_contigs.push({:reads => assembled_reads, :consensus => growing_consensus })
 
-
-    # -----> ASSEMBLY <------
 
     assemble(growing_consensus, assembled_reads, partial_contigs, remaining_reads)
 

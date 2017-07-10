@@ -40,6 +40,10 @@ class PrimerRead < ActiveRecord::Base
 
   validates_attachment_presence :chromatogram
 
+  def file_name_id
+    self.name.gsub('.', "_#{self.id}.")
+  end
+
 
   def slice_to_json(start_pos, end_pos)
 

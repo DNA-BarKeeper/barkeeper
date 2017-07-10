@@ -277,6 +277,15 @@ class ContigsController < ApplicationController
     end
   end
 
+  def upload_caryo_matK_contigs
+    CaryoContigExport.perform_async
+    redirect_to caryophyllales_need_verification_contigs_path, notice: "Writing zip file to S3 in background. May take a minute or so."
+  end
+
+  def zip
+    redirect_to ContigPdeUploader.last.uploaded_file.url
+  end
+
   def caryophyllales_not_assembled #assembly finished according to app but still need manual check
     respond_to do |format|
       format.html
@@ -447,27 +456,26 @@ class ContigsController < ApplicationController
     redirect_to edit_contig_path, notice: 'Assembly started in background.'
   end
 
-  def pde_all
-    Contig.all.each do |c|
-      unless c.pde.nil?
-        # send_data does not work with muliple
-        #send_data(str, :filename => "#{c.name}.pde", :type => "application/txt")
-
-        cleaned_name=c.name.gsub('/', '_')
-
-        t=File.new("/Users/kai/Desktop/PDEexport/#{cleaned_name}.pde", "w+")
-        t.write(c.pde)
-        t.close
-      end
-    end
-
-    redirect_to contigs_path
-
-  end
+  # def pde_all
+  #   Contig.all.each do |c|
+  #     unless c.pde.nil?
+  #       # send_data does not work with muliple
+  #       #send_data(str, :filename => "#{c.name}.pde", :type => "application/txt")
+  #
+  #       cleaned_name=c.name.gsub('/', '_')
+  #
+  #       t=File.new("/Users/kai/Desktop/PDEexport/#{cleaned_name}.pde", "w+")
+  #       t.write(c.pde)
+  #       t.close
+  #     end
+  #   end
+  #
+  #   redirect_to contigs_path
+  #
+  # end
 
   def pde
     str=@contig.as_pde
-    # send_data str
     send_data(str, :filename => "#{@contig.name}.pde", :type => "application/txt")
   end
 

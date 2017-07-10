@@ -38,6 +38,7 @@ gem 'aws-sdk', '~> 2'
 gem 'pg_search'
 gem 'will_paginate', '> 3.0'
 gem 'will_paginate-bootstrap'
+gem 'rubyzip'
 
 gem 'roo'
 gem 'sidekiq'

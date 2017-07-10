@@ -10,6 +10,7 @@
         <tr>
           <th>Name</th>
           <th>Species</th>
+          <th>Specimen</th>
           <th>Assembly complete?</th>
           <td>Last updated</td>
           <td></td>
@@ -23,6 +24,11 @@
 
   </div>
 </div>
+
+<p>
+  <%= link_to 'Export contigs to zip…', create_caryo_contigs_zip_path, :class => 'btn btn-default' %>
+  <%= link_to 'Download last contig export', caryo_contigs_zip_path, :class => 'btn btn-default' %>
+</p>
 
 <p>
   Assembly verified for <%= Contig.verified.count %> contigs.
