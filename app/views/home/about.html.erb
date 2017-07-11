@@ -43,39 +43,4 @@
   </footer>
   <hr>
 
-  <div style="font-size: xx-small"><% if ENV['HEROKU_RELEASE_VERSION'] %>
-        <% version = ENV['HEROKU_RELEASE_VERSION'] %>
-        <% version = version.match(/^v(\d+)/)[1] %>
-    <% else %>
-        <% version = '123' %>
-    <% end %>
-
-    <% if ENV['HEROKU_RELEASE_CREATED_AT'] %>
-        <% date = ENV['HEROKU_RELEASE_CREATED_AT'] %>
-        <% date=Time.zone.parse(date) %>
-    <% else %>
-        <% date = Time.zone.now %>
-    <% end %>
-
-    <% if ENV['HEROKU_SLUG_DESCRIPTION'] %>
-        <% change = ENV['HEROKU_SLUG_DESCRIPTION'] %>
-    <% else %>
-        <% change = 'Commit 2134js9' %>
-    <% end %>
-
-    <% if ENV['HEROKU_SLUG_COMMIT'] %>
-        <% commit = ENV['HEROKU_SLUG_COMMIT'] %>
-        <% commit_url =  'https://bitbucket.org/kai42/gbol5/commits/'+commit %>
-    <% else %>
-        <% commit = '75923870awjaösg' %><% commit_url = '75923870awjaösg' %>
-    <% end %>
-
-    GBOL5 Web Application v. <%= version %><br>
-
-    <span title="<%= date.strftime("%Y-%m-%d %H:%M") %>">Released <%= distance_of_time_in_words(Time.zone.now, date)%> ago</span><br>
-
-    Last change: <%= change %><br>
-
-    Last commit: <a href="<%= commit_url %>"><%= commit %></a> by Kai Müller</div><br>
-
 </div>
