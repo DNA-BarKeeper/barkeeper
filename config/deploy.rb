@@ -6,7 +6,8 @@ set :application,     'gbol5'
 set :user,            'sarah'
 set :puma_threads,    [1, 5]
 set :puma_workers,    2
-set :port,            1694
+
+ssh_options[:port] = 1694
 
 # Always deploy currently checked out branch
 set :branch, $1 if `git branch` =~ /\* (\S+)\s/m
