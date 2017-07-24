@@ -1,5 +1,5 @@
 # Change these
-server '46.101.149.34', port: 22, roles: [:web, :app, :db], primary: true
+server '46.101.149.34', port: 1694, roles: [:web, :app, :db], primary: true
 
 set :repo_url,        'ssh://Sarah_Wiechers@bitbucket.org/kai42/gbol5.git'
 set :application,     'gbol5'
