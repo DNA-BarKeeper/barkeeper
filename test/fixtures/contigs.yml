@@ -16,7 +16,6 @@ verified_contig:
   partial_cons1: partial_con1.sequence
   partial_cons2: partial_con2.sequence
   partial_cons_count: 2
-  pde:
   verified: true
   verified_at: 2017-02-23 10:00:00
   verified_by: 2
@@ -41,7 +40,6 @@ unverified_contig:
   partial_cons1: partial_con1.sequence
   partial_cons2: partial_con2.sequence
   partial_cons_count: 2
-  pde:
   verified: false
   created_at: 2017-02-20 10:00:00
   updated_at: 2017-02-22 10:00:00
