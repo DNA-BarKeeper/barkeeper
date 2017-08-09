@@ -23,6 +23,7 @@ module GBOLapp
 
     # config.assets.enabled = true
     # config.assets.precompile += %w(*.png *.jpg *.jpeg *.gif)
+    config.serve_static_files = true
 
     config.paperclip_defaults = {
         :storage => :s3,
