@@ -16,9 +16,7 @@ class Isolate < ActiveRecord::Base
   scope :no_controls, -> { where(:negative_control => false)}
 
   def assign_specimen
-    # suche in DNABank nach isolate id (lab_nr), extrahiere info über specimen ID aus ABCD records
-    ind = search_dna_bank(self.lab_nr) # look for specimen in WebApp DB or create new one
-    # self.update(:individual => ind) #seems to cause an endless loop
+    self.individual_id = search_dna_bank(self.lab_nr).id # search DNABank for specimen info
   end
 
   def self.isolates_in_order(order_id)

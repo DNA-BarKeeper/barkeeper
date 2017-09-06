@@ -272,11 +272,11 @@ class PrimerRead < ActiveRecord::Base
           isolate_component = name_components[1] # GBoL number
 
           # BGBM cases:
-          regex_db_number = /^.*(DB[\s_]?[0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # match group 1: DNABank number, 2: stuff, 3: primer name, 4: file extension
+          regex_db_number = /^.*(DB)[\s_]?([0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # match group 1: DNABank number, 2: stuff, 3: primer name, 4: file extension
           db_number_name_components = self.name.match(regex_db_number)
 
           if db_number_name_components
-            isolate_component = db_number_name_components[1] # DNABank number
+            isolate_component = "#{db_number_name_components[1]} #{db_number_name_components[2]}" # DNABank number
           end
 
           isolate = Isolate.where("isolates.lab_nr ILIKE ?", "#{isolate_component}").first
@@ -287,6 +287,10 @@ class PrimerRead < ActiveRecord::Base
 
           if isolate.nil?
             isolate = Isolate.create(:lab_nr => isolate_component)
+          end
+
+          if db_number_name_components
+            isolate.update(:dna_bank_id => isolate_component)
           end
 
           self.update(:isolate_id => isolate.id)

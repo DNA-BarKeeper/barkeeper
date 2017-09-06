@@ -154,18 +154,23 @@ module ApplicationHelper
 
       if full_name
 
-        regex = /^(\w+\s+\w+)/
+        regex = /^(\w+)\s+(\w+)/
         matches = full_name.match(regex)
 
         if matches
-          species_component = matches[1]
+          genus = matches[1]
+          species_epithet = matches[2]
+          species_component = "#{genus} #{species_epithet}"
 
-          puts "Species: #{species_component}"
+          puts "Species: #{genus} #{species_epithet}"
 
           species = individual.species
 
           if species.nil?
             species = Species.find_or_create_by(:species_component => species_component)
+            species.update(:genus_name => genus)
+            species.update(:species_epithet => species_epithet)
+            species.update(:composed_name => species.full_name)
             individual.update(:species => species)
           end
         end
@@ -176,6 +181,7 @@ module ApplicationHelper
 
       if isolate
         isolate.update(:individual => individual)
+        puts "Assigned species #{individual.species.species_component}"
       end
 
     end
