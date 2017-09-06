@@ -6,7 +6,8 @@ class PrimerRead < ActiveRecord::Base
   has_and_belongs_to_many :projects
 
   has_attached_file :chromatogram,
-                    :default_url => "/chromatograms/primer_read.scf"
+                    :default_url => "/chromatograms/primer_read.scf",
+                    :storage => 'filesystem'
 
   #do_not_validate_attachment_file_type :chromatogram
 
@@ -183,87 +184,99 @@ class PrimerRead < ActiveRecord::Base
   def auto_assign
     #parse name
 
-    msg= nil
+    output_message = nil
     create_issue = false
 
-    #try to find matching primer
-    re = /^([A-Za-z0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/
+    # try to find matching primer
 
-    m = self.name.match(re)
+    regex_read_name = /^([A-Za-z0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # match group 1: GBoL number, 2: stuff, 3: primer name, 4: file extension
+    name_components = self.name.match(regex_read_name)
 
-    if m
-      prn = m[3]
+    if name_components
+      primer_name = name_components[3]
 
       #logic if T7promoter or M13R-pUC.scf:
 
-      if prn == 'T7promoter' or prn== 'T7' or prn== 'T7-1' #T7 is always forward
-        # get first part out of m[2]
+      if primer_name == 'T7promoter' or primer_name== 'T7' or primer_name== 'T7-1' #T7 is always forward
+        # get first part out of name_components[2]
         rgx = /^_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/
-        mtchs= m[2].match(rgx) #--> uv2
+        mtchs= name_components[2].match(rgx) #--> uv2
 
-        prn=mtchs[1]
+        primer_name=mtchs[1]
 
-        p = Primer.where("primers.name ILIKE ?", "#{prn}").first
+        primer = Primer.where("primers.name ILIKE ?", "#{primer_name}").first
 
-        if p
-          if p.reverse
-            prn=mtchs[2]
+        if !primer
+          primer = Primer.where("primers.alt_name ILIKE ?", "#{primer_name}").first
+        end
+
+        if primer
+          if primer.reverse
+            primer_name=mtchs[2]
           end
         else
-          msg= "Cannot find primer with name #{prn}."
+          output_message= "Cannot find primer with name #{primer_name}."
           create_issue = true
         end
 
-      elsif prn == 'M13R-pUC'  or prn=='M13-RP' or prn=='M13-RP-1' #M13R-pU
+      elsif primer_name == 'M13R-pUC'  or primer_name=='M13-RP' or primer_name=='M13-RP-1' #M13R-pU
 
         # get second part out of m[2] and add "uv"
         # get first part out of m[2]
         rgx = /^_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/
-        mtchs= m[2].match(rgx) #--> 4
+        mtchs= name_components[2].match(rgx) #--> 4
 
         #prn='uv'+mtchs[2]  ##--> uv4
         #changed again 13:04 20.09.2014 to match _uv2_uv4
 
-        prn=mtchs[2]  ##--> uv4
+        primer_name=mtchs[2]  ##--> uv4
 
-        p = Primer.where("primers.name ILIKE ?", "#{prn}").first
+        primer = Primer.where("primers.name ILIKE ?", "#{primer_name}").first
 
-        if p
-          unless p.reverse
-            prn=mtchs[1]
+        if !primer
+          primer = Primer.where("primers.alt_name ILIKE ?", "#{primer_name}").first
+        end
+
+        if primer
+          unless primer.reverse
+            primer_name=mtchs[1]
           end
         else
-          msg= "Cannot find primer with name #{prn}."
+          output_message= "Cannot find primer with name #{primer_name}."
           create_issue = true
         end
 
       else
-        #leave prn as is
+        #leave primer_name as is
       end
 
       # find & assign primer
 
-      p = Primer.where("primers.name ILIKE ?", "#{prn}").first
+      primer = Primer.where("primers.name ILIKE ?", "#{primer_name}").first
 
-      if p
+      if !primer
+        primer = Primer.where("primers.alt_name ILIKE ?", "#{primer_name}").first
+      end
 
-        self.update(:primer_id => p.id, :reverse => p.reverse)
+      if primer
+
+        self.update(:primer_id => primer.id, :reverse => primer.reverse)
 
         # find marker that primer belongs to
-        ma = p.marker
+        marker = primer.marker
 
-        if ma
+        if marker
 
-          #try to find matching isolate
+          # try to find matching isolate
 
-          isolate_component = m[1]
+          isolate_component = name_components[1] # GBoL number
 
           # BGBM cases:
+          regex_db_number = /^.*(DB[\s_]?[0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # match group 1: DNABank number, 2: stuff, 3: primer name, 4: file extension
+          db_number_name_components = self.name.match(regex_db_number)
 
-          if %w{POA CAR AST}.include? isolate_component
-            regex = /^_([A-Za-z0-9]+)_(.+)$/
-            matches2 = m[2].match(regex)
-            isolate_component = matches2[1]
+          if db_number_name_components
+            isolate_component = db_number_name_components[1] # DNABank number
           end
 
           isolate = Isolate.where("isolates.lab_nr ILIKE ?", "#{isolate_component}").first
@@ -278,21 +291,21 @@ class PrimerRead < ActiveRecord::Base
 
           self.update(:isolate_id => isolate.id)
 
-          #fig out which contig to assign to
+          # figure out which contig to assign to
 
-          matching_contig = Contig.where("contigs.marker_id = ? AND contigs.isolate_id = ?", ma.id, isolate.id).first
+          matching_contig = Contig.where("contigs.marker_id = ? AND contigs.isolate_id = ?", marker.id, isolate.id).first
 
           if matching_contig
 
             self.contig=matching_contig
             self.save
 
-            msg = "Assigned to contig #{matching_contig.name}."
+            output_message = "Assigned to contig #{matching_contig.name}."
 
           else
-            #create new contig, auto assign to primer, copy, auto-name
+            # create new contig, auto assign to primer, copy, auto-name
 
-            ct = Contig.new(:marker_id => ma.id, :isolate_id => isolate.id, :assembled => false)
+            ct = Contig.new(:marker_id => marker.id, :isolate_id => isolate.id, :assembled => false)
 
             ct.generate_name
             ct.save
@@ -300,30 +313,30 @@ class PrimerRead < ActiveRecord::Base
             self.contig=ct
             self.save
 
-            msg = "Created contig #{ct.name} and assigned primer read to it."
+            output_message = "Created contig #{ct.name} and assigned primer read to it."
 
           end
 
         else
-          msg= "No marker assigned to primer #{p.name}."
+          output_message= "No marker assigned to primer #{primer.name}."
           create_issue = true
         end
       else
-        msg= "Cannot find primer with name #{prn}."
+        output_message= "Cannot find primer with name #{primer_name}."
         create_issue = true
       end
     else
-      msg= "No match for #{re} in name."
+      output_message= "No match for #{regex_read_name} in name."
       create_issue = true
     end
 
     if create_issue
-      i=Issue.create(:title => msg, :primer_read_id => self.id)
+      i=Issue.create(:title => output_message, :primer_read_id => self.id)
     else #worked
       self.contig.update(:assembled => false, :assembly_tried => false)
     end
 
-    {:msg => msg, :create_issue => create_issue}
+    {:msg => output_message, :create_issue => create_issue}
 
   end
 

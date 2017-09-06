@@ -1,10 +1,11 @@
 class Individual < ActiveRecord::Base
-
   include PgSearch
 
   has_many :isolates
   belongs_to :species
   has_and_belongs_to_many :projects
+
+  before_create :assign_species
 
   pg_search_scope :quick_search, against: [:specimen_id, :herbarium, :collector , :collection_nr]
 
@@ -26,8 +27,13 @@ class Individual < ActiveRecord::Base
   scope :good_location, -> { where('individuals.longitude_original SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
   scope :no_location, -> { where('individuals.longitude_original = ?', nil ) }
 
-  def self.to_csv(options = {})
 
+  def assign_species
+
+  end
+
+
+  def self.to_csv(options = {})
     # change to_csv block to list attributes/values individually
     CSV.generate(options) do |csv|
       csv << column_names
