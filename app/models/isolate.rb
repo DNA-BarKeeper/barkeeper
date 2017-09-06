@@ -1,4 +1,6 @@
 class Isolate < ActiveRecord::Base
+  include ApplicationHelper
+
   has_many :marker_sequences
   has_many :contigs
   belongs_to :micronic_plate
@@ -8,8 +10,16 @@ class Isolate < ActiveRecord::Base
   has_and_belongs_to_many :projects
   validates_presence_of :lab_nr
 
+  before_create :assign_specimen
+
   scope :recent, ->  { where('isolates.updated_at > ?', 1.hours.ago)}
   scope :no_controls, -> { where(:negative_control => false)}
+
+  def assign_specimen
+    # suche in DNABank nach isolate id (lab_nr), extrahiere info über specimen ID aus ABCD records
+    ind = search_dna_bank(self.lab_nr) # look for specimen in WebApp DB or create new one
+    # self.update(:individual => ind) #seems to cause an endless loop
+  end
 
   def self.isolates_in_order(order_id)
 

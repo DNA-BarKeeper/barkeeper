@@ -18,7 +18,6 @@ gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
 gem 'jquery-ui-rails'
@@ -30,9 +29,9 @@ gem 'sprockets-rails', :require => 'sprockets/railtie'
 gem 'devise'
 gem 'simple_form' #todo check if used anywhere, rm
 gem 'bio'
-gem 'paperclip', github: 'thoughtbot/paperclip'
-gem 's3_direct_upload'
+gem 'paperclip'
 gem 'aws-sdk', '~> 2'
+# gem 's3_direct_upload' # does not seem to be used anywhere
 gem 'pg_search'
 gem 'will_paginate', '> 3.0'
 gem 'will_paginate-bootstrap'
@@ -40,6 +39,7 @@ gem 'rubyzip'
 gem 'roo'
 gem 'sidekiq'
 gem 'chosen-rails'
+gem 'bcrypt', '~> 3.1.7', platforms: :ruby
 
 # needed to monitor sidekiq jobs:
 gem 'sinatra', :require => nil

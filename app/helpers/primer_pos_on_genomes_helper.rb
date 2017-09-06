@@ -1,2 +1,0 @@
-module PrimerPosOnGenomesHelper
-end
