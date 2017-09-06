@@ -5,8 +5,6 @@ class Individual < ActiveRecord::Base
   belongs_to :species
   has_and_belongs_to_many :projects
 
-  before_create :assign_species
-
   pg_search_scope :quick_search, against: [:specimen_id, :herbarium, :collector , :collection_nr]
 
   scope :without_species, -> { where(:species => nil) }
@@ -26,11 +24,6 @@ class Individual < ActiveRecord::Base
   scope :bad_location, -> { where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
   scope :good_location, -> { where('individuals.longitude_original SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
   scope :no_location, -> { where('individuals.longitude_original = ?', nil ) }
-
-
-  def assign_species
-
-  end
 
 
   def self.to_csv(options = {})

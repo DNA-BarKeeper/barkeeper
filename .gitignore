@@ -8,5 +8,6 @@ log/
 rails_best_practices_output.html
 dump.rdb
 specimens.xls
+species.xls
 public/assets/
 latest.dump
