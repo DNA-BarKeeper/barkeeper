@@ -91,7 +91,9 @@ GBOLapp::Application.routes.draw do
 
   resources :species do
     collection do
-      post :import
+      post :import_stuttgart
+      post :import_berlin
+      post :import_gbolii
       get :filter
       get :get_mar
       get :get_bry

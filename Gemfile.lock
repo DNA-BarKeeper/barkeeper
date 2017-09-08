@@ -288,6 +288,11 @@ GEM
     roo (2.7.1)
       nokogiri (~> 1)
       rubyzip (~> 1.1, < 2.0.0)
+    roo-xls (1.1.0)
+      nokogiri
+      roo (>= 2.0.0beta1, < 3)
+      spreadsheet (> 0.9.0)
+    ruby-ole (1.2.12.1)
     ruby-progressbar (1.8.1)
     rubyzip (1.2.1)
     sass (3.5.1)
@@ -326,6 +331,8 @@ GEM
     slim (3.0.8)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 1.3.3, < 2.1)
+    spreadsheet (1.1.4)
+      ruby-ole (>= 1.0)
     sprockets (3.7.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -409,7 +416,7 @@ DEPENDENCIES
   rails-controller-testing
   rails_best_practices
   redis (~> 3.0)
-  roo
+  roo-xls
   rubyzip
   sass-rails (~> 5.0)
   selenium-webdriver

@@ -104,6 +104,8 @@ module ApplicationHelper
       locality = unit.at_xpath('//abcd21:LocalityText').content
       longitude = unit.at_xpath('//abcd21:LongitudeDecimal').content
       latitude = unit.at_xpath('//abcd21:LatitudeDecimal').content
+      higher_taxon_rank = unit.at_xpath('//abcd21:HigherTaxonRank').content
+      higher_taxon_name = unit.at_xpath('//abcd21:HigherTaxonName').content
     rescue
       puts 'Could not read ABCD.'
     end
@@ -171,6 +173,17 @@ module ApplicationHelper
             species.update(:genus_name => genus)
             species.update(:species_epithet => species_epithet)
             species.update(:composed_name => species.full_name)
+
+            if higher_taxon_rank == 'familia'
+              if higher_taxon_name.capitalize  == 'Labiatae'
+                higher_taxon_name = 'Lamiaceae'
+              end
+              family = Family.find_or_create_by(:name => higher_taxon_name.capitalize)
+
+              puts "Family: #{higher_taxon_name}"
+              species.update(:family => family)
+            end
+
             individual.update(:species => species)
           end
         end
@@ -181,7 +194,6 @@ module ApplicationHelper
 
       if isolate
         isolate.update(:individual => individual)
-        puts "Assigned species #{individual.species.species_component}"
       end
 
     end

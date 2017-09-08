@@ -36,7 +36,7 @@ gem 'pg_search'
 gem 'will_paginate', '> 3.0'
 gem 'will_paginate-bootstrap'
 gem 'rubyzip'
-gem 'roo'
+gem 'roo-xls'
 gem 'sidekiq'
 gem 'chosen-rails'
 gem 'bcrypt', '~> 3.1.7', platforms: :ruby
