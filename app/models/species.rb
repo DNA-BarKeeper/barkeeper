@@ -58,15 +58,23 @@ class Species < ActiveRecord::Base
         species.update(:family => family)
         species.update(:genus_name => components.first)
 
-        if components.size == 3
-          if components[1] == 'x'
-            species_ep = components[1] + ' ' + components.last
-            species.update(:species_epithet => species_ep)
-          else
-            species.update(:species_epithet => components[1], :infraspecific => components.last)
-          end
-        else
-          species.update(:species_epithet => components[1])
+        case components.size
+          when 2
+            species.update(:species_epithet => components[1])
+          when 3
+            if components[1] == 'x'
+              species_ep = components[1] + ' ' + components.last
+              species.update(:species_epithet => species_ep)
+            else
+              species.update(:species_epithet => components[1], :infraspecific => components.last)
+            end
+          when 4
+            if components[2] == 'subsp.'
+              species.update(:species_epithet => components[1], :infraspecific => components.last)
+            else
+              infraspecific = components[2] + ' ' + components.last
+              species.update(:species_epithet => components[1], :infraspecific => infraspecific)
+            end
         end
 
         species.update(:species_component => species.get_species_component)
