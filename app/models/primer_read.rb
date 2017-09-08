@@ -6,8 +6,7 @@ class PrimerRead < ActiveRecord::Base
   has_and_belongs_to_many :projects
 
   has_attached_file :chromatogram,
-                    :default_url => "/chromatograms/primer_read.scf",
-                    :storage => 'filesystem'
+                    :default_url => "/chromatograms/primer_read.scf"
 
   #do_not_validate_attachment_file_type :chromatogram
 
