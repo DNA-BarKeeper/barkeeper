@@ -37,13 +37,25 @@ class SpeciesController < ApplicationController
     end
   end
 
-  def import
+  def import_stuttgart
     # Species.import(params[:file])
 
     file = params[:file]
 
     #todo if needed, add logic to distinguish between xls / xlsx / error etc here -> mv from model.
-    Species.import(file.path) # when adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
+    Species.import_Stuttgart(file) # when adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
+    redirect_to species_index_path, notice: "Imported."
+  end
+
+  def import_berlin
+    file = params[:file]
+    Species.import_Berlin(file)
+    redirect_to species_index_path, notice: "Imported."
+  end
+
+  def import_gbolii
+    file = params[:file]
+    Species.import_gbolII(file)
     redirect_to species_index_path, notice: "Imported."
   end
 

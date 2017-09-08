@@ -24,11 +24,11 @@ namespace :data do
     list_with_UnitIDs="DB 10140
 ".split("\n")
 
-    ctr=1
+    counter = 1
 
     list_with_UnitIDs.each do |unit_id|
 
-      if ctr > 1
+      if counter > 1
         break
       end
 
@@ -63,7 +63,7 @@ namespace :data do
         longitude=unit.at_xpath('//abcd21:LongitudeDecimal').content
         latitude=unit.at_xpath('//abcd21:LatitudeDecimal').content
 
-        puts ctr
+        puts counter
         puts unit_id+':'
 
         puts specimen_id
@@ -139,7 +139,7 @@ namespace :data do
 
       end
 
-      ctr+=1
+      counter+=1
 
     end
 
