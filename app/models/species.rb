@@ -66,7 +66,7 @@ class Species < ActiveRecord::Base
             species.update(:species_epithet => components[1], :infraspecific => components.last)
           end
         else
-          species.update(:species_epithet => components.last)
+          species.update(:species_epithet => components[1])
         end
 
         species.update(:species_component => species.get_species_component)
