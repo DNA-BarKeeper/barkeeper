@@ -38,6 +38,7 @@ gem 'will_paginate-bootstrap'
 gem 'rubyzip'
 gem 'roo-xls'
 gem 'sidekiq'
+gem 'sidekiq-unique-jobs'
 gem 'chosen-rails'
 gem 'bcrypt', '~> 3.1.7', platforms: :ruby
 
