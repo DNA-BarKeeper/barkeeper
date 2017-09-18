@@ -2,6 +2,8 @@ class PherogramProcessing
 
   include Sidekiq::Worker
 
+  sidekiq_options unique: :while_executing
+
   def perform(primer_read_id)
     primer_read=PrimerRead.find(primer_read_id)
     begin
