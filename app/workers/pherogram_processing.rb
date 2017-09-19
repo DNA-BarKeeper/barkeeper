@@ -2,7 +2,8 @@ class PherogramProcessing
 
   include Sidekiq::Worker
 
-  sidekiq_options unique: :until_executed, unique_across_workers: true
+  sidekiq_options unique: :until_executed, unique_across_workers: true,
+      unique_args: ->(args) { [ args.first ] }
 
   def perform(primer_read_id)
     primer_read=PrimerRead.find(primer_read_id)
