@@ -86,6 +86,6 @@ class MarkerSequencesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def marker_sequence_params
-    params.require(:marker_sequence).permit(:genbank, :name, :sequence, :isolate_id, :marker_id, :contig_id, :isolate_lab_nr)
+    params.require(:marker_sequence).permit(:genbank, :name, :sequence, :isolate_id, :marker_id, :contig_id, :isolate_lab_nr, :reference)
   end
 end

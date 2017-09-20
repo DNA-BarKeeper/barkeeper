@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170620124842) do
+ActiveRecord::Schema.define(version: 20170920100203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -257,6 +257,7 @@ ActiveRecord::Schema.define(version: 20170620124842) do
     t.text     "sequence"
     t.integer  "isolate_id"
     t.integer  "marker_id"
+    t.string   "reference"
   end
 
   create_table "markers", force: :cascade do |t|
