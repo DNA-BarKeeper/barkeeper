@@ -12,8 +12,8 @@ namespace :data do
     puts "Changing location data precision..."
 
     Individual.find_each(:batch_size => 50) do |individual|
-      individual.update(:latitude => individual.latitude&.round(5))
-      individual.update(:longitude => individual.longitude&.round(5))
+      individual.update(:latitude => individual.latitude&.round(6))
+      individual.update(:longitude => individual.longitude&.round(6))
       cnt += 1
     end
 
