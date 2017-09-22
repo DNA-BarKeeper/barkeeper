@@ -5,9 +5,6 @@ class ContigPdeUploader < ActiveRecord::Base
   require 'fileutils'
 
   has_attached_file :uploaded_file,
-                    :storage => :s3,
-                    :s3_credentials => Proc.new{ |a| a.instance.s3_credentials },
-                    :s3_region => 'eu-west-1',
                     :path => "/caryophyllales_matK_contigs_that_need_verification.zip"
 
   # Validate content type
@@ -15,10 +12,6 @@ class ContigPdeUploader < ActiveRecord::Base
 
   # Validate filename
   validates_attachment_file_name :uploaded_file, :matches => [/zip\Z/]
-
-  def s3_credentials
-    {:bucket => "gbol5", :access_key_id => "AKIAINH5TDSKSWQ6J62A", :secret_access_key => "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"}
-  end
 
   def create_uploaded_file
     temp_folder = "#{Rails.root}/tmp/caryophyllales_matK_contigs_that_need_verification"

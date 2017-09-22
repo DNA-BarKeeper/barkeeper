@@ -29,5 +29,8 @@
   </div>
 
 </div>
-
+<p>
+  <%= link_to 'Export specimens to xls…', specimens_create_xls_path, :class => 'btn btn-default' %>
+  <%= link_to 'Download last specimens export', specimens_xls_path, :class => 'btn btn-default' %>
+</p>
 <%= link_to 'New Individual', new_individual_path %>

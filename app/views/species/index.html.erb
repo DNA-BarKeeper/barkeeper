@@ -39,7 +39,8 @@
 
   </div>
 </div>
-<%= link_to ' New Species', new_species_path %><br>
-<!--
-<%= link_to ' Download as Excel file',  species_index_path(format: "xls") %>
--->
+<p>
+  <%= link_to 'Export species to xls…', species_create_xls_path, :class => 'btn btn-default' %>
+  <%= link_to 'Download last species export', species_xls_path, :class => 'btn btn-default' %>
+</p>
+<%= link_to ' New Species', new_species_path %>
