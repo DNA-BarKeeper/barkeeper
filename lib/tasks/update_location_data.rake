@@ -7,7 +7,7 @@ namespace :data do
   desc "Update Specimen Location Data"
 
   task :update_location_data => :environment do
-    spreadsheet = Roo::Excelx.new('I:\Documents\PhD\GBOL_2015_Koordinaten_Korrektur.xlsx')
+    spreadsheet = Roo::Excelx.new('/home/sarah/apps/gbol5/current/GBOL_2015_Koordinaten_Korrektur.xlsx')
     header = spreadsheet.row(1)
     no_specimen = []
     lat_cnt = 0
