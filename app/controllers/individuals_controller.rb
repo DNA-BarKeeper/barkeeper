@@ -26,7 +26,8 @@ class IndividualsController < ApplicationController
   end
 
   def xls
-    redirect_to XmlUploader.last.uploaded_file.url
+    data = open("http:#{XmlUploader.last.uploaded_file.url}")
+    send_data data.read, filename: 'specimens.xls', type: 'application/vnd.ms-excel', disposition: 'attachment', stream: 'true', buffer_size: '4096'
   end
 
   def problematic_specimens
