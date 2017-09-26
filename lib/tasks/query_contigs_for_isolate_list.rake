@@ -7,8 +7,7 @@ namespace :data do
 
   task :query_contigs_for_isolate_list => :environment do
 
-    outputstr=  "Isolate ID\tGBOL-Nr (Lab-Nr)\tcurrent DNA-Bank-Nr\tcurrent specimen\tcurrent species\tfuture DNA-Bank-Nr\tfuture specimen\tfuture species\n"
-
+    outputstr = "Isolate ID\tITS\ttrnK-matK\ttrnLF\trpl16\n"
 
     list_with_gbol_nrs="GBoL3457
 GBoL3467
@@ -21,7 +20,7 @@ GBoL3481
 GBoL3482
 GBoL3505
 GBoL3517
-  GBoL3484
+GBoL3484
 GBoL3521
 GBoL3522
 GBoL3523
@@ -64,9 +63,7 @@ GBoL3541
 
       outputstr += "#{i}\t"
 
-
-      isolate=Isolate.where(:lab_nr => i).first
-
+      isolate = Isolate.where(:lab_nr => i).first
 
       isolate.contigs.each do |c|
 
