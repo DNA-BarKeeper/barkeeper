@@ -567,8 +567,8 @@ class Contig < ActiveRecord::Base
     (1...rows).each { |i|
       (1...cols).each { |j|
         if (s[(read[i-1] + growing_consensus[j-1]).upcase]).nil?
-          Syslog.log(Syslog::LOG_ERR, "Error")
-          Syslog.log(Syslog::LOG_ERR, read[i-1])
+          STDERR.puts "Error"
+          STDERR.puts read[i-1]
         end
         choice1 = a[i-1][j-1] + s[(read[i-1] + growing_consensus[j-1]).upcase] #match
         choice2 = a[i-1][j] + gap #insert
