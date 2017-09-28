@@ -564,9 +564,15 @@ class Contig < ActiveRecord::Base
     for i in 0...rows do a[i][0] = 0 end
     for j in 0...cols do a[0][j] = 0 end
 
-
     (1...rows).each { |i|
       (1...cols).each { |j|
+        if (s[(read[i-1] + growing_consensus[j-1]).upcase]).nil?
+          puts "Error"
+          puts i
+          puts read[i-1]
+          puts read
+          puts s[(read[i-1] + growing_consensus[j-1]).upcase]
+        end
         choice1 = a[i-1][j-1] + s[(read[i-1] + growing_consensus[j-1]).upcase] #match
         choice2 = a[i-1][j] + gap #insert
         choice3 = a[i][j-1] + gap #delete
