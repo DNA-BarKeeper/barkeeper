@@ -567,9 +567,7 @@ class Contig < ActiveRecord::Base
     (1...rows).each { |i|
       (1...cols).each { |j|
         if (s[(read[i-1] + growing_consensus[j-1]).upcase]).nil?
-          Rails.logger.info "Error"
-          Rails.logger.info read[i-1]
-          Rails.logger.info growing_consensus[j-1]
+          Rails.logger.info "#{i}, #{j}, #{read[i-1]}, #{growing_consensus[j-1]}, #{growing_consensus}"
         end
         choice1 = a[i-1][j-1] + s[(read[i-1] + growing_consensus[j-1]).upcase] #match
         choice2 = a[i-1][j] + gap #insert
