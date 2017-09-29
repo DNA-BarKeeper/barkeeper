@@ -498,6 +498,8 @@ class Contig < ActiveRecord::Base
   #perform Needleman-Wunsch-based overlapping:
 
   def overlap(growing_cons_hash, read, qualities)
+    msg=''
+    msg_type=1
 
     growing_consensus = growing_cons_hash[:consensus]
     growing_consensus_qualities = growing_cons_hash[:consensus_qualities]
@@ -551,6 +553,8 @@ class Contig < ActiveRecord::Base
           '-T' => -1,
           '--' => 1,
     }
+	
+	allowed_symbols = %w(A T C G N -)
 
     rows = read.length + 1
     cols = growing_consensus.length + 1
@@ -567,188 +571,193 @@ class Contig < ActiveRecord::Base
     (1...rows).each { |i|
       (1...cols).each { |j|
         if (s[(read[i-1] + growing_consensus[j-1]).upcase]).nil?
-          Rails.logger.info "#{i}, #{j}, #{read[i-1]}, #{growing_consensus[j-1]}, #{growing_consensus}"
-        end
-        choice1 = a[i-1][j-1] + s[(read[i-1] + growing_consensus[j-1]).upcase] #match
-        choice2 = a[i-1][j] + gap #insert
-        choice3 = a[i][j-1] + gap #delete
-        a[i][j] = [choice1, choice2, choice3].max
+          Rails.logger.info "At position #{i} in read: #{read[i-1]}; At position #{j} in growing consensus: #{growing_consensus[j-1]}"
+		  if !allowed_symbols.any? read[i-1]
+			msg = 'The read contained the unexpected symbol #{read[i-1]} in position #{i}. Assembly could not be finished.'
+		  elsif !allowed_symbols.any? growing_consensus[j-1]
+		    msg = 'The read contained the unexpected symbol #{growing_consensus[j-1]} in position #{j}. Assembly could not be finished.'
+		  end
+        else
+		  choice1 = a[i-1][j-1] + s[(read[i-1] + growing_consensus[j-1]).upcase] #match
+          choice2 = a[i-1][j] + gap #insert
+          choice3 = a[i][j-1] + gap #delete
+          a[i][j] = [choice1, choice2, choice3].max
+        end        
       }
     }
+    if msg.empty?
+	
+		aligned_read_seq = '' # -> aligned_read
+		aligned_read_qual = []
 
-    aligned_read_seq = '' # -> aligned_read
-    aligned_read_qual = []
+		aligned_cons_seq = '' # -> growing_consensus
+		aligned_cons_qual = []
 
-    aligned_cons_seq = '' # -> growing_consensus
-    aligned_cons_qual = []
+		adjusted_prev_aligned_reads = Array.new
+		adjusted_prev_aligned_qualities = Array.new
 
-    adjusted_prev_aligned_reads = Array.new
-    adjusted_prev_aligned_qualities = Array.new
-
-    (0...previously_aligned_reads.size).each { |_|
-      new_seq=''
-      adjusted_prev_aligned_reads.push(new_seq)
-      adjusted_prev_aligned_qualities.push([])
-    }
-
-
-    # for classic Needleman-Wunsch:
-
-    #start from lowermost rightmost cell
-
-    #for overlap:
-
-    # the best score is now in A(m, j) such that A(m, j) = max_k,l(A(k,n),A(m,l)) and the alignment itself can be
-    # obtained by tracing back from A(m, j) to A(0, 0) as before.
-
-    i = read.length
-    j = growing_consensus.length
-
-    bestscore = a[i][j]
-    bestscore_i = i
-    bestscore_j = j
-
-    while i > 0
-      if a[i][j] > bestscore
-        bestscore = a[i][j]
-        bestscore_i = i
-        bestscore_j = j
-      end
-      i -= 1
-    end
-
-    i = read.length
-    j = growing_consensus.length
-
-    while j > 0
-      if a[i][j] > bestscore
-        bestscore = a[i][j]
-        bestscore_i = i
-        bestscore_j = j
-      end
-      j -= 1
-    end
-
-    # add extending overlapping aligned_cons_seq
-
-    i = read.length
-    j = growing_consensus.length
-
-    #add 5' extending gaps...
-    while i > bestscore_i
-      aligned_read_seq = read[i-1].chr + aligned_read_seq
-      aligned_read_qual.unshift(qualities[i-1])
-
-      aligned_cons_seq = aligned_cons_seq + '-'
-      aligned_cons_qual.push(-1) # -1 ~ '-'
-
-      # mirror everything that's done to aligned_cons_seq in all previously aligned_seqs:
-      for k in 0...adjusted_prev_aligned_reads.size do
-        adjusted_prev_aligned_reads[k] = adjusted_prev_aligned_reads[k] + '-'
-        adjusted_prev_aligned_qualities[k].push(-1)
-      end
-
-      i -= 1
-    end
+		(0...previously_aligned_reads.size).each { |_|
+		  new_seq=''
+		  adjusted_prev_aligned_reads.push(new_seq)
+		  adjusted_prev_aligned_qualities.push([])
+		}
 
 
-    while j > bestscore_j
-      aligned_read_seq = aligned_read_seq + '-'
-      aligned_read_qual.push(-1)
-      aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
-      aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
+		# for classic Needleman-Wunsch:
 
-      for k in 0...adjusted_prev_aligned_reads.size do
-        adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
-        adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
-      end
+		#start from lowermost rightmost cell
 
-      j -= 1
-    end
+		#for overlap:
 
-    #tracing back...
+		# the best score is now in A(m, j) such that A(m, j) = max_k,l(A(k,n),A(m,l)) and the alignment itself can be
+		# obtained by tracing back from A(m, j) to A(0, 0) as before.
 
-    i = bestscore_i
-    j = bestscore_j
+		i = read.length
+		j = growing_consensus.length
 
-    while i > 0 and j > 0
-      score = a[i][j]
-      score_diag = a[i-1][j-1]
-      score_up = a[i][j-1]
-      score_left = a[i-1][j]
-      if score == score_diag + s[read[i-1].chr + growing_consensus[j-1].chr] #match
-        aligned_read_seq = read[i-1].chr + aligned_read_seq
-        aligned_read_qual.unshift(qualities[i-1])
-        aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
-        aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
+		bestscore = a[i][j]
+		bestscore_i = i
+		bestscore_j = j
 
-        for k in 0...adjusted_prev_aligned_reads.size do
-          adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
-          adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
-        end
+		while i > 0
+		  if a[i][j] > bestscore
+			bestscore = a[i][j]
+			bestscore_i = i
+			bestscore_j = j
+		  end
+		  i -= 1
+		end
 
-        i -= 1
-        j -= 1
-      elsif score == score_left + gap #insert
-        aligned_read_seq = read[i-1].chr + aligned_read_seq
-        aligned_read_qual.unshift(qualities[i-1])
-        aligned_cons_seq = '-' + aligned_cons_seq
-        aligned_cons_qual.unshift(-1)
+		i = read.length
+		j = growing_consensus.length
 
-        for k in 0...adjusted_prev_aligned_reads.size do
-          adjusted_prev_aligned_reads[k] = '-' + adjusted_prev_aligned_reads[k]
-          adjusted_prev_aligned_qualities[k].unshift(-1)
-        end
+		while j > 0
+		  if a[i][j] > bestscore
+			bestscore = a[i][j]
+			bestscore_i = i
+			bestscore_j = j
+		  end
+		  j -= 1
+		end
 
-        i -= 1
-      elsif score == score_up + gap #delete
-        aligned_read_seq = '-' + aligned_read_seq
-        aligned_read_qual.unshift(-1)
-        aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
-        aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
+		# add extending overlapping aligned_cons_seq
 
-        for k in 0...adjusted_prev_aligned_reads.size do
-          adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
-          adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
-        end
+		i = read.length
+		j = growing_consensus.length
 
-        j -= 1
-      end
-    end
+		#add 5' extending gaps...
+		while i > bestscore_i
+		  aligned_read_seq = read[i-1].chr + aligned_read_seq
+		  aligned_read_qual.unshift(qualities[i-1])
 
-    #add 3' extending gaps...
-    while i > 0
-      aligned_read_seq = read[i-1].chr + aligned_read_seq
-      aligned_read_qual.unshift(qualities[i-1])
-      aligned_cons_seq = '-' + aligned_cons_seq
-      aligned_cons_qual.unshift(-1)
+		  aligned_cons_seq = aligned_cons_seq + '-'
+		  aligned_cons_qual.push(-1) # -1 ~ '-'
 
-      # mirror everything that's done to aligned_cons_seq in all previously aligned_seqs:
-      for k in 0...adjusted_prev_aligned_reads.size do
-        adjusted_prev_aligned_reads[k] = '-' + adjusted_prev_aligned_reads[k]
-        adjusted_prev_aligned_qualities[k].unshift(-1)
-      end
+		  # mirror everything that's done to aligned_cons_seq in all previously aligned_seqs:
+		  for k in 0...adjusted_prev_aligned_reads.size do
+			adjusted_prev_aligned_reads[k] = adjusted_prev_aligned_reads[k] + '-'
+			adjusted_prev_aligned_qualities[k].push(-1)
+		  end
 
-      i -= 1
-    end
+		  i -= 1
+		end
 
-    while j > 0
-      aligned_read_seq = '-' + aligned_read_seq
-      aligned_read_qual.unshift(-1)
-      aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
-      aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
 
-      # mirror everything that's done to aligned_cons_seq in all previously aligned_seqs:
-      for k in 0...adjusted_prev_aligned_reads.size do
-        adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
-        adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
-      end
+		while j > bestscore_j
+		  aligned_read_seq = aligned_read_seq + '-'
+		  aligned_read_qual.push(-1)
+		  aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
+		  aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
 
-      j -= 1
-    end
+		  for k in 0...adjusted_prev_aligned_reads.size do
+			adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
+			adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
+		  end
 
-    msg=''
-    msg_type=1
+		  j -= 1
+		end
+
+		#tracing back...
+
+		i = bestscore_i
+		j = bestscore_j
+
+		while i > 0 and j > 0
+		  score = a[i][j]
+		  score_diag = a[i-1][j-1]
+		  score_up = a[i][j-1]
+		  score_left = a[i-1][j]
+		  if score == score_diag + s[read[i-1].chr + growing_consensus[j-1].chr] #match
+			aligned_read_seq = read[i-1].chr + aligned_read_seq
+			aligned_read_qual.unshift(qualities[i-1])
+			aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
+			aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
+
+			for k in 0...adjusted_prev_aligned_reads.size do
+			  adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
+			  adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
+			end
+
+			i -= 1
+			j -= 1
+		  elsif score == score_left + gap #insert
+			aligned_read_seq = read[i-1].chr + aligned_read_seq
+			aligned_read_qual.unshift(qualities[i-1])
+			aligned_cons_seq = '-' + aligned_cons_seq
+			aligned_cons_qual.unshift(-1)
+
+			for k in 0...adjusted_prev_aligned_reads.size do
+			  adjusted_prev_aligned_reads[k] = '-' + adjusted_prev_aligned_reads[k]
+			  adjusted_prev_aligned_qualities[k].unshift(-1)
+			end
+
+			i -= 1
+		  elsif score == score_up + gap #delete
+			aligned_read_seq = '-' + aligned_read_seq
+			aligned_read_qual.unshift(-1)
+			aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
+			aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
+
+			for k in 0...adjusted_prev_aligned_reads.size do
+			  adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
+			  adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
+			end
+
+			j -= 1
+		  end
+		end
+
+		#add 3' extending gaps...
+		while i > 0
+		  aligned_read_seq = read[i-1].chr + aligned_read_seq
+		  aligned_read_qual.unshift(qualities[i-1])
+		  aligned_cons_seq = '-' + aligned_cons_seq
+		  aligned_cons_qual.unshift(-1)
+
+		  # mirror everything that's done to aligned_cons_seq in all previously aligned_seqs:
+		  for k in 0...adjusted_prev_aligned_reads.size do
+			adjusted_prev_aligned_reads[k] = '-' + adjusted_prev_aligned_reads[k]
+			adjusted_prev_aligned_qualities[k].unshift(-1)
+		  end
+
+		  i -= 1
+		end
+
+		while j > 0
+		  aligned_read_seq = '-' + aligned_read_seq
+		  aligned_read_qual.unshift(-1)
+		  aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
+		  aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
+
+		  # mirror everything that's done to aligned_cons_seq in all previously aligned_seqs:
+		  for k in 0...adjusted_prev_aligned_reads.size do
+			adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
+			adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
+		  end
+
+		  j -= 1
+		end
+	end
 
     aligned_seqs= {:growing_cons_seq => aligned_cons_seq,
                    :growing_consensus_qualities => aligned_cons_qual,
@@ -762,53 +771,55 @@ class Contig < ActiveRecord::Base
                    :message => msg,
                    :message_type => msg_type
     }
+	
+	if msg.empty?
 
-    # puts "growing_cons_seq:"
-    # puts aligned_seqs[:growing_cons_seq]
-    # puts "read_seq:"
-    # puts aligned_seqs[:read_seq]
+		# puts "growing_cons_seq:"
+		# puts aligned_seqs[:growing_cons_seq]
+		# puts "read_seq:"
+		# puts aligned_seqs[:read_seq]
 
-    # check if overlap worked or crappy alignment resulted:
+		# check if overlap worked or crappy alignment resulted:
 
-    diffs=0
-    valids=0
+		diffs=0
+		valids=0
 
-    conflicting_positions= Array.new
+		conflicting_positions= Array.new
 
-    (0...aligned_seqs[:growing_cons_seq].length).each { |m|
+		(0...aligned_seqs[:growing_cons_seq].length).each { |m|
 
-      if aligned_seqs[:growing_cons_seq][m]=='-' or aligned_seqs[:read_seq][m]=='-'
-        next
-      else
-        valids+=1
-      end
+		  if aligned_seqs[:growing_cons_seq][m]=='-' or aligned_seqs[:read_seq][m]=='-'
+			next
+		  else
+			valids+=1
+		  end
 
-      if aligned_seqs[:growing_cons_seq][m] != aligned_seqs[:read_seq][m]
-        diffs+=1
-        conflicting_positions << m
-      end
-    }
+		  if aligned_seqs[:growing_cons_seq][m] != aligned_seqs[:read_seq][m]
+			diffs+=1
+			conflicting_positions << m
+		  end
+		}
 
-    perc = (diffs.to_f/valids)
+		perc = (diffs.to_f/valids)
 
-    if perc <= self.allowed_mismatch_percent/100.0
+		if perc <= self.allowed_mismatch_percent/100.0
 
-      # wenn zu wenig overlap:
-      if valids < self.overlap_length
-        #return nil
-        nil
-      else
-        #return alignment:
-        aligned_seqs[:message]=perc
-        aligned_seqs
-      end
+		  # wenn zu wenig overlap:
+		  if valids < self.overlap_length
+			#return nil
+			nil
+		  else
+			#return alignment:
+			aligned_seqs[:message]=perc
+			aligned_seqs
+		  end
 
-    else
-      #return nil
-      nil
+		else
+		  #return nil
+		  nil
 
-    end
-
+		end
+	end
   end
 
 
