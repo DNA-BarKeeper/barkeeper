@@ -480,6 +480,10 @@ class PrimerRead < ActiveRecord::Base
     end
   end
 
+  def trimmed_and_cleaned_seq
+    self.trimmed_seq.upcase.gsub /[^ACTGN-]+/, 'N'
+  end
+
   def get_aligned_peak_indices
 
     if self.trimmedReadStart
