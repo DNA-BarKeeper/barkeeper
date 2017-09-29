@@ -14,7 +14,7 @@ class PrimerReadsController < ApplicationController
         msg='Assembly started in background.'
       end
     end
-    redirect_to :back, notice: msg
+    redirect_back(fallback_location: primer_reads_path, notice: msg)
   end
 
   def use_for_assembly
@@ -28,7 +28,7 @@ class PrimerReadsController < ApplicationController
         msg='Assembly started in background.'
       end
     end
-    redirect_to :back
+    redirect_back(fallback_location: primer_reads_path, notice: msg)
   end
 
   def duplicates
