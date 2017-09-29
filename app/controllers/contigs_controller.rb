@@ -435,21 +435,16 @@ class ContigsController < ApplicationController
     end
   end
 
-
   def overlap
     if @contig.primer_reads.where(:used_for_con => true).count <= 4
-      msg_hash = @contig.auto_overlap
+      @contig.auto_overlap
       msg = 'Assembly finished.'
     else
-      msg_hash = ContigAssembly.perform_async(@contig.id)
+      ContigAssembly.perform_async(@contig.id)
       msg = 'Assembly started in background.'
     end
 
-    if msg_hash && msg_hash[:create_issue]
-      redirect_back(fallback_location: contigs_path, alert: msg_hash[:msg])
-    else
-      redirect_back(fallback_location: contigs_path, notice: msg)
-    end
+    redirect_back(fallback_location: contigs_path, notice: msg)
   end
 
   def overlap_background

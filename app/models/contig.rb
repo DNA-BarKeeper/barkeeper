@@ -307,14 +307,14 @@ class Contig < ActiveRecord::Base
 
       single_read = self.primer_reads.use_for_assembly.first
       single_read.get_aligned_peak_indices
-      pc=PartialCon.create(:aligned_sequence => single_read.trimmed_seq, :aligned_qualities => single_read.trimmed_quals, :contig_id => self.id)
+      pc=PartialCon.create(:aligned_sequence => single_read.trimmed_and_cleaned_seq, :aligned_qualities => single_read.trimmed_quals, :contig_id => self.id)
       single_read.aligned_qualities=single_read.trimmed_quals
-      single_read.aligned_seq=single_read.trimmed_seq
+      single_read.aligned_seq=single_read.trimmed_and_cleaned_seq
       single_read.assembled=true
       single_read.save
       pc.primer_reads << single_read
       self.partial_cons << pc
-      ms=MarkerSequence.find_or_create_by(:name => self.name, :sequence => single_read.trimmed_seq)
+      ms=MarkerSequence.find_or_create_by(:name => self.name, :sequence => single_read.trimmed_and_cleaned_seq)
       ms.contigs << self
       ms.marker = self.marker
       ms.isolate = self.isolate
@@ -333,9 +333,9 @@ class Contig < ActiveRecord::Base
 
     assembled_reads =  [starting_read] # successfully overlapped reads
     growing_consensus = {:reads => [{:read => starting_read,
-                                     :aligned_seq => starting_read.trimmed_seq,
+                                     :aligned_seq => starting_read.trimmed_and_cleaned_seq,
                                      :aligned_qualities => starting_read.trimmed_quals}],
-                         :consensus => starting_read.trimmed_seq,
+                         :consensus => starting_read.trimmed_and_cleaned_seq,
                          :consensus_qualities => starting_read.trimmed_quals}
 
     partial_contigs = Array.new #contains singleton reads and successful overlaps (sub-contigs) that
@@ -343,85 +343,79 @@ class Contig < ActiveRecord::Base
     # format: partial_contigs.push({:reads => assembled_reads, :consensus => growing_consensus })
 
 
-    msg = assemble(growing_consensus, assembled_reads, partial_contigs, remaining_reads)
+    assemble(growing_consensus, assembled_reads, partial_contigs, remaining_reads)
 
-    if msg.nil?
-      # -----> ASSEMBLY <------
+    # -----> ASSEMBLY <------
 
-      current_largest_partial_contig=0
-      current_largest_partial_contig_seq=nil
+    current_largest_partial_contig=0
+    current_largest_partial_contig_seq=nil
 
-      #clean previously stored partial_cons:
-      self.partial_cons.destroy_all
+    #clean previously stored partial_cons:
+    self.partial_cons.destroy_all
 
-      height=0 #count needed lines for pde dimensions
-      max_width=0
+    height=0 #count needed lines for pde dimensions
+    max_width=0
 
-      block_seqs=[] #collect sequences for block, later fill with '?' up to max_width
+    block_seqs=[] #collect sequences for block, later fill with '?' up to max_width
 
-      partial_contigs.each do |partial_contig|
+    partial_contigs.each do |partial_contig|
 
-        #single partial_contig: ({:reads => assembled_reads, :consensus => growing_consensus})
+      #single partial_contig: ({:reads => assembled_reads, :consensus => growing_consensus})
 
-        if partial_contig[:reads].size >1 # something where 2 or more primers overlapped:
+      if partial_contig[:reads].size >1 # something where 2 or more primers overlapped:
 
-          #growing_consensus = {:reads => [{:read => starting_read, :aligned_seq => starting_read.trimmed_seq}],
-          # :consensus => starting_read.trimmed_seq }
+        #growing_consensus = {:reads => [{:read => starting_read, :aligned_seq => starting_read.trimmed_and_cleaned_seq}],
+        # :consensus => starting_read.trimmed_and_cleaned_seq }
 
-          if partial_contig[:reads].size > current_largest_partial_contig
-            current_largest_partial_contig = partial_contig[:reads].size
-            current_largest_partial_contig_seq=partial_contig[:consensus][:consensus]
-          end
+        if partial_contig[:reads].size > current_largest_partial_contig
+          current_largest_partial_contig = partial_contig[:reads].size
+          current_largest_partial_contig_seq=partial_contig[:consensus][:consensus]
+        end
 
-          growing_consensus=partial_contig[:consensus]
+        growing_consensus=partial_contig[:consensus]
 
-          pc=PartialCon.create(:aligned_sequence => growing_consensus[:consensus], :aligned_qualities => growing_consensus[:consensus_qualities])
+        pc=PartialCon.create(:aligned_sequence => growing_consensus[:consensus], :aligned_qualities => growing_consensus[:consensus_qualities])
 
-          growing_consensus[:reads].each do |aligned_read|
+        growing_consensus[:reads].each do |aligned_read|
 
-            #get original primer_read from db:
-            pr=PrimerRead.find(aligned_read[:read].id)
-            pr.update(:aligned_seq=>aligned_read[:aligned_seq], :assembled => true, :aligned_qualities => aligned_read[:aligned_qualities])
+          #get original primer_read from db:
+          pr=PrimerRead.find(aligned_read[:read].id)
+          pr.update(:aligned_seq=>aligned_read[:aligned_seq], :assembled => true, :aligned_qualities => aligned_read[:aligned_qualities])
 
-            pr.get_aligned_peak_indices # <-- uses aligned_qualities to populate aligned_peak_indices array. Needed in new variant of d3.js contig slize
+          pr.get_aligned_peak_indices # <-- uses aligned_qualities to populate aligned_peak_indices array. Needed in new variant of d3.js contig slize
 
-            pc.primer_reads << pr
-
-          end
-
-          self.partial_cons << pc
-
-        else # singleton
+          pc.primer_reads << pr
 
         end
 
-      end
+        self.partial_cons << pc
 
-      # set to "assembled" & create MarkerSequence if applicable
-      if current_largest_partial_contig >= self.marker.expected_reads
-        self.update(:assembled => true)
-
-        ms=MarkerSequence.find_or_create_by(:name => self.name, :sequence => current_largest_partial_contig_seq.gsub('-',''))
-        ms.contigs << self
-        ms.marker = self.marker
-        ms.isolate = self.isolate
-        ms.save
+      else # singleton
 
       end
+
+    end
+
+    # set to "assembled" & create MarkerSequence if applicable
+    if current_largest_partial_contig >= self.marker.expected_reads
+      self.update(:assembled => true)
+
+      ms=MarkerSequence.find_or_create_by(:name => self.name, :sequence => current_largest_partial_contig_seq.gsub('-',''))
+      ms.contigs << self
+      ms.marker = self.marker
+      ms.isolate = self.isolate
+      ms.save
+
     end
 
     if msg
       Issue.create(:title => msg, :contig_id => self.id)
       self.assembled=false
-
-      {:msg => msg, :create_issue => true}
     end
 
   end
 
-
   # recursive assembly function
-
   def assemble(growing_consensus, assembled_reads, partial_contigs, remaining_reads)
 
     # Try overlap all remaining_reads with growing_consensus
@@ -430,12 +424,9 @@ class Contig < ActiveRecord::Base
 
     remaining_reads.each do |read|
 
-      aligned_seqs = overlap(growing_consensus, read.trimmed_seq, read.trimmed_quals)
+      aligned_seqs = overlap(growing_consensus, read.trimmed_and_cleaned_seq, read.trimmed_quals)
 
-
-      if aligned_seqs.is_a? String # an error occured in overlap
-        return aligned_seqs
-      elsif aligned_seqs # if one overlaps
+      if aligned_seqs # if one overlaps
 
         none_overlapped=false
 
@@ -485,9 +476,9 @@ class Contig < ActiveRecord::Base
         growing_assembled_reads_reset = [new_starting_read]
 
         growing_consensus_reset = {:reads => [{:read => new_starting_read,
-                                               :aligned_seq => new_starting_read.trimmed_seq,
+                                               :aligned_seq => new_starting_read.trimmed_and_cleaned_seq,
                                                :aligned_qualities => new_starting_read.trimmed_quals}],
-                                   :consensus => new_starting_read.trimmed_seq, :consensus_qualities => new_starting_read.trimmed_quals}
+                                   :consensus => new_starting_read.trimmed_and_cleaned_seq, :consensus_qualities => new_starting_read.trimmed_quals}
 
         assemble(growing_consensus_reset, growing_assembled_reads_reset, partial_contigs, remaining_reads)
       end
@@ -553,8 +544,6 @@ class Contig < ActiveRecord::Base
           '-T' => -1,
           '--' => 1,
     }
-	
-	  allowed_symbols = %w(A T C G N -)
 
     rows = read.length + 1
     cols = growing_consensus.length + 1
@@ -570,15 +559,6 @@ class Contig < ActiveRecord::Base
 
     (1...rows).each { |i|
       (1...cols).each { |j|
-        if (s[(read[i-1] + growing_consensus[j-1]).upcase]).nil? # an unexpected symbol was found
-          if !(allowed_symbols.include? read[i-1])
-            output_message = "A read contained the unexpected symbol '#{read[i-1]}' in position #{i-1}. Assembly could not be finished."
-            return output_message
-          elsif !(allowed_symbols.include? growing_consensus[j-1])
-            output_message = "A read contained the unexpected symbol '#{growing_consensus[j-1]}'. Assembly could not be finished."
-            return output_message
-          end
-        end
         choice1 = a[i-1][j-1] + s[(read[i-1] + growing_consensus[j-1]).upcase] #match
         choice2 = a[i-1][j] + gap #insert
         choice3 = a[i][j-1] + gap #delete
