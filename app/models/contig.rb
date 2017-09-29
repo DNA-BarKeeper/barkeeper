@@ -570,15 +570,12 @@ class Contig < ActiveRecord::Base
 
     (1...rows).each { |i|
       (1...cols).each { |j|
-        if (s[(read[i-1] + growing_consensus[j-1]).upcase]).nil?
-          Rails.logger.info "At position #{i} in read: #{read[i-1]}; At position #{j} in growing consensus: #{growing_consensus[j-1]}"
-          # output_message = "Assembly could not be performed: At position #{i} in read: #{read[i-1]}; At position #{j} in growing consensus: #{growing_consensus[j-1]}"
-          # return output_message
+        if (s[(read[i-1] + growing_consensus[j-1]).upcase]).nil? # an unexpected symbol was found
           if !(allowed_symbols.include? read[i-1])
             output_message = "A read contained the unexpected symbol '#{read[i-1]}' in position #{i-1}. Assembly could not be finished."
             return output_message
           elsif !(allowed_symbols.include? growing_consensus[j-1])
-            output_message = "A read contained the unexpected symbol '#{growing_consensus[j-1]}' in position #{j-1}. Assembly could not be finished."
+            output_message = "A read contained the unexpected symbol '#{growing_consensus[j-1]}'. Assembly could not be finished."
             return output_message
           end
         end
