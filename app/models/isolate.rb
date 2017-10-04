@@ -1,5 +1,5 @@
 class Isolate < ActiveRecord::Base
-  include ApplicationHelper
+  include CommonFunctions
 
   has_many :marker_sequences
   has_many :contigs
@@ -175,7 +175,7 @@ class Isolate < ActiveRecord::Base
   # variant for ggf. new specimen data + ggf new isolates
   def self.import(file)
 
-    spreadsheet = Roo::Excelx.new(file, nil, :ignore)
+    spreadsheet = CommonFunctions.open_spreadsheet(file)
 
     header = spreadsheet.row(1)
 

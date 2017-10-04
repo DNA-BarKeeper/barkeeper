@@ -1,11 +1,14 @@
 class Primer < ActiveRecord::Base
+  include CommonFunctions
+
   belongs_to :marker
   has_many :primer_reads
   has_many :primer_pos_on_genomes
   validates_presence_of :name
 
+
   def self.import(file)
-    spreadsheet = open_spreadsheet(file)
+    spreadsheet = CommonFunctions.open_spreadsheet(file)
 
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
