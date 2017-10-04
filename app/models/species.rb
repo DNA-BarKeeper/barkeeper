@@ -1,4 +1,6 @@
 class Species < ActiveRecord::Base
+  include CommonFunctions
+
   has_many :individuals
   has_many :primer_pos_on_genomes
   belongs_to :family
@@ -26,7 +28,7 @@ class Species < ActiveRecord::Base
 
 
   def self.import_gbolII(file)
-    spreadsheet = open_spreadsheet(file)
+    spreadsheet = CommonFunctions.open_spreadsheet(file)
     header = spreadsheet.row(1)
 
     (2..spreadsheet.last_row).each do |i|
@@ -74,7 +76,7 @@ class Species < ActiveRecord::Base
 
 
   def self.import(file, valid_keys)
-    spreadsheet = open_spreadsheet(file)
+    spreadsheet = CommonFunctions.open_spreadsheet(file)
     header = spreadsheet.row(1)
 
     (2..spreadsheet.last_row).each do |i|
@@ -142,7 +144,7 @@ class Species < ActiveRecord::Base
 
 
   def self.import_Stuttgart_set_class(file)
-    spreadsheet = open_spreadsheet(file)
+    spreadsheet = CommonFunctions.open_spreadsheet(file)
 
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|

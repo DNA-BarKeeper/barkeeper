@@ -23,5 +23,8 @@ module GBOLapp
 
     # config.assets.enabled = true
     # config.assets.precompile += %w(*.png *.jpg *.jpeg *.gif)
+
+    config.autoload_paths << "#{Rails.root}/lib"
+    config.eager_load_paths << "#{Rails.root}/lib"
   end
 end
