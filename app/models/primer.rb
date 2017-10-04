@@ -5,9 +5,7 @@ class Primer < ActiveRecord::Base
   validates_presence_of :name
 
   def self.import(file)
-    #spreadsheet = open_spreadsheet(file)
-
-    spreadsheet = Roo::Excel.new(file, nil, :ignore)
+    spreadsheet = open_spreadsheet(file)
 
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
@@ -34,6 +32,4 @@ class Primer < ActiveRecord::Base
       pri.save!
     end
   end
-
-
 end
