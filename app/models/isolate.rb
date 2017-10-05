@@ -16,7 +16,7 @@ class Isolate < ActiveRecord::Base
   scope :no_controls, -> { where(:negative_control => false)}
 
   def assign_specimen
-    self.individual_id = search_dna_bank(self.lab_nr).id # search DNABank for specimen info
+    self.individual_id = CommonFunctions.search_dna_bank(self.lab_nr)&.id # only assign individual id if dna bank search had a result
   end
 
   def self.isolates_in_order(order_id)
