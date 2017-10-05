@@ -6,8 +6,9 @@ namespace :data do
 
   desc "Do work statistics"
 
-  task :work_statistics => :environment do
-    range = Time.now.beginning_of_year..Time.now
+  task :work_statistics, [:range] => [:environment] do | t, args |
+    args.with_defaults(:range => Time.now.beginning_of_year..Time.now)
+    range = eval args[:range]
 
     puts "Calculating activities from #{range.begin.to_formatted_s(:db)} until #{range.end.to_formatted_s(:db)}..."
 
