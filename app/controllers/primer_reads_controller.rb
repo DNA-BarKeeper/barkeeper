@@ -155,6 +155,9 @@ class PrimerReadsController < ApplicationController
 
     if @primer_read.save
       PherogramProcessing.perform_async(@primer_read.id)
+      if @primer_read.sequence.nil?
+        @primer_read.update(:sequence => '')
+      end
     end
 
   end

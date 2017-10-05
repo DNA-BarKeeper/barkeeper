@@ -10,7 +10,7 @@ module CommonFunctions
   end
 
 
-  def search_dna_bank(id_string, individual = nil)
+  def self.search_dna_bank(id_string, individual = nil)
     individual = individual
     is_gbol_number = false
     message = ''
