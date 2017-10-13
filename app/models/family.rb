@@ -14,4 +14,17 @@ class Family < ActiveRecord::Base
     count
   end
 
+  def self.completed_species_cnt(marker_id)
+    cnt = 0
+    self.species.each do |s|
+      has_ms = false
+      s.individuals.each do |i|
+        i.isolates.each do |iso|
+          has_ms = iso.marker_sequences.where(:marker_id => marker_id).any? ? true : has_ms
+        end
+      end
+      cnt += 1 if has_ms
+    end
+  end
+
 end
