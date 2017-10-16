@@ -1,7 +1,7 @@
 $.ajax({
     type: "GET",
     contentType: "application/json; charset=utf-8",
-    url: 'data',
+    url: 'all_species',
     dataType: 'json',
     processData: false,
     success: function (data) {
@@ -30,14 +30,14 @@ var legend_entries = [
     "rpl16",
     "ITS",
     "trnK-matK",
-    "Magnoliopsida",
+    "Marchantiophytina",
     "Bryophytina",
     "Anthocerotophytina",
     "Lycopodiophytina",
     "Equisetophytina",
     "Filicophytina",
     "Coniferopsida",
-    "Marchantiophytina"
+    "Magnoliopsida"
 ];
 
 // Total size of all segments; we set this later, after loading the data.
