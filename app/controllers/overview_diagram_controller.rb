@@ -1,13 +1,13 @@
-class SunburstDiagramController < ApplicationController
+class OverviewDiagramController < ApplicationController
   def index
   end
 
-  # returns JSON with the number of finished species for each family
+  # returns JSON containing the number of target species for each family
   def data
     root = {:name => 'root', 'children' => []}
     markers = Marker.gbol_marker.select(:id, :name)
-    data = HigherOrderTaxon.includes(orders: [:families])
-    
+    data = HigherOrderTaxon.includes(orders: [families: [:species]])
+
     i = 0
     markers.each do |marker|
       children = root['children']
@@ -25,7 +25,7 @@ class SunburstDiagramController < ApplicationController
           l = 0
           families.each do |family|
             children4 = children3[k]['children']
-            children4[l] = {:name => family.name, :size => family.completed_species_cnt(marker.id)}
+            children4[l] = {:name => family.name, :size => family.species.count}
             l += 1
           end
           k += 1
