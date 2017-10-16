@@ -3,7 +3,7 @@ class OverviewDiagramController < ApplicationController
   end
 
   # returns JSON containing the number of target species for each family
-  def data
+  def all_species
     root = {:name => 'root', 'children' => []}
     markers = Marker.gbol_marker.select(:id, :name)
     data = HigherOrderTaxon.includes(orders: [families: [:species]])

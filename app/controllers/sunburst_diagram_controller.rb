@@ -3,7 +3,7 @@ class SunburstDiagramController < ApplicationController
   end
 
   # returns JSON with the number of finished species for each family
-  def data
+  def finished_species
     root = {:name => 'root', 'children' => []}
     markers = Marker.gbol_marker.select(:id, :name)
     data = HigherOrderTaxon.includes(orders: [:families])
