@@ -11,6 +11,9 @@ GBOLapp::Application.routes.draw do
   get 'sunburst_diagram/index'
   get 'sunburst_diagram/data', :defaults => { :format => 'json' }
 
+  get 'overview_diagram/index'
+  get 'overview_diagram/data', :defaults => { :format => 'json' }
+
   get 'specimens_xls', action: :xls, controller: 'individuals'
   get 'specimens_create_xls', action: :create_xls, controller: 'individuals'
   get 'species_xls', action: :xls, controller: 'species'

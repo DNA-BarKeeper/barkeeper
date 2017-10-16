@@ -4,17 +4,8 @@ class Family < ActiveRecord::Base
   validates_presence_of :name
   has_and_belongs_to_many :projects
 
-  def self.in_higher_order_taxon(higher_order_taxon_id)
-    count=0
-
-    HigherOrderTaxon.find(higher_order_taxon_id).orders.each do |ord|
-      count+=ord.families.count
-    end
-
-    count
-  end
-
-  def self.completed_species_cnt(marker_id)
+  # Returns the number of species for which at least one marker sequence for this marker exists
+  def completed_species_cnt(marker_id)
     cnt = 0
     self.species.each do |s|
       has_ms = false
@@ -25,6 +16,17 @@ class Family < ActiveRecord::Base
       end
       cnt += 1 if has_ms
     end
+    return cnt
+  end
+
+  def self.in_higher_order_taxon(higher_order_taxon_id)
+    count=0
+
+    HigherOrderTaxon.find(higher_order_taxon_id).orders.each do |ord|
+      count+=ord.families.count
+    end
+
+    count
   end
 
 end
