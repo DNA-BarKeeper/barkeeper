@@ -1,0 +1,2 @@
+class ContigSearch < ApplicationRecord
+end

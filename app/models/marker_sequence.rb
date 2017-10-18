@@ -1,4 +1,4 @@
-class MarkerSequence < ActiveRecord::Base
+class MarkerSequence < ApplicationRecord
   belongs_to :isolate
   has_many :contigs
   belongs_to :marker

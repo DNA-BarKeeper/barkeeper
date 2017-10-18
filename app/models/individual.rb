@@ -1,4 +1,4 @@
-class Individual < ActiveRecord::Base
+class Individual < ApplicationRecord
   include PgSearch
 
   has_many :isolates

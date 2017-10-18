@@ -1,4 +1,4 @@
-class Isolate < ActiveRecord::Base
+class Isolate < ApplicationRecord
   include CommonFunctions
 
   has_many :marker_sequences

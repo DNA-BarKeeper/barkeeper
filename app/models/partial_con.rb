@@ -1,4 +1,4 @@
-class PartialCon < ActiveRecord::Base
+class PartialCon < ApplicationRecord
   belongs_to :contig, counter_cache: true
   has_many :primer_reads
 

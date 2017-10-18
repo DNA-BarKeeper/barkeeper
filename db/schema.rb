@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170922091324) do
+ActiveRecord::Schema.define(version: 20171018120345) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,23 @@ ActiveRecord::Schema.define(version: 20170922091324) do
     t.datetime "uploaded_file_updated_at"
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+  end
+
+  create_table "contig_searches", force: :cascade do |t|
+    t.string   "species"
+    t.integer  "order_id"
+    t.decimal  "min_age"
+    t.decimal  "max_age"
+    t.decimal  "min_update"
+    t.decimal  "max_update"
+    t.string   "specimen"
+    t.string   "family"
+    t.boolean  "verified"
+    t.integer  "marker_id"
+    t.string   "name"
+    t.boolean  "assembled"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "contigs", force: :cascade do |t|
