@@ -1,5 +1,5 @@
 # noinspection RubyStringKeysInHashInspection
-class Contig < ActiveRecord::Base
+class Contig < ApplicationRecord
   belongs_to :marker_sequence
   belongs_to :marker
   belongs_to :isolate

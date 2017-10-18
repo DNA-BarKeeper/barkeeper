@@ -1,4 +1,4 @@
-class Species < ActiveRecord::Base
+class Species < ApplicationRecord
   include CommonFunctions
 
   has_many :individuals

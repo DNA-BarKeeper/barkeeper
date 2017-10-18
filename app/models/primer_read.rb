@@ -1,4 +1,4 @@
-class PrimerRead < ActiveRecord::Base
+class PrimerRead < ApplicationRecord
   belongs_to :contig
   belongs_to :partial_con
   belongs_to :primer

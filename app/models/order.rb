@@ -1,4 +1,4 @@
-class Order < ActiveRecord::Base
+class Order < ApplicationRecord
   has_many :families
   has_many :species, :through => :families
   belongs_to :higher_order_taxon

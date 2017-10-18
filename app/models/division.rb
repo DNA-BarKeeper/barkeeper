@@ -1,3 +1,3 @@
-class Division < ActiveRecord::Base
+class Division < ApplicationRecord
   has_many :subdivisions
 end
