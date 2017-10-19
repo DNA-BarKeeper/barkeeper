@@ -2,7 +2,7 @@ require 'test_helper'
 
 class ContigsControllerTest < ActionController::TestCase
   setup do
-    @contig = contigs(:unverified_contig)
+    @contig = contigs_data(:unverified_contig)
     user_log_in
   end
 

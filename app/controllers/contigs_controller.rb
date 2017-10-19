@@ -166,7 +166,7 @@ class ContigsController < ApplicationController
           ms=MarkerSequence.find_or_create_by(:name => contig.name)
           ms.sequence = pair[1].gsub('-','')
           ms.sequence = ms.sequence.gsub('?','')
-          ms.contigs << contig
+          ms.contigs_data << contig
           ms.marker = contig.marker
           ms.isolate = contig.isolate
           ms.save
@@ -347,7 +347,7 @@ class ContigsController < ApplicationController
       partial_cons=@contig.partial_cons.first
       ms.sequence = partial_cons.aligned_sequence.gsub('-','')
       ms.sequence = ms.sequence.gsub('?','')
-      ms.contigs << @contig
+      ms.contigs_data << @contig
       ms.marker = @contig.marker
       ms.isolate = @contig.isolate
       ms.save
@@ -366,7 +366,7 @@ class ContigsController < ApplicationController
     partial_cons=@contig.partial_cons.first
     ms.sequence = partial_cons.aligned_sequence.gsub('-','')
     ms.sequence = ms.sequence.gsub('?','')
-    ms.contigs << @contig
+    ms.contigs_data << @contig
     ms.marker = @contig.marker
     ms.isolate = @contig.isolate
     ms.save

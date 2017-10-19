@@ -1,0 +1,54 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3  class="panel-title">Advanced Contig Search</h3>
+  </div>
+
+  <div class="panel-body">
+    <%= form_for @contig_search do |f| %>
+        <div class="field">
+          <%= f.label :name %><br />
+          <%= f.text_field :name %>
+        </div>
+        <div>
+          <%= check_box_tag(:assembled) %><%= label_tag(:assembled, "Assembled") %>
+          <%= check_box_tag(:unassembled) %><%= label_tag(:unassembled, "Unassembled") %>
+        </div>
+        <div>
+          <%= check_box_tag(:verified) %><%= label_tag(:verified, "Verified") %>
+          <%= check_box_tag(:unverified) %><%= label_tag(:unverified, "Unverified") %>
+        </div>
+        <div class="field">
+          <%= f.label :marker_id %><br />
+          <%= f.collection_select :marker_id, Marker.order(:name), :id, :name, include_blank: true %>
+        </div>
+        <div class="field">
+          <%= f.label :specimen %><br />
+          <%= f.text_field :specimen %>
+        </div>
+        <div class="field">
+          <%= f.label :species %><br />
+          <%= f.text_field :species %>
+        </div>
+        <div class="field">
+          <%= f.label :family %><br />
+          <%= f.text_field :family %>
+        </div>
+        <div class="field">
+          <%= f.label :order_id %><br />
+          <%= f.collection_select :order_id, Order.order(:name), :id, :name, include_blank: true %>
+        </div>
+        <div class="field">
+          <%= f.label :min_age, "Created between" %><br />
+          <%= select_date nil, :include_blank => true, prefix: :min_age %> and
+          <%= select_date nil, :include_blank => true, prefix: :max_age %>
+        </div>
+        <div class="field">
+          <%= f.label :min_update, "Updated between" %><br />
+          <%= select_date nil, :include_blank => true, prefix: :min_update %> and
+          <%= select_date nil, :include_blank => true, prefix: :max_update %>
+        </div>
+        <br>
+        <div class="actions"><%= f.submit "Search" %></div>
+    <% end %>
+  </div>
+</div>

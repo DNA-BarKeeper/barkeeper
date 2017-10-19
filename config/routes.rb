@@ -24,6 +24,8 @@ GBOLapp::Application.routes.draw do
 
   get 'primer_reads/:id/edit/:pos', action: :go_to_pos, controller: 'primer_reads'
 
+  resources :contig_searches
+
   resources :contigs do
 
     collection do
