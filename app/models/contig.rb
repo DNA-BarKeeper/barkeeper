@@ -315,7 +315,7 @@ class Contig < ApplicationRecord
       pc.primer_reads << single_read
       self.partial_cons << pc
       ms=MarkerSequence.find_or_create_by(:name => self.name, :sequence => single_read.trimmed_and_cleaned_seq)
-      ms.contigs << self
+      ms.contigs_data << self
       ms.marker = self.marker
       ms.isolate = self.isolate
       ms.save
@@ -401,7 +401,7 @@ class Contig < ApplicationRecord
       self.update(:assembled => true)
 
       ms=MarkerSequence.find_or_create_by(:name => self.name, :sequence => current_largest_partial_contig_seq.gsub('-',''))
-      ms.contigs << self
+      ms.contigs_data << self
       ms.marker = self.marker
       ms.isolate = self.isolate
       ms.save

@@ -30,7 +30,7 @@ class PrimerRead < ApplicationRecord
 
   scope :processed, -> {where(:processed => true)}
   scope :unprocessed, -> {where(:processed => false)}
-  scope :contig_not_verified, -> {joins(:contig).where(:contigs => {:verified => false, :verified_by => nil})}
+  scope :contig_not_verified, -> {joins(:contig).where(:contigs_data => {:verified => false, :verified_by => nil})}
 
   scope :in2016, ->  { where('primer_reads.created_at > ? AND primer_reads.created_at < ?',  1.years.ago.beginning_of_year, Time.zone.now.beginning_of_year)}
   scope :in2016_until_now, ->  { where('primer_reads.created_at > ? AND primer_reads.created_at < ?',  1.years.ago.beginning_of_year, Time.zone.now)}
@@ -136,7 +136,7 @@ class PrimerRead < ApplicationRecord
         fam.species.each do  |sp|
           sp.individuals.each do |ind|
             ind.isolates.each do |iso|
-              iso.contigs.each do |con|
+              iso.contigs_data.each do |con|
                 count += con.primer_reads.count
               end
             end
