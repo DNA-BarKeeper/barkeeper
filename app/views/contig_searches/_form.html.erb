@@ -10,12 +10,12 @@
           <%= f.text_field :name %>
         </div>
         <div>
-          <%= check_box_tag(:assembled) %><%= label_tag(:assembled, "Assembled") %>
-          <%= check_box_tag(:unassembled) %><%= label_tag(:unassembled, "Unassembled") %>
+          <%= f.check_box :assembled, as: :boolean %><%= label_tag(:assembled, "Assembled") %>
+          <%= f.check_box :unassembled, as: :boolean %><%= label_tag(:unassembled, "Unassembled") %>
         </div>
         <div>
-          <%= check_box_tag(:verified) %><%= label_tag(:verified, "Verified") %>
-          <%= check_box_tag(:unverified) %><%= label_tag(:unverified, "Unverified") %>
+          <%= f.check_box :verified, as: :boolean %><%= label_tag(:verified, "Verified") %>
+          <%= f.check_box :unverified, as: :boolean %><%= label_tag(:unverified, "Unverified") %>
         </div>
         <div class="field">
           <%= f.label :marker_id %><br />
@@ -39,13 +39,13 @@
         </div>
         <div class="field">
           <%= f.label :min_age, "Created between" %><br />
-          <%= select_date nil, :include_blank => true, prefix: :min_age %> and
-          <%= select_date nil, :include_blank => true, prefix: :max_age %>
+          <%= select_date nil, :include_blank => true, as: :date, prefix: :min_age %> and
+          <%= select_date nil, :include_blank => true, as: :date, prefix: :max_age %>
         </div>
         <div class="field">
           <%= f.label :min_update, "Updated between" %><br />
-          <%= select_date nil, :include_blank => true, prefix: :min_update %> and
-          <%= select_date nil, :include_blank => true, prefix: :max_update %>
+          <%= select_date nil, :include_blank => true, as: :date, prefix: :min_update %> and
+          <%= select_date nil, :include_blank => true, as: :date, prefix: :max_update %>
         </div>
         <br>
         <div class="actions"><%= f.submit "Search" %></div>

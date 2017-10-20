@@ -21,6 +21,6 @@ jQuery(function() {
             { "orderable": false, "targets": 2 },
             { "orderable": false, "targets": 5 }
         ],
-        "order": [ 4, 'desc' ]
+        "order": [ 0, 'asc' ]
     });
 });

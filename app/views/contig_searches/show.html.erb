@@ -1,8 +1,20 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">Contig Search Results</h3>
-    <p>Search parameters: </p>
-    <p>Name: <%= @contig_search.name %>, Marker: <%= @contig_search.marker_id %>, Assembled: <%= @contig_search.assembled %></p>
+    <p><h3 class="panel-title">Contig Search Results</h3></p>
+    <p>Search parameters:<br>
+      <%= "Name: #{@contig_search.name}, " unless @contig_search.name&.empty? %>
+      <%= "assembled, " if @contig_search.assembled %>
+      <%= "not assembled, " if @contig_search.unassembled  %>
+      <%= "verified, " if @contig_search.verified %>
+      <%= "not verified, " if @contig_search.unverified %>
+      <%= "Marker: #{Marker.find_by_id(@contig_search.marker_id).name}, " if @contig_search.marker_id %>
+      <%= "Specimen: #{@contig_search.specimen}, " unless @contig_search.specimen&.empty? %>
+      <%= "Species: #{@contig_search.species}, " unless @contig_search.species&.empty? %>
+      <%= "Family: #{@contig_search.family}, " unless @contig_search.family&.empty? %>
+      <%= "Order: #{Order.find_by_id(@contig_search.order_id).name}, " if @contig_search.order_id %>
+      <%= "Created since: #{@contig_search.min_age}, " if @contig_search.min_age %>
+      <%= "Updated since: #{@contig_search.min_update}, " if @contig_search.min_update %>
+    </p>
   </div>
   <div class="panel-body">
 
