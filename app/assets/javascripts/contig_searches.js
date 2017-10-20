@@ -12,7 +12,7 @@ jQuery(function() {
             $buttons.show();
         });
 
-    $('#contig_search').DataTable({
+    $('#contig_search').dataTable({
         bProcessing: true,
         bServerSide: true,
         sAjaxSource: $('#contig_search').data('source'),
