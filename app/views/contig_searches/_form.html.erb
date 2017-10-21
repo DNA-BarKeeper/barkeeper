@@ -37,6 +37,16 @@
           <%= f.label :order_id %><br />
           <%= f.collection_select :order_id, Order.order(:name), :id, :name, include_blank: true %>
         </div>
+        <div class="field">
+          <%= f.label :min_age, "Created between" %><br />
+          <%= select_date nil, :include_blank => true, as: :date, prefix: :min_age %> and
+          <%= select_date nil, :include_blank => true, as: :date, prefix: :max_age %>
+        </div>
+        <div class="field">
+          <%= f.label :min_updated, "Updated between" %><br />
+          <%= select_date nil, :include_blank => true, as: :date, prefix: :min_updated %> and
+          <%= select_date nil, :include_blank => true, as: :date, prefix: :max_updated %>
+        </div>
         <br>
         <div class="actions"><%= f.submit "Search" %></div>
     <% end %>

@@ -4,7 +4,18 @@ class ContigSearchesController < ApplicationController
   end
 
   def create
-    @contig_search = ContigSearch.create!(contig_search_params)
+    params = contig_search_params[:contig_search]
+    @contig_search = ContigSearch.create!(params)
+
+    puts "params #{params}"
+
+    @contig_search.update(
+        :min_age => (Date.new params['min_age'['year']].to_i, params['min_age'['month']].to_i, params['min_age'['day']].to_i),
+        :max_age => (Date.new params['max_age'['year']].to_i, params['max_age'['month']].to_i, params['max_age'['day']].to_i),
+        :min_updated => (Date.new params['min_updated'['year']].to_i, params['min_updated'['month']].to_i, params['min_updated'['day']].to_i),
+        :min_updated => (Date.new params['min_updated'['year']].to_i, params['min_updated'['month']].to_i, params['min_updated'['day']].to_i)
+    )
+
     redirect_to @contig_search
   end
 
