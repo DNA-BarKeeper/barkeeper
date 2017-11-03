@@ -7,45 +7,53 @@
     <%= form_for @contig_search do |f| %>
         <div class="field">
           <%= f.label :name %><br />
-          <%= f.text_field :name %>
+          <%= f.collection_select :name, Contig.order(:name), :id, :name, include_blank: true %>
+        </div>
+        <br/>
+        <div>
+          <%= f.radio_button :assembled, "assembled" %>
+          <%= f.label :assembled, "Assembled" %>
+          <%= f.radio_button :assembled, "unassembled" %>
+          <%= f.label :unassembled, "Unassembled" %>
+          <%= f.radio_button :assembled, "both", :checked => true %>
+          <%= f.label :both_assembly, "Both" %>
         </div>
         <div>
-          <%= f.check_box :assembled, as: :boolean %><%= label_tag(:assembled, "Assembled") %>
-          <%= f.check_box :unassembled, as: :boolean %><%= label_tag(:unassembled, "Unassembled") %>
+          <%= f.radio_button :verified, "verified" %>
+          <%= f.label :assembled, "Verified" %>
+          <%= f.radio_button :verified, "unverified" %>
+          <%= f.label :unverified, "Unverified" %>
+          <%= f.radio_button :verified, "both", :checked => true %>
+          <%= f.label :both_verify, "Both" %>
         </div>
-        <div>
-          <%= f.check_box :verified, as: :boolean %><%= label_tag(:verified, "Verified") %>
-          <%= f.check_box :unverified, as: :boolean %><%= label_tag(:unverified, "Unverified") %>
-        </div>
+        <br/>
         <div class="field">
           <%= f.label :marker_id %><br />
           <%= f.collection_select :marker_id, Marker.order(:name), :id, :name, include_blank: true %>
         </div>
         <div class="field">
           <%= f.label :specimen %><br />
-          <%= f.text_field :specimen %>
+          <%= f.collection_select :specimen, Individual.order(:specimen_id), :id, :specimen_id, include_blank: true %>
         </div>
         <div class="field">
           <%= f.label :species %><br />
-          <%= f.text_field :species %>
+          <%= f.collection_select :species, Species.order(:composed_name), :id, :composed_name, include_blank: true %>
         </div>
         <div class="field">
           <%= f.label :family %><br />
-          <%= f.text_field :family %>
+          <%= f.collection_select :family, Family.order(:name), :id, :name, include_blank: true %>
         </div>
         <div class="field">
           <%= f.label :order_id %><br />
           <%= f.collection_select :order_id, Order.order(:name), :id, :name, include_blank: true %>
         </div>
         <div class="field">
-          <%= f.label :min_age, "Created between" %><br />
-          <%= select_date nil, :include_blank => true, as: :date, prefix: :min_age %> and
-          <%= select_date nil, :include_blank => true, as: :date, prefix: :max_age %>
+          <%= f.label :age, "Created between" %><br />
+          <%= f.text_field :min_age, :size => 7 %> and &nbsp;&nbsp;<%= f.text_field :max_age, :size => 7 %>
         </div>
         <div class="field">
-          <%= f.label :min_updated, "Updated between" %><br />
-          <%= select_date nil, :include_blank => true, as: :date, prefix: :min_updated %> and
-          <%= select_date nil, :include_blank => true, as: :date, prefix: :max_updated %>
+          <%= f.label :update, "Updated between" %><br />
+          <%= f.text_field :min_update, :size => 7 %> and &nbsp;&nbsp;<%= f.text_field :max_update, :size => 7 %>
         </div>
         <br>
         <div class="actions"><%= f.submit "Search" %></div>

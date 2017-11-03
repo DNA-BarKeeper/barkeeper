@@ -12,7 +12,7 @@ class FamiliesController < ApplicationController
   end
 
   def filter
-    @families = Family.order(:name).where("name like ?", "%#{params[:term]}%")
+    @families = Family.order(:name).where("name ilike ?", "%#{params[:term]}%")
     render json: @families.map(&:name)
   end
 

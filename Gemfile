@@ -39,6 +39,7 @@ gem 'rubyzip'
 gem 'roo-xls'
 gem 'chosen-rails'
 gem 'bcrypt', '~> 3.1.7', platforms: :ruby
+gem 'select2-rails'
 
 gem 'sidekiq'
 gem 'sidekiq-limit_fetch'

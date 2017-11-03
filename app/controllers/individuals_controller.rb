@@ -47,7 +47,7 @@ class IndividualsController < ApplicationController
   end
 
   def filter
-    @individuals = Individual.where("individuals.specimen_id like ?", "%#{params[:term]}%")
+    @individuals = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%")
     render json: @individuals.map(&:specimen_id)
   end
 

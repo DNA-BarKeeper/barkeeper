@@ -84,7 +84,8 @@ section {
 }
 
 input[type=text] {
-  border: none;
+  border: 1px solid lightgrey;
+  //border-bottom-width: 1px;
   padding: 0;
   -webkit-appearance: none;
   box-shadow: none !important;
@@ -164,4 +165,30 @@ body.about_page {
   margin-bottom: 10px;
   border-radius: 3px;
   padding: 3px;
+}
+
+ul.ui-autocomplete {
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: absolute;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: solid 1px lightgrey;
+  cursor: default;
+  li {
+    background-color: white;
+    border-top: solid 1px lightgrey;
+    margin: 0;
+    padding: 0;
+    a {
+      color: #000;
+      display: block;
+      padding: 3px;
+    }
+    a.ui-state-hover, a.ui-state-active {
+      background-color: lightblue;
+    }
+  }
 }

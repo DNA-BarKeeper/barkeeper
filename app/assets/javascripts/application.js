@@ -11,4 +11,5 @@
 //= require d3.min
 //= require bootstrap
 //= require keyboard_shortcuts
+//= require select2-full
 //= require_tree .
