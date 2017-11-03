@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171018142430) do
+ActiveRecord::Schema.define(version: 20171102131258) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,18 +37,16 @@ ActiveRecord::Schema.define(version: 20171018142430) do
     t.integer  "order_id"
     t.string   "specimen"
     t.string   "family"
-    t.boolean  "verified"
+    t.string   "verified"
     t.integer  "marker_id"
     t.string   "name"
-    t.boolean  "assembled"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.datetime "min_age"
-    t.datetime "max_age"
-    t.datetime "min_update"
-    t.datetime "max_update"
-    t.boolean  "unassembled"
-    t.boolean  "unverified"
+    t.string   "assembled"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.date     "min_age"
+    t.date     "max_age"
+    t.date     "min_update"
+    t.date     "max_update"
   end
 
   create_table "contigs", force: :cascade do |t|

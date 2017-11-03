@@ -330,7 +330,7 @@ class ContigsController < ApplicationController
   end
 
   def filter
-    @contigs = Contig.order(:name).where("name like ?", "%#{params[:term]}%")
+    @contigs = Contig.order(:name).where("name ilike ?", "%#{params[:term]}%")
     render json: @contigs.map(&:name)
   end
 

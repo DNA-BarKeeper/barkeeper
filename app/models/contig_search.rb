@@ -8,11 +8,15 @@ class ContigSearch < ApplicationRecord
     contigs = Contig.order(:name)
     contigs = contigs.where("name ilike ?", "%#{name}%") if name.present?
 
-    contigs = contigs.where(assembled: true) if assembled
-    contigs = contigs.where(assembled: false) if unassembled
+    if assembled != 'both'
+      contigs = contigs.where(assembled: true) if (assembled == 'assembled')
+      contigs = contigs.where(assembled: false) if (assembled == 'unassembled')
+    end
 
-    contigs = contigs.where(verified: true) if verified
-    contigs = contigs.where(verified: false) if unverified
+    if verified != 'both'
+      contigs = contigs.where(verified: true) if (verified == 'verified')
+      contigs = contigs.where(verified: false) if (verified == 'unverified')
+    end
 
     contigs = contigs.where(marker_id: marker_id) if marker_id.present?
 
@@ -24,11 +28,11 @@ class ContigSearch < ApplicationRecord
 
     contigs = contigs.joins(isolate: :individual).where("individuals.specimen_id ilike ?", "%#{specimen}%") if specimen.present?
 
-    contigs = contigs.where("created_at >= ?", min_age) if min_age.present?
-    contigs = contigs.where("created_at <= ?", max_age) if max_age.present?
+    contigs = contigs.where("created_at >= ?", min_age.midnight) if min_age.present?
+    contigs = contigs.where("created_at <= ?", max_age.end_of_day) if max_age.present?
 
-    contigs = contigs.where("updated_at >= ?", min_update) if min_update.present?
-    contigs = contigs.where("updated_at <= ?", max_update) if max_update.present?
+    contigs = contigs.where("updated_at >= ?", min_update.midnight) if min_update.present?
+    contigs = contigs.where("updated_at <= ?", max_update.end_of_day) if max_update.present?
 
     contigs
   end
