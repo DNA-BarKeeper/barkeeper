@@ -147,7 +147,6 @@ GBOLapp::Application.routes.draw do
     end
   end
 
-
   resources :plant_plates
 
   resources :micronic_plates
