@@ -27,53 +27,30 @@ jQuery(function() {
         dateFormat: 'yy-mm-dd'
     });
 
-    $('#contig_search_name').select2({
-        theme: "bootstrap",
-        placeholder: "Select a contig name",
-        allowClear: true,
-        dropdownAutoWidth : true,
-        width: '172px',
-        minimumInputLength: 1
+    $('#contig_search_name').autocomplete({
+        source: $('#contig_search_name').data('autocomplete-source'),
+        minLength: 2
     });
 
-    $('#contig_search_marker_id').select2({
-        theme: "bootstrap",
-        placeholder: "Select a marker",
-        allowClear: true,
-        dropdownAutoWidth : true,
-        width: '172px'
+    $('#contig_search_marker').autocomplete({
+        source: $('#contig_search_marker').data('autocomplete-source')
     });
 
-    $('#contig_search_specimen').select2({
-        theme: "bootstrap",
-        placeholder: "Select a specimen",
-        allowClear: true,
-        dropdownAutoWidth : true,
-        width: '172px',
-        minimumInputLength: 1
+    $('#contig_search_specimen').autocomplete({
+        source: $('#contig_search_specimen').data('autocomplete-source'),
+        minLength: 2
     });
 
-    $('#contig_search_species').select2({
-        theme: "bootstrap",
-        placeholder: "Select a species",
-        allowClear: true,
-        dropdownAutoWidth : true,
-        width: '172px'
+    $('#contig_search_species').autocomplete({
+        source: $('#contig_search_species').data('autocomplete-source'),
+        minLength: 2
     });
 
-    $('#contig_search_family').select2({
-        theme: "bootstrap",
-        placeholder: "Select a family",
-        allowClear: true,
-        dropdownAutoWidth : true,
-        width: '172px'
+    $('#contig_search_family').autocomplete({
+        source: $('#contig_search_family').data('autocomplete-source')
     });
 
-    $('#contig_search_order_id').select2({
-        theme: "bootstrap",
-        placeholder: "Select an order",
-        allowClear: true,
-        dropdownAutoWidth : true,
-        width: '172px'
+    $('#contig_search_order').autocomplete({
+        source: $('#contig_search_order').data('autocomplete-source')
     });
 });

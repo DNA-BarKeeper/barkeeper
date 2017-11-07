@@ -8,7 +8,8 @@ class FamiliesController < ApplicationController
   # GET /families.json
 
   def index
-    @families = Family.includes(:order).all
+    @families = Family.includes(:order).order('name asc').all
+    respond_to :html, :json
   end
 
   def filter

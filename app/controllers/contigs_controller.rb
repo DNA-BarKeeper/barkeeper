@@ -14,7 +14,6 @@ class ContigsController < ApplicationController
     end
   end
 
-
   def as_fasq
 
     contig_names=params[:contig_names]
@@ -330,8 +329,15 @@ class ContigsController < ApplicationController
   end
 
   def filter
-    @contigs = Contig.order(:name).where("name ilike ?", "%#{params[:term]}%")
-    render json: @contigs.map(&:name)
+    @contigs = Contig.order(:name).where("name ilike ?", "%#{params[:term]}%").limit(100)
+    size = Contig.order(:name).where("name ilike ?", "%#{params[:term]}%").size
+
+    if size > 100
+      message = "and #{size} more..."
+      render json: @contigs.map(&:name).push(message)
+    else
+      render json: @contigs.map(&:name)
+    end
   end
 
   def verify

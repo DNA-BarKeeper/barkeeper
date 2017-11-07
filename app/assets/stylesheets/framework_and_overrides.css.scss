@@ -84,17 +84,23 @@ section {
 }
 
 input[type=text] {
-  border: 1px solid lightgrey;
-  //border-bottom-width: 1px;
-  padding: 0;
-  -webkit-appearance: none;
+  border: 1px solid lightgrey !important;
+  padding: 5px !important;
+  width: auto !important;
+
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
   box-shadow: none !important;
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 textarea {
   padding: 0px !important;
   margin: 0px !important;
-  border: none !important;
+  border: 1px solid lightgrey !important;
   overflow: auto !important;
   outline: none !important;
 
@@ -179,16 +185,19 @@ ul.ui-autocomplete {
   cursor: default;
   li {
     background-color: white;
-    border-top: solid 1px lightgrey;
     margin: 0;
-    padding: 0;
+    padding: 3px;
     a {
       color: #000;
       display: block;
       padding: 3px;
     }
     a.ui-state-hover, a.ui-state-active {
-      background-color: lightblue;
+      background-color: lightgrey;
     }
   }
+}
+
+.hasDatepicker {
+  display: inline-block;
 }

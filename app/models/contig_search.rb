@@ -6,7 +6,7 @@ class ContigSearch < ApplicationRecord
   private
   def find_contigs
     contigs = Contig.order(:name)
-    contigs = contigs.where("name ilike ?", "%#{name}%") if name.present?
+    contigs = contigs.where("contigs.name ilike ?", "%#{name}%") if name.present?
 
     if assembled != 'both'
       contigs = contigs.where(assembled: true) if (assembled == 'assembled')
@@ -28,11 +28,11 @@ class ContigSearch < ApplicationRecord
 
     contigs = contigs.joins(isolate: :individual).where("individuals.specimen_id ilike ?", "%#{specimen}%") if specimen.present?
 
-    contigs = contigs.where("created_at >= ?", min_age.midnight) if min_age.present?
-    contigs = contigs.where("created_at <= ?", max_age.end_of_day) if max_age.present?
+    contigs = contigs.where("contigs.created_at >= ?", min_age.midnight) if min_age.present?
+    contigs = contigs.where("contigs.created_at <= ?", max_age.end_of_day) if max_age.present?
 
-    contigs = contigs.where("updated_at >= ?", min_update.midnight) if min_update.present?
-    contigs = contigs.where("updated_at <= ?", max_update.end_of_day) if max_update.present?
+    contigs = contigs.where("contigs.updated_at >= ?", min_update.midnight) if min_update.present?
+    contigs = contigs.where("contigs.updated_at <= ?", max_update.end_of_day) if max_update.present?
 
     contigs
   end

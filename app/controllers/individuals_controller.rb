@@ -44,11 +44,19 @@ class IndividualsController < ApplicationController
         end
       end
     end
+
   end
 
   def filter
-    @individuals = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%")
-    render json: @individuals.map(&:specimen_id)
+    @individuals = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").limit(100)
+    size = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").size
+
+    if size > 100
+      message = "and #{size} more..."
+      render json: @individuals.map(&:specimen_id).push(message)
+    else
+      render json: @individuals.map(&:specimen_id)
+    end
   end
 
   # GET /individuals/1
