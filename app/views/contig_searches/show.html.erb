@@ -7,11 +7,11 @@
       <%= "not assembled, " if @contig_search.assembled == 'unassembled' %>
       <%= "verified, " if @contig_search.verified == 'verified' %>
       <%= "not verified, " if @contig_search.verified == 'unverified' %>
-      <%= "Marker: #{Marker.find_by_id(@contig_search.marker_id).name}, " if @contig_search.marker_id %>
+      <%= "Marker: #{@contig_search.marker}, " unless @contig_search.marker&.empty? %>
       <%= "Specimen: #{@contig_search.specimen}, " unless @contig_search.specimen&.empty? %>
       <%= "Species: #{@contig_search.species}, " unless @contig_search.species&.empty? %>
       <%= "Family: #{@contig_search.family}, " unless @contig_search.family&.empty? %>
-      <%= "Order: #{Order.find_by_id(@contig_search.order_id).name}, " if @contig_search.order_id %>
+      <%= "Order: #{@contig_search.order}, " unless @contig_search.order&.empty? %>
       <%= "Created since: #{@contig_search.min_age.strftime("%F")}, " if @contig_search.min_age %>
       <%= "Created before: #{@contig_search.max_age.strftime("%F")}, " if @contig_search.max_age %>
       <%= "Updated since: #{@contig_search.min_update.strftime("%F")}, " if @contig_search.min_update %>
