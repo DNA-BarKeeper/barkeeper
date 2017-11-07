@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171102131258) do
+ActiveRecord::Schema.define(version: 20171107114403) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,11 +34,11 @@ ActiveRecord::Schema.define(version: 20171102131258) do
 
   create_table "contig_searches", force: :cascade do |t|
     t.string   "species"
-    t.integer  "order_id"
+    t.string   "order"
     t.string   "specimen"
     t.string   "family"
     t.string   "verified"
-    t.integer  "marker_id"
+    t.string   "marker"
     t.string   "name"
     t.string   "assembled"
     t.datetime "created_at", null: false

@@ -13,10 +13,10 @@ class ContigSearchDatatable
 
   def as_json(options = {})
     {
-        sEcho: params[:sEcho].to_i,
-        iTotalRecords: Contig.count,
-        iTotalDisplayRecords: contigs_data.count,
-        aaData: data
+        :sEcho => params[:sEcho].to_i,
+        :iTotalRecords => Contig.count,
+        :iTotalDisplayRecords => contigs_data.count,
+        :aaData => data
     }
   end
 

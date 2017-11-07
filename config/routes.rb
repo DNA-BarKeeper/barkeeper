@@ -59,6 +59,13 @@ GBOLapp::Application.routes.draw do
 
   end
 
+  resources :individuals do
+    collection do
+      get :filter
+      get :problematic_specimens
+    end
+  end
+
   resources :primer_reads do
     collection do
       post :import
@@ -127,15 +134,6 @@ GBOLapp::Application.routes.draw do
   end
 
   resources :orders
-
-  resources :individuals do
-    collection do
-      get :filter
-      # get 'create_xls'
-      # get 'xls'
-      get :problematic_specimens
-    end
-  end
 
   resources :tissues
 
