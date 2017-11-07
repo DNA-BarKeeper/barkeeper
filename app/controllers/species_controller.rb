@@ -28,7 +28,7 @@ class SpeciesController < ApplicationController
 
   def filter
     @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:composed_name).limit(100)
-    size = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:composed_name).limit(100).size
+    size = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:composed_name).size
 
     if size > 100
       message = "and #{size} more..."
