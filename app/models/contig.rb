@@ -22,7 +22,7 @@ class Contig < ApplicationRecord
   scope :need_verification, -> { assembled.where(:verified => false) }
   scope :verified, -> { where(:verified => true)}
 
-  scope :in2016, ->  { where('contigs.created_at > ? AND contigs.created_at < ?',  1.years.ago.beginning_of_year, Time.zone.now.beginning_of_year)}
+  scope :in2016, -> { where('contigs.created_at > ? AND contigs.created_at < ?',  1.years.ago.beginning_of_year, Time.zone.now.beginning_of_year)}
   scope :in2016_until_now, ->  { where('contigs.created_at > ? AND contigs.created_at < ?',  1.years.ago.beginning_of_year, Time.zone.now)}
 
   scope :verified_in2016, ->  { where('contigs.verified_at > ? AND contigs.verified_at < ?',  1.years.ago.beginning_of_year, Time.zone.now.beginning_of_year)}

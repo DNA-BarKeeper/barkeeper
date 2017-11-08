@@ -3,18 +3,17 @@ jQuery(function() {
         bProcessing: true,
         bServerSide: true,
         sAjaxSource: $('#contig_searches').data('source'),
-        "order": [ 0, 'asc' ]
+        "order": [ 1, 'desc' ]
     });
 
     $('#contig_search_results').dataTable({
         bProcessing: true,
         bServerSide: true,
         sAjaxSource: $('#contig_search_results').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 1 },
-            { "orderable": false, "targets": 2 },
-            { "orderable": false, "targets": 5 }
-        ],
+        "columnDefs": [{
+            "targets": [1, 2, 5],
+            "orderable": false
+        }],
         "order": [ 0, 'asc' ]
     });
 

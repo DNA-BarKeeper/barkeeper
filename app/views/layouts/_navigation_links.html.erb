@@ -4,28 +4,6 @@
     <% theClass="" %>
 <% end %>
 
-
-<!-- tmp view of subprojects-->
-
-<% if user_signed_in? %>
-
-    <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Subprojects<b class="caret"></b></a>
-      <ul class="dropdown-menu">
-        <li class="dropdown-header">Caryophyllales matK</li>
-        <li><%= link_to 'Contigs that need verification', caryophyllales_need_verification_contigs_path %></li>
-        <li><%= link_to 'Contigs not yet assembled', caryophyllales_not_assembled_contigs_path %></li>
-        <li><%= link_to 'Verified Contigs', caryophyllales_verified_contigs_path %></li>
-        <li class="divider"></li>
-        <li class="dropdown-header">Festuca</li>
-        <li><%= link_to 'Contigs that need verification', festuca_need_verification_contigs_path %></li>
-        <li><%= link_to 'Contigs not yet assembled', festuca_not_assembled_contigs_path %></li>
-        <li><%= link_to 'Verified Contigs', festuca_verified_contigs_path %></li>
-      </ul>
-    </li>
-
-<% end %>
-
 <li class="dropdown">
 
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Project <b class="caret"></b></a>
@@ -34,9 +12,10 @@
     <li><%= link_to 'Overview', overview_path %></li>
     <li class="divider"></li>
     <% if user_signed_in? %>
-        <li ><%= link_to 'Contigs that need verification', show_need_verify_contigs_path %></li>
-        <!--<li ><%= link_to 'Externally verified contigs', externally_verified_contigs_path %></li>-->
+        <li ><%= link_to 'Contig collections', contig_searches_path %></li>
+        <li ><%= link_to 'Advanced contig search', new_contig_search_path %></li>
         <li ><%= link_to 'Duplicate contigs', duplicates_contigs_path %></li>
+        <!--<li ><%= link_to 'Externally verified contigs', externally_verified_contigs_path %></li>-->
         <li ><%= link_to 'Reads without contig', reads_without_contigs_path %></li>
         <li ><%= link_to 'Duplicate reads', duplicates_primer_reads_path %></li>
         <li ><%= link_to 'Specimens without species', specimens_without_species_path %></li>
