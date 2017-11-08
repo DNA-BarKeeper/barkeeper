@@ -28,6 +28,6 @@ class ContigSearchesController < ApplicationController
   private
   # Never trust parameters from the scary internet, only allow the white list through.
   def contig_search_params
-    params.require(:contig_search).permit(:assembled, :family, :marker, :max_age, :max_update, :min_age, :min_update, :name, :order, :species, :specimen, :verified)
+    params.require(:contig_search).permit(:title, :assembled, :family, :marker, :max_age, :max_update, :min_age, :min_update, :name, :order, :species, :specimen, :verified)
   end
 end

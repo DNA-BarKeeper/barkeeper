@@ -1,6 +1,6 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <p><h3 class="panel-title">Contig Search Results</h3></p>
+    <p><h3 class="panel-title">Contig Search Results <%= "- #{@contig_search.title} " unless @contig_search.title&.empty? %></h3></p>
     <p>Search parameters:<br>
       <%= "Name: #{@contig_search.name}, " unless @contig_search.name&.empty? %>
       <%= "assembled, " if @contig_search.assembled == 'assembled' %>
