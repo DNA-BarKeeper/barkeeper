@@ -1,4 +1,12 @@
 class ContigSearchesController < ApplicationController
+
+  def index
+    respond_to do |format|
+      format.html
+      format.json { render json: ContigSearchDatatable.new(view_context) }
+    end
+  end
+
   def new
     @contig_search = ContigSearch.new
   end
@@ -13,7 +21,7 @@ class ContigSearchesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: ContigSearchDatatable.new(view_context, params[:id]) }
+      format.json { render json: ContigSearchResultDatatable.new(view_context, params[:id]) }
     end
   end
 
