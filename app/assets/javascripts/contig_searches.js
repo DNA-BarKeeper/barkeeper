@@ -1,8 +1,15 @@
 jQuery(function() {
-    $('#contig_search').dataTable({
+    $('#contig_searches').dataTable({
         bProcessing: true,
         bServerSide: true,
-        sAjaxSource: $('#contig_search').data('source'),
+        sAjaxSource: $('#contig_searches').data('source'),
+        "order": [ 0, 'asc' ]
+    });
+
+    $('#contig_search_results').dataTable({
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#contig_search_results').data('source'),
         "columnDefs": [
             { "orderable": false, "targets": 1 },
             { "orderable": false, "targets": 2 },

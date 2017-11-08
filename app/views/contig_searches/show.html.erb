@@ -21,7 +21,7 @@
   <div class="panel-body">
 
     <div class="wideTable">
-      <table id="contig_search" data-source="<%= contig_search_url(@contig_search, format: 'json') %>" class="table table-striped table-hover table-bordered" style="width: 100%;" >
+      <table id="contig_search_results" data-source="<%= contig_search_url(@contig_search, format: 'json') %>" class="table table-striped table-hover table-bordered" style="width: 100%;" >
         <thead>
         <tr>
           <th>Name</th>
@@ -46,5 +46,9 @@
 </p>
 
 <p>
-  <%= button_to 'Back to contigs index', contigs_path, method: 'get' %>
+  <%= button_to 'Go to contig searches index', contig_searches_path, method: 'get' %>
+</p>
+
+<p>
+  <%= button_to 'Go to contigs index', contigs_path, method: 'get' %>
 </p>

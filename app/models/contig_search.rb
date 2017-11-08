@@ -20,7 +20,7 @@ class ContigSearch < ApplicationRecord
 
     contigs = contigs.joins(:marker).where("markers.name ilike ?", "%#{marker}%") if marker.present?
 
-    contigs = contigs.joins(isolate: { individual: {species: {family: :order}}}).where("order.name ilike ?", "%#{order}%") if order.present?
+    contigs = contigs.joins(isolate: { individual: {species: {family: :order}}}).where("orders.name ilike ?", "%#{order}%") if order.present?
 
     contigs = contigs.joins(isolate: { individual: {species: :family}}).where("families.name ilike ?", "%#{family}%") if family.present?
 
