@@ -10,19 +10,15 @@ set :puma_workers,    2
 # Always deploy currently checked out branch
 set :branch, $1 if `git branch` =~ /\* (\S+)\s/m
 
-# Rbenv Setup
-set :rbenv_custom_path, '/home/sarah/.rbenv/bin/rbenv'
-set :rbenv_type, :user
-set :rbenv_ruby, '2.3.3'
-rbenv_prefix = [
-    "RBENV_ROOT=#{fetch(:rbenv_path)}",
-    "RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
-]
-set :rbenv_prefix, rbenv_prefix.join(' ')
-set :rbenv_map_bins, %w(rake gem bundle ruby rails)
-set :bundle_binstubs, -> { shared_path.join('bin') }
+# Rbenv setup
+set :whenever_environment, fetch(:stage)
+set :whenever_identifier, "#{fetch(:application)}_#{fetch(:stage)}"
+set :whenever_variables, -> do
+  "'environment=#{fetch :whenever_environment}" \
+  "&rbenv_root=#{fetch :rbenv_path}'"
+end
 
-# Don't change these unless you know what you're doing
+# Puma setup (Don't change these unless you know what you're doing)
 set :pty,             false
 set :use_sudo,        false
 set :stage,           :production
@@ -38,16 +34,9 @@ set :puma_preload_app, true
 set :puma_worker_timeout, nil
 set :puma_init_active_record, true  # Change to false when not using ActiveRecord
 
+# Sidekiq setup
 set :sidekiq_log => File.join(release_path, 'log', 'sidekiq.log')
 set :sidekiq_config => File.join(shared_path, 'config', 'sidekiq.yml')
-
-# config whenever
-vars = lambda do
-  "'environment=#{fetch :whenever_environment}" \
-  "&rbenv_root=#{fetch :rbenv_custom_path}" \
-  "&rbenv_version=#{fetch :rbenv_ruby}'"
-end
-set :whenever_variables, vars
 
 ## Defaults:
 # set :scm,           :git
