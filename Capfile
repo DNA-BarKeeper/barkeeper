@@ -14,5 +14,7 @@ install_plugin Capistrano::Puma::Monit
 require 'capistrano/sidekiq'
 require 'capistrano/sidekiq/monit'
 
+require 'whenever/capistrano'
+
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
 Dir.glob('lib/capistrano/tasks/*.rake').each { |r| import r }

@@ -31,6 +31,8 @@ set :puma_init_active_record, true  # Change to false when not using ActiveRecor
 
 set :sidekiq_log => File.join(release_path, 'log', 'sidekiq.log')
 set :sidekiq_config => File.join(shared_path, 'config', 'sidekiq.yml')
+
+set :whenever_command, 'bundle exec whenever'
 #
 # set :default_env, {
 #     'VERSION' => '',

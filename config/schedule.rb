@@ -1,3 +1,9 @@
-every 1.day, :at => '4:30 am' do
-  runner "MyModel.task_to_run_at_four_thirty_in_the_morning"
+set :output, "#{path}/log/cron.log"
+
+every 1.day, :at => '1:30 am' do
+  rake "data:create_xls" # Create Specimen.xls file from current database
+end
+
+every 1.day, :at => '2:30 am' do
+  rake "data:remove_old_searches" # Delete all untitled contig searches older than a month
 end
