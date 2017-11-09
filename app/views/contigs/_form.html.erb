@@ -94,23 +94,23 @@
 
                     <!-- Primer read views -->
                     <% partial_con.primer_reads.each do |read| %>
-                      <%= content_tag "div", id: "primer_read_#{read.id}", style: "display: none" do %>
+                      <%= content_tag "div", id: "primer_read_#{read.id}_view", style: "display: none" do %>
                         <hr>
 
                         <!-- Display primer read name and toggle icon -->
                         <div>
-                          <%= link_to read.name[0..-5], edit_primer_read_path(read) %>
-                          <% data = "#primer_read_#{read.id}" %>
+                          <% data = "#primer_read_#{read.id}_view" %>
                           <%= content_tag "a", class: "hide_primer_read", href: '#', data: {div_id: data} do %>
-                            <span class="glyphicon glyphicon-remove pull-right" title="Hide this primer read", style="color: red;"></span>
+                            <span class="glyphicon glyphicon-minus-sign grey" title="Hide this primer read view"></span>
                           <% end %>
+                          <%= link_to read.name[0..-5], edit_primer_read_path(read) %>
                         </div>
 
                         <div class="vertical-spacer"></div>
 
                         <!--primer read chromatogram view-->
                         <div class="alignment" id="chromatogram_container" data-pos="1">
-                          <% div_id="p_read_#{read.id}" %>
+                          <% div_id="primer_read_#{read.id}" %>
                           <%= content_tag "div", class: "chromatogram", id: div_id, data: {url: read } do %>
                           <% end %>
                         </div>
@@ -175,7 +175,7 @@
                                         <span class="glyphicon glyphicon-remove grey" title="Do not use in assembly"></span>
                                     <% end %>
 
-                                    <% data = "#primer_read_#{read.id}" %>
+                                    <% data = "#primer_read_#{read.id}_view" %>
                                     <%= content_tag "a", class: "show_primer_read", href: '#', data: {div_id: data} do %>
                                         <% read.name[0..-5] %>
                                     <% end %>
