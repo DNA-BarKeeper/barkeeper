@@ -84,10 +84,6 @@ section {
 }
 
 input[type=text] {
-  border: 1px solid lightgrey !important;
-  padding: 5px !important;
-  width: auto !important;
-
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
   box-shadow: none !important;
@@ -208,4 +204,10 @@ ul.ui-autocomplete {
 
 .table.table-striped.table-hover.table-bordered {
   width: 100% !important;
+}
+
+input.form-control {
+  border: 1px solid lightgrey !important;
+  padding: 5px !important;
+  width: auto !important;
 }
