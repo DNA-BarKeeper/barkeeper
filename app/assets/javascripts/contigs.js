@@ -116,6 +116,15 @@ jQuery(function() {
 
     });
 
+    $(".hide_primer_read").click(function() {
+        var id = $(this).data('divId');
+        $(id).hide();
+    });
+
+    $(".show_primer_read").click(function() {
+        var id = $(this).data('divId');
+        $(id).show();
+    });
 });
 
 function draw_as_single_page(id, page){
