@@ -94,7 +94,7 @@ class PrimerReadsController < ApplicationController
 
   end
 
-  # tries to extract associated primer and isolate from primer read name (in turn based on uploaded scf file name:
+  # tries to extract associated primer and isolate from primer read name (in turn based on uploaded scf file name):
   def assign
 
     msg_hash = @primer_read.auto_assign
@@ -215,29 +215,33 @@ class PrimerReadsController < ApplicationController
     sequence[pos] = base
     @primer_read.update(:sequence => sequence)
 
-    # adjust contig view
-    if @primer_read.contig
-      ContigAssembly.perform_async(@primer_read.contig.id)
-    end
+    # do not auto assemble after base change!
+    # if @primer_read.contig
+    #   ContigAssembly.perform_async(@primer_read.contig.id)
+    # end
 
     render :nothing => true
   end
 
   def change_left_clip
     @primer_read.update(:trimmedReadStart => params[:position].to_i)
-    # adjust contig view
-    if @primer_read.contig
-      ContigAssembly.perform_async(@primer_read.contig.id)
-    end
+
+    # do not auto assemble after clipping changed!
+    # if @primer_read.contig
+    #   ContigAssembly.perform_async(@primer_read.contig.id)
+    # end
+
     render :nothing => true
   end
 
   def change_right_clip
     @primer_read.update(:trimmedReadEnd => params[:position].to_i)
-    # adjust contig view
-    if @primer_read.contig
-      ContigAssembly.perform_async(@primer_read.contig.id)
-    end
+
+    # do not auto assemble after clipping changed!
+    # if @primer_read.contig
+    #   ContigAssembly.perform_async(@primer_read.contig.id)
+    # end
+
     render :nothing => true
   end
 
