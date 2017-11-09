@@ -15,7 +15,7 @@ class ContigSearchResultDatatable
     {
         :sEcho => params[:sEcho].to_i,
         :iTotalRecords => Contig.count,
-        :iTotalDisplayRecords => contigs_data.count,
+        :iTotalDisplayRecords => contigs_data.total_entries,
         :aaData => data
     }
   end
