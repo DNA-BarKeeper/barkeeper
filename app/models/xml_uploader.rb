@@ -284,7 +284,7 @@ class XmlUploader < ApplicationRecord
                 individual.try(:isolates).each do |iso|
                   Marker.gbol_marker.each do |current_marker|
 
-                    current_contig = iso.try(:contigs_data).where(:marker_id => current_marker.id).first
+                    current_contig = iso.try(:contigs).where(:marker_id => current_marker.id).first
                     if current_contig&.marker_sequence&.sequence
                       longest_sequences[current_marker.id] ||= current_contig.marker_sequence
                       if current_contig.marker_sequence.sequence.length > longest_sequences[current_marker.id].sequence.length
@@ -301,11 +301,11 @@ class XmlUploader < ApplicationRecord
                   # URL zum contig in GBoL5 WebApp
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      if current_sequence && current_sequence.contigs_data.any?
-                        xml.text("gbol5.de/contigs/#{current_sequence.contigs_data.first.id}/edit") #edit_contig_path(current_sequence.contigs.first)
+                      if current_sequence && current_sequence.contigs.any?
+                        xml.text("gbol5.de/contigs/#{current_sequence.contigs.first.id}/edit") #edit_contig_path(current_sequence.contigs.first)
                       else
                         if current_sequence
-                          xml.text(current_sequence.contigs_data.length)
+                          xml.text(current_sequence.contigs.length)
                         end
                       end
                     }

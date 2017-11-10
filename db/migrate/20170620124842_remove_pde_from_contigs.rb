@@ -4,6 +4,6 @@ class RemovePdeFromContigs < ActiveRecord::Migration[5.0]
   end
 
   def down
-    add_column :contigs_data, :pde, :text
+    add_column :contigs, :pde, :text
   end
 end

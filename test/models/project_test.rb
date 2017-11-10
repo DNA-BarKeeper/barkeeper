@@ -50,8 +50,8 @@ class ProjectTest < ActiveSupport::TestCase
   end
 
   test 'assign a contig to project' do
-    @project.contigs_data << contigs_data(:verified_contig)
-    assert_equal(1, @project.contigs_data.count, 'Contig could not be assigned to project')
+    @project.contigs << contigs(:verified_contig)
+    assert_equal(1, @project.contigs.count, 'Contig could not be assigned to project')
   end
 
   test 'assign a primer read to project' do
