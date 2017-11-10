@@ -38,9 +38,9 @@ namespace :data do
           end
         end
 
-        if curr_dup.contigs_data.count >0
+        if curr_dup.contigs.count >0
           curr_dup.contigs.each do |c|
-            first_dup.contigs_data << c
+            first_dup.contigs << c
           end
         end
 
