@@ -1,60 +1,65 @@
 jQuery(function() {
 
-    function scroll_to(pos) {
-        var primer_read_divs = document.getElementsByClassName('chromatogram');
+    function scroll_to(pos, id) {
+        var primer_read_div = document.getElementById('primer_read_' + id);
 
-        for (var e = 0; e < primer_read_divs.length; e++) {
-            var div = primer_read_divs[e];
-            var div_id = '#' + div.id;
-            var chromatogram1 = $(div_id).data('url');
-            var scroll_to = chromatogram1.peak_indices[pos - 1];
+        var div_id = '#' + primer_read_div.id;
+        var chromatogram = $(div_id).data('url');
+        var scroll_to = chromatogram.peak_indices[pos - 1];
 
+        var alignment_id = "#chromatogram_container_" + id;
 
-            $('.alignment').animate({
-                scrollLeft: scroll_to - 7
-            }, 0);
-        }
+        $(alignment_id).animate({
+            scrollLeft: scroll_to - 7
+        }, 0);
+
     }
 
-    $('#go-to-button').click( function () {
-        var pos=$('#go-to-pos').val();
+    $('.go-to-button_primer_read').click( function () {
+        var read_id = $(this).data('readId');
+        var input_id = "#go-to-pos_" + $(this).data('readId');
+        var pos = $(input_id).val();
 
-        scroll_to(pos);
+        scroll_to(pos, read_id);
     });
 
-    $('#scroll-left-button').click( function () {
+    $('.scroll-left-button').click( function () {
+        var id = "#chromatogram_container_" + $(this).data('readId');
 
-        $('.alignment').animate({
+        $(id).animate({
             scrollLeft: 0
         }, 0);
     });
 
-    $('#scroll-right-button').click( function () {
+    $('.scroll-right-button').click( function () {
+        var id = "#chromatogram_container_" + $(this).data('readId');
 
         //get div chromatogram & its current width
         var el  = document.getElementById("chromatogram_svg"); // or other selector like querySelector()
         var rect = el.getBoundingClientRect(); // get the bounding rectangle
 
-        $('.alignment').animate({
+        $(id).animate({
             scrollLeft: rect.width
         }, 0);
     });
     
-    $('#pause-button').click( function () {
-        $('.alignment').stop();
+    $('.pause-button').click( function () {
+        var id = "#chromatogram_container_" + $(this).data('readId');
+        $(id).stop();
     });
 
-    $('#scroll-right-slowly-button').click( function () {
+    $('.scroll-right-slowly-button').click( function () {
+        var id = "#chromatogram_container_" + $(this).data('readId');
 
         //get div chromatogram & its current width
         var el  = document.getElementById("chromatogram_svg"); // or other selector like querySelector()
         var rect = el.getBoundingClientRect(); // get the bounding rectangle
 
-        var curr_scroll_pos=$('.alignment').scrollLeft();
+        var curr_scroll_pos = $(id).scrollLeft();
         
         var duration = (rect.width - curr_scroll_pos )*3;
 
-        $('.alignment').animate({
+        $(id).animate({
             scrollLeft: rect.width
         }, duration, "swing" );
     });
@@ -114,13 +119,15 @@ jQuery(function() {
 
     draw_chromatogram();
 
-    var pos=$('#chromatogram_container').data("pos");
-
-    if (pos > 0) {
-
-        scroll_to(pos);
-
+    var chromatogram_divs = document.getElementsByClassName('alignment');
+    for (var i = 0; i < chromatogram_divs.length; i++) {
+        var pos = $(chromatogram_divs[i]).data("pos");
+        var id = $(chromatogram_divs[i]).data("readId");
+        if (pos > 0) {
+            scroll_to(pos, id);
+        }
     }
+
 
 });
 
