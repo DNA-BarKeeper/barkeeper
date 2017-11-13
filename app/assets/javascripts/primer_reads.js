@@ -117,7 +117,17 @@ jQuery(function() {
         source: $('#primer_read_contig_name').data('autocomplete-source')
     });
 
-    draw_chromatogram();
+    // über alle divs einer Klasse iterieren und die dort jeweiligen read data zum Zeichnen nutzen
+    var primer_read_divs = document.getElementsByClassName('chromatogram');
+    for (var e = 0; e < primer_read_divs.length; e++) {
+        var div = primer_read_divs[e];
+
+        var div_id = '#' + div.id;
+
+        var chromatogram = $(div_id).data('url');
+
+        draw_chromatogram(div_id, chromatogram);
+    }
 
     var chromatogram_divs = document.getElementsByClassName('alignment');
     for (var i = 0; i < chromatogram_divs.length; i++) {
@@ -132,315 +142,286 @@ jQuery(function() {
 });
 
 
-function draw_chromatogram(){
+function draw_chromatogram(div_id, chromatogram){
+    var ymax = 250;
 
-    // über alle divs einer classe iterieren und die dort jeweiligen read data zum Zeichnen nutzen -> should be only 1 here.
-    var primer_read_divs = document.getElementsByClassName('chromatogram');
+    var scale = 4;
 
-    for (var e = 0; e < primer_read_divs.length; e++) {
+    var lineFunction = d3.svg.line()
+        .x(function (d, i) {
+            return i;
+        })
+        .y(function (d) {
+            return ymax - d / scale;
+        })
+        .interpolate("linear");
 
-        var div = primer_read_divs[e];
-
-        var div_id='#'+div.id;
-
-        var chromatogram1 = $(div_id).data('url');
-
-        var ymax = 250;
-
-        var scale = 4;
-
-        var lineFunction = d3.svg.line()
-            .x(function (d, i) {
-                return i;
-            })
-            .y(function (d) {
-                return ymax - d / scale;
-            })
-            .interpolate("linear");
-
-        var svg = d3.select(div_id)
-            .append('svg')
-            .attr('width', chromatogram1.atrace.length)
-            .attr('height', 250)
-            .attr('id', 'chromatogram_svg');
+    var svg = d3.select(div_id)
+        .append('svg')
+        .attr('width', chromatogram.atrace.length)
+        .attr('height', 250)
+        .attr('id', 'chromatogram_svg');
 
 
-        //adjust clipped areas:
+    //adjust clipped areas:
 
-        var drag_left = d3.behavior.drag()
-            .on('dragstart', function() { left_clip_area.style('fill', '#eeebb5'); })
-            .on('drag', function() {
-                left_clip_area.attr('width', d3.event.x);
-            })
-            .on('dragend', function() {
-                left_clip_area.style('fill', "#d3d3d3");
+    var drag_left = d3.behavior.drag()
+        .on('dragstart', function() { left_clip_area.style('fill', '#eeebb5'); })
+        .on('drag', function() {
+            left_clip_area.attr('width', d3.event.x);
+        })
+        .on('dragend', function() {
+            left_clip_area.style('fill', "#d3d3d3");
 
-                var drawn_position=left_clip_area.attr('width');
+            var drawn_position=left_clip_area.attr('width');
 
-                // find  peak closest to new x -> in chromatogram1.peak_indices
-                for(var g=0; g < chromatogram1.peak_indices.length; g++) {
-                    // console.log(drawn_position);
-                    // console.log(g);
-                    // console.log(chromatogram1.peak_indices[g]);
-                    // console.log("\n");
-                    // console.log(chromatogram1.peak_indices[g]-drawn_position);
-                    if (chromatogram1.peak_indices[g]-drawn_position > 0) {
-                        break;
-                    }
+            // find  peak closest to new x -> in chromatogram1.peak_indices
+            for(var g=0; g < chromatogram.peak_indices.length; g++) {
+                if (chromatogram.peak_indices[g]-drawn_position > 0) {
+                    break;
                 }
-
-                // alert(g);
-
-                change_left_clip(g+1, '/primer_reads/' + chromatogram1.id + '/change_left_clip');
-            });
-
-        var drag_right = d3.behavior.drag()
-            .on('dragstart', function() { right_clip_area.style('fill', '#eeebb5'); })
-            .on('drag', function() {
-                right_clip_area.attr('x', d3.event.x).attr('width', chromatogram1.atrace.length - d3.event.x);
-            })
-            .on('dragend', function() {
-                right_clip_area.style('fill', "#d3d3d3");
-
-                var drawn_position=right_clip_area.attr('x');
-
-                // find  peak closest to new x -> in chromatogram1.peak_indices
-                for(var g=chromatogram1.peak_indices.length; g > 0 ; g--) {
-                    // console.log(drawn_position);
-                    console.log(g);
-                    console.log(chromatogram1.peak_indices[g]);
-                    console.log("\n");
-                    console.log(chromatogram1.peak_indices[g]-drawn_position);
-                    if (chromatogram1.peak_indices[g]-drawn_position < 0) {
-                        break;
-                    }
-                }
-
-                // alert(g);
-
-                change_right_clip(g+1, '/primer_reads/' + chromatogram1.id + '/change_right_clip');
-
-            });
-
-        //draw clipped areas
-
-        if (chromatogram1.trimmedReadStart) {
-
-            var left_clip_area=svg.append('rect')
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", chromatogram1.peak_indices[chromatogram1.trimmedReadStart - 1] - 5)
-                .attr("height", ymax)
-                .attr("fill", "#d3d3d3")
-                .call(drag_left).on({
-                    "mouseover": function(d) {
-                        d3.select(this).style("cursor", "col-resize")
-                    },
-                    "mouseout": function(d) {
-                        d3.select(this).style("cursor", "default");
-                    }
-                });
-
-            var right_clip_area=svg.append('rect')
-                .attr("x", chromatogram1.peak_indices[chromatogram1.trimmedReadEnd - 1] + 5)
-                .attr("y", 0)
-                .attr("width", chromatogram1.atrace.length - chromatogram1.peak_indices[chromatogram1.trimmedReadEnd - 1] + 5)
-                .attr("height", ymax)
-                .attr("fill", "#d3d3d3")
-                .call(drag_right).on({
-                    "mouseover": function(d) {
-                        d3.select(this).style("cursor", "col-resize")
-                    },
-                    "mouseout": function(d) {
-                        d3.select(this).style("cursor", "default")
-                    }
-                });
-        }
-
-        var highlighted_base=$('#chromatogram_container').data("pos");
-
-        var highlight_pos = chromatogram1.peak_indices[highlighted_base - 1];
-
-       var highlight = svg.append('rect')
-           .attr("x", highlight_pos-7)
-           .attr("y", 15)
-           .attr("width", 12)
-           .attr("height", 20)
-           .attr("fill", "#fcff00");
-
-
-        //draw traces
-
-        svg.append("path")
-            .attr("d", lineFunction(chromatogram1.atrace))
-            .attr("stroke", "green")
-            .attr("stroke-width", 1)
-            .attr("fill", "none");
-        svg.append("path")
-            .attr("d", lineFunction(chromatogram1.ctrace))
-            .attr("stroke", "blue")
-            .attr("stroke-width", 1)
-            .attr("fill", "none");
-        svg.append("path")
-            .attr("d", lineFunction(chromatogram1.gtrace))
-            .attr("stroke", "black")
-            .attr("stroke-width", 1)
-            .attr("fill", "none");
-        svg.append("path")
-            .attr("d", lineFunction(chromatogram1.ttrace))
-            .attr("stroke", "red")
-            .attr("stroke-width", 1)
-            .attr("fill", "none");
-
-
-        //draw base calls
-
-        for (var i = 0; i < chromatogram1.peak_indices.length; i++) {
-            var pos = chromatogram1.peak_indices[i];
-            var ch = chromatogram1.sequence[i];
-
-            var color = 'gray';
-            var ta = 'middle';
-
-            // position indicator
-            var disp = i + 1;
-
-            if (disp % 10 == 0) {
-
-                svg.append("text")
-                    .attr("x", pos)
-                    .attr("y", 10)
-                    .text(disp)
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", "7px")
-                    .attr("fill", color)
-                    .attr("text-anchor", ta);
-                svg.append("text")
-                    .attr("x", pos)
-                    .attr("y", 17)
-                    .text('.')
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", "7px")
-                    .attr("fill", color)
-                    .attr("text-anchor", ta);
             }
 
-            //base calls
-            if (ch == 'A') {
-                color = 'green';
-            } else if (ch == 'C') {
-                color = 'blue';
-            } else if (ch == 'G') {
-                color = 'black';
-            } else if (ch == 'T') {
-                color = 'red';
-            } else {
-                color = 'gray';
+            change_left_clip(g+1, '/primer_reads/' + chromatogram.id + '/change_left_clip', chromatogram.id);
+        });
+
+    var drag_right = d3.behavior.drag()
+        .on('dragstart', function() { right_clip_area.style('fill', '#eeebb5'); })
+        .on('drag', function() {
+            right_clip_area.attr('x', d3.event.x).attr('width', chromatogram.atrace.length - d3.event.x);
+        })
+        .on('dragend', function() {
+            right_clip_area.style('fill', "#d3d3d3");
+
+            var drawn_position=right_clip_area.attr('x');
+
+            // find  peak closest to new x -> in chromatogram1.peak_indices
+            for(var g=chromatogram.peak_indices.length; g > 0 ; g--) {
+                if (chromatogram.peak_indices[g]-drawn_position < 0) {
+                    break;
+                }
             }
+
+            change_right_clip(g+1, '/primer_reads/' + chromatogram.id + '/change_right_clip', chromatogram.id);
+
+        });
+
+    //draw clipped areas
+
+    if (chromatogram.trimmedReadStart) {
+
+        var left_clip_area = svg.append('rect')
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", chromatogram.peak_indices[chromatogram.trimmedReadStart - 1] - 5)
+            .attr("height", ymax)
+            .attr("fill", "#d3d3d3")
+            .call(drag_left).on({
+                "mouseover": function(d) {
+                    d3.select(this).style("cursor", "col-resize")
+                },
+                "mouseout": function(d) {
+                    d3.select(this).style("cursor", "default");
+                }
+            });
+
+        var right_clip_area = svg.append('rect')
+            .attr("x", chromatogram.peak_indices[chromatogram.trimmedReadEnd - 1] + 5)
+            .attr("y", 0)
+            .attr("width", chromatogram.atrace.length - chromatogram.peak_indices[chromatogram.trimmedReadEnd - 1] + 5)
+            .attr("height", ymax)
+            .attr("fill", "#d3d3d3")
+            .call(drag_right).on({
+                "mouseover": function(d) {
+                    d3.select(this).style("cursor", "col-resize")
+                },
+                "mouseout": function(d) {
+                    d3.select(this).style("cursor", "default")
+                }
+            });
+    }
+
+    var highlighted_base=$('#chromatogram_container').data("pos");
+
+    var highlight_pos = chromatogram.peak_indices[highlighted_base - 1];
+
+   var highlight = svg.append('rect')
+       .attr("x", highlight_pos-7)
+       .attr("y", 15)
+       .attr("width", 12)
+       .attr("height", 20)
+       .attr("fill", "#fcff00");
+
+
+    //draw traces
+
+    svg.append("path")
+        .attr("d", lineFunction(chromatogram.atrace))
+        .attr("stroke", "green")
+        .attr("stroke-width", 1)
+        .attr("fill", "none");
+    svg.append("path")
+        .attr("d", lineFunction(chromatogram.ctrace))
+        .attr("stroke", "blue")
+        .attr("stroke-width", 1)
+        .attr("fill", "none");
+    svg.append("path")
+        .attr("d", lineFunction(chromatogram.gtrace))
+        .attr("stroke", "black")
+        .attr("stroke-width", 1)
+        .attr("fill", "none");
+    svg.append("path")
+        .attr("d", lineFunction(chromatogram.ttrace))
+        .attr("stroke", "red")
+        .attr("stroke-width", 1)
+        .attr("fill", "none");
+
+
+    //draw base calls
+
+    for (var i = 0; i < chromatogram.peak_indices.length; i++) {
+        var pos = chromatogram.peak_indices[i];
+        var ch = chromatogram.sequence[i];
+
+        var color = 'gray';
+        var ta = 'middle';
+
+        // position indicator
+        var disp = i + 1;
+
+        if (disp % 10 == 0) {
 
             svg.append("text")
                 .attr("x", pos)
-                .attr("y", 30)
-                .text(ch)
+                .attr("y", 10)
+                .text(disp)
                 .attr("font-family", "sans-serif")
-                .attr("font-size", "10px")
+                .attr("font-size", "7px")
                 .attr("fill", color)
-                .attr("text-anchor", ta)
-                .attr("id", i)
-
-                .on('mouseover', function () {
-                    d3.select(this)
-                        .style('font-size', '14px')
-                        .style('font-weight', 'bold')
-                })
-                .on('mouseout', function () {
-                    d3.select(this)
-                        .style('font-size', '10px')
-                        .style('font-weight', 'normal')
-                })
-                .on('click', function () {
-                    var p = this.parentNode;
-
-
-                    var selected_base = d3.select(this);
-                    var p_el = d3.select(p);
-
-
-                    var current_x = selected_base.attr("x");
-                    var current_y = selected_base.attr("y");
-                    var current_char = selected_base.text();
-                    var base_index = selected_base.attr("id");
-
-                    var frm = p_el.append("foreignObject");
-
-                    var inp = frm
-                        .attr({
-                            'x': current_x - 5,
-                            'y': 12,
-                            'width': 20,
-                            'height': 20
-                        })
-                        .append("xhtml:form")
-                        .append('xhtml:input')
-                        .attr("value", current_char)
-                        .on("keypress", function () {
-
-                            if (d3.event.keyCode === 13) {
-
-                                d3.event.preventDefault(); // cancel default behavior
-
-                                var newBase = inp.node().value;
-
-                                if (newBase == " " || newBase == "" || newBase == "_") {
-                                    newBase = "-";
-                                }
-
-                                //compute read id via div-id obtained from selecting parent of parent....
-                                change_base(base_index, newBase, '/primer_reads/' + chromatogram1.id + '/change_base');
-
-                                selected_base.text(newBase);
-
-                                if (newBase == "A") {
-                                    selected_base.attr("fill", 'green');
-                                } else if (newBase == "C") {
-                                    selected_base.attr("fill", 'blue');
-                                } else if (newBase == "G") {
-                                    selected_base.attr("fill", 'black');
-                                } else if (newBase == "T") {
-                                    selected_base.attr("fill", 'red');
-                                } else {
-                                    selected_base.attr("fill", 'grey');
-                                }
-
-                                frm.remove();
-                            }
-                        });
-
-                });
-
-            color = 'gray';
-
-            //quality scores
-            var q = chromatogram1.qualities[i];
-            //ignore manually entered bases with fake qualities "-10"
-            if (q > -10) {
-                svg.append("text")
-                    .attr("x", pos)
-                    .attr("y", 40)
-                    .text(q)
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", "7px")
-                    .attr("fill", color)
-                    .attr("text-anchor", ta);
-            }
-
+                .attr("text-anchor", ta);
+            svg.append("text")
+                .attr("x", pos)
+                .attr("y", 17)
+                .text('.')
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "7px")
+                .attr("fill", color)
+                .attr("text-anchor", ta);
         }
-    }
 
+        //base calls
+        if (ch == 'A') {
+            color = 'green';
+        } else if (ch == 'C') {
+            color = 'blue';
+        } else if (ch == 'G') {
+            color = 'black';
+        } else if (ch == 'T') {
+            color = 'red';
+        } else {
+            color = 'gray';
+        }
+
+        svg.append("text")
+            .attr("x", pos)
+            .attr("y", 30)
+            .text(ch)
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "10px")
+            .attr("fill", color)
+            .attr("text-anchor", ta)
+            .attr("id", i)
+
+            .on('mouseover', function () {
+                d3.select(this)
+                    .style('font-size', '14px')
+                    .style('font-weight', 'bold')
+            })
+            .on('mouseout', function () {
+                d3.select(this)
+                    .style('font-size', '10px')
+                    .style('font-weight', 'normal')
+            })
+            .on('click', function () {
+                var p = this.parentNode;
+
+
+                var selected_base = d3.select(this);
+                var p_el = d3.select(p);
+
+
+                var current_x = selected_base.attr("x");
+                var current_y = selected_base.attr("y");
+                var current_char = selected_base.text();
+                var base_index = selected_base.attr("id");
+
+                var frm = p_el.append("foreignObject");
+
+                var inp = frm
+                    .attr({
+                        'x': current_x - 5,
+                        'y': 12,
+                        'width': 20,
+                        'height': 20
+                    })
+                    .append("xhtml:form")
+                    .append('xhtml:input')
+                    .attr("value", current_char)
+                    .on("keypress", function () {
+
+                        if (d3.event.keyCode === 13) {
+
+                            d3.event.preventDefault(); // cancel default behavior
+
+                            var newBase = inp.node().value;
+
+                            if (newBase == " " || newBase == "" || newBase == "_") {
+                                newBase = "-";
+                            }
+
+                            //compute read id via div-id obtained from selecting parent of parent....
+                            change_base(base_index, newBase, '/primer_reads/' + chromatogram.id + '/change_base');
+
+                            selected_base.text(newBase);
+
+                            if (newBase == "A") {
+                                selected_base.attr("fill", 'green');
+                            } else if (newBase == "C") {
+                                selected_base.attr("fill", 'blue');
+                            } else if (newBase == "G") {
+                                selected_base.attr("fill", 'black');
+                            } else if (newBase == "T") {
+                                selected_base.attr("fill", 'red');
+                            } else {
+                                selected_base.attr("fill", 'grey');
+                            }
+
+                            frm.remove();
+                        }
+                    });
+
+            });
+
+        color = 'gray';
+
+        //quality scores
+        var q = chromatogram.qualities[i];
+        //ignore manually entered bases with fake qualities "-10"
+        if (q > -10) {
+            svg.append("text")
+                .attr("x", pos)
+                .attr("y", 40)
+                .text(q)
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "7px")
+                .attr("fill", color)
+                .attr("text-anchor", ta);
+        }
+
+    }
 }
 
 function change_base(base_index, base, change_base_primer_read_url) {
-    // console.log(base_index, base, change_base_primer_read_url);
     $.ajax({
         data: {
             'position': base_index,
@@ -462,7 +443,7 @@ function change_base(base_index, base, change_base_primer_read_url) {
     return 0;
 }
 
-function change_left_clip(base_index, change_left_clip_read_url) {
+function change_left_clip(base_index, change_left_clip_read_url, read_id) {
 
     $.ajax({
         data: {
@@ -471,19 +452,19 @@ function change_left_clip(base_index, change_left_clip_read_url) {
         type: 'POST',
         url: change_left_clip_read_url,
         success: function () {
-            document.getElementById("left_clip").value = base_index;
+            document.getElementById("left_clip_" + read_id).value = base_index;
 
-            tempAlert("Set left clip position to "+base_index+"", 3000);
+            tempAlert("Set left clip position to " + base_index + "", 3000);
         },
         error: function () {
-            alert('Not authorized? Could not set left clip at index '+base_index);
+            alert('Not authorized? Could not set left clip at index ' + base_index);
         }
     });
 
     return 0;
 }
 
-function change_right_clip(base_index, change_right_clip_read_url) {
+function change_right_clip(base_index, change_right_clip_read_url, read_id) {
 
     $.ajax({
         data: {
@@ -493,7 +474,7 @@ function change_right_clip(base_index, change_right_clip_read_url) {
         url: change_right_clip_read_url,
         success: function () {
 
-            document.getElementById("right_clip").value = base_index;
+            document.getElementById("right_clip_" + read_id).value = base_index;
 
             tempAlert("Set right clip position to "+base_index+ "", 3000);
         },
