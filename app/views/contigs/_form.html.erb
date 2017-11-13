@@ -109,11 +109,26 @@
                       <% end %>
                     </div>
 
+                    <%= form_for(read) do |f| %>
+                      <% if read.sequence %>
+                          <div >
+                            <%= f.label 'Readable bases ' %>
+                            <%= f.text_field :trimmedReadStart, :class => "sequence_position_left", :id => "left_clip_#{read.id}" %>
+                            <%= f.label ' - ' %>
+                            <%= f.text_field :trimmedReadEnd, :class => "sequence_position_right", :id => "right_clip_#{read.id}" %>
+                            out of <%= read.sequence.length %>
+                          </div>
+                      <% end %>
+                    <% end %>
+
                     <div class="vertical-spacer"></div>
 
+                    <% if read.position %>
+                    <% end %>
+
                     <!--primer read chromatogram view-->
-                    <%= content_tag 'div', class: 'alignment', id: "chromatogram_container_#{read.id}", data: {pos: 1, read_id: read.id} do %>
-                      <%= content_tag 'div', class: 'chromatogram', id: "primer_read_#{read.id}", data: {url: read } do %><% end %>
+                    <%= content_tag 'div', class: 'alignment', id: "chromatogram_container_#{read.id}", data: {pos: read.position, read_id: read.id} do %>
+                      <%= content_tag 'div', class: 'chromatogram', id: "primer_read_#{read.id}", data: {url: read, read_id: read.id } do %><% end %>
                     <% end %>
 
                     <!--buttons -->

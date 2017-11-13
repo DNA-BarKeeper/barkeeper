@@ -220,10 +220,11 @@ class PrimerReadsController < ApplicationController
     #   ContigAssembly.perform_async(@primer_read.contig.id)
     # end
 
-    render :nothing => true
+    head :ok
   end
 
   def change_left_clip
+    puts @primer_read.name
     @primer_read.update(:trimmedReadStart => params[:position].to_i)
 
     # do not auto assemble after clipping changed!
@@ -231,7 +232,7 @@ class PrimerReadsController < ApplicationController
     #   ContigAssembly.perform_async(@primer_read.contig.id)
     # end
 
-    render :nothing => true
+    head :ok
   end
 
   def change_right_clip
@@ -242,7 +243,7 @@ class PrimerReadsController < ApplicationController
     #   ContigAssembly.perform_async(@primer_read.contig.id)
     # end
 
-    render :nothing => true
+    head :ok
   end
 
   # DELETE /primer_reads/1
