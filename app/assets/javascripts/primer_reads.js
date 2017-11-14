@@ -117,28 +117,24 @@ jQuery(function() {
         source: $('#primer_read_contig_name').data('autocomplete-source')
     });
 
-    // über alle divs einer Klasse iterieren und die dort jeweiligen read data zum Zeichnen nutzen
+
+    // Iterate over all divs of class chromatogram and use available data to draw
     var primer_read_divs = document.getElementsByClassName('chromatogram');
-    for (var e = 0; e < primer_read_divs.length; e++) {
-        var div = primer_read_divs[e];
+    for (var i = 0; i < primer_read_divs.length; i++) {
+        var div_id = primer_read_divs[i].id;
 
-        var div_id = '#' + div.id;
+        var chromatogram = $('#' + div_id).data('url');
 
-        var chromatogram = $(div_id).data('url');
+        var pos = $(primer_read_divs[i]).data("pos");
+
+        var read_id = $(primer_read_divs[i]).data("readId");
 
         draw_chromatogram(div_id, chromatogram);
-    }
 
-    var chromatogram_divs = document.getElementsByClassName('alignment');
-    for (var i = 0; i < chromatogram_divs.length; i++) {
-        var pos = $(chromatogram_divs[i]).data("pos");
-        var id = $(chromatogram_divs[i]).data("readId");
         if (pos > 0) {
-            scroll_to(pos, id);
+            scroll_to(pos, read_id);
         }
     }
-
-
 });
 
 
@@ -156,7 +152,7 @@ function draw_chromatogram(div_id, chromatogram){
         })
         .interpolate("linear");
 
-    var svg = d3.select(div_id)
+    var svg = d3.select('#' + div_id)
         .append('svg')
         .attr('width', chromatogram.atrace.length)
         .attr('height', 250)
@@ -182,7 +178,7 @@ function draw_chromatogram(div_id, chromatogram){
                 }
             }
 
-            change_left_clip(g+1, '/primer_reads/' + chromatogram.id + '/change_left_clip', chromatogram.id);
+            change_left_clip(g+1, chromatogram.id, div_id);
         });
 
     var drag_right = d3.behavior.drag()
@@ -202,7 +198,7 @@ function draw_chromatogram(div_id, chromatogram){
                 }
             }
 
-            change_right_clip(g+1, '/primer_reads/' + chromatogram.id + '/change_right_clip', chromatogram.id);
+            change_right_clip(g+1, chromatogram.id, div_id);
 
         });
 
@@ -241,7 +237,7 @@ function draw_chromatogram(div_id, chromatogram){
             });
     }
 
-    var highlighted_base=$('#chromatogram_container').data("pos");
+    var highlighted_base = $('#' + div_id).data("pos");
 
     var highlight_pos = chromatogram.peak_indices[highlighted_base - 1];
 
@@ -345,10 +341,8 @@ function draw_chromatogram(div_id, chromatogram){
             .on('click', function () {
                 var p = this.parentNode;
 
-
                 var selected_base = d3.select(this);
                 var p_el = d3.select(p);
-
 
                 var current_x = selected_base.attr("x");
                 var current_y = selected_base.attr("y");
@@ -379,8 +373,7 @@ function draw_chromatogram(div_id, chromatogram){
                                 newBase = "-";
                             }
 
-                            //compute read id via div-id obtained from selecting parent of parent....
-                            change_base(base_index, newBase, '/primer_reads/' + chromatogram.id + '/change_base');
+                            change_base(base_index, newBase, chromatogram.id, div_id);
 
                             selected_base.text(newBase);
 
@@ -421,7 +414,9 @@ function draw_chromatogram(div_id, chromatogram){
     }
 }
 
-function change_base(base_index, base, change_base_primer_read_url) {
+function change_base(base_index, base, read_id, div_id) {
+    var change_base_primer_read_url = '/primer_reads/' + read_id + '/change_base';
+
     $.ajax({
         data: {
             'position': base_index,
@@ -430,12 +425,12 @@ function change_base(base_index, base, change_base_primer_read_url) {
         type: 'POST',
         url: change_base_primer_read_url,
         success: function () {
-            var visible_index=parseInt(base_index);
-            visible_index+=1;
-            tempAlert("Changed base at position "+visible_index+" to "+base+"", 3000);
+            var visible_index = parseInt(base_index);
+            visible_index += 1;
+            tempAlert("Changed base at position " + visible_index + " to " + base + "", 3000, div_id);
         },
         error: function (response) {
-            alert('Not authorized? Could not change base at index '+base_index+' to '+base);
+            alert('Not authorized? Could not change base at index ' + base_index + ' to ' + base);
         }
     });
 
@@ -443,7 +438,8 @@ function change_base(base_index, base, change_base_primer_read_url) {
     return 0;
 }
 
-function change_left_clip(base_index, change_left_clip_read_url, read_id) {
+function change_left_clip(base_index, read_id, div_id) {
+    var change_left_clip_read_url = '/primer_reads/' + read_id + '/change_left_clip';
 
     $.ajax({
         data: {
@@ -454,7 +450,7 @@ function change_left_clip(base_index, change_left_clip_read_url, read_id) {
         success: function () {
             document.getElementById("left_clip_" + read_id).value = base_index;
 
-            tempAlert("Set left clip position to " + base_index + "", 3000);
+            tempAlert("Set left clip position to " + base_index + "", 3000, div_id);
         },
         error: function () {
             alert('Not authorized? Could not set left clip at index ' + base_index);
@@ -464,7 +460,8 @@ function change_left_clip(base_index, change_left_clip_read_url, read_id) {
     return 0;
 }
 
-function change_right_clip(base_index, change_right_clip_read_url, read_id) {
+function change_right_clip(base_index, read_id, div_id) {
+    var change_right_clip_read_url = '/primer_reads/' + read_id + '/change_right_clip';
 
     $.ajax({
         data: {
@@ -476,7 +473,7 @@ function change_right_clip(base_index, change_right_clip_read_url, read_id) {
 
             document.getElementById("right_clip_" + read_id).value = base_index;
 
-            tempAlert("Set right clip position to "+base_index+ "", 3000);
+            tempAlert("Set right clip position to "+base_index+ "", 3000, div_id);
         },
         error: function () {
             alert('Not authorized? Could not set right clip at index '+base_index);
@@ -487,13 +484,16 @@ function change_right_clip(base_index, change_right_clip_read_url, read_id) {
 }
 
 
-function tempAlert(msg,duration)
-{
+function tempAlert(msg, duration, div_id) {
+    var parent = document.getElementById(div_id).parentNode.parentNode;
     var el = document.createElement("div");
-    el.setAttribute("style","position:absolute;top:50%;left:50%;background-color:#fcffcc;");
+
+    el.setAttribute("style","position:absolute;top:15%;left:50%;background-color:#fcffcc;");
     el.innerHTML = msg;
     setTimeout(function(){
-        el.parentNode.removeChild(el);
+        parent.removeChild(el);
+        parent.removeAttribute("style");
     },duration);
-    document.body.appendChild(el);
+    parent.setAttribute('style', 'position:relative;');
+    parent.appendChild(el);
 }

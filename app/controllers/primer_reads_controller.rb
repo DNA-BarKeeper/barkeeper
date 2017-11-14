@@ -168,7 +168,7 @@ class PrimerReadsController < ApplicationController
   def update
     respond_to do |format|
       if @primer_read.update(primer_read_params)
-        format.html { redirect_to edit_primer_read_path(@primer_read), notice: 'Primer read was successfully updated.' }
+        format.html { redirect_back(fallback_location: edit_primer_read_path(@primer_read), notice: 'Primer read was successfully updated.') }
         format.json { render :show, status: :ok, location: @primer_read }
       else
         format.html { render :edit }
