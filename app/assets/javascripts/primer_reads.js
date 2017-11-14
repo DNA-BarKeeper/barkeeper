@@ -488,7 +488,7 @@ function tempAlert(msg, duration, div_id) {
     var parent = document.getElementById(div_id).parentNode.parentNode;
     var el = document.createElement("div");
 
-    el.setAttribute("style","position:absolute;top:15%;left:50%;background-color:#fcffcc;");
+    el.setAttribute("style","position:absolute;top:38%;left:50%;background-color:#fcffcc;");
     el.innerHTML = msg;
     setTimeout(function(){
         parent.removeChild(el);
