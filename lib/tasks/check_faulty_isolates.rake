@@ -54,7 +54,7 @@ namespace :data do
 
     if primer_reads.size > 0
       puts "#{primer_reads.size} isolates with associated primer reads were found:"
-      primer_reads.each {|read| print read.name, ', ' }
+      primer_reads.each {|isolate| print isolate.lab_nr, ', ' }
     end
   end
 
@@ -64,7 +64,7 @@ namespace :data do
     plate_names.concat [*60..73]
 
     plate_names.each do | name |
-      Tissue.find_by_name(name.to_s).destroy!
+      PlantPlate.find_by_name(name.to_s).destroy!
     end
 
     gbol_numbers = [*4609..4896]
