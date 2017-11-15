@@ -251,7 +251,7 @@ class PrimerReadsController < ApplicationController
   def destroy
     @primer_read.destroy
     respond_to do |format|
-      format.html { redirect_to primer_reads_url }
+      format.html { redirect_back(fallback_location: primer_reads_url) }
       format.json { head :no_content }
     end
   end
