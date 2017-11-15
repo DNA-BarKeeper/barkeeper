@@ -420,7 +420,7 @@ class ContigsController < ApplicationController
       if @contig.update(contig_params)
         format.html {
           Issue.create(:title => "Contig updated by #{current_user.name}", :contig_id => @contig.id)
-          redirect_to edit_contig_path(@contig), notice: 'Contig was successfully updated.'
+          redirect_back(fallback_location: edit_contig_path(@contig), notice: 'Contig was successfully updated.')
         }
         format.json { render :show, status: :ok, location: @contig }
       else
