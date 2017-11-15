@@ -29,7 +29,7 @@ namespace :data do
     isolates_cnt = 0
     contigs_cnt = 0
     ms_cnt = 0
-    primer_reads = []
+    primer_reads = Set.new
 
     gbol_numbers.each do | name |
       gbol_name = "gbol#{name.to_s}"
@@ -40,7 +40,7 @@ namespace :data do
 
       isolate&.contigs&.each do | contig |
         contigs_cnt += 1
-        primer_reads << isolate if contig&.primer_reads&.size&.nonzero?
+        primer_reads.add? isolate if contig&.primer_reads&.size&.nonzero?
       end
 
       isolate&.marker_sequences&.each { ms_cnt += 1 }
@@ -54,7 +54,7 @@ namespace :data do
 
     if primer_reads.size > 0
       puts "#{primer_reads.size} isolates with associated primer reads were found:"
-      puts primer_reads
+      primer_reads.each {|read| print read.name, ', ' }
     end
   end
 
