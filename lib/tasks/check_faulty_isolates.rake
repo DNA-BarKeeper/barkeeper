@@ -26,7 +26,7 @@ namespace :data do
     gbol_numbers = [*4609..4896]
     gbol_numbers.concat [*5665..7008]
 
-    isolates_cnt = 0
+    isolates = Set.new
     contigs_cnt = 0
     ms_cnt = 0
     primer_reads = Set.new
@@ -36,7 +36,7 @@ namespace :data do
 
       isolate = Isolate.where("lab_nr ilike ?", gbol_name).first
 
-      isolates_cnt += 1 if isolate
+      isolates.add? isolate if isolate
 
       isolate&.contigs&.each do | contig |
         contigs_cnt += 1
@@ -48,13 +48,15 @@ namespace :data do
 
     if gbol_numbers.size != isolates_cnt || gbol_numbers.size != contigs_cnt || gbol_numbers.size != ms_cnt
       puts "Expected: #{gbol_numbers.size}, Found: #{isolates_cnt} isolates, #{contigs_cnt} contigs and #{ms_cnt} marker sequences"
+      puts "The following isolates were not found:"
+      isolates.each { |isolate| print "#{isolate.lab_nr}, " }
     else
       puts "The same amount of isolates, contigs and marker sequences was found as expected."
     end
 
     if primer_reads.size > 0
       puts "#{primer_reads.size} isolates with associated primer reads were found:"
-      primer_reads.each {|isolate| print isolate.lab_nr, ', ' }
+      primer_reads.each {|isolate| print "#{isolate.lab_nr}, " }
     end
   end
 
