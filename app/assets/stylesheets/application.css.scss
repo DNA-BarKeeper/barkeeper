@@ -33,14 +33,11 @@ div#contig {
   color: #babebe;
 }
 
-
 .alignment {
-
   overflow-x: auto;
 }
 
 //table stuff
-
 .wideTable {
   overflow-x: auto;
 }
@@ -48,7 +45,6 @@ div#contig {
 table tfoot td {
   font-weight: bold;
 }
-
 
 //spinner:
 .sk-circle {
@@ -61,7 +57,6 @@ table tfoot td {
   left: 50%;
 }
 
-
 .sk-circle .sk-child {
   width: 100%;
   height: 100%;
@@ -69,6 +64,7 @@ table tfoot td {
   left: 0;
   top: 0;
 }
+
 .sk-circle .sk-child:before {
   content: '';
   display: block;
@@ -80,6 +76,7 @@ table tfoot td {
   -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
   animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
 }
+
 .sk-circle .sk-circle2 {
   -webkit-transform: rotate(30deg);
   -ms-transform: rotate(30deg);
@@ -179,7 +176,8 @@ table tfoot td {
 }
 
 input#go-to-pos, input.go-to-pos {
-  //border-bottom: 1px solid lightgrey;
+  border: none;
+  border-bottom: 1px solid lightgrey;
   border-radius: 0;
   width: 40px;
   text-align: right;

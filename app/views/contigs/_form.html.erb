@@ -10,263 +10,395 @@
     </h3>
   </div>
   <div class="panel-body">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li><a href="#description" role="tab" data-toggle="tab">Description</a></li>
+      <li class="active"><a href="#assembly" role="tab" data-toggle="tab">Assembly</a></li>
+      <li><a href="#downloads" role="tab" data-toggle="tab">Downloads</a></li>
+    </ul>
 
-    <%= form_for(@contig) do |f| %>
+    <!-- Tab panes -->
+    <div class="tab-content">
 
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-          <li><a href="#description" role="tab" data-toggle="tab">Description</a></li>
-          <li class="active"><a href="#assembly" role="tab" data-toggle="tab">Assembly</a></li>
-          <li><a href="#downloads" role="tab" data-toggle="tab">Downloads</a></li>
-        </ul>
+      <div class="tab-pane" id="description">
+        <%= form_for(@contig) do |f| %>
 
-        <!-- Tab panes -->
-        <div class="tab-content">
+          <div class="vertical-spacer"></div>
 
-          <div class="tab-pane" id="description">
-            <br>
-            <div class="form-group">
-              <%= f.label :name %>
-              <%= f.text_field :name, class: 'form-control' %>
-            </div>
-            <div class="form-group">
-              <%= f.label 'Isolate' %>
-              <% if @contig.isolate %>
-                  <%= link_to '', edit_isolate_path(@contig.isolate), :class => "glyphicon glyphicon-share-alt" %>
-              <% end %>
-              <%= f.text_field :isolate_name , data: {autocomplete_source: filter_isolates_path} , class: 'form-control'%>
-            </div>
-
-            <div class="form-group">
-              <%= f.label 'Marker' %>
-
-              <%= f.collection_select(:marker_id, Marker.all, :id, :name, include_blank: true) %>
-              <% if @contig.marker %>
-                  <%= link_to '', edit_marker_path(@contig.marker), :class => "glyphicon glyphicon-share-alt" %>
-              <% end %>
-            </div>
-
-            <div >
-              <%= f.label 'Minimum overlap length: ' %>
-              <%= f.text_field :overlap_length, :class => "sequence_position_right" %>
-              <%= f.label 'Maximum % mismatch in overlap: ' %>
-              <%= f.text_field :allowed_mismatch_percent, :class => "sequence_position_right" %>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :comment %>
-              <%= f.text_field :comment, class: 'form-control' %>
-            </div>
-
+          <div class="form-group">
+            <%= f.label :name %>
+            <%= f.text_field :name, class: 'form-control' %>
           </div>
 
-          <div class="tab-pane active" id="assembly">
-
-            <div class="vertical-spacer"></div>
-            <div>
-              <%= f.label :assembled, 'Assembly complete' %>
-              <%= f.check_box :assembled  %>
-            </div>
-            <div >
-              <%= f.label :imported, 'Externally edited & imported' %>
-              <%= f.check_box :imported  %>
-            </div>
-            <div class="vertical-spacer"></div>
-            <div class="form-group">
-              <%= f.label 'Marker Sequence' %>
-              <% if @contig.marker_sequence %>
-                  <%= link_to '', edit_marker_sequence_path(@contig.marker_sequence), :class => "glyphicon glyphicon-share-alt" %>
-              <% end %>
-              <%= f.text_field :marker_sequence_name , data: {autocomplete_source: filter_marker_sequences_path} , class: 'form-control'%>
-            </div>
+          <div class="form-group">
+            <%= f.label 'Isolate' %>
+            <% if @contig.isolate %>
+                <%= link_to '', edit_isolate_path(@contig.isolate), :class => "glyphicon glyphicon-share-alt" %>
+            <% end %>
+            <%= f.text_field :isolate_name , data: {autocomplete_source: filter_isolates_path} , class: 'form-control'%>
           </div>
 
-          <div class="tab-pane" id="downloads">
-            <br>
-            <div class="form-group"><span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download aligned sequences as PDE file',  pde_contig_path %><br>
-              <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download aligned sequences as Fasta file',  fasta_contig_path %><br>
-              <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download trimmed sequences as Fasta file',  fasta_trimmed_contig_path %><br>
-              <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download raw sequences as Fasta file',  fasta_raw_contig_path %><br></div>
+          <div class="form-group">
+            <%= f.label 'Marker' %>
+
+            <%= f.collection_select(:marker_id, Marker.all, :id, :name, include_blank: true) %>
+            <% if @contig.marker %>
+                <%= link_to '', edit_marker_path(@contig.marker), :class => "glyphicon glyphicon-share-alt" %>
+            <% end %>
           </div>
-        </div>
 
-        <table>
-          <tr>
-            <td>
-              <%= f.submit 'Save', :class =>  'btn btn-default'  %>
+          <div class="form-group">
+            <%= f.label 'Marker Sequence' %>
+            <% if @contig.marker_sequence %>
+                <%= link_to '', edit_marker_sequence_path(@contig.marker_sequence), :class => "glyphicon glyphicon-share-alt" %>
+            <% end %>
+            <%= f.text_field :marker_sequence_name , data: {autocomplete_source: filter_marker_sequences_path} , class: 'form-control'%>
+          </div>
 
-            </td>
-            <td style="padding-left: 5px;"><%= link_to overlap_contig_path, :class => 'btn btn-default' do %>
-                  <span class="glyphicon glyphicon-align-center grey"></span> Assemble
-              <% end %>
-            </td>
-            <td style="padding-left: 5px; ">
-              <div style="vertical-align: middle; line-height: 250%;">
-              <% if @contig.verified_by %>
+          <div class="vertical-spacer"></div>
 
-                  <%begin%>
-                      <%user= User.find(@contig.verified_by).name %>
-                  <%rescue%>
-                      <% user= '?'%>
-                  <%end%>
+          <div >
+            <%= f.label 'Minimum overlap length: ' %>
+            <%= f.text_field :overlap_length, :class => "sequence_position_right" %>
+            <%= f.label 'Maximum % mismatch in overlap: ' %>
+            <%= f.text_field :allowed_mismatch_percent, :class => "sequence_position_right" %>
+          </div>
 
-                  Verified by <%=  user %> on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>.
+          <div>
+            <%= f.label :assembled, 'Assembly complete' %>
+            <%= f.check_box :assembled  %>
+          </div>
 
-                  <%= link_to  verify_contig_path(@contig), :class => "btn btn-danger btn-xs my-btn" do %>
-                      <span class = "glyphicon glyphicon-remove"></span>
-                  <% end %>
+          <div >
+            <%= f.label :imported, 'Externally edited & imported' %>
+            <%= f.check_box :imported  %>
+          </div>
 
-              <% else %>
-                  <% if @contig.verified %>
-                      Verified on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %>
-                  <% else %>
+          <div class="vertical-spacer"></div>
 
-                        <%= link_to verify_next_contig_path(@contig), :class => 'btn btn-default' do %>
-                            <span class = "glyphicon glyphicon-ok grey"></span> Verify & next
-              <% end %>
-                        <%= link_to verify_contig_path(@contig), :class => 'btn btn-success my-btn' do %>
-                            <span class = "glyphicon glyphicon-ok"></span> Verify
-              <% end %>
+          <div class="form-group">
+            <%= f.label :comment %>
+            <%= f.text_field :comment, class: 'form-control' %>
+          </div>
 
-                  <% end %>
+        <% end %>
 
-              <% end %>
-            </div></td></tr></table>
+      </div>
+
+      <div class="tab-pane active" id="assembly">
 
         <div class="vertical-spacer"></div>
+        <!-- Primer read views -->
+
+        <% if @contig.primer_reads.count > 0 %>
+
+            <% @contig.primer_reads.each do |read| %>
+
+                <% puts read %>
+
+                <%= content_tag 'a', class: 'anchor', id: "read_view_#{read.id}" do %><% end %>
+                <%= content_tag 'div', id: "primer_read_#{read.id}_view", style: 'display: none' do %>
+                    <hr>
+
+                    <!-- Display primer read name and toggle icon -->
+                    <div>
+                      <% data = "#primer_read_#{read.id}_view" %>
+                      <%= content_tag 'a', class: 'hide_primer_read', href: '#', data: {div_id: data} do %>
+                          <span class='glyphicon glyphicon-minus-sign grey' title='Hide this primer read view'></span>
+                      <% end %>
+                      <%= content_tag 'a', href: "#read_view_#{read.id}" do %>
+                          <% read.name[0..-5] %>
+                      <% end %>
+                    </div>
+
+                    <div class="vertical-spacer"></div>
+
+                    <%= form_for(read) do |f| %>
+                        <% if read.sequence %>
+                            <div >
+                              <%= f.label 'Readable bases ' %>
+                              <%= f.text_field :trimmedReadStart, :class => "sequence_position_left", :id => "left_clip_#{read.id}" %>
+                              <%= f.label ' - ' %>
+                              <%= f.text_field :trimmedReadEnd, :class => "sequence_position_right", :id => "right_clip_#{read.id}" %>
+                              out of <%= read.sequence.length %>
+                            </div>
+                        <% end %>
+
+                        <span class="glyphicon glyphicon-resize-small"></span><%= link_to ' Trim sequence based on quality scores', trim_primer_read_path %>
+                        <div >
+                          Min. qual.:
+                          <%= f.text_field :min_quality_score, :class => "sequence_position_right", :id => "sequence_position_right_#{read.id}" %>
+                          Window:
+                          <%= f.text_field :window_size, :class => "sequence_position_right", :id => "sequence_position_right_#{read.id}" %>
+                          > min.:
+                          <%= f.text_field :count_in_window, :class => "sequence_position_right", :id => "sequence_position_right_#{read.id}" %>
+                        </div>
+                        <p>
+
+                        <p>
+                        <div class="field">
+                          <%= f.label 'Use for contig' %>
+                          <%= f.check_box :used_for_con, :id => "used_for_con_#{read.id}" %> |
+                          <%= f.label 'Assembled' %>
+                          <%= f.check_box :assembled, :id => "assembled_#{read.id}" %>
+                        </div>
+
+                        <div class="field">
+                          Aligned read sequence overwritten by externally edited contig file
+                          <%= f.check_box :overwritten, :id => "overwritten_#{read.id}" %>
+                        </div>
+
+                        <%= f.submit 'Update', :class =>  'btn btn-default' %>
+                    <% end %>
+
+                    <div class="vertical-spacer"></div>
+
+                    <% if read.position %>
+                    <% end %>
+
+                    <!--primer read chromatogram view-->
+                    <%= content_tag 'div', class: 'alignment', id: "chromatogram_container_#{read.id}", data: {read_id: read.id} do %>
+                        <%= content_tag 'div', class: 'chromatogram', id: "primer_read_#{read.id}", data: {url: read, pos: read.position, read_id: read.id } do %><% end %>
+                    <% end %>
+
+                    <!--buttons -->
+                    <span>
+                          <%= content_tag 'button', class: 'scroll-left-button btn btn-default btn-sm', title: 'Go to start', data: {read_id: read.id } do %>
+                              <span class="grey glyphicon glyphicon-fast-backward"></span>
+                          <% end %>
+                      <%= content_tag 'button', class: 'scroll-right-slowly-button btn btn-default btn-sm', title: 'Auto-scroll', data: {read_id: read.id } do %>
+                              <span class="grey glyphicon glyphicon-play"></span>
+                          <% end %>
+                      <%= content_tag 'button', class: 'pause-button btn btn-default btn-sm', title: 'Stop', data: {read_id: read.id } do %>
+                              <span class="grey glyphicon glyphicon-pause"></span>
+                          <% end %>
+                      <%= content_tag 'button', class: 'scroll-right-button btn btn-default btn-sm', title: 'Go to end', data: {read_id: read.id } do %>
+                              <span class='grey glyphicon glyphicon-fast-forward'></span>
+                          <% end %>
+
+                      <span style="width: 30px; display: inline-block;">    </span>
+
+                      <%= content_tag 'button', class: 'go-to-button_primer_read btn btn-default btn-xs', data: {read_id: read.id } do %>
+                              <span style="color: #979797">Go to</span>
+                          <% end %>
+                      <%= content_tag 'input', class: 'go-to-pos', id: "go-to-pos_#{read.id}", type: 'text' do %><% end %>
+                      <span style="color: #979797">/ <%= read.sequence.length %></span>
+                        </span>
+                <% end %>
+            <% end %>
+        <% end %>
+
+        <!-- end of primer read views-->
+
+        <hr>
+
+        <% if @contig.primer_reads.assembled.count > 0 %>
+            <% @contig.partial_cons.includes(:primer_reads).each do |partial_con| %>
+                <!-- draw contig alignment -->
+                <table style="table-layout: fixed; border-collapse: collapse;" width="100%; ">
+                  <tr>
+                    <td width="250px"></td>
+                    <td align="right">
+
+                      <div class="buttons" style="margin: 0; padding: 0;">
+                        <button  class="single-page-button btn btn-default btn-sm" title="Show entire contig, scrollable"><span class="grey glyphicon glyphicon-resize-horizontal"></span></button>
+                        <span style="width: 30px; display: inline-block;">    </span>
+                        <span style="color: #979797">Go to position </span>
+                        <input type="text" class="go-to-pos">
+                        <span style="color: #979797">out of <%=partial_con.aligned_sequence.length%></span>
+                        <button class="go-to-button-partial-con btn btn-default btn-xs"><span style="color: #979797">Go!</span></button>
+
+                        <span style="width: 30px; display: inline-block;">    </span>
+                        <button class="first-page-button btn btn-default btn-sm" title="Go to first page (Shift + left arrow key)"><span class="grey glyphicon glyphicon-fast-backward"></span></button>
+                        <button class="previous-page-button btn btn-default btn-sm" title="Previous page  (Left arrow key)"><span class="grey glyphicon glyphicon-step-backward"></span></button>
+                        <button class="next-page-button btn btn-default btn-sm" title="Next page (Right arrow key)"><span class="grey glyphicon glyphicon-step-forward"></span></button>
+                        <button class="last-page-button btn btn-default btn-sm" title="Go to last page (Shift + right arrow key)"><span class="grey glyphicon glyphicon-fast-forward"></span></button>
+                      </div>
+
+                      <div class="vertical-spacer"></div>
+
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" width="250px" style="padding:0; margin:0; ">
+
+                      <div style="height: 45px;padding:0; margin:0;"></div>
+
+                      <div class="read-names">
+                        <div id="partial-con" style="padding:0; margin:0;" >
+                          <% partial_con.primer_reads.each do |read|%>
+                              <div style="height: 60px;padding:0; margin:0;">
+                                <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => 'Do not use this read in assembly & re-assemble' do %>
+                                    <span class="glyphicon glyphicon-remove grey" title="Do not use in assembly"></span>
+                                <% end %>
+
+                                <%= content_tag 'a', class: 'show_primer_read', href: "#read_view_#{read.id}", title: 'Show primer read view', data: {div_id: "#primer_read_#{read.id}_view"} do %>
+                                    <% read.name[0..-5] %>
+                                <% end %>
+
+                                <%= link_to  edit_primer_read_path(read), :target => '_blank', :title => 'Open in new tab' do %>
+                                    <span class="grey glyphicon glyphicon-share-alt"></span>
+                                <% end %>
+                              </div>
+                          <%end %>
+                          <div style="height: 60px; padding:0; margin:0;">
+                            <b>Consensus</b> <span class="grey">(id: <%= partial_con.id %>)</span>
+                          </div>
+                        </div>
+
+                      </div>
+                    </td>
+                    <td id="contig-drawing" style="padding:0; margin:0; overflow: scroll; position: relative;">
+
+                      <div class="partial_con" id="p-<%= partial_con.id %>" style="overflow: scroll;" width="100%" ></div>
+
+                    </td>
+                  </tr>
+                </table>
+            <% end %>
+        <% end %>
+
+        <!-- list all reads again, grouped by status-->
+
+        <div class="read-names">
+          <% if @contig.primer_reads.not_assembled.count > 0 %>
+              <p>
+                <b>Not assembled:</b><br>
+                <% @contig.primer_reads.not_assembled.each do |read|%>
+
+                    <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => "Do not use this read in assembly & re-assemble" do %>
+                        <span class="glyphicon glyphicon-remove grey" title=""></span>
+                    <% end %>
+
+                    <%= content_tag 'a', class: 'show_primer_read', href: "#read_view_#{read.id}", title: 'Show primer read view', data: {div_id: "#primer_read_#{read.id}_view"} do %>
+                        <% read.name[0..-5] %>
+                    <% end %>
+
+                    <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
+                        <span class="grey glyphicon glyphicon-share-alt"></span>
+                    <% end %>
+                    <br>
+                <%end %>
+              </p>
+          <% end %>
+
+
+          <% if @contig.primer_reads.not_used_for_assembly.count > 0 %>
+              <p>
+                <b>Not to be used in assembly:</b><br>
+                <% @contig.primer_reads.not_used_for_assembly.each do |read|%>
+                    <%= link_to  use_for_assembly_primer_read_path(read), :title => "Use this read in assembly & re-assemble" do %>
+                        <span class="glyphicon glyphicon-plus grey" title=""></span>
+                    <% end %>
+
+                    <%= content_tag 'a', class: 'show_primer_read', href: "#read_view_#{read.id}", title: 'Show primer read view', data: {div_id: "#primer_read_#{read.id}_view"} do %>
+                        <% read.name[0..-5] %>
+                    <% end %>
+
+                    <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
+                        <span class="grey glyphicon glyphicon-share-alt"></span>
+                    <% end %>
+                    <br>
+                <%end %>
+              </p>
+          <% end %>
+
+          <% if @contig.primer_reads.not_trimmed.count > 0 %>
+              <p>
+                <b>Not trimmed:</b><br>
+                <% @contig.primer_reads.not_trimmed.each do |read|%>
+                    <%= content_tag 'a', class: 'show_primer_read', href: "#read_view_#{read.id}", title: 'Show primer read view', data: {div_id: "#primer_read_#{read.id}_view"} do %>
+                        <% read.name[0..-5] %>
+                    <% end %>
+
+                    <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
+                        <span class="grey glyphicon glyphicon-share-alt"></span>
+                    <% end %>
+                    <br>
+                <%end %>
+              </p>
+          <% end %>
+
+          <% if @contig.primer_reads.unprocessed.count > 0 %>
+              <p>
+                <b>Unprocessed:</b><br>
+                <% @contig.primer_reads.unprocessed.each do |read|%>
+                    <%= content_tag 'a', class: 'show_primer_read', href: "#read_view_#{read.id}", title: 'Show primer read view', data: {div_id: "#primer_read_#{read.id}_view"} do %>
+                        <% read.name[0..-5] %>
+                    <% end %>
+
+                    <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
+                        <span class="grey glyphicon glyphicon-share-alt"></span>
+                    <% end %>
+                    <br>
+                <%end %>
+              </p>
+          <% end %>
+        </div>
+
+        <div class="vertical-spacer"></div>
+        <%= form_for(@contig) do |f| %>
+          <!-- Create buttons to save, assemble and verify or info about who and when contig was verified -->
+          <table>
+            <tr>
+              <td>
+                <%= f.submit 'Save', :class =>  'btn btn-default'  %>
+
+              </td>
+              <td style="padding-left: 5px;"><%= link_to overlap_contig_path, :class => 'btn btn-default' do %>
+                    <span class="glyphicon glyphicon-align-center grey"></span> Assemble
+                <% end %>
+              </td>
+              <td style="padding-left: 5px; ">
+                <div style="vertical-align: middle; line-height: 250%;">
+                  <% if @contig.verified_by %>
+
+                      <%begin%>
+                          <%user= User.find(@contig.verified_by).name %>
+                      <%rescue%>
+                          <% user= '?'%>
+                      <%end%>
+
+                      Verified by <%=  user %> on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>.
+
+                      <%= link_to  verify_contig_path(@contig), :class => "btn btn-danger btn-xs my-btn" do %>
+                          <span class = "glyphicon glyphicon-remove"></span>
+                      <% end %>
+
+                  <% else %>
+
+                      <% if @contig.verified %>
+                          Verified on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %>
+                      <% else %>
+                          <%= link_to verify_next_contig_path(@contig), :class => 'btn btn-default' do %>
+                              <span class = "glyphicon glyphicon-ok grey"></span> Verify & next
+                          <% end %>
+                          <%= link_to verify_contig_path(@contig), :class => 'btn btn-success my-btn' do %>
+                              <span class = "glyphicon glyphicon-ok"></span> Verify
+                          <% end %>
+                      <% end %>
+
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          </table>
+        <% end %>
+
+        <div class="vertical-spacer"></div>
+
         <% if @contig.imported %>
             <p style="color: grey; font-size: smaller">Externally edited, imported contig. [Due to lack of information in imported files,   alignment of traces and quality scores to edited read sequences is not always available. App will try a re-alignment of externally edited primer read sequences and internally stored traces and quality scores later.]</p>
         <% end %>
+      </div>
 
-    <% end %>
-
-
-    <!-- draw contig alignment -->
-
-    <% if @contig.primer_reads.assembled.count > 0 %>
-        <% @contig.partial_cons.includes(:primer_reads).each do |partial_con| %>
-
-            <table style="table-layout: fixed; border-collapse: collapse;" width="100%; ">
-              <tr>
-                <td width="250px"></td>
-                <td align="right">
-
-                  <div id="buttons" style="margin: 0; padding: 0;">
-
-                    <button  class="single-page-button btn btn-default btn-sm" title="Show entire contig, scrollable"><span class="grey glyphicon glyphicon-resize-horizontal"></span></button>
-                    <span style="width: 30px; display: inline-block;">    </span>
-                    <span style="color: #979797">Go to position </span>
-                    <input style="border-bottom: dotted; border-width: thin; width: 40px;" type="text"  class="go-to-pos">
-                    <span style="color: #979797">out of <%=partial_con.aligned_sequence.length%></span>
-                    <button class="go-to-button-partial-con btn btn-default btn-xs"><span style="color: #979797">Go!</span></button>
-
-                    <span style="width: 30px; display: inline-block;">    </span>
-                    <button  class="first-page-button btn btn-default btn-sm" title="Go to first page (Shift + left arrow key)"><span class="grey glyphicon glyphicon-fast-backward"></span></button>
-                    <button  class="previous-page-button btn btn-default btn-sm" title="Previous page  (Left arrow key)"><span class="grey glyphicon glyphicon-step-backward"></span></button>
-                    <button  class="next-page-button btn btn-default btn-sm" title="Next page (Right arrow key)"><span class="grey glyphicon glyphicon-step-forward"></span></button>
-                    <button  class="last-page-button btn btn-default btn-sm" title="Go to last page (Shift + right arrow key)"><span class="grey glyphicon glyphicon-fast-forward"></span></button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td valign="top" width="250px" style="padding:0; margin:0; ">
-
-                  <div style="height: 45px;padding:0; margin:0;"></div>
-
-                  <div class="read-names">
-                    <div id="partial-con" style="padding:0; margin:0;" >
-                      <% partial_con.primer_reads.each do |read|%>
-                          <div style="height: 60px;padding:0; margin:0;">
-                            <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => "Do not use this read in assembly & re-assemble" do %>
-                                <span class="glyphicon glyphicon-remove grey" title="Do not use in assembly"></span>
-                            <% end %>
-                            <%= link_to read.name[0..-5], edit_primer_read_path(read) %>
-                            <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
-                                <span class="grey glyphicon glyphicon-share-alt"></span>
-                            <% end %>
-                          </div>
-                      <%end %>
-                      <div style="height: 60px; padding:0; margin:0;">
-                        <b>Consensus</b> <span class="grey">(id: <%= partial_con.id %>)</span>
-                      </div>
-                    </div>
-
-                  </div>
-                </td>
-                <td id="contig-drawing" style="padding:0; margin:0; overflow: scroll; position: relative;">
-
-                  <div class="partial_con" id="p-<%= partial_con.id %>" style="overflow: scroll;"></div>
-
-                </td>
-              </tr>
-            </table>
-
-        <% end %>
-    <% end %>
-
-    <!-- list all reads again, grouped by status-->
-
-    <div class="read-names">
-      <% if @contig.primer_reads.not_assembled.count > 0 %>
-          <p>
-            <b>Not assembled:</b><br>
-            <% @contig.primer_reads.not_assembled.each do |read|%>
-
-                <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => "Do not use this read in assembly & re-assemble" do %>
-                    <span class="glyphicon glyphicon-remove grey" title=""></span>
-                <% end %>
-                <%= link_to read.name, edit_primer_read_path(read) %>
-                <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
-                    <span class="grey glyphicon glyphicon-share-alt"></span>
-                <% end %>
-                <br>
-            <%end %>
-          </p>
-      <% end %>
-
-
-      <% if @contig.primer_reads.not_used_for_assembly.count > 0 %>
-          <p>
-            <b>Not to be used in assembly:</b><br>
-            <% @contig.primer_reads.not_used_for_assembly.each do |read|%>
-                <%= link_to  use_for_assembly_primer_read_path(read), :title => "Use this read in assembly & re-assemble" do %>
-                    <span class="glyphicon glyphicon-plus grey" title=""></span>
-                <% end %>
-                <%= link_to read.name, edit_primer_read_path(read) %>
-                <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
-                    <span class="grey glyphicon glyphicon-share-alt"></span>
-                <% end %>
-                <br>
-            <%end %>
-          </p>
-      <% end %>
-
-      <% if @contig.primer_reads.not_trimmed.count > 0 %>
-          <p>
-            <b>Not trimmed:</b><br>
-            <% @contig.primer_reads.not_trimmed.each do |read|%>
-                <%= link_to read.name, edit_primer_read_path(read) %>
-                <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
-                    <span class="grey glyphicon glyphicon-share-alt"></span>
-                <% end %>
-                <br>
-            <%end %>
-          </p>
-      <% end %>
-
-      <% if @contig.primer_reads.unprocessed.count > 0 %>
-          <p>
-            <b>Unprocessed:</b><br>
-            <% @contig.primer_reads.unprocessed.each do |read|%>
-                <%= link_to read.name, edit_primer_read_path(read) %>
-                <%= link_to  edit_primer_read_path(read), :target => "_blank", :title => "open in new tab" do %>
-                    <span class="grey glyphicon glyphicon-share-alt"></span>
-                <% end %>
-                <br>
-            <%end %>
-          </p>
-      <% end %>
+      <div class="tab-pane" id="downloads">
+        <br>
+        <div class="form-group"><span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download aligned sequences as PDE file',  pde_contig_path %><br>
+          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download aligned sequences as Fasta file',  fasta_contig_path %><br>
+          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download trimmed sequences as Fasta file',  fasta_trimmed_contig_path %><br>
+          <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download raw sequences as Fasta file',  fasta_raw_contig_path %><br></div>
+      </div>
     </div>
-
   </div>
 </div>
