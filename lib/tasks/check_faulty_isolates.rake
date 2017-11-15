@@ -46,8 +46,8 @@ namespace :data do
       isolate&.marker_sequences&.each { ms_cnt += 1 }
     end
 
-    if gbol_numbers.size != isolates_cnt || gbol_numbers.size != contigs_cnt || gbol_numbers.size != ms_cnt
-      puts "Expected: #{gbol_numbers.size}, Found: #{isolates_cnt} isolates, #{contigs_cnt} contigs and #{ms_cnt} marker sequences"
+    if gbol_numbers.size != isolates.size || gbol_numbers.size != contigs_cnt || gbol_numbers.size != ms_cnt
+      puts "Expected: #{gbol_numbers.size}, Found: #{isolates.size} isolates, #{contigs_cnt} contigs and #{ms_cnt} marker sequences"
       puts "The following isolates were not found:"
       isolates.each { |isolate| print "#{isolate.lab_nr}, " }
     else
