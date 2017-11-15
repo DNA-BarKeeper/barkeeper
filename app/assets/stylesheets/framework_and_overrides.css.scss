@@ -211,3 +211,10 @@ input.form-control {
   padding: 5px !important;
   width: auto !important;
 }
+
+a.anchor {
+  display: block;
+  position: relative;
+  top: -30px;
+  visibility: hidden;
+}
