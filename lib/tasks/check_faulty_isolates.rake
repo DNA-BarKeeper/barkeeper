@@ -50,6 +50,7 @@ namespace :data do
       puts "Expected: #{gbol_numbers.size}, Found: #{isolates.size} isolates, #{contigs_cnt} contigs and #{ms_cnt} marker sequences"
       puts "The following isolates were not found:"
       isolates.each { |isolate| print "#{isolate.lab_nr}, " }
+      puts ""
     else
       puts "The same amount of isolates, contigs and marker sequences was found as expected."
     end
@@ -57,7 +58,10 @@ namespace :data do
     if primer_reads.size > 0
       puts "#{primer_reads.size} isolates with associated primer reads were found:"
       primer_reads.each {|isolate| print "#{isolate.lab_nr}, " }
+      puts ""
     end
+
+    puts "Finished analysis."
   end
 
   desc "Delete faulty isolates and associated elements"
