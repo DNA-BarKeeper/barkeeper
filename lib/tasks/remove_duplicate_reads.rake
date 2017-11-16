@@ -1,28 +1,29 @@
-require 'net/http'
-require 'nokogiri'
-
-
 namespace :data do
 
   desc "Remove duplicate reads not associated with a contig"
+
   task :remove_duplicate_reads => :environment do
+    puts 'Deleting duplicate primer reads not associated with a contig if one is associated with a contig...'
+
     names_with_multiple = PrimerRead.select(:name).group(:name).having("count(name) > 1").count.keys
-    delete = []
+    primer_reads_cnt = PrimerRead.where(name: names_with_multiple).count
+    delete_cnt = 0
 
-    names_with_multiple.first(100).each do | read_name |
-      reads = PrimerRead.where("name like ?", read_name)
-      reads.each {|read| puts read.name if read.contig_id.nil?}
-      reads_wo_contig = reads.where(:contig_id => nil)
+    puts "#{primer_reads_cnt} duplicate reads were found."
 
-      if reads.size > reads_wo_contig.size && !reads_wo_contig.empty?
-        puts reads.size
-        puts reads_wo_contig.size
-        # reads_wo_contig.each { |read| read.destroy! }
-        delete.concat reads_wo_contig
+    names_with_multiple.each do | read_name |
+      duplicates = PrimerRead.where(:name => read_name)
+      reads_wo_contig = []
+      duplicates.each {|d| reads_wo_contig << d if !d.contig }
+
+      if duplicates.size > reads_wo_contig.size && !reads_wo_contig.empty?
+        reads_wo_contig.each do |read|
+          delete_cnt += 1
+          read.destroy!
+        end
       end
     end
 
-    puts delete.size
-    puts names_with_multiple.size
+    puts "#{delete_cnt} duplicate reads could be deleted."
   end
 end
