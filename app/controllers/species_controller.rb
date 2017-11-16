@@ -7,7 +7,7 @@ class SpeciesController < ApplicationController
 
   def create_xls
     SpeciesExport.perform_async
-    redirect_to individuals_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Project > Last species export."
+    redirect_to species_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Species index page > 'Download last species export'."
   end
 
   def xls
@@ -52,19 +52,19 @@ class SpeciesController < ApplicationController
 
     #todo if needed, add logic to distinguish between xls / xlsx / error etc here -> mv from model.
     Species.import_Stuttgart(file) # when adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
-    redirect_to species_index_path, notice: "Imported."
+    redirect_to species_path, notice: "Imported."
   end
 
   def import_berlin
     file = params[:file]
     Species.import_Berlin(file)
-    redirect_to species_index_path, notice: "Imported."
+    redirect_to species_path, notice: "Imported."
   end
 
   def import_gbolii
     file = params[:file]
     Species.import_gbolII(file)
-    redirect_to species_index_path, notice: "Imported."
+    redirect_to species_path, notice: "Imported."
   end
 
   def get_mar
