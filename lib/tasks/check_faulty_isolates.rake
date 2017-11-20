@@ -65,41 +65,26 @@ namespace :data do
     puts 'Finished analysis.'
   end
 
-  desc "Delete faulty isolates and associated elements"
-  task :delete_faulty_isolates => :environment do
-    'Starting deletion of faulty records...'
+  desc 'Delete incorrect isolate metadata'
+  task :delete_incorrect_isolate_metadata => :environment do
+    'Starting deletion of incorrect metadata...'
 
-    # delete plant plates
-    plate_names = [*49..51]
-    plate_names.concat [*60..73]
-
-    plate_names.each do | name |
-      PlantPlate.find_by_name(name.to_s).destroy!
-    end
-
-    puts 'Deleted faulty plant plates.'
-
-    # delete isolates and associated data
-    puts 'Now deleting faulty isolates and associated data...'
-
+    # Delete incorrect specimen associations of isolates
     gbol_numbers = [*4609..4896]
     gbol_numbers.concat [*5665..7008]
 
     gbol_numbers.each do | name |
       gbol_name = "GBoL#{name.to_s}"
-      isolate = Isolate.where("lab_nr ilike ?", gbol_name).first
+      isolate = Isolate.where("lab_nr ilike ?", gbol_name)
 
-      isolate.contigs.each do | contig |
-        contig.issues.each { |issue| issue.destroy! }
-        contig.partial_cons.each { |p_con| p_con.destroy! }
-        contig.destroy!
-        #todo Remove primer reads as well?
+      if isolate.size > 1
+        puts "More than one isolate with the name #{gbol_name} was found."
+      else
+        isolate = isolate.first
+        isolate&.update(:individual_id => nil)
       end
-
-      isolate.marker_sequences.each { |ms| ms.destroy! }
-      isolate.destroy!
     end
 
-    puts 'All faulty isolates, plates and connected data were successfully destroyed.'
+    puts 'All incorrect specimen associations were deleted.'
   end
 end
