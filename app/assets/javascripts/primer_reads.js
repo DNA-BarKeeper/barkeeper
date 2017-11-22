@@ -42,7 +42,7 @@ jQuery(function() {
             scrollLeft: rect.width
         }, 0);
     });
-    
+
     $('.pause-button').click( function () {
         var id = "#chromatogram_container_" + $(this).data('readId');
         $(id).stop();
@@ -56,7 +56,7 @@ jQuery(function() {
         var rect = el.getBoundingClientRect(); // get the bounding rectangle
 
         var curr_scroll_pos = $(id).scrollLeft();
-        
+
         var duration = (rect.width - curr_scroll_pos )*3;
 
         $(id).animate({
@@ -171,42 +171,6 @@ function draw_chromatogram(div_id, chromatogram){
 
             var drawn_position=left_clip_area.attr('width');
 
-<<<<<<< HEAD
-        var lineFunction = d3.line()
-            .x(function(d, i) { return i; })
-            .y(function(d) { return ymax - d / scale; });
-
-        var svg = d3.select(div_id)
-            .append('svg')
-            .attr('width', chromatogram1.atrace.length)
-            .attr('height', ymax)
-            .attr('id', 'chromatogram_svg');
-
-        //adjust clipped areas:
-
-        var drag_left = d3.drag()
-            .on('start', function() {
-                left_clip_area.style('fill', '#eeebb5');
-            })
-            .on('drag', function() {
-                left_clip_area.attr('width', d3.event.x);
-            })
-            .on('end', function() {
-                left_clip_area.style('fill', "#d3d3d3");
-
-                var drawn_position=left_clip_area.attr('width');
-
-                // find  peak closest to new x -> in chromatogram1.peak_indices
-                for(var g=0; g < chromatogram1.peak_indices.length; g++) {
-                    // console.log(drawn_position);
-                    // console.log(g);
-                    // console.log(chromatogram1.peak_indices[g]);
-                    // console.log("\n");
-                    // console.log(chromatogram1.peak_indices[g]-drawn_position);
-                    if (chromatogram1.peak_indices[g]-drawn_position > 0) {
-                        break;
-                    }
-=======
             // find  peak closest to new x -> in chromatogram1.peak_indices
             for(var g=0; g < chromatogram.peak_indices.length; g++) {
                 if (chromatogram.peak_indices[g]-drawn_position > 0) {
@@ -231,7 +195,6 @@ function draw_chromatogram(div_id, chromatogram){
             for(var g=chromatogram.peak_indices.length; g > 0 ; g--) {
                 if (chromatogram.peak_indices[g]-drawn_position < 0) {
                     break;
->>>>>>> master
                 }
             }
 
@@ -258,28 +221,6 @@ function draw_chromatogram(div_id, chromatogram){
                 }
             });
 
-<<<<<<< HEAD
-        var drag_right = d3.drag()
-            .on('start', function() { right_clip_area.style('fill', '#eeebb5'); })
-            .on('drag', function() {
-                right_clip_area.attr('x', d3.event.x).attr('width', chromatogram1.atrace.length - d3.event.x);
-            })
-            .on('end', function() {
-                right_clip_area.style('fill', "#d3d3d3");
-
-                var drawn_position=right_clip_area.attr('x');
-
-                // find  peak closest to new x -> in chromatogram1.peak_indices
-                for(var g=chromatogram1.peak_indices.length; g > 0 ; g--) {
-                    // console.log(drawn_position);
-                    // console.log(g);
-                    // console.log(chromatogram1.peak_indices[g]);
-                    // console.log("\n");
-                    // console.log(chromatogram1.peak_indices[g]-drawn_position);
-                    if (chromatogram1.peak_indices[g]-drawn_position < 0) {
-                        break;
-                    }
-=======
         var right_clip_area = svg.append('rect')
             .attr("x", chromatogram.peak_indices[chromatogram.trimmedReadEnd - 1] + 5)
             .attr("y", 0)
@@ -292,7 +233,6 @@ function draw_chromatogram(div_id, chromatogram){
                 },
                 "mouseout": function(d) {
                     d3.select(this).style("cursor", "default")
->>>>>>> master
                 }
             });
     }
@@ -301,48 +241,13 @@ function draw_chromatogram(div_id, chromatogram){
 
     var highlight_pos = chromatogram.peak_indices[highlighted_base - 1];
 
-   var highlight = svg.append('rect')
-       .attr("x", highlight_pos-7)
-       .attr("y", 15)
-       .attr("width", 12)
-       .attr("height", 20)
-       .attr("fill", "#fcff00");
+    var highlight = svg.append('rect')
+        .attr("x", highlight_pos-7)
+        .attr("y", 15)
+        .attr("width", 12)
+        .attr("height", 20)
+        .attr("fill", "#fcff00");
 
-<<<<<<< HEAD
-        //draw clipped areas
-
-        if (chromatogram1.trimmedReadStart) {
-
-            var left_clip_area = svg.append('rect')
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", chromatogram1.peak_indices[chromatogram1.trimmedReadStart - 1] - 5)
-                .attr("height", ymax)
-                .attr("fill", "#d3d3d3")
-                .call(drag_left)
-                    .on('mouseover', function(d) {
-                        d3.select(this).style("cursor", "col-resize");
-                    })
-                    .on('mouseout', function(d) {
-                        d3.select(this).style("cursor", "default");
-                });
-
-            var right_clip_area = svg.append('rect')
-                .attr("x", chromatogram1.peak_indices[chromatogram1.trimmedReadEnd - 1] + 5)
-                .attr("y", 0)
-                .attr("width", chromatogram1.atrace.length - chromatogram1.peak_indices[chromatogram1.trimmedReadEnd - 1] + 5)
-                .attr("height", ymax)
-                .attr("fill", "#d3d3d3")
-                .call(drag_right)
-                    .on("mouseover", function(d) {
-                        d3.select(this).style("cursor", "col-resize")
-                    })
-                    .on("mouseout", function(d) {
-                        d3.select(this).style("cursor", "default");
-                });
-        }
-=======
->>>>>>> master
 
     //draw traces
 
@@ -579,18 +484,11 @@ function change_right_clip(base_index, read_id, div_id) {
 }
 
 
-<<<<<<< HEAD
-function tempAlert(msg,duration) {
-    var el = document.createElement("div");
-    el.setAttribute("style","position:absolute;top:50%;left:50%;background-color:#fcffcc;");
-    console.log(el.getAttribute("style"));
-=======
 function tempAlert(msg, duration, div_id) {
     var parent = document.getElementById(div_id).parentNode.parentNode;
     var el = document.createElement("div");
 
     el.setAttribute("style","position:absolute;top:38%;left:50%;background-color:#fcffcc;");
->>>>>>> master
     el.innerHTML = msg;
     setTimeout(function(){
         parent.removeChild(el);
