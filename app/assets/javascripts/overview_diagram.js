@@ -12,6 +12,21 @@ $.ajax({
     }
 });
 
+$.ajax({
+    type: "GET",
+    contentType: "application/json; charset=utf-8",
+    url: 'finished_species',
+    dataType: 'json',
+    processData: false,
+    success: function (data) {
+        createVisualization(data);
+    },
+    error: function (result) {
+        console.error("Error getting data.");
+    }
+});
+
+
 // Dimensions of sunburst.
 var width = 750;
 var height = 600;

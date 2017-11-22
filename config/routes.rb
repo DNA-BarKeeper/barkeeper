@@ -8,11 +8,12 @@ GBOLapp::Application.routes.draw do
   match 'contact', to: 'home#contact', via: 'get'
   match 'overview', to: 'home#overview', via: 'get'
 
-  get 'sunburst_diagram/index'
-  get 'sunburst_diagram/finished_species', :defaults => { :format => 'json' }
+  # get 'sunburst_diagram/index'
+  # get 'sunburst_diagram/finished_species', :defaults => { :format => 'json' }
 
   get 'overview_diagram/index'
   get 'overview_diagram/all_species', :defaults => { :format => 'json' }
+  get 'overview_diagram/finished_species', :defaults => { :format => 'json' }
 
   get 'specimens_xls', action: :xls, controller: 'individuals'
   get 'specimens_create_xls', action: :create_xls, controller: 'individuals'
