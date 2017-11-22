@@ -1,0 +1,54 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <p><h3 class="panel-title">Contig Search Results <%= "- #{@contig_search.title} " unless @contig_search.title&.empty? %></h3></p>
+    <p>Search parameters:<br>
+      <%= "Name: #{@contig_search.name}, " unless @contig_search.name&.empty? %>
+      <%= "assembled, " if @contig_search.assembled == 'assembled' %>
+      <%= "not assembled, " if @contig_search.assembled == 'unassembled' %>
+      <%= "verified, " if @contig_search.verified == 'verified' %>
+      <%= "not verified, " if @contig_search.verified == 'unverified' %>
+      <%= "Marker: #{@contig_search.marker}, " unless @contig_search.marker&.empty? %>
+      <%= "Specimen: #{@contig_search.specimen}, " unless @contig_search.specimen&.empty? %>
+      <%= "Species: #{@contig_search.species}, " unless @contig_search.species&.empty? %>
+      <%= "Family: #{@contig_search.family}, " unless @contig_search.family&.empty? %>
+      <%= "Order: #{@contig_search.order}, " unless @contig_search.order&.empty? %>
+      <%= "Created since: #{@contig_search.min_age.strftime("%F")}, " if @contig_search.min_age %>
+      <%= "Created before: #{@contig_search.max_age.strftime("%F")}, " if @contig_search.max_age %>
+      <%= "Updated since: #{@contig_search.min_update.strftime("%F")}, " if @contig_search.min_update %>
+      <%= "Updated before: #{@contig_search.max_update.strftime("%F")}, " if @contig_search.max_update %>
+    </p>
+  </div>
+  <div class="panel-body">
+
+    <div class="wideTable">
+      <table id="contig_search_results" data-source="<%= contig_search_url(@contig_search, format: 'json') %>" class="table table-striped table-hover table-bordered" style="width: 100%;" >
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Species</th>
+          <th>Specimen</th>
+          <th>Assembly complete?</th>
+          <th>Last updated</th>
+          <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<p>
+  <%= button_to 'Start a new contig search', new_contig_search_path, method: 'get' %>
+</p>
+
+<p>
+  <%= button_to 'Go to contig searches index', contig_searches_path, method: 'get' %>
+</p>
+
+<p>
+  <%= button_to 'Go to contigs index', contigs_path, method: 'get' %>
+</p>

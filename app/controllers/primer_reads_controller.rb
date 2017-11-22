@@ -94,7 +94,7 @@ class PrimerReadsController < ApplicationController
 
   end
 
-  # tries to extract associated primer and isolate from primer read name (in turn based on uploaded scf file name:
+  # tries to extract associated primer and isolate from primer read name (in turn based on uploaded scf file name):
   def assign
 
     msg_hash = @primer_read.auto_assign
@@ -168,7 +168,7 @@ class PrimerReadsController < ApplicationController
   def update
     respond_to do |format|
       if @primer_read.update(primer_read_params)
-        format.html { redirect_to edit_primer_read_path(@primer_read), notice: 'Primer read was successfully updated.' }
+        format.html { redirect_back(fallback_location: edit_primer_read_path(@primer_read), notice: 'Primer read was successfully updated.') }
         format.json { render :show, status: :ok, location: @primer_read }
       else
         format.html { render :edit }
@@ -215,30 +215,35 @@ class PrimerReadsController < ApplicationController
     sequence[pos] = base
     @primer_read.update(:sequence => sequence)
 
-    # adjust contig view
-    if @primer_read.contig
-      ContigAssembly.perform_async(@primer_read.contig.id)
-    end
+    # do not auto assemble after base change!
+    # if @primer_read.contig
+    #   ContigAssembly.perform_async(@primer_read.contig.id)
+    # end
 
-    render :nothing => true
+    head :ok
   end
 
   def change_left_clip
+    puts @primer_read.name
     @primer_read.update(:trimmedReadStart => params[:position].to_i)
-    # adjust contig view
-    if @primer_read.contig
-      ContigAssembly.perform_async(@primer_read.contig.id)
-    end
-    render :nothing => true
+
+    # do not auto assemble after clipping changed!
+    # if @primer_read.contig
+    #   ContigAssembly.perform_async(@primer_read.contig.id)
+    # end
+
+    head :ok
   end
 
   def change_right_clip
     @primer_read.update(:trimmedReadEnd => params[:position].to_i)
-    # adjust contig view
-    if @primer_read.contig
-      ContigAssembly.perform_async(@primer_read.contig.id)
-    end
-    render :nothing => true
+
+    # do not auto assemble after clipping changed!
+    # if @primer_read.contig
+    #   ContigAssembly.perform_async(@primer_read.contig.id)
+    # end
+
+    head :ok
   end
 
   # DELETE /primer_reads/1
@@ -246,7 +251,7 @@ class PrimerReadsController < ApplicationController
   def destroy
     @primer_read.destroy
     respond_to do |format|
-      format.html { redirect_to primer_reads_url }
+      format.html { redirect_back(fallback_location: primer_reads_url) }
       format.json { head :no_content }
     end
   end

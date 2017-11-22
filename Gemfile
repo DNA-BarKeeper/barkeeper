@@ -39,6 +39,7 @@ gem 'rubyzip'
 gem 'roo-xls'
 gem 'chosen-rails'
 gem 'bcrypt', '~> 3.1.7', platforms: :ruby
+gem 'select2-rails'
 
 gem 'sidekiq'
 gem 'sidekiq-limit_fetch'
@@ -46,6 +47,12 @@ gem 'sidekiq-limit_fetch'
 gem 'sinatra', :require => nil
 gem 'slim'
 gem 'mime-types'
+
+# Transform coordinates from Gauss-Kruger to lat/long
+gem 'geo_transformer',  github: 'milafrerichs/geo_transformer'
+
+# run scheduled jobs with cron
+gem 'whenever', require: false
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

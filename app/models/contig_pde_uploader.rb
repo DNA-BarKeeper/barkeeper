@@ -1,4 +1,4 @@
-class ContigPdeUploader < ActiveRecord::Base
+class ContigPdeUploader < ApplicationRecord
   include ActionView::Helpers
 
   require 'zip'

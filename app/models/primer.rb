@@ -1,4 +1,4 @@
-class Primer < ActiveRecord::Base
+class Primer < ApplicationRecord
   include CommonFunctions
 
   belongs_to :marker

@@ -22,7 +22,7 @@ class IndividualsController < ApplicationController
 
   def create_xls
     SpecimenExport.perform_async
-    redirect_to individuals_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Project > Last specimens export."
+    redirect_to individuals_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Specimens index page > 'Download last specimens export'."
   end
 
   def xls
@@ -44,11 +44,19 @@ class IndividualsController < ApplicationController
         end
       end
     end
+
   end
 
   def filter
-    @individuals = Individual.where("individuals.specimen_id like ?", "%#{params[:term]}%")
-    render json: @individuals.map(&:specimen_id)
+    @individuals = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").limit(100)
+    size = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").size
+
+    if size > 100
+      message = "and #{size} more..."
+      render json: @individuals.map(&:specimen_id).push(message)
+    else
+      render json: @individuals.map(&:specimen_id)
+    end
   end
 
   # GET /individuals/1

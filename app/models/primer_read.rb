@@ -1,4 +1,4 @@
-class PrimerRead < ActiveRecord::Base
+class PrimerRead < ApplicationRecord
   belongs_to :contig
   belongs_to :partial_con
   belongs_to :primer
@@ -181,13 +181,10 @@ class PrimerRead < ActiveRecord::Base
   end
 
   def auto_assign
-    #parse name
-
     output_message = nil
     create_issue = false
 
-    # try to find matching primer
-
+    # Try to find matching primer
     regex_read_name = /^([A-Za-z0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # match group 1: GBoL number, 2: stuff, 3: primer name, 4: file extension
     name_components = self.name.match(regex_read_name)
 
@@ -195,7 +192,6 @@ class PrimerRead < ActiveRecord::Base
       primer_name = name_components[3]
 
       #logic if T7promoter or M13R-pUC.scf:
-
       if primer_name == 'T7promoter' or primer_name== 'T7' or primer_name== 'T7-1' #T7 is always forward
         # get first part out of name_components[2]
         rgx = /^_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/

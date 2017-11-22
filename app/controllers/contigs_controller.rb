@@ -14,7 +14,6 @@ class ContigsController < ApplicationController
     end
   end
 
-
   def as_fasq
 
     contig_names=params[:contig_names]
@@ -330,8 +329,15 @@ class ContigsController < ApplicationController
   end
 
   def filter
-    @contigs = Contig.order(:name).where("name like ?", "%#{params[:term]}%")
-    render json: @contigs.map(&:name)
+    @contigs = Contig.order(:name).where("name ilike ?", "%#{params[:term]}%").limit(100)
+    size = Contig.order(:name).where("name ilike ?", "%#{params[:term]}%").size
+
+    if size > 100
+      message = "and #{size} more..."
+      render json: @contigs.map(&:name).push(message)
+    else
+      render json: @contigs.map(&:name)
+    end
   end
 
   def verify
@@ -341,8 +347,7 @@ class ContigsController < ApplicationController
     else
       @contig.update(:verified_by => current_user.id, :verified_at => Time.now, :assembled => true, :verified => true)
 
-      # generate / update markersequence
-      # generate marker sequence
+      # generate / update marker sequence
       ms=MarkerSequence.find_or_create_by(:name => @contig.name)
       partial_cons=@contig.partial_cons.first
       ms.sequence = partial_cons.aligned_sequence.gsub('-','')
@@ -415,7 +420,7 @@ class ContigsController < ApplicationController
       if @contig.update(contig_params)
         format.html {
           Issue.create(:title => "Contig updated by #{current_user.name}", :contig_id => @contig.id)
-          redirect_to edit_contig_path(@contig), notice: 'Contig was successfully updated.'
+          redirect_back(fallback_location: edit_contig_path(@contig), notice: 'Contig was successfully updated.')
         }
         format.json { render :show, status: :ok, location: @contig }
       else
