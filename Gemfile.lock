@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/milafrerichs/geo_transformer.git
+  revision: d0521a31460c575f44c7874bd8e6b38784637b0b
+  specs:
+    geo_transformer (0.0.1)
+
+GIT
   remote: git://github.com/rweng/jquery-datatables-rails.git
   revision: d486b31b192a2924b1913e080ad23460e6b96d31
   specs:
@@ -404,6 +410,7 @@ DEPENDENCIES
   chosen-rails
   coffee-rails (~> 4.2)
   devise
+  geo_transformer!
   jbuilder (~> 2.5)
   jquery-datatables-rails!
   jquery-fileupload-rails

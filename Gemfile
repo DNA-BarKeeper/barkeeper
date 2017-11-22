@@ -48,6 +48,9 @@ gem 'sinatra', :require => nil
 gem 'slim'
 gem 'mime-types'
 
+# Transform coordinates from Gauss-Kruger to lat/long
+gem 'geo_transformer',  github: 'milafrerichs/geo_transformer'
+
 # run scheduled jobs with cron
 gem 'whenever', require: false
 
