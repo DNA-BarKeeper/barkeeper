@@ -1,4 +1,4 @@
-class Family < ActiveRecord::Base
+class Family < ApplicationRecord
   has_many :species
   belongs_to :order
   validates_presence_of :name

@@ -84,16 +84,19 @@ section {
 }
 
 input[type=text] {
-  border: none;
-  padding: 0;
-  -webkit-appearance: none;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
   box-shadow: none !important;
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 textarea {
   padding: 0px !important;
   margin: 0px !important;
-  border: none !important;
+  border: 1px solid lightgrey !important;
   overflow: auto !important;
   outline: none !important;
 
@@ -219,4 +222,54 @@ body.about_page {
 
 #percentage {
   font-size: 2.5em;
+}
+
+ul.ui-autocomplete {
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: absolute;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: solid 1px lightgrey;
+  cursor: default;
+  li {
+    background-color: white;
+    margin: 0;
+    padding: 3px;
+    a {
+      color: #000;
+      display: block;
+      padding: 3px;
+    }
+    a.ui-state-hover, a.ui-state-active {
+      background-color: lightgrey;
+    }
+  }
+}
+
+.hasDatepicker {
+  display: inline-block;
+}
+
+.ui-helper-hidden-accessible {
+  display: none;
+}
+
+.table.table-striped.table-hover.table-bordered {
+  width: 100% !important;
+}
+
+input.form-control {
+  border: 1px solid lightgrey !important;
+  padding: 5px !important;
+  width: auto !important;
+}
+
+a.anchor {
+  display: block;
+  position: relative;
+  top: -30px;
+  visibility: hidden;
 }

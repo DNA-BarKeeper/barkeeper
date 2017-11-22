@@ -31,6 +31,8 @@ GBOLapp::Application.routes.draw do
 
   get 'primer_reads/:id/edit/:pos', action: :go_to_pos, controller: 'primer_reads'
 
+  resources :contig_searches
+
   resources :contigs do
 
     collection do
@@ -62,6 +64,13 @@ GBOLapp::Application.routes.draw do
       get 'overlap_background'
     end
 
+  end
+
+  resources :individuals do
+    collection do
+      get :filter
+      get :problematic_specimens
+    end
   end
 
   resources :primer_reads do
@@ -133,15 +142,6 @@ GBOLapp::Application.routes.draw do
 
   resources :orders
 
-  resources :individuals do
-    collection do
-      get :filter
-      # get 'create_xls'
-      # get 'xls'
-      get :problematic_specimens
-    end
-  end
-
   resources :tissues
 
   resources :statuses
@@ -151,7 +151,6 @@ GBOLapp::Application.routes.draw do
       post :import
     end
   end
-
 
   resources :plant_plates
 

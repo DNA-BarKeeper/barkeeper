@@ -15,8 +15,15 @@ class MarkerSequencesController < ApplicationController
   end
 
   def filter
-    @marker_sequences = MarkerSequence.where('name ILIKE ?', "%#{params[:term]}%").order(:name)
-    render json: @marker_sequences.map(&:name)
+    @marker_sequences = MarkerSequence.where('name ILIKE ?', "%#{params[:term]}%").order(:name).limit(100)
+    size = MarkerSequence.where('name ILIKE ?', "%#{params[:term]}%").order(:name).size
+
+    if size > 100
+      message = "and #{size} more..."
+      render json: @marker_sequences.map(&:name).push(message)
+    else
+      render json: @marker_sequences.map(&:name)
+    end
   end
 
   # GET /marker_sequences/1

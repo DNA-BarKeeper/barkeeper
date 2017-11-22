@@ -10,10 +10,15 @@ set :puma_workers,    2
 # Always deploy currently checked out branch
 set :branch, $1 if `git branch` =~ /\* (\S+)\s/m
 
-set :rbenv_type, :user
-set :rbenv_ruby, '2.3.3'
+# Rbenv setup
+set :whenever_environment, fetch(:stage)
+set :whenever_identifier, "#{fetch(:application)}_#{fetch(:stage)}"
+set :whenever_variables, -> do
+  "'environment=#{fetch :whenever_environment}" \
+  "&rbenv_root=#{fetch :rbenv_path}'"
+end
 
-# Don't change these unless you know what you're doing
+# Puma setup (Don't change these unless you know what you're doing)
 set :pty,             false
 set :use_sudo,        false
 set :stage,           :production
@@ -29,15 +34,9 @@ set :puma_preload_app, true
 set :puma_worker_timeout, nil
 set :puma_init_active_record, true  # Change to false when not using ActiveRecord
 
+# Sidekiq setup
 set :sidekiq_log => File.join(release_path, 'log', 'sidekiq.log')
 set :sidekiq_config => File.join(shared_path, 'config', 'sidekiq.yml')
-#
-# set :default_env, {
-#     'VERSION' => '',
-#     'RELEASE_DATE' => '',
-#     'LAST_COMMIT_ID' => '',
-#     'LAST_COMMIT_AUTHOR' => ''
-# }
 
 ## Defaults:
 # set :scm,           :git
@@ -108,13 +107,3 @@ task :symlink_config_files do
     execute symlinks.map{|from, to| "ln -nfs #{from} #{to}"}.join(" && ")
   end
 end
-#
-# desc "Set new version info"
-# task :set_version_info do
-#   # needed: version number, release time, last commit id, person who did this commit
-#
-# end
-
-# ps aux | grep puma    # Get puma pid
-# kill -s SIGUSR2 pid   # Restart puma
-# kill -s SIGTERM pid   # Stop puma

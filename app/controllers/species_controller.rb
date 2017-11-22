@@ -7,7 +7,7 @@ class SpeciesController < ApplicationController
 
   def create_xls
     SpeciesExport.perform_async
-    redirect_to individuals_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Project > Last species export."
+    redirect_to species_index_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Species index page > 'Download last species export'."
   end
 
   def xls
@@ -27,8 +27,15 @@ class SpeciesController < ApplicationController
   end
 
   def filter
-    @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:composed_name)
-    render json: @species.map(&:composed_name)
+    @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:composed_name).limit(100)
+    size = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:composed_name).size
+
+    if size > 100
+      message = "and #{size} more..."
+      render json: @species.map(&:composed_name).push(message)
+    else
+      render json: @species.map(&:composed_name)
+    end
   end
 
   def show_individuals

@@ -1,4 +1,4 @@
-class TxtUploader < ActiveRecord::Base
+class TxtUploader < ApplicationRecord
 
   has_attached_file :uploaded_file,
                     :path => "/output.txt"

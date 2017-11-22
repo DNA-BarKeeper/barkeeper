@@ -1,4 +1,4 @@
-class Marker < ActiveRecord::Base
+class Marker < ApplicationRecord
   has_many :marker_sequences
   has_many :contigs
   has_many :primers

@@ -1,4 +1,4 @@
-class HigherOrderTaxon < ActiveRecord::Base
+class HigherOrderTaxon < ApplicationRecord
   has_many :orders
   has_many :families, :through => :orders
   has_and_belongs_to_many :markers

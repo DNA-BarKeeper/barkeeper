@@ -1,6 +1,6 @@
 # write SPECIMENS & STATUS  to Excel-XML (xls) for use by ZFMK for their "Portal / db : bolgermany.de "
 
-class XmlUploader < ActiveRecord::Base
+class XmlUploader < ApplicationRecord
   include ActionView::Helpers
 
   #todo later rename  :uploaded_file to xml_File or s.th.

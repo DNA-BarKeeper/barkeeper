@@ -1,4 +1,4 @@
-class SpeciesXmlUploader < ActiveRecord::Base
+class SpeciesXmlUploader < ApplicationRecord
 
 # write SPECIMENS & STATUS  to Excel-XML (xls) for use by ZFMK for their "Portal / db : bolgermany.de "
 

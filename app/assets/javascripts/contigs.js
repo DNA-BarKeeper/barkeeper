@@ -116,6 +116,15 @@ jQuery(function() {
 
     });
 
+    $(".hide_primer_read").click(function() {
+        var id = $(this).data('divId');
+        $(id).hide();
+    });
+
+    $(".show_primer_read").click(function() {
+        var id = $(this).data('divId');
+        $(id).show();
+    });
 });
 
 function draw_as_single_page(id, page){
@@ -501,8 +510,8 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                 .style("cursor", "crosshair")
                 .on('click', function () {
                     var coordinates = d3.select(this).attr("id").split("-");
-                    var url='/primer_reads/'+coordinates[0]+'/edit/'+coordinates[1];
-                    window.open(url, '_blank');
+                    $('#primer_read_' + coordinates[0] + '_view').show(); // Show div with primer read view
+                    window.location = '#read_view_' + coordinates[0]; // Jump to primer read view
                 });
         }
 

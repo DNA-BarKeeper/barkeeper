@@ -8,11 +8,12 @@ class FamiliesController < ApplicationController
   # GET /families.json
 
   def index
-    @families = Family.includes(:order).all
+    @families = Family.includes(:order).order('name asc').all
+    respond_to :html, :json
   end
 
   def filter
-    @families = Family.order(:name).where("name like ?", "%#{params[:term]}%")
+    @families = Family.order(:name).where("name ilike ?", "%#{params[:term]}%")
     render json: @families.map(&:name)
   end
 
