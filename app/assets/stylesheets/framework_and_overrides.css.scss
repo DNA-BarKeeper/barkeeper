@@ -169,60 +169,64 @@ body.about_page {
   padding: 3px;
 }
 
-.overview_diagram {
-  font-size: 12px;
-  font-weight: 400;
-  background-color: #fff;
-  width: 960px;
-  height: 700px;
-  margin-top: 10px;
+// Overview diagram styles:
+
+.overview_diagram h3 {
+  font-size: 24px;
 }
 
 #main {
   float: left;
-  width: 750px;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: #fff;
+  height: 750px;
+  margin-top: 10px;
 }
 
 #sidebar {
   float: right;
-  width: 100px;
-}
-
-#sequence {
-  width: 600px;
-  height: 70px;
+  width: 130px;
 }
 
 #legend {
   padding: 10px 0 0 3px;
 }
 
-#sequence text, #legend text {
+.sequence {
+  width: 600px;
+  height: 70px;
+  font-size: 13px;
+}
+
+.sequence text, #legend text {
   font-weight: 600;
   fill: #fff;
 }
 
-#chart {
+.chart {
   position: relative;
 }
 
-#chart path {
+.chart path {
   stroke: #fff;
 }
 
-#explanation {
+.explanation {
   position: absolute;
-  top: 235px;
-  left: 305px;
+  top: 230px;
+  left: 253px;
   width: 140px;
   text-align: center;
   color: #666;
-  z-index: -1;
 }
 
-#percentage {
+.percentage {
   font-size: 2.5em;
+  display: inline-block;
 }
+
+// Advanced search styles:
 
 ul.ui-autocomplete {
   max-height: 200px;
