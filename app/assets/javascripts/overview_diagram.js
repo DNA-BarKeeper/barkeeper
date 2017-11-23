@@ -6,6 +6,8 @@ $.ajax({
     processData: false,
     success: function (data) {
         createVisualization(data, 1);
+        drawLegend(marker_legend_entries);
+        drawLegend(taxa_legend_entries);
     },
     error: function (result) {
         console.error("Error getting data.");
@@ -26,9 +28,8 @@ $.ajax({
     }
 });
 
-
 // Dimensions of sunburst.
-var width = 750;
+var width = 650;
 var height = 600;
 var radius = Math.min(width, height) / 2;
 
@@ -40,11 +41,14 @@ var b = {
 var color = d3.scaleOrdinal(d3.schemeCategory20b);
 
 // Mapping of step names to colors.
-var legend_entries = [
+var marker_legend_entries = [
     "trnLF",
     "rpl16",
     "ITS",
-    "trnK-matK",
+    "trnK-matK"
+];
+
+var taxa_legend_entries = [
     "Marchantiophytina",
     "Bryophytina",
     "Anthocerotophytina",
@@ -56,21 +60,21 @@ var legend_entries = [
 ];
 
 // Total size of all segments; we set this later, after loading the data.
-var totalSize = 0;
+var totalSizes = [];
 
 var vis;
 
 var diagram_id;
 
 // Main function to draw and set up the visualization, once we have the data.
-function createVisualization(json, diagram_id) {
-    diagram_id = diagram_id;
+function createVisualization(json, id) {
+    diagram_id = id;
 
     vis = d3.select("#chart" + diagram_id).append("svg")
         .attr("width", width)
         .attr("height", height)
         .append("g")
-        .attr("id", "container")
+        .attr("id", "container" + diagram_id)
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
     var partition = d3.partition()
@@ -84,12 +88,12 @@ function createVisualization(json, diagram_id) {
 
     // Basic setup of page elements.
     initializeBreadcrumbTrail();
-    drawLegend();
 
     // Bounding circle underneath the sunburst, to make it easier to detect
     // when the mouse leaves the parent g.
     vis.append("svg:circle")
         .attr("r", radius)
+        .attr("id", "circle" + diagram_id)
         .style("opacity", 0);
 
     // Turn the data into a d3 hierarchy and calculate the sums.
@@ -114,14 +118,17 @@ function createVisualization(json, diagram_id) {
         .on("mouseover", mouseover);
 
     // Add the mouseleave handler to the bounding circle.
-    d3.select("#container").on("mouseleave", mouseleave);
+    d3.select("#container" + diagram_id).on("mouseleave", mouseleave);
 
     // Get total size of the tree = value of root node from partition.
-    totalSize = path.datum().value;
+    totalSizes[diagram_id] = path.datum().value;
 };
 
 // Fade all but the current sequence, and show it in the breadcrumb trail.
 function mouseover(d) {
+    id = $(this).closest('.chart').data('id');
+    totalSize = totalSizes[id];
+    var chart = d3.select("#chart" + id);
 
     var percentage = (100 * d.value / totalSize).toPrecision(3);
     var percentageString = percentage + "% (" + d.value + ")";
@@ -129,33 +136,34 @@ function mouseover(d) {
         percentageString = "< 0.1%";
     }
 
-    d3.select("#percentage" + diagram_id)
+    d3.select("#percentage" + id)
         .text(percentageString);
 
-    d3.select("#explanation" + diagram_id)
+    d3.select("#explanation" + id)
         .style("visibility", "");
 
     var sequenceArray = d.ancestors().reverse();
     sequenceArray.shift(); // remove root node from the array
-    updateBreadcrumbs(sequenceArray, percentageString);
+    updateBreadcrumbs(sequenceArray, percentageString, id);
 
     // Fade all the segments.
-    d3.selectAll("path")
+    chart.selectAll("path")
         .style("opacity", 0.3);
 
     // Then highlight only those that are an ancestor of the current segment.
-    vis.selectAll("path")
+    chart.selectAll("path")
         .filter(function(node) {
-            return (sequenceArray.indexOf(node) >= 0);
+            return (sequenceArray.includes(node));
         })
         .style("opacity", 1);
 }
 
 // Restore everything to full opacity when moving off the visualization.
 function mouseleave(d) {
+    id = $(this).closest('.chart').data('id');
 
     // Hide the breadcrumb trail
-    d3.select("#trail")
+    d3.select("#trail" + id)
         .style("visibility", "hidden");
 
     // Deactivate all segments during transition.
@@ -170,24 +178,26 @@ function mouseleave(d) {
             d3.select(this).on("mouseover", mouseover);
         });
 
-    d3.select("#explanation" + diagram_id)
+    d3.select("#explanation" + id)
         .style("visibility", "hidden");
 }
 
 function initializeBreadcrumbTrail() {
+
     // Add the svg area.
     var trail = d3.select("#sequence" + diagram_id).append("svg:svg")
         .attr("width", width)
         .attr("height", 50)
-        .attr("id", "trail");
+        .attr("id", "trail" + diagram_id);
     // Add the label at the end, for the percentage.
     trail.append("svg:text")
-        .attr("id", "endlabel")
+        .attr("id", "endlabel" + diagram_id)
         .style("fill", "#000");
 }
 
 // Generate a string that describes the points of a breadcrumb polygon.
 function breadcrumbPoints(d, i) {
+
     var points = [];
     points.push("0,0");
     points.push(b.w + ",0");
@@ -201,10 +211,10 @@ function breadcrumbPoints(d, i) {
 }
 
 // Update the breadcrumb trail to show the current sequence and percentage.
-function updateBreadcrumbs(nodeArray, percentageString) {
+function updateBreadcrumbs(nodeArray, percentageString, id) {
 
     // Data join; key function combines name and depth (= position in sequence).
-    var trail = d3.select("#trail")
+    var trail = d3.select("#trail" + id)
         .selectAll("g")
         .data(nodeArray, function(d) { return d.data.name + d.depth; });
 
@@ -231,7 +241,7 @@ function updateBreadcrumbs(nodeArray, percentageString) {
     });
 
     // Now move and update the percentage at the end.
-    d3.select("#trail").select("#endlabel")
+    d3.select("#trail" + id).select("#endlabel" + id)
         .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
         .attr("y", b.h / 2)
         .attr("dy", "0.35em")
@@ -239,12 +249,12 @@ function updateBreadcrumbs(nodeArray, percentageString) {
         .text(percentageString);
 
     // Make the breadcrumb trail visible, if it's hidden.
-    d3.select("#trail")
+    d3.select("#trail" + id)
         .style("visibility", "");
 
 }
 
-function drawLegend() {
+function drawLegend(legend_entries) {
 
     // Dimensions of legend item: width, height, spacing, radius of rounded rect.
     var li = {
@@ -267,7 +277,7 @@ function drawLegend() {
         .attr("ry", li.r)
         .attr("width", li.w)
         .attr("height", li.h)
-        .style("fill", function(d) { return color(d); })
+        .style("fill", function(d) { return color(d); });
 
     g.append("svg:text")
         .attr("x", li.w / 2)
@@ -275,4 +285,8 @@ function drawLegend() {
         .attr("dy", "0.35em")
         .attr("text-anchor", "middle")
         .text(function(d) { return d; });
+
+    // Add spacer between legends
+    d3.select("#legend").append("svg:svg")
+        .attr("height", 0.5 * li.h);
 }

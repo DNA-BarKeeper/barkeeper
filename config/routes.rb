@@ -2,14 +2,11 @@ GBOLapp::Application.routes.draw do
 
   root :to => "home#about"
 
-  match 'help',    to: 'home#help',    via: 'get'
-  match 'about',   to: 'home#about',   via: 'get'
-  match 'impressum',   to: 'home#impressum',   via: 'get'
+  match 'help', to: 'home#help', via: 'get'
+  match 'about', to: 'home#about', via: 'get'
+  match 'impressum', to: 'home#impressum', via: 'get'
   match 'contact', to: 'home#contact', via: 'get'
   match 'overview', to: 'home#overview', via: 'get'
-
-  # get 'sunburst_diagram/index'
-  # get 'sunburst_diagram/finished_species', :defaults => { :format => 'json' }
 
   get 'overview_diagram/index'
   get 'overview_diagram/all_species', :defaults => { :format => 'json' }
