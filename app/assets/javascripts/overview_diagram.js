@@ -5,7 +5,7 @@ $.ajax({
     dataType: 'json',
     processData: false,
     success: function (data) {
-        createVisualization(data);
+        createVisualization(data, 1);
     },
     error: function (result) {
         console.error("Error getting data.");
@@ -19,7 +19,7 @@ $.ajax({
     dataType: 'json',
     processData: false,
     success: function (data) {
-        createVisualization(data);
+        createVisualization(data, 2);
     },
     error: function (result) {
         console.error("Error getting data.");
@@ -60,9 +60,13 @@ var totalSize = 0;
 
 var vis;
 
+var diagram_id;
+
 // Main function to draw and set up the visualization, once we have the data.
-function createVisualization(json) {
-    vis = d3.select("#chart").append("svg")
+function createVisualization(json, diagram_id) {
+    diagram_id = diagram_id;
+
+    vis = d3.select("#chart" + diagram_id).append("svg")
         .attr("width", width)
         .attr("height", height)
         .append("g")
@@ -125,10 +129,10 @@ function mouseover(d) {
         percentageString = "< 0.1%";
     }
 
-    d3.select("#percentage")
+    d3.select("#percentage" + diagram_id)
         .text(percentageString);
 
-    d3.select("#explanation")
+    d3.select("#explanation" + diagram_id)
         .style("visibility", "");
 
     var sequenceArray = d.ancestors().reverse();
@@ -166,13 +170,13 @@ function mouseleave(d) {
             d3.select(this).on("mouseover", mouseover);
         });
 
-    d3.select("#explanation")
+    d3.select("#explanation" + diagram_id)
         .style("visibility", "hidden");
 }
 
 function initializeBreadcrumbTrail() {
     // Add the svg area.
-    var trail = d3.select("#sequence").append("svg:svg")
+    var trail = d3.select("#sequence" + diagram_id).append("svg:svg")
         .attr("width", width)
         .attr("height", 50)
         .attr("id", "trail");
