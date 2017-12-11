@@ -31,5 +31,5 @@
   Assembly complete for <%= Contig.where(:assembled => true).count %> contigs.
 </p>
 
-<%= button_to 'Perform read assembly for all contigs with incomplete assembly', assemble_all_contigs_path %><br>
+<%= button_to 'Perform read assembly for all contigs with incomplete assembly', assemble_all_contigs_path, method: 'get' %><br>
 <!--<%= link_to 'Download .pde files for all', pde_all_contigs_path %>-->
