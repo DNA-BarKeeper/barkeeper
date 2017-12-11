@@ -143,30 +143,27 @@ function draw_chromatogram(div_id, chromatogram){
 
     var scale = 4;
 
-    var lineFunction = d3.svg.line()
-        .x(function (d, i) {
-            return i;
-        })
-        .y(function (d) {
-            return ymax - d / scale;
-        })
-        .interpolate("linear");
+    var lineFunction = d3.line()
+        .x(function (d, i) { return i; })
+        .y(function (d) { return ymax - d / scale; });
 
     var svg = d3.select('#' + div_id)
         .append('svg')
         .attr('width', chromatogram.atrace.length)
-        .attr('height', 250)
+        .attr('height', ymax)
         .attr('id', 'chromatogram_svg');
 
 
     //adjust clipped areas:
 
-    var drag_left = d3.behavior.drag()
-        .on('dragstart', function() { left_clip_area.style('fill', '#eeebb5'); })
+    var drag_left = d3.drag()
+        .on('start', function() {
+            left_clip_area.style('fill', '#eeebb5');
+        })
         .on('drag', function() {
             left_clip_area.attr('width', d3.event.x);
         })
-        .on('dragend', function() {
+        .on('end', function() {
             left_clip_area.style('fill', "#d3d3d3");
 
             var drawn_position=left_clip_area.attr('width');
@@ -181,12 +178,14 @@ function draw_chromatogram(div_id, chromatogram){
             change_left_clip(g+1, chromatogram.id, div_id);
         });
 
-    var drag_right = d3.behavior.drag()
-        .on('dragstart', function() { right_clip_area.style('fill', '#eeebb5'); })
+    var drag_right = d3.drag()
+        .on('start', function() {
+            right_clip_area.style('fill', '#eeebb5');
+        })
         .on('drag', function() {
             right_clip_area.attr('x', d3.event.x).attr('width', chromatogram.atrace.length - d3.event.x);
         })
-        .on('dragend', function() {
+        .on('end', function() {
             right_clip_area.style('fill', "#d3d3d3");
 
             var drawn_position=right_clip_area.attr('x');
@@ -212,13 +211,12 @@ function draw_chromatogram(div_id, chromatogram){
             .attr("width", chromatogram.peak_indices[chromatogram.trimmedReadStart - 1] - 5)
             .attr("height", ymax)
             .attr("fill", "#d3d3d3")
-            .call(drag_left).on({
-                "mouseover": function(d) {
+            .call(drag_left)
+                .on('mouseover', function(d) {
                     d3.select(this).style("cursor", "col-resize")
-                },
-                "mouseout": function(d) {
+                })
+            .on('mouseout', function(d) {
                     d3.select(this).style("cursor", "default");
-                }
             });
 
         var right_clip_area = svg.append('rect')
@@ -227,13 +225,12 @@ function draw_chromatogram(div_id, chromatogram){
             .attr("width", chromatogram.atrace.length - chromatogram.peak_indices[chromatogram.trimmedReadEnd - 1] + 5)
             .attr("height", ymax)
             .attr("fill", "#d3d3d3")
-            .call(drag_right).on({
-                "mouseover": function(d) {
-                    d3.select(this).style("cursor", "col-resize")
-                },
-                "mouseout": function(d) {
-                    d3.select(this).style("cursor", "default")
-                }
+            .call(drag_left)
+            .on('mouseover', function(d) {
+                d3.select(this).style("cursor", "col-resize")
+            })
+            .on('mouseout', function(d) {
+                d3.select(this).style("cursor", "default");
             });
     }
 
@@ -327,7 +324,6 @@ function draw_chromatogram(div_id, chromatogram){
             .attr("fill", color)
             .attr("text-anchor", ta)
             .attr("id", i)
-
             .on('mouseover', function () {
                 d3.select(this)
                     .style('font-size', '14px')
@@ -339,25 +335,22 @@ function draw_chromatogram(div_id, chromatogram){
                     .style('font-weight', 'normal')
             })
             .on('click', function () {
-                var p = this.parentNode;
 
                 var selected_base = d3.select(this);
-                var p_el = d3.select(p);
+                var p_el = d3.select(this.parentNode);
 
                 var current_x = selected_base.attr("x");
                 var current_y = selected_base.attr("y");
                 var current_char = selected_base.text();
                 var base_index = selected_base.attr("id");
 
-                var frm = p_el.append("foreignObject");
+                var frm = p_el.append('foreignObject');
 
                 var inp = frm
-                    .attr({
-                        'x': current_x - 5,
-                        'y': 12,
-                        'width': 20,
-                        'height': 20
-                    })
+                    .attr('x', current_x - 5)
+                    .attr('y', 12)
+                    .attr('width', 20)
+                    .attr('height', 20)
                     .append("xhtml:form")
                     .append('xhtml:input')
                     .attr("value", current_char)
