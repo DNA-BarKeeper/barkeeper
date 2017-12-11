@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171107143211) do
+ActiveRecord::Schema.define(version: 20171207133553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -523,5 +523,15 @@ ActiveRecord::Schema.define(version: 20171107143211) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+
+  create_view "overview_all_taxa_matviews", materialized: true,  sql_definition: <<-SQL
+      SELECT f.name AS family,
+      o.name AS "order",
+      hot.name AS higher_order_taxon
+     FROM ((families f
+       JOIN orders o ON ((f.order_id = o.id)))
+       JOIN higher_order_taxa hot ON ((o.higher_order_taxon_id = hot.id)));
+  SQL
 
 end
