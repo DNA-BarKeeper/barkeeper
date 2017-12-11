@@ -54,6 +54,9 @@ gem 'geo_transformer',  github: 'milafrerichs/geo_transformer'
 # run scheduled jobs with cron
 gem 'whenever', require: false
 
+# Adds methods for creating and managing database views
+gem 'scenic'
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
