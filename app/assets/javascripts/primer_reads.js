@@ -12,6 +12,7 @@ jQuery(function() {
         $(alignment_id).animate({
             scrollLeft: scroll_to - 7
         }, 0);
+
     }
 
     $('.go-to-button_primer_read').click( function () {

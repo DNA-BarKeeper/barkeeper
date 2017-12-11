@@ -8,6 +8,7 @@
 //= require jquery-fileupload/vendor/tmpl
 //= require chosen.jquery
 //= require jquery.turbolinks
+//= require d3
 //= require bootstrap
 //= require keyboard_shortcuts
 //= require_tree .
