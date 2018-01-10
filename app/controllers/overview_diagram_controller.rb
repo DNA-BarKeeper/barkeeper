@@ -6,7 +6,9 @@ class OverviewDiagramController < ApplicationController
   def all_species
     root = {:name => 'root', 'children' => []}
     markers = Marker.gbol_marker.select(:id, :name)
+
     data = HigherOrderTaxon.includes(orders: [families: [:species]])
+    families_mat = OverviewAllTaxaMatview.group(:family).sum(:species_cnt)
 
     i = 0
     markers.each do |marker|
@@ -25,7 +27,7 @@ class OverviewDiagramController < ApplicationController
           l = 0
           families.each do |family|
             children4 = children3[k]['children']
-            children4[l] = {:name => family.name, :size => family.species.count}
+            children4[l] = {:name => family.name, :size => families_mat[family.name].to_i}
             l += 1
           end
           k += 1

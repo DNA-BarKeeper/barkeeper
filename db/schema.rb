@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171207133553) do
+ActiveRecord::Schema.define(version: 20171213141704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -527,11 +527,53 @@ ActiveRecord::Schema.define(version: 20171207133553) do
 
   create_view "overview_all_taxa_matviews", materialized: true,  sql_definition: <<-SQL
       SELECT f.name AS family,
-      o.name AS "order",
-      hot.name AS higher_order_taxon
-     FROM ((families f
-       JOIN orders o ON ((f.order_id = o.id)))
-       JOIN higher_order_taxa hot ON ((o.higher_order_taxon_id = hot.id)));
+      f.id,
+      f.name,
+      f.author,
+      f.created_at,
+      f.updated_at,
+      f.order_id,
+      count(sp.family_id) AS species_cnt
+     FROM (families f
+       LEFT JOIN species sp ON ((f.id = sp.family_id)))
+    GROUP BY f.id, f.name;
+  SQL
+
+  create_view "overview_finished_taxa_matviews", materialized: true,  sql_definition: <<-SQL
+      SELECT f.name AS family,
+      f.id,
+      f.name,
+      f.author,
+      f.created_at,
+      f.updated_at,
+      f.order_id,
+      count(spe.family_id) AS all_species_cnt,
+      count(
+          CASE
+              WHEN (mseq.marker_id = 4) THEN 1
+              ELSE NULL::integer
+          END) AS trnlf_cnt,
+      count(
+          CASE
+              WHEN (mseq.marker_id = 5) THEN 1
+              ELSE NULL::integer
+          END) AS its_cnt,
+      count(
+          CASE
+              WHEN (mseq.marker_id = 6) THEN 1
+              ELSE NULL::integer
+          END) AS rpl16_cnt,
+      count(
+          CASE
+              WHEN (mseq.marker_id = 7) THEN 1
+              ELSE NULL::integer
+          END) AS trnk_matk_cnt
+     FROM ((((families f
+       LEFT JOIN species spe ON ((f.id = spe.family_id)))
+       LEFT JOIN individuals ind ON ((spe.id = ind.species_id)))
+       LEFT JOIN isolates iso ON ((ind.id = iso.individual_id)))
+       LEFT JOIN marker_sequences mseq ON ((iso.id = mseq.isolate_id)))
+    GROUP BY f.id, f.name;
   SQL
 
 end
