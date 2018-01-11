@@ -20,29 +20,59 @@ class Isolate < ApplicationRecord
   end
 
   def self.isolates_in_order(order_id)
+    puts "Writing CSV..."
 
-    markers=Marker.gbol_marker.order(:name).map { |m| m.name + "\t" }.join
+    require 'csv'
+    CSV.open("caryophyllales.csv", "w") do |csv|
 
-    puts "Web app ID\tGBOL-Nr\tArtname\tmicronic plate id copy\twell pos micronic plate copy\tmicronic_tube_id_copy\tconcentration copy\tLocation in Rack\tRack\tShelf\tFreezer\t#{markers}"
+      markers = Marker.gbol_marker.order(:name)
 
-    Isolate.includes(:individual).joins(:individual => {:species => {:family => :order}}).where(families: {order_id: order_id}).each do |i|
+      header = ['Web_App_ID',
+                'GBoL-Nr',
+                'Artname',
+                'micronic_plate_id_copy',
+                'well_pos_micronic_plate_copy',
+                'micronic_tube_id_copy',
+                'concentration_copy',
+                'Location_in_Rack',
+                'RackShelf',
+                'Freezer']
 
-      if i.micronic_plate_id_copy
+      markers.each { |m| header << m.name }
 
-        micronic_plate_copy = MicronicPlate.includes(:lab_rack).find(i.micronic_plate_id_copy)
+      csv << header
 
-        marker_contig_counts_string = ""
+      Isolate.includes(:individual).joins(:individual => {:species => {:family => :order}}).where(families: {order_id: order_id}).each do |i|
 
-        Marker.gbol_marker.order(:name).each do |m|
-          marker_contig_counts_string += "#{i.contigs.assembled.where(:marker_id => m.id).count}\t"
+        if i.micronic_plate_id_copy
+
+          micronic_plate_copy = MicronicPlate.includes(:lab_rack).find(i.micronic_plate_id_copy)
+
+          marker_contig_counts_string = ""
+
+          Marker.gbol_marker.order(:name).each do |m|
+            marker_contig_counts_string += "#{i.contigs.assembled.where(:marker_id => m.id).count}\t"
+          end
+
+          csv << [
+              i.id,
+              i.lab_nr,
+              i.individual.species.composed_name,
+              micronic_plate_copy.micronic_plate_id,
+              i.well_pos_micronic_plate_copy,
+              i.micronic_tube_id_copy.to_i,
+              i.concentration_copy,
+              micronic_plate_copy.location_in_rack,
+              micronic_plate_copy.try(:lab_rack).try(:rackcode),
+              micronic_plate_copy.try(:lab_rack).try(:shelf),
+              micronic_plate_copy.try(:lab_rack).try(:freezer).try(:freezercode),
+              marker_contig_counts_string
+          ]
         end
-
-
-        puts "#{i.id}\t#{i.lab_nr}\t#{i.individual.species.composed_name}\t#{micronic_plate_copy.micronic_plate_id}\t#{i.well_pos_micronic_plate_copy}\t#{i.micronic_tube_id_copy.to_i}\t#{i.concentration_copy}\t#{micronic_plate_copy.location_in_rack}\t#{micronic_plate_copy.try(:lab_rack).try(:rackcode)}\t#{micronic_plate_copy.try(:lab_rack).try(:shelf)}\t#{micronic_plate_copy.try(:lab_rack).try(:freezer).try(:freezercode)}\t#{marker_contig_counts_string}"
       end
-
     end
 
+    puts "Finished."
   end
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
