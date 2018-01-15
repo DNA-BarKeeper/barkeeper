@@ -6,8 +6,7 @@ class OverviewDiagramController < ApplicationController
   def all_species
     root = {:name => 'root', 'children' => []}
     markers = Marker.gbol_marker.select(:id, :name)
-
-    data = HigherOrderTaxon.includes(orders: [families: [:species]])
+    data = HigherOrderTaxon.includes(orders: [:families])
     families_mat = OverviewAllTaxaMatview.group(:family).sum(:species_cnt)
 
     i = 0
@@ -45,6 +44,12 @@ class OverviewDiagramController < ApplicationController
     root = {:name => 'root', 'children' => []}
     markers = Marker.gbol_marker.select(:id, :name)
     data = HigherOrderTaxon.includes(orders: [:families])
+    size_per_marker = {
+        'trnLF' => OverviewFinishedTaxaMatview.group(:family).sum(:trnLF_cnt),
+        'ITS' => OverviewFinishedTaxaMatview.group(:family).sum(:ITS_cnt),
+        'rpl16' => OverviewFinishedTaxaMatview.group(:family).sum(:rpl16_cnt),
+        'trnK-matK' => OverviewFinishedTaxaMatview.group(:family).sum(:trnK_matK_cnt)
+    }
 
     i = 0
     markers.each do |marker|
@@ -63,7 +68,7 @@ class OverviewDiagramController < ApplicationController
           l = 0
           families.each do |family|
             children4 = children3[k]['children']
-            children4[l] = {:name => family.name, :size => family.completed_species_cnt(marker.id)}
+            children4[l] = {:name => family.name, :size => size_per_marker[marker.name][family.name].to_i}
             l += 1
           end
           k += 1

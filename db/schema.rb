@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171213141704) do
+ActiveRecord::Schema.define(version: 20180112101532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -527,12 +527,6 @@ ActiveRecord::Schema.define(version: 20171213141704) do
 
   create_view "overview_all_taxa_matviews", materialized: true,  sql_definition: <<-SQL
       SELECT f.name AS family,
-      f.id,
-      f.name,
-      f.author,
-      f.created_at,
-      f.updated_at,
-      f.order_id,
       count(sp.family_id) AS species_cnt
      FROM (families f
        LEFT JOIN species sp ON ((f.id = sp.family_id)))
@@ -541,13 +535,7 @@ ActiveRecord::Schema.define(version: 20171213141704) do
 
   create_view "overview_finished_taxa_matviews", materialized: true,  sql_definition: <<-SQL
       SELECT f.name AS family,
-      f.id,
-      f.name,
-      f.author,
-      f.created_at,
-      f.updated_at,
-      f.order_id,
-      count(spe.family_id) AS all_species_cnt,
+      count(spe.family_id) AS species_cnt,
       count(
           CASE
               WHEN (mseq.marker_id = 4) THEN 1

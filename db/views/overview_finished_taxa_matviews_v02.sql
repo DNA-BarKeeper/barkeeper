@@ -1,6 +1,6 @@
 SELECT
   f.name AS family,
-  COUNT(spe.family_id) AS all_species_cnt,
+  COUNT(CASE WHEN spe.family_id = f.id THEN 1 END) AS species_cnt,
   COUNT(CASE WHEN mseq.marker_ID = 4 THEN 1 END) AS trnLF_cnt,
   COUNT(CASE WHEN mseq.marker_ID = 5 THEN 1 END) AS ITS_cnt,
   COUNT(CASE WHEN mseq.marker_ID = 6 THEN 1 END) AS rpl16_cnt,
