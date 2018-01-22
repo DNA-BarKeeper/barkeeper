@@ -1,14 +1,34 @@
-<h3>Users</h3>
-
 <div class="panel panel-default">
-  <div class="panel-heading"><h4>Users</h4></div>
 
+  <div class="panel-heading">
+    <h3 class="panel-title">Users</h3>
+  </div>
 
-  <ul class="users">
-  <% @users.each do |user| %>
-    <li>
-      <%= link_to user.name, edit_user_path(user) %> signed up <%= user.created_at.to_date %>
-    </li>
-  <% end %>
-</ul>
+  <div class="panel-body">
+    <div class="wideTable">
+      <table id="users" class="table table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>E-mail</th>
+          <th>Last sign-in</th>
+          <th>Admin?</th>
+          <th>Guest?</th>
+          <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <% @users.each do |user| %>
+          <tr>
+            <%= render user %>
+            <td><%= link_to 'Delete', user_path(user), :method => :delete, confirm: "Are you sure you want to delete user #{user.name}?" %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
+
+<%= link_to 'Sign up a new user', new_user_path %>

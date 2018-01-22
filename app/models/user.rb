@@ -7,5 +7,5 @@ class User < ApplicationRecord
   belongs_to :lab
   has_and_belongs_to_many :projects
 
-  # validates_presence_of :projects
+  validates_presence_of :email # necessary for devise
 end
