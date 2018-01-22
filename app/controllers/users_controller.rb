@@ -27,27 +27,35 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    params[:user].delete(:password) if params[:user][:password].blank?
-    params[:user].delete(:password_confirmation) if params[:user][:password].blank? and params[:user][:password_confirmation].blank?
-
-    if @user.update(user_params)
-      redirect_to users_path, notice: 'User was successfully updated.'
+    if @user.admin? && !current_user.admin?
+      redirect_to users_path, alert: 'Permission denied.'
     else
-      redirect_to edit_user_path(@user), alert: 'User could not be updated.'
+      params[:user].delete(:password) if params[:user][:password].blank?
+      params[:user].delete(:password_confirmation) if params[:user][:password].blank? and params[:user][:password_confirmation].blank?
+
+      if @user.update(user_params)
+        redirect_to users_path, notice: 'User was successfully updated.'
+      else
+        redirect_to edit_user_path(@user), alert: 'User could not be updated.'
+      end
     end
   end
 
   def destroy
-    @user = User.find(params[:id])
+    if @user.admin? && !current_user.admin?
+      redirect_to users_path, alert: 'Permission denied.'
+    else
+      @user = User.find(params[:id])
 
-    if @user.destroy
-      redirect_to users_path, notice: 'User was successfully destroyed.'
+      if @user.destroy
+        redirect_to users_path, notice: 'User was successfully destroyed.'
+      end
     end
   end
 
   private
 
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :admin, :guest, :project_ids => [])
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :admin, :guest, :supervisor, :project_ids => [])
   end
 end

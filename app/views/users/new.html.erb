@@ -27,8 +27,12 @@
       </div>
 
       <div class="form-group">
-        <%= f.check_box :admin %>
-        <%= label :admin, 'Admin' %>
+        <% if current_user.admin? %>
+          <%= f.check_box :admin %>
+          <%= label :admin, 'Admin' %>
+        <% end %>
+        <%= f.check_box :supervisor %>
+        <%= label :supervisor, 'Supervisor' %>
         <%= f.check_box :guest %>
         <%= label :guest, 'Guest' %>
       </div>
