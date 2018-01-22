@@ -1,0 +1,13 @@
+<td><%= link_to user.name, edit_user_path(user) %></td>
+<td><%= user.email %></td>
+<td><%= user.last_sign_in_at %></td>
+<td align="center" >
+  <% if user.admin? %>
+    <span class="glyphicon glyphicon-ok"></span>
+  <% end %>
+</td>
+<td align="center" >
+  <% if user.guest? %>
+    <span class="glyphicon glyphicon-ok"></span>
+  <% end %>
+</td>
