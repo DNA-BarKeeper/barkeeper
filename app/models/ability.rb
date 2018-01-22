@@ -30,6 +30,8 @@ class Ability
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
     user ||= User.new # guest user (not logged in)
-    can :manage, :all if user.admin?
+    can :manage, :all
+    # cannot [:update, :destroy], :all if user.guest?
+    cannot :manage, [User] unless user.admin? || user.supervisor?
   end
 end

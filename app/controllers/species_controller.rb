@@ -1,5 +1,6 @@
 # noinspection RubyArgCount
 class SpeciesController < ApplicationController
+  load_and_authorize_resource
 
   before_action :authenticate_user!, :except => [:edit, :index, :filter, :show_individuals, :xls]
 
