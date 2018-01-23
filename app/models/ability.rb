@@ -29,9 +29,15 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
-    user ||= User.new # guest user (not logged in)
-    can :manage, :all
-    # cannot [:update, :destroy], :all if user.guest?
-    cannot :manage, [User] unless user.admin? || user.supervisor?
+     # permissions for every user, even if not logged in
+    if user.present? # additional permissions for logged in users
+      can :manage, :all
+      cannot :manage, [User]
+      if user.admin? || user.supervisor? # additional permissions for administrators and supervisors
+        can :manage, :all
+      elsif user.guest? # additional permissions for guests
+        cannot [:update, :destroy], :all
+      end
+    end
   end
 end

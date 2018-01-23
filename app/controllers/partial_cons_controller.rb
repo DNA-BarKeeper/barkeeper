@@ -1,5 +1,4 @@
 class PartialConsController < ApplicationController
-
   before_action :set_partial_con, only: [:show_page, :show_position]
 
   def show_page
