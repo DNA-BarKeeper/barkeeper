@@ -29,15 +29,35 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
-     # permissions for every user, even if not logged in
-    if user.present? # additional permissions for logged in users
+    # Permissions for every user, even if not logged in
+    can [:edit, :index, :filter, :change_via_script, :compare_contigs, :as_fasq], Contig
+    can [:edit, :index, :filter, :show_species], Family
+    can [:edit, :index, :show_species], HigherOrderTaxon
+    can [:about, :overview, :impressum], :home
+    can [:edit, :index, :filter, :xls], Individual
+    can [:edit, :index, :filter], Isolate
+    can [:filter], MarkerSequence
+    can [:edit, :index, :filter], Order
+    can :manage, PartialCon
+    can [:edit, :index], PrimerRead
+    can [:edit, :index, :filter, :show_individuals, :xls], Species
+    # can :manage, SpeciesEpithet
+    can :manage, TxtUploader
+
+    # Additional permissions for logged in users
+    if user.present?
       can :manage, :all
-      cannot :manage, [User]
-      if user.admin? || user.supervisor? # additional permissions for administrators and supervisors
-        can :manage, :all
-      elsif user.guest? # additional permissions for guests
+      cannot :manage, User
+
+      # Additional permissions for guests
+      if user.guest?
+        cannot [:change_base, :change_left_clip, :change_right_clip], PrimerRead
         cannot [:update, :destroy], :all
+        can :edit, :all
       end
+
+      # Additional permissions for administrators and supervisors
+      can :manage, User if user.admin? || user.supervisor?
     end
   end
 end

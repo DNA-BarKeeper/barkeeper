@@ -1,5 +1,5 @@
 class IsolatesController < ApplicationController
-  load_and_authorize_resource :except => [:edit, :index, :filter]
+  load_and_authorize_resource
 
   before_action :set_copy, only: [:show, :edit, :update, :destroy]
 
@@ -37,7 +37,7 @@ class IsolatesController < ApplicationController
     # Isolate.correct_coordinates(file.path)
     Isolate.import(file)
     # Isolate.import_dnabank_info(file.path)
-    redirect_to isolates_path, notice: "Imported."
+    redirect_to isolates_path, notice: 'Imported.'
   end
 
 
