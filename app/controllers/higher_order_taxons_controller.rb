@@ -1,5 +1,5 @@
 class HigherOrderTaxonsController < ApplicationController
-  before_action :authenticate_user!, :except => [:edit, :index, :show_species]
+  load_and_authorize_resource :except => [:edit, :index, :show_species]
 
   before_action :set_higher_order_taxon, only: [:show, :edit, :update, :destroy]
 

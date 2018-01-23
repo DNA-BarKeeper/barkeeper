@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   rescue_from CanCan::AccessDenied do |exception|
-    flash[:error] = exception.message
-    redirect_to root_url
+    redirect_back(fallback_location: root_url, alert: 'You are not authorized to access this page or perform this action.')
   end
 end

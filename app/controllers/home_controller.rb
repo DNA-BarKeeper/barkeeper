@@ -1,4 +1,5 @@
 class HomeController < ApplicationController
+  load_and_authorize_resource :except => [:about, :overview, :impressum]
 
   def overview
 
