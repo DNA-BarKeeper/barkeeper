@@ -52,7 +52,7 @@ class Ability
       # Additional permissions for guests
       if user.guest?
         cannot [:change_base, :change_left_clip, :change_right_clip], PrimerRead
-        cannot [:update, :destroy], :all
+        cannot [:create, :update, :destroy], :all
         can :edit, :all
       end
 
