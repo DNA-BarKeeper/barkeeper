@@ -1,5 +1,5 @@
 class IndividualsController < ApplicationController
-  load_and_authorize_resource :except => [:edit, :index, :filter, :xls]
+  load_and_authorize_resource
 
   before_action :set_individual, :only => [:show, :edit, :update, :destroy]
 

@@ -1,5 +1,5 @@
 class MarkerSequencesController < ApplicationController
-  load_and_authorize_resource :except => [:filter]
+  load_and_authorize_resource
 
   before_action :set_marker_sequence, only: [:show, :edit, :update, :destroy]
 

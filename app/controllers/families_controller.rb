@@ -1,5 +1,5 @@
 class FamiliesController < ApplicationController
-  load_and_authorize_resource :except => [:edit, :index, :filter, :show_species]
+  load_and_authorize_resource
 
   before_action :set_family, only: [:show, :edit, :update, :destroy]
 
