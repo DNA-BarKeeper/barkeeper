@@ -70,6 +70,12 @@ Rails.application.configure do
 
   # for devise
   config.action_mailer.default_url_options = { host: 'gbol5.de' }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+      :address => '127.0.0.1',
+      :port    => 25,
+      :domain  => 'gbol5.de'
+  }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
