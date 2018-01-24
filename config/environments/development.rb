@@ -1,6 +1,8 @@
 Rails.application.configure do
   # for devise
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {:address => 'localhost', :port => 1025}
 
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -29,8 +31,8 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  # Do care if the mailer can't send.
+  config.action_mailer.raise_delivery_errors = true
 
   config.action_mailer.perform_caching = false
 
