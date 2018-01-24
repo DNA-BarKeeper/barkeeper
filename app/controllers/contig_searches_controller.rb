@@ -4,7 +4,7 @@ class ContigSearchesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: ContigSearchDatatable.new(view_context) }
+      format.json { render json: ContigSearchDatatable.new(view_context, current_user.id) }
     end
   end
 
@@ -14,6 +14,7 @@ class ContigSearchesController < ApplicationController
 
   def create
     @contig_search = ContigSearch.create!(contig_search_params)
+    @contig_search.update(:user_id => current_user.id)
     redirect_to @contig_search
   end
 
@@ -23,6 +24,14 @@ class ContigSearchesController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: ContigSearchResultDatatable.new(view_context, params[:id]) }
+    end
+  end
+
+  def destroy
+    @contig_search.destroy
+    respond_to do |format|
+      format.html { redirect_to contig_searches_path, notice: 'Contig search was successfully destroyed.' }
+      format.json { head :no_content }
     end
   end
 

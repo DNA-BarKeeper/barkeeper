@@ -6,8 +6,9 @@ class ContigSearchDatatable
   delegate :url_helpers, to: 'Rails.application.routes'
   delegate :params, :link_to, :h, to: :@view
 
-  def initialize(view)
+  def initialize(view, current_user_id)
     @view = view
+    @current_user_id = current_user_id
   end
 
   def as_json(options = {})
@@ -25,13 +26,14 @@ class ContigSearchDatatable
     searches.map do |search|
       [
           link_to(search.title, contig_search_path(search)),
-          search.created_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")
+          search.created_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+          link_to('Delete', search, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end
 
   def searches
-    @searches = ContigSearch.where.not(title: '').order("#{sort_column} #{sort_direction}")
+    @searches = ContigSearch.where.not(title: '').where(:user_id => @current_user_id).order("#{sort_column} #{sort_direction}")
 
     @searches = @searches.page(page).per_page(per_page)
 

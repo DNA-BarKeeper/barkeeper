@@ -1,4 +1,6 @@
 class ContigSearch < ApplicationRecord
+  belongs_to :user
+
   def contigs
     contigs ||= find_contigs
   end

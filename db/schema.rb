@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180124130027) do
+ActiveRecord::Schema.define(version: 20180124133256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20180124130027) do
     t.date     "min_update"
     t.date     "max_update"
     t.string   "title"
+    t.integer  "user_id"
   end
 
   create_table "contigs", force: :cascade do |t|
