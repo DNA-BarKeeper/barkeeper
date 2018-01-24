@@ -6,6 +6,7 @@
   <% end %>
 </td>
 <td><%= user.email %></td>
+<td><%= user.lab&.labcode %></td>
 <td><%= user.last_sign_in_at %></td>
 <td>
   <% if user.admin? %>
