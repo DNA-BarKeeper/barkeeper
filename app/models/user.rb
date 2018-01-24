@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
 
   belongs_to :lab
+  has_many :contig_searches
   has_and_belongs_to_many :projects
 
   validates_presence_of :email # necessary for devise

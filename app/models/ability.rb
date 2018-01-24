@@ -49,6 +49,10 @@ class Ability
       can :manage, :all
       cannot :manage, User
 
+      cannot :manage, ContigSearch
+      can :create, ContigSearch
+      can :manage, ContigSearch, user_id: user.id
+
       # Additional permissions for guests
       if user.guest?
         cannot [:change_base, :change_left_clip, :change_right_clip], PrimerRead
