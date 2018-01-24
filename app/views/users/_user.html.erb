@@ -6,7 +6,11 @@
   <% end %>
 </td>
 <td><%= user.email %></td>
-<td><%= user.lab&.labcode %></td>
+<td>
+  <% if user.lab.present? %>
+    <%= link_to user.lab.labcode, edit_lab_path(user.lab.id) %>
+  <% end %>
+</td>
 <td><%= user.last_sign_in_at %></td>
 <td>
   <% if user.admin? %>
