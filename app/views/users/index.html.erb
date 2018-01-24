@@ -11,6 +11,7 @@
         <tr>
           <th>Name</th>
           <th>E-mail</th>
+          <th>Lab</th>
           <th>Last sign-in</th>
           <th>Role</th>
           <th></th>
@@ -18,7 +19,7 @@
         </thead>
 
         <tbody>
-        <% @users.each do |user| %>
+        <% @users.includes(:lab).each do |user| %>
           <tr>
             <%= render user %>
             <td>
