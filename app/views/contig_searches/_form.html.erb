@@ -5,12 +5,10 @@
 
   <div class="panel-body">
     <%= form_for @contig_search do |f| %>
-        <% if current_user&.name == 'Sarah Wiechers' %>
-          <div class="field">
-            <%= f.label :title %><br />
-            <%= f.text_field :title, class: 'form-control' %>
-          </div>
-        <% end %>
+        <div class="field">
+          <%= f.label :title, 'Title (if you leave this field empty the search will not be saved)' %><br />
+          <%= f.text_field :title, class: 'form-control' %>
+        </div>
         <div class="field">
           <%= f.label :name, 'Contig name' %><br />
           <%= f.text_field :name, data: { autocomplete_source: filter_contigs_path }, include_blank: true, class: 'form-control' %>

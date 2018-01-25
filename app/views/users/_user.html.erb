@@ -1,0 +1,25 @@
+<td>
+  <% if user.admin? && !current_user.admin? %>
+    <%= user.name %>
+  <% else %>
+    <%= link_to user.name, edit_user_path(user) %>
+  <% end %>
+</td>
+<td><%= user.email %></td>
+<td>
+  <% if user.lab.present? %>
+    <%= link_to user.lab.labcode, edit_lab_path(user.lab.id) %>
+  <% end %>
+</td>
+<td><%= user.last_sign_in_at %></td>
+<td>
+  <% if user.admin? %>
+    Admin
+  <% elsif user.supervisor? %>
+    Supervisor
+  <% elsif user.guest? %>
+    Guest
+  <% else %>
+    User
+  <% end %>
+</td>

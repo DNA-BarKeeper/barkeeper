@@ -96,6 +96,7 @@ GEM
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
     callsite (0.0.11)
+    cancancan (2.1.3)
     capistrano (3.10.0)
       airbrussh (>= 1.0.0)
       i18n
@@ -404,6 +405,7 @@ DEPENDENCIES
   bio
   bootstrap-sass
   bullet
+  cancancan
   capistrano
   capistrano-bundler
   capistrano-rails

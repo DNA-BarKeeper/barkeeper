@@ -1,5 +1,5 @@
 class PrimerReadsController < ApplicationController
-  before_action :authenticate_user!, :except => [:edit, :index]
+  load_and_authorize_resource except: [:change_base, :change_left_clip, :change_right_clip]
 
   before_action :set_primer_read, only: [:go_to_pos, :do_not_use_for_assembly, :use_for_assembly, :change_left_clip, :change_right_clip, :edit, :fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
 
@@ -178,72 +178,82 @@ class PrimerReadsController < ApplicationController
   end
 
   def change_base
+    if can? :change_base, @primer_read
+      sequence= @primer_read.sequence
+      pos=params[:position].to_i
+      base=params[:base]
 
-    sequence= @primer_read.sequence
-    pos=params[:position].to_i
-    base=params[:base]
+      # if insertions needed: handle inserting new elements in qualities etc. arrays
+      if base.length > 1
 
-    # if insertions needed: handle inserting new elements in qualities etc. arrays
-    if base.length > 1
+        insertions_needed=base.length-1
 
-      insertions_needed=base.length-1
+        qualities=@primer_read.qualities
+        insertions_needed.times do
+          # insert placeholder element into qualities
+          qualities.insert(pos+1,-10) #-1 already taken by aligned_qualities to indicate "gap" to be drawn in contig view
+        end
 
-      qualities=@primer_read.qualities
-      insertions_needed.times do
-        # insert placeholder element into qualities
-        qualities.insert(pos+1,-10) #-1 already taken by aligned_qualities to indicate "gap" to be drawn in contig view
+        peak_indices=@primer_read.peak_indices
+
+        #compute new indices based on existing neighbors:
+        left_index=peak_indices[pos]
+        right_index=peak_indices[pos+1]
+        distance=right_index-left_index
+        x_increment=(distance/base.length)
+
+        x=left_index
+        insertions_needed.times do
+          x=x+x_increment
+          # insert placeholder element into peak_indices:
+          peak_indices.insert(pos+1,x)
+        end
+
       end
 
-      peak_indices=@primer_read.peak_indices
+      #in all cases (replacement, insertion & deletion) insert string:
+      sequence[pos] = base
+      @primer_read.update(:sequence => sequence)
 
-      #compute new indices based on existing neighbors:
-      left_index=peak_indices[pos]
-      right_index=peak_indices[pos+1]
-      distance=right_index-left_index
-      x_increment=(distance/base.length)
+      # do not auto assemble after base change!
+      # if @primer_read.contig
+      #   ContigAssembly.perform_async(@primer_read.contig.id)
+      # end
 
-      x=left_index
-      insertions_needed.times do
-        x=x+x_increment
-        # insert placeholder element into peak_indices:
-        peak_indices.insert(pos+1,x)
-      end
-
+      head :ok
+    else
+      head :unauthorized
     end
-
-    #in all cases (replacement, insertion & deletion) insert string:
-    sequence[pos] = base
-    @primer_read.update(:sequence => sequence)
-
-    # do not auto assemble after base change!
-    # if @primer_read.contig
-    #   ContigAssembly.perform_async(@primer_read.contig.id)
-    # end
-
-    head :ok
   end
 
   def change_left_clip
-    puts @primer_read.name
-    @primer_read.update(:trimmedReadStart => params[:position].to_i)
+    if can? :change_base, @primer_read
+      @primer_read.update(:trimmedReadStart => params[:position].to_i)
 
-    # do not auto assemble after clipping changed!
-    # if @primer_read.contig
-    #   ContigAssembly.perform_async(@primer_read.contig.id)
-    # end
+      # do not auto assemble after clipping changed!
+      # if @primer_read.contig
+      #   ContigAssembly.perform_async(@primer_read.contig.id)
+      # end
 
-    head :ok
+      head :ok
+    else
+      head :unauthorized
+    end
   end
 
   def change_right_clip
-    @primer_read.update(:trimmedReadEnd => params[:position].to_i)
+    if can? :change_base, @primer_read
+      @primer_read.update(:trimmedReadEnd => params[:position].to_i)
 
-    # do not auto assemble after clipping changed!
-    # if @primer_read.contig
-    #   ContigAssembly.perform_async(@primer_read.contig.id)
-    # end
+      # do not auto assemble after clipping changed!
+      # if @primer_read.contig
+      #   ContigAssembly.perform_async(@primer_read.contig.id)
+      # end
 
-    head :ok
+      head :ok
+    else
+      head :unauthorized
+    end
   end
 
   # DELETE /primer_reads/1

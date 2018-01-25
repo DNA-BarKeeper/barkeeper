@@ -1,11 +1,46 @@
 <%= show_val_errors(@user)%>
 
+<div class="panel panel-default">
+  <h4>Edit user</h4>
 
-<div class="authform">
+  <div class="panel-body">
+    <%= form_for @user do |f| %>
 
-  <%= form_for(@user) do |f| %>
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, class: 'form-control' %>
+      </div>
 
-      <div class="form-group"><%= @user.name %></div>
+      <div class="form-group">
+        <%= f.label :email %>
+        <%= f.text_field :email, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :password %>
+        <%= f.password_field :password, :autocomplete => 'off', class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :password_confirmation %>
+        <%= f.password_field :password_confirmation, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <% if current_user.admin? %>
+          <%= f.check_box :admin %>
+          <%= label :admin, 'Admin' %>
+        <% end %>
+        <%= f.check_box :supervisor %>
+        <%= label :supervisor, 'Supervisor' %>
+        <%= f.check_box :guest %>
+        <%= label :guest, 'Guest' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label 'Lab' %><br>
+        <%= f.collection_select :lab_id, Lab.order(:labcode), :id, :labcode %>
+      </div>
 
       <div class="form-group">
         <%= f.label 'Projects' %><br>
@@ -16,5 +51,6 @@
         <%= f.button :submit %>
       </div>
 
-  <% end %>
+    <% end %>
+  </div>
 </div>

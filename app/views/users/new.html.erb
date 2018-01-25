@@ -1,1 +1,51 @@
-<%= render 'form' %>
+<%= show_val_errors(@user)%>
+
+<div class="panel panel-default">
+  <h4>Create user</h4>
+
+  <div class="panel-body">
+    <%= form_for @user, url: create_user_path do |f| %>
+
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :email %>
+        <%= f.text_field :email, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :password %>
+        <%= f.text_field :password, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :password_confirmation %>
+        <%= f.text_field :password_confirmation, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <% if current_user.admin? %>
+          <%= f.check_box :admin %>
+          <%= label :admin, 'Admin' %>
+        <% end %>
+        <%= f.check_box :supervisor %>
+        <%= label :supervisor, 'Supervisor' %>
+        <%= f.check_box :guest %>
+        <%= label :guest, 'Guest' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label 'Projects' %><br>
+        <%= f.collection_select :project_ids, Project.order(:name), :id, :name, {}, {multiple:true} %>
+      </div>
+
+      <div class="form-actions">
+        <%= f.button :submit %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

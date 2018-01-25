@@ -1,4 +1,5 @@
 class PartialConsController < ApplicationController
+  load_and_authorize_resource
 
   before_action :set_partial_con, only: [:show_page, :show_position]
 
