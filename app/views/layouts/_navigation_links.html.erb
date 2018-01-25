@@ -10,10 +10,14 @@
   <ul class="dropdown-menu">
     <li><%= link_to 'About', about_path %></li>
     <li><%= link_to 'Overview', overview_path %></li>
+    <% if user_signed_in? && (current_user.admin? || current_user.supervisor?) %>
+      <li ><%= link_to 'Users', users_path %></li>
+    <% end %>
     <li class="divider"></li>
     <% if user_signed_in? %>
-        <li ><%= link_to 'Contig collections', contig_searches_path %></li>
         <li ><%= link_to 'Advanced contig search', new_contig_search_path %></li>
+        <li ><%= link_to 'Your past contig searches', contig_searches_path %></li>
+        <li class="divider"></li>
         <li ><%= link_to 'Duplicate contigs', duplicates_contigs_path %></li>
         <!--<li ><%= link_to 'Externally verified contigs', externally_verified_contigs_path %></li>-->
         <li ><%= link_to 'Reads without contig', reads_without_contigs_path %></li>
@@ -64,7 +68,7 @@
 
 <% if user_signed_in? %>
     <li><%= link_to 'Logout', destroy_user_session_path, :method=>'delete' %></li>
-    <li><%= link_to "#{current_user.name}", edit_user_registration_path, title:'Edit account'  %></li>
+    <li><%= link_to "#{current_user.name}", edit_user_registration_path, title:'Edit account' %></li>
 <% else %>
     <li><%= link_to 'Login', new_user_session_path %></li>
 <% end %>

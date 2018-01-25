@@ -173,20 +173,21 @@ GBOLapp::Application.routes.draw do
     end
   end
 
-
   #hack: avoid malicious users to directly type in the sign-up route
   #later: use authorization system to
   devise_scope :user do
     get "/users/sign_up",  :to => "home#about"
   end
 
-  devise_for :users, :controllers => {:registrations => "registrations"}
-
-  resources :users do
-    member do
-      get 'edit'
-    end
+  devise_for :users, :controllers => {:registrations => "registrations"}, path_names: {sign_in: "login", sign_out: "logout"}
+  devise_scope :users do
+    get '/login' => 'devise/sessions#new'
+    get '/logout' => 'devise/sessions#destroy'
   end
+  resources :users, :controller => "users"
+
+  post 'create_user' => 'users#create', as: :create_user
+  delete '/users/:id' => 'users#destroy', :as => :destroy_user
 
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'

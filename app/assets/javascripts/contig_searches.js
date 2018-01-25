@@ -3,6 +3,10 @@ jQuery(function() {
         bProcessing: true,
         bServerSide: true,
         sAjaxSource: $('#contig_searches').data('source'),
+        "columnDefs": [{
+            "targets": 2,
+            "orderable": false
+        }],
         "order": [ 1, 'desc' ]
     });
 

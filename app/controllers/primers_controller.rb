@@ -1,5 +1,6 @@
 class PrimersController < ApplicationController
-  before_action :authenticate_user!
+  load_and_authorize_resource
+
   before_action :set_primer, only: [:show, :edit, :update, :destroy]
 
   # GET /primers

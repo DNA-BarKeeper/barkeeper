@@ -26,7 +26,12 @@ gem 'jquery-fileupload-rails'
 gem 'populator'
 gem 'bootstrap-sass'
 gem 'sprockets-rails', :require => 'sprockets/railtie'
+
+# authentication
 gem 'devise'
+# authorization
+gem 'cancancan'
+
 gem 'simple_form' #todo check if used anywhere, rm
 gem 'bio'
 gem 'paperclip'
