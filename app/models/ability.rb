@@ -47,11 +47,24 @@ class Ability
     # Additional permissions for logged in users
     if user.present?
       can :manage, :all
+
       cannot :manage, User
+      cannot :manage, Project
 
       cannot :manage, ContigSearch
       can :create, ContigSearch
       can :manage, ContigSearch, user_id: user.id
+
+      if user.projects.exists?(:name => "lab")
+        cannot [:create, :update, :destroy], [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
+        can :edit, [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
+      elsif user.projects.exists?(:name => "taxonomy")
+        cannot [:create, :update, :destroy], [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker,
+                                              MarkerSequence, MicronicPlate, PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
+        can :edit, [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker, MarkerSequence, MicronicPlate,
+                    PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
+        cannot [:change_base, :change_left_clip, :change_right_clip], PrimerRead
+      end
 
       # Additional permissions for guests
       if user.guest?
@@ -61,7 +74,10 @@ class Ability
       end
 
       # Additional permissions for administrators and supervisors
-      can :manage, User if user.admin? || user.supervisor?
+      if user.admin? || user.supervisor?
+        can :manage, User
+        can :manage, Project
+      end
     end
   end
 end

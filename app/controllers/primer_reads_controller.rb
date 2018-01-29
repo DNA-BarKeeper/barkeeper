@@ -1,5 +1,7 @@
 class PrimerReadsController < ApplicationController
-  load_and_authorize_resource except: [:change_base, :change_left_clip, :change_right_clip]
+  load_and_authorize_resource
+  skip_authorize_resource only: [:change_base, :change_left_clip, :change_right_clip]
+  skip_authorization_check only: [:change_base, :change_left_clip, :change_right_clip]
 
   before_action :set_primer_read, only: [:go_to_pos, :do_not_use_for_assembly, :use_for_assembly, :change_left_clip, :change_right_clip, :edit, :fasta, :reverse, :restore, :assign, :trim, :show, :update, :change_base, :destroy]
 
@@ -227,7 +229,7 @@ class PrimerReadsController < ApplicationController
   end
 
   def change_left_clip
-    if can? :change_base, @primer_read
+    if can? :change_left_clip, @primer_read
       @primer_read.update(:trimmedReadStart => params[:position].to_i)
 
       # do not auto assemble after clipping changed!
@@ -242,7 +244,7 @@ class PrimerReadsController < ApplicationController
   end
 
   def change_right_clip
-    if can? :change_base, @primer_read
+    if can? :change_right_clip, @primer_read
       @primer_read.update(:trimmedReadEnd => params[:position].to_i)
 
       # do not auto assemble after clipping changed!
