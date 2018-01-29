@@ -11,6 +11,11 @@
     <%= link_to user.lab.labcode, edit_lab_path(user.lab.id) %>
   <% end %>
 </td>
+<td>
+  <% if user.projects.size == 1 %>
+    <%= user.projects.first.name %>
+  <% end %>
+</td>
 <td><%= user.last_sign_in_at %></td>
 <td>
   <% if user.admin? %>

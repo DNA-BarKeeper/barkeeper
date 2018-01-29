@@ -20,6 +20,13 @@
           <% end %>
         </div>
 
+        <div>
+          <%= f.label :project %>
+          <br>
+          <%= resource.projects.first&.name %>
+          <br><br>
+        </div>
+
         <fieldset>
           <p>Leave these fields blank if you don't want to change your password.</p>
           <div class="form-group">
