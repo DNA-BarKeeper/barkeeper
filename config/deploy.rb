@@ -29,7 +29,7 @@ set :puma_state,      "#{shared_path}/tmp/pids/puma.state"
 set :puma_pid,        "#{shared_path}/tmp/pids/puma.pid"
 set :puma_access_log, "#{release_path}/log/puma.access.log"
 set :puma_error_log,  "#{release_path}/log/puma.error.log"
-set :ssh_options,     { port: 1694, forward_agent: true, user: fetch(:user), keys: %w(I:/.ssh/id_rsa) }
+set :ssh_options,     { port: 1694, forward_agent: true, user: fetch(:user), keys: %w(C:/Users/Sarah/.ssh/id_rsa) }
 set :puma_preload_app, true
 set :puma_worker_timeout, nil
 set :puma_init_active_record, true  # Change to false when not using ActiveRecord
