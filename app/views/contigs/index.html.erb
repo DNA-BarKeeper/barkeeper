@@ -5,7 +5,7 @@
   <div class="panel-body">
 
     <div class="wideTable">
-      <%= button_to 'Advanced Contig Search', new_contig_search_path, method: 'get', class: "pull-right" %>
+      <%= link_to 'Advanced Contig Search', new_contig_search_path, class: 'btn btn-default pull-right', :style => 'margin-bottom: 5px' %>
       <table id="contigs" data-source="<%= contigs_url(format: "json") %>" class="table table-striped table-hover table-bordered">
         <thead>
         <tr>
@@ -31,5 +31,5 @@
   Assembly complete for <%= Contig.where(:assembled => true).count %> contigs.
 </p>
 
-<%= button_to 'Perform read assembly for all contigs with incomplete assembly', assemble_all_contigs_path, method: 'get' %><br>
-<!--<%= link_to 'Download .pde files for all', pde_all_contigs_path %>-->
+<%= link_to 'Perform read assembly for all contigs with incomplete assembly', assemble_all_contigs_path, class: 'btn btn-default' %><br>
+<!--<%= link_to 'Download .pde files for all', pde_all_contigs_path, class: 'btn btn-default' %>-->

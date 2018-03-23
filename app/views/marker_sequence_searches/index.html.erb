@@ -1,11 +1,11 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">Advanced Contig Searches</h3>
+    <h3 class="panel-title">Advanced Marker Sequence Searches</h3>
   </div>
   <div class="panel-body">
 
     <div class="wideTable">
-      <table id="contig_searches" data-source="<%= contig_searches_url(format: "json") %>" class="table table-striped table-hover table-bordered" >
+      <table id="marker_sequence_searches" data-source="<%= marker_sequence_searches_url(format: "json") %>" class="table table-striped table-hover table-bordered" >
         <thead>
         <tr>
           <th>Title</th>
@@ -22,4 +22,4 @@
   </div>
 </div>
 
-<%= link_to 'Start a new contig search', new_contig_search_path, class: 'btn btn-default' %>
+<%= link_to 'Start a new marker sequence search', new_marker_sequence_search_path, class: 'btn btn-default' %>

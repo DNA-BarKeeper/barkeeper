@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180124133256) do
+ActiveRecord::Schema.define(version: 20180323103303) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -266,6 +266,22 @@ ActiveRecord::Schema.define(version: 20180124133256) do
   create_table "labs_projects", id: false, force: :cascade do |t|
     t.integer "lab_id"
     t.integer "project_id"
+  end
+
+  create_table "marker_sequence_searches", force: :cascade do |t|
+    t.string   "name"
+    t.string   "verified"
+    t.string   "species"
+    t.string   "order"
+    t.string   "specimen"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "user_id"
+    t.string   "title"
+    t.string   "family"
+    t.string   "marker"
+    t.integer  "min_length"
+    t.integer  "max_length"
   end
 
   create_table "marker_sequences", force: :cascade do |t|

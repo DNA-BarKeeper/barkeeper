@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  verified: MyString
+  species: MyString
+  order: MyString
+  specimen: MyString
+
+two:
+  name: MyString
+  verified: MyString
+  species: MyString
+  order: MyString
+  specimen: MyString
