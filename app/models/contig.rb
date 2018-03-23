@@ -252,7 +252,7 @@ class Contig < ApplicationRecord
 
     raw_cons = pc.aligned_sequence
 
-    # seq_no_gaps = raw_cons.gsub(/-/, '') #-> does not work like this, quality scrore array may contain > 0 values where cons. has gap
+    # seq_no_gaps = raw_cons.gsub(/-/, '') #-> does not work like this, quality score array may contain > 0 values where cons. has gap
 
     cons_seq=''
     qual_str=''

@@ -54,7 +54,7 @@ class ContigSearchResultDatatable
   end
 
   def contigs_data
-    @search_result ||= ContigSearch.find_by_id(@search_id).contigs.order("#{sort_column} #{sort_direction}")
+    @search_result ||= ContigSearch.find_by_id(@search_id).contigs.reorder("#{sort_column} #{sort_direction}")
 
     @search_result = @search_result.page(page).per_page(per_page)
 

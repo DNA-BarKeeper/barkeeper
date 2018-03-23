@@ -26,6 +26,10 @@ GBOLapp::Application.routes.draw do
 
   resources :contig_searches
 
+  resources :marker_sequence_searches do
+    post :export_as_fasta
+  end
+
   resources :contigs do
 
     collection do

@@ -42,13 +42,9 @@
 </div>
 
 <p>
-  <%= button_to 'Start a new contig search', new_contig_search_path, method: 'get' %>
-</p>
+  <%= link_to 'Start a new contig search', new_contig_search_path, class: 'btn btn-default' %>
 
-<p>
-  <%= button_to 'Go to your contig searches index', contig_searches_path, method: 'get' %>
-</p>
+  <%= link_to 'Go to your contig searches index', contig_searches_path, class: 'btn btn-default' %>
 
-<p>
-  <%= button_to 'Go to contigs index', contigs_path, method: 'get' %>
+  <%= link_to 'Go to contigs index', contigs_path, class: 'btn btn-default' %>
 </p>
