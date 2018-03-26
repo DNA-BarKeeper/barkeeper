@@ -51,10 +51,6 @@ class Ability
       cannot :manage, User
       cannot :manage, Project
 
-      cannot :manage, ContigSearch
-      can :create, ContigSearch
-      can :manage, ContigSearch, user_id: user.id # Users can only edit their own searches
-
       # Restrictions for users in project "lab"
       if user.projects.exists?(:name => "lab")
         cannot [:create, :update, :destroy], [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
@@ -81,6 +77,14 @@ class Ability
         can :manage, User
         can :manage, Project
       end
+
+      cannot :manage, ContigSearch
+      can :create, ContigSearch
+      can :manage, ContigSearch, user_id: user.id # Users can only edit their own searches
+
+      cannot :manage, MarkerSequenceSearch
+      can :create, MarkerSequenceSearch
+      can :manage, MarkerSequenceSearch, user_id: user.id # Users can only edit their own searches
     end
   end
 end
