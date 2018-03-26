@@ -51,20 +51,6 @@ class Ability
       cannot :manage, User
       cannot :manage, Project
 
-      # Restrictions for users in project "lab"
-      if user.projects.exists?(:name => "lab")
-        cannot [:create, :update, :destroy], [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
-        can :edit, [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
-
-        # Restrictions for users in project "taxonomy"
-      elsif user.projects.exists?(:name => "taxonomy")
-        cannot [:create, :update, :destroy], [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker,
-                                              MarkerSequence, MicronicPlate, PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
-        can :edit, [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker, MarkerSequence, MicronicPlate,
-                    PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
-        cannot [:change_base, :change_left_clip, :change_right_clip], PrimerRead
-      end
-
       # Additional permissions for guests
       if user.guest?
         cannot [:change_base, :change_left_clip, :change_right_clip], PrimerRead
@@ -85,6 +71,22 @@ class Ability
       cannot :manage, MarkerSequenceSearch
       can :create, MarkerSequenceSearch
       can :manage, MarkerSequenceSearch, user_id: user.id # Users can only edit their own searches
+
+      # Restrictions for users in project "lab"
+      if user.projects.exists?(:name => "lab")
+        cannot [:create, :update, :destroy], [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
+        can :edit, [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
+
+        # Restrictions for users in project "taxonomy"
+      elsif user.projects.exists?(:name => "taxonomy")
+        cannot [:create, :update, :destroy], [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker,
+                                              MarkerSequence, MicronicPlate, PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
+        can :edit, [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker, MarkerSequence, MicronicPlate,
+                    PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
+        cannot [:change_base, :change_left_clip, :change_right_clip], PrimerRead
+        cannot :manage, ContigSearch
+        cannot :manage, MarkerSequenceSearch
+      end
     end
   end
 end
