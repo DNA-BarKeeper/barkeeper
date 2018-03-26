@@ -30,7 +30,7 @@ class MarkerSequenceSearchesController < ApplicationController
   def destroy
     @marker_sequence_search.destroy
     respond_to do |format|
-      format.html { redirect_to marker_sequences_path, notice: 'Marker sequence search was successfully destroyed.' }
+      format.html { redirect_to marker_sequence_searches_path, notice: 'Marker sequence search was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
