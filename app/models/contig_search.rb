@@ -11,12 +11,12 @@ class ContigSearch < ApplicationRecord
     contigs = contigs.where("contigs.name ilike ?", "%#{name}%") if name.present?
 
     if assembled != 'both'
-      contigs = contigs.where(assembled: true) if (assembled == 'assembled')
-      contigs = contigs.where(assembled: false) if (assembled == 'unassembled')
+      contigs = contigs.assembled if (assembled == 'assembled')
+      contigs = contigs.not_assembled if (assembled == 'unassembled')
     end
 
     if verified != 'both'
-      contigs = contigs.where(verified: true) if (verified == 'verified')
+      contigs = contigs.verified if (verified == 'verified')
       contigs = contigs.where(verified: false) if (verified == 'unverified')
     end
 
