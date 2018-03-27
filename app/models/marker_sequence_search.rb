@@ -25,8 +25,8 @@ class MarkerSequenceSearch < ApplicationRecord
     marker_sequences = marker_sequences.where("marker_sequences.name ilike ?", "%#{name}%") if name.present?
 
     if verified != 'both'
-      marker_sequences = marker_sequences.joins(:contigs).where("contigs.verified = ?", true) if (verified == 'verified')
-      marker_sequences = marker_sequences.joins(:contigs).where("contigs.verified = ?", false) if (verified == 'unverified')
+      marker_sequences = marker_sequences.verified if (verified == 'verified')
+      marker_sequences = marker_sequences.not_verified if (verified == 'unverified')
     end
 
     marker_sequences = marker_sequences.joins(:marker).where("markers.name ilike ?", "%#{marker}%") if marker.present?

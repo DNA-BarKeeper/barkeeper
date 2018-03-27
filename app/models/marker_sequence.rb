@@ -4,15 +4,15 @@ class MarkerSequence < ApplicationRecord
   belongs_to :marker
   #validates_presence_of :sequence
 
-  def self.spp_in_higher_order_taxon(higher_order_taxon_id)
+  scope :verified, -> { joins(:contigs).where("contigs.verified = ?", true) }
+  scope :not_verified, -> { joins(:contigs).where("contigs.verified = ?", false) }
 
-    ms=MarkerSequence.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    ms_s=MarkerSequence.select("species_component").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    ms_i=MarkerSequence.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+  def self.spp_in_higher_order_taxon(higher_order_taxon_id)
+    ms = MarkerSequence.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    ms_s = MarkerSequence.select("species_component").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    ms_i = MarkerSequence.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     [ms.count, ms_s.uniq.count, ms.uniq.count, ms_i.uniq.count]
   end
-
-
 
   def generate_name
     if self.marker.present? and self.isolate.present?
@@ -33,5 +33,4 @@ class MarkerSequence < ApplicationRecord
       self.isolate = Isolate.find_or_create_by(:lab_nr => lab_nr) if lab_nr.present?
     end
   end
-
 end
