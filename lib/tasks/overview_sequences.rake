@@ -1,15 +1,15 @@
 namespace :data do
 
   desc 'Get information about verified marker sequences and contigs in database'
-  task :sequence_info_verified => :environment do
-    marker_sequences = MarkerSequence.verified
+  task :sequence_info_verified => [:environment, :general_info] do
+    marker_sequences = MarkerSequence.verified # TODO: only count sequences with an attached species
     contigs = Contig.verified.joins(:primer_reads)
 
     get_information(marker_sequences, contigs)
   end
 
   desc 'Get information about all marker sequences and contigs in database'
-  task :sequence_info_all => :environment do
+  task :sequence_info_all => [:environment, :general_info] do
     marker_sequences = MarkerSequence.all
     contigs = Contig.joins(:primer_reads)
 
@@ -29,6 +29,7 @@ namespace :data do
     puts ''
 
     puts "Number of specimen in database: #{Individual.all.size}"
+    puts ''
   end
 
   def get_information(marker_sequences, contigs)
@@ -40,7 +41,7 @@ namespace :data do
     reads_per_contig_min = {}
     reads_per_contig_max = {}
 
-    Marker.all.each do |marker|
+    Marker.gbol_marker.each do |marker|
       sequences = marker_sequences.where(marker_id: marker.id)
       contigs_marker = contigs.where(marker_id: marker.id)
 
@@ -52,7 +53,7 @@ namespace :data do
       end
 
       if contigs_marker.size.positive?
-        primer_read_counts = contigs_marker.group(:id).count('primer_reads.id')
+        primer_read_counts = contigs_marker.group(:id).count('primer_reads.id') #  TODO: only count assembled reads
 
         reads_per_contig_avg[marker.name] = (primer_read_counts.values.sum/primer_read_counts.values.size.to_f).round(2)
         reads_per_contig_min[marker.name] = primer_read_counts.values.min

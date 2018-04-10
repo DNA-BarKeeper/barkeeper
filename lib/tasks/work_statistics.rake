@@ -4,8 +4,7 @@ require 'nokogiri'
 
 namespace :data do
 
-  desc "Do work statistics"
-
+  desc 'Do work statistics'
   task :work_statistics, [:range] => [:environment] do | t, args |
     args.with_defaults(:range => Time.now.beginning_of_year..Time.now)
     range = eval args[:range]
