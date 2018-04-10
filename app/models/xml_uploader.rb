@@ -27,6 +27,8 @@ class XmlUploader < ApplicationRecord
   end
 
   def xml_string
+    # get all gbol markers
+    gbol_markers = Marker.gbol_marker
 
     @states=%w(Baden-WÃ¼rttemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein ThÃ¼ringen)
 
@@ -63,7 +65,7 @@ class XmlUploader < ApplicationRecord
                      "BehÃ¶rde"
     ]
 
-    Marker.gbol_marker.each do |m|
+    gbol_markers.each do |m|
       @header_cells << "#{m.name} - URL"
       @header_cells << "#{m.name} - Marker Sequence"
       @header_cells << "#{m.name} - Genbank ID"
@@ -92,12 +94,12 @@ class XmlUploader < ApplicationRecord
             }
 
             # get all Individuals
-            Individual.includes(:species => :family).find_each(:batch_size => 50) do |individual|
+            Individual.includes(isolates: [contigs: [:marker_sequence, :marker, :isolate]], species: :family).find_each do |individual|
 
               xml.Row{
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
-                    #previous version with "Gbol-Nr.":
+                    # previous version with "Gbol-Nr.":
                     # xml.text(individual.try(:isolates).first.try(:lab_nr))
                     xml.text(individual.id)
                   }
@@ -282,31 +284,32 @@ class XmlUploader < ApplicationRecord
                 longest_sequences = {}
 
                 individual.try(:isolates).each do |iso|
-                  Marker.gbol_marker.each do |current_marker|
+                  gbol_markers.each do |current_marker|
 
-                    current_contig = iso.try(:contigs).where(:marker_id => current_marker.id).first
-                    if current_contig&.marker_sequence&.sequence
-                      longest_sequences[current_marker.id] ||= current_contig.marker_sequence
-                      if current_contig.marker_sequence.sequence.length > longest_sequences[current_marker.id].sequence.length
-                        longest_sequences[current_marker.id] = current_contig.marker_sequence
+                    current_contig = iso.try(:contigs).includes(marker_sequence: :contigs).where(:marker_id => current_marker.id).first
+                    current_marker_sequence = current_contig&.marker_sequence
+                    current_ms_sequence = current_marker_sequence&.sequence
+
+                    if current_ms_sequence
+                      longest_sequences[current_marker.id] ||= current_marker_sequence
+                      if current_ms_sequence.length > longest_sequences[current_marker.id].sequence.length
+                        longest_sequences[current_marker.id] = current_marker_sequence
                       end
                     end
 
                   end
                 end
 
-                Marker.gbol_marker.each do |marker|
+                gbol_markers.each do |marker|
                   current_sequence = longest_sequences[marker.id]
+                  current_ms = current_sequence&.sequence
 
                   # URL zum contig in GBoL5 WebApp
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      if current_sequence && current_sequence.contigs.any?
-                        xml.text("gbol5.de/contigs/#{current_sequence.contigs.first.id}/edit") #edit_contig_path(current_sequence.contigs.first)
-                      else
-                        if current_sequence
-                          xml.text(current_sequence.contigs.length)
-                        end
+                      current_contig_id = current_sequence&.contigs&.first&.id
+                      if current_contig_id
+                        xml.text("gbol5.de/contigs/#{current_contig_id}/edit") #edit_contig_path(current_sequence.contigs.first)
                       end
                     }
                   }
@@ -314,8 +317,8 @@ class XmlUploader < ApplicationRecord
                   # Markersequenz
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      if current_sequence && current_sequence.sequence
-                        xml.text(current_sequence.sequence)
+                      if current_ms
+                        xml.text(current_ms)
                       end
                     }
                   }
@@ -323,7 +326,7 @@ class XmlUploader < ApplicationRecord
                   # Genbank ID
                   xml.Cell {
                     xml.Data('ss:Type' => "String") {
-                      if current_sequence && current_sequence.sequence && current_sequence.genbank
+                      if current_ms && current_sequence&.genbank
                         xml.text(current_sequence.genbank)
                       end
                     }
