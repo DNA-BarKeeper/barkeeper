@@ -39,7 +39,6 @@ set :ssh_options, { port: 1694, forward_agent: true, user: fetch(:user), keys: %
 # Sidekiq setup
 set :sidekiq_log => File.join(release_path, 'log', 'sidekiq.log')
 set :sidekiq_config => File.join(shared_path, 'config', 'sidekiq.yml')
-set :sidekiq_service_name => "sidekiq_#{fetch(:application)}_#{fetch(:sidekiq_env)}" + (index ? "#{index}" : '')
 
 ## Defaults:
 # set :scm,           :git
