@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '2.3.3'
 gem 'rails', '5.0.0'
 
-gem 'pg'
+gem 'pg', '~> 0.21' # Rails does not work with pg 1.0.0 (fixed in Rails 5.1.5)
 # Use Puma as the app server
 gem 'puma', '~> 3.0' #, :group => 'production'
 # Use SCSS for stylesheets
