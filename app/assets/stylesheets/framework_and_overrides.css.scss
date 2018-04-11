@@ -176,12 +176,13 @@ body.about_page {
 }
 
 #main {
-  float: left;
+  //float: left;
   font-size: 12px;
   font-weight: 400;
   background-color: #fff;
-  height: 750px;
-  margin-top: 10px;
+  //height: 750px;
+  //margin-top: 10px;
+  overflow-x: auto;
 }
 
 #sidebar {
