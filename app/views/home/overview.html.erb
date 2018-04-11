@@ -4,10 +4,6 @@
     <h3 class="panel-title">Overview</h3>
   </div>
   <div class="panel-body">
-    <p>
-      <%= link_to 'View overview diagram', overview_diagram_index_path %>
-    </p>
-
     <!-- total overview across markers -->
 
     <div class="wideTable">
@@ -271,7 +267,13 @@
         </tfoot>
         </table>
     </div>
-  </div>
 
+    <p>
+      <%= PrimerRead.sum(:base_count)  %> bp sequenced as of <%=Time.now.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>.
+    </p>
+  </div>
 </div>
-<%= PrimerRead.sum(:base_count)  %> bp sequenced as of <%=Time.now.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>.
+
+<p>
+  <%= link_to 'Back to overview diagrams', overview_diagram_index_path %>
+</p>
