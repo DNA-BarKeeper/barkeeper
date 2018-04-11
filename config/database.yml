@@ -1,8 +1,9 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: gbol_development
+  database: gbol5
   pool: 5
+  host: localhost
   timeout: 5000
   username: postgres
   password: passwordpsql
