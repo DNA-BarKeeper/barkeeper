@@ -11,3 +11,5 @@ FROM "marker_sequences"
   INNER JOIN "families" ON "families"."id" = "species"."family_id"
 GROUP BY families.name
 ORDER BY families.name
+
+-- MarkerSequence.joins(isolate: [individual: [species: :family]]).where(:marker => 5).order('families.name').group('families.name').count
