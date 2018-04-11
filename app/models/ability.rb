@@ -43,6 +43,7 @@ class Ability
     can [:edit, :index, :filter, :show_individuals, :xls], Species
     # can :manage, SpeciesEpithet
     can :manage, TxtUploader
+    can :manage, :overview_diagram
 
     # Additional permissions for logged in users
     if user.present?
