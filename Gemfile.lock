@@ -23,6 +23,14 @@ GIT
       capistrano-bundler
       puma (~> 3.4)
 
+GIT
+  remote: git://github.com/seuros/capistrano-sidekiq.git
+  revision: d5027765a2ff58239a015639a27033bb0daa41f7
+  specs:
+    capistrano-sidekiq (1.0.1)
+      capistrano (>= 3.9.0)
+      sidekiq (>= 3.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -71,13 +79,13 @@ GEM
     arel (7.1.4)
     autoprefixer-rails (8.2.0)
       execjs
-    aws-sdk (2.11.32)
-      aws-sdk-resources (= 2.11.32)
-    aws-sdk-core (2.11.32)
+    aws-sdk (2.11.33)
+      aws-sdk-resources (= 2.11.33)
+    aws-sdk-core (2.11.33)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.11.32)
-      aws-sdk-core (= 2.11.32)
+    aws-sdk-resources (2.11.33)
+      aws-sdk-core (= 2.11.33)
     aws-sigv4 (1.0.2)
     bcrypt (3.1.11)
     bcrypt (3.1.11-x86-mingw32)
@@ -111,9 +119,6 @@ GEM
     capistrano-rbenv (2.1.3)
       capistrano (~> 3.1)
       sshkit (~> 1.3)
-    capistrano-sidekiq (1.0.1)
-      capistrano (>= 3.9.0)
-      sidekiq (>= 3.4)
     capybara (2.18.0)
       addressable
       mini_mime (>= 0.1.3)
@@ -365,7 +370,7 @@ GEM
     thor (0.20.0)
     thread_safe (0.3.6)
     tilt (2.0.8)
-    turbolinks (5.1.0)
+    turbolinks (5.1.1)
       turbolinks-source (~> 5.1)
     turbolinks-source (5.1.0)
     tzinfo (1.2.5)
@@ -410,7 +415,7 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano-rbenv
-  capistrano-sidekiq
+  capistrano-sidekiq!
   capistrano3-puma!
   chosen-rails
   coffee-rails (~> 4.2)

@@ -54,7 +54,7 @@ gem 'slim'
 gem 'mime-types'
 
 # Transform coordinates from Gauss-Kruger to lat/long
-gem 'geo_transformer',  github: 'milafrerichs/geo_transformer'
+gem 'geo_transformer', github: 'milafrerichs/geo_transformer'
 
 # run scheduled jobs with cron
 gem 'whenever', require: false
@@ -71,7 +71,7 @@ group :development do
   gem 'capistrano-rails',   require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano3-puma',   require: false, github: 'seuros/capistrano-puma' #todo remove github once fixed version is officially deployed
-  gem 'capistrano-sidekiq', require: false
+  gem 'capistrano-sidekiq', require: false, github: 'seuros/capistrano-sidekiq'
 end
 
 group :test do
