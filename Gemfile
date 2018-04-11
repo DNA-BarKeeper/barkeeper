@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '2.3.3'
 gem 'rails', '5.0.0'
 
-gem 'pg'
+gem 'pg', '~> 0.21' # Rails does not work with pg 1.0.0 (fixed in Rails 5.1.5)
 # Use Puma as the app server
 gem 'puma', '~> 3.0' #, :group => 'production'
 # Use SCSS for stylesheets
@@ -58,6 +58,9 @@ gem 'geo_transformer',  github: 'milafrerichs/geo_transformer'
 
 # run scheduled jobs with cron
 gem 'whenever', require: false
+
+# Adds methods for creating and managing database views
+gem 'scenic'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
