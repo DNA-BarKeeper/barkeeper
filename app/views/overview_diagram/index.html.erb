@@ -1,35 +1,48 @@
-<div id="main">
-  <table>
-    <tr>
-      <td width="650px" align="center">
-        <div class="overview_diagram" data-id="1">
-          <h3>Planned GBoL marker sequences per family</h3>
-          <div id="sequence1" class="sequence"></div>
-          <div id="chart1" class="chart" data-id="1">
-            <div id="explanation1" class="explanation" style="visibility: hidden;">
-              <span id="percentage1" class="percentage"></span><br/>
-              of all planned marker sequences belong to this group
+<% provide(:title, 'Overview diagrams') %>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Overview diagrams</h3>
+  </div>
+  <div class="panel-body">
+    <div id="main">
+      <table>
+        <tr>
+          <td width="650px" align="center">
+            <div class="overview_diagram" data-id="1">
+              <h3>Planned GBoL marker sequences per family</h3>
+              <div id="sequence1" class="sequence"></div>
+              <div id="chart1" class="chart" data-id="1">
+                <div id="explanation1" class="explanation" style="visibility: hidden;">
+                  <span id="percentage1" class="percentage"></span><br/>
+                  of all planned marker sequences belong to this group
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </td>
-      <td width="130px" align="center">
-        <div id="sidebar">
-          <div id="legend"></div>
-        </div>
-      </td>
-      <td width="650px" align="center">
-        <div class="overview_diagram" data-id="2">
-          <h3>Finished GBoL marker sequences per family</h3>
-          <div id="sequence2" class="sequence"></div>
-          <div id="chart2" class="chart" data-id="2">
-            <div id="explanation2" class="explanation" style="visibility: hidden;">
-              <span id="percentage2" class="percentage"></span><br/>
-              of all finished marker sequences belong to this group
+          </td>
+          <td width="130px" align="center">
+            <div id="sidebar">
+              <div id="legend"></div>
             </div>
-          </div>
-        </div>
-      </td>
-    </tr>
-  </table>
+          </td>
+          <td width="650px" align="center">
+            <div class="overview_diagram" data-id="2">
+              <h3>Finished GBoL marker sequences per family</h3>
+              <div id="sequence2" class="sequence"></div>
+              <div id="chart2" class="chart" data-id="2">
+                <div id="explanation2" class="explanation" style="visibility: hidden;">
+                  <span id="percentage2" class="percentage"></span><br/>
+                  of all finished marker sequences belong to this group
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div>
+  <%= link_to 'Back to overview tables', overview_path %>
 </div>
