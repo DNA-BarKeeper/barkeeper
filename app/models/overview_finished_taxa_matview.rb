@@ -7,33 +7,25 @@ class OverviewFinishedTaxaMatview < ApplicationRecord
     true
   end
 
-  def self.finished_taxa_json
-    root = {:name => 'root', 'children' => []}
-    markers = Marker.gbol_marker.select(:id, :name)
-    data = HigherOrderTaxon.includes(orders: [:families])
+  def self.finished_taxa_json(marker_name)
+    root = { :name => 'root', 'children' => [] }
+    taxa = HigherOrderTaxon.includes(orders: [:families]).order(:position)
+    marker_sequence_cnts = OverviewFinishedTaxaMatview.group(:families_name).order(:families_name).sum(marker_name.downcase.gsub('-', '_') + '_cnt')
 
     i = 0
-    markers.each do |marker|
-      marker_sequence_cnts = OverviewFinishedTaxaMatview.group(:families_name).sum(marker.name.downcase.gsub('-', '_') + '_cnt')
-
+    taxa.each do |taxon|
+      orders = taxon.orders
       children = root['children']
-      children[i] = { :name => marker.name, 'children' => [] }
+      children[i] = { :name => taxon.name, 'children' => [] }
       j = 0
-      data.each do |taxon|
-        orders = taxon.orders
+      orders.each do |order|
+        families = order.families
         children2 = children[i]['children']
-        children2[j] = { :name => taxon.name, 'children' => [] }
+        children2[j] = { :name => order.name, 'children' => [] }
         k = 0
-        orders.each do |order|
-          families = order.families
+        families.each do |family|
           children3 = children2[j]['children']
-          children3[k] = { :name => order.name, 'children' => [] }
-          l = 0
-          families.each do |family|
-            children4 = children3[k]['children']
-            children4[l] = { name: family.name, size: marker_sequence_cnts[family.name].to_i }
-            l += 1
-          end
+          children3[k] = { name: family.name, size: marker_sequence_cnts[family.name].to_i }
           k += 1
         end
         j += 1

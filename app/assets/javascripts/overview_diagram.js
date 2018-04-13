@@ -6,7 +6,6 @@ $.ajax({
     processData: false,
     success: function (data) {
         createVisualization(data, 1);
-        drawLegend(marker_legend_entries);
         drawLegend(taxa_legend_entries);
     },
     error: function (result) {
@@ -17,7 +16,7 @@ $.ajax({
 $.ajax({
     type: "GET",
     contentType: "application/json; charset=utf-8",
-    url: 'finished_species',
+    url: 'finished_species_trnlf',
     dataType: 'json',
     processData: false,
     success: function (data) {
@@ -28,9 +27,51 @@ $.ajax({
     }
 });
 
+$.ajax({
+    type: "GET",
+    contentType: "application/json; charset=utf-8",
+    url: 'finished_species_its',
+    dataType: 'json',
+    processData: false,
+    success: function (data) {
+        createVisualization(data, 3);
+    },
+    error: function (result) {
+        console.error("Error getting data.");
+    }
+});
+
+$.ajax({
+    type: "GET",
+    contentType: "application/json; charset=utf-8",
+    url: 'finished_species_rpl16',
+    dataType: 'json',
+    processData: false,
+    success: function (data) {
+        createVisualization(data, 4);
+    },
+    error: function (result) {
+        console.error("Error getting data.");
+    }
+});
+
+$.ajax({
+    type: "GET",
+    contentType: "application/json; charset=utf-8",
+    url: 'finished_species_trnk_matk',
+    dataType: 'json',
+    processData: false,
+    success: function (data) {
+        createVisualization(data, 5);
+    },
+    error: function (result) {
+        console.error("Error getting data.");
+    }
+});
+
 // Dimensions of sunburst.
-var width = 650;
-var height = 600;
+var width = 550;
+var height = 500;
 var radius = Math.min(width, height) / 2;
 
 // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
@@ -38,15 +79,7 @@ var b = {
     w: 125, h: 30, s: 4, t: 10
 };
 
-var color = d3.scaleOrdinal(d3.schemeCategory20b);
-
-// Mapping of step names to colors.
-var marker_legend_entries = [
-    "trnLF",
-    "rpl16",
-    "ITS",
-    "trnK-matK"
-];
+var color = d3.scaleOrdinal(d3.schemeSet2);
 
 var taxa_legend_entries = [
     "Marchantiophytina",
