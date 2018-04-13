@@ -131,8 +131,8 @@ function createVisualization(json, id) {
 
     // Turn the data into a d3 hierarchy and calculate the sums.
     var root = d3.hierarchy(json)
-        .sum(function(d) { return d.size; })
-        .sort(function(a, b) { return b.value - a.value; });
+        .sum(function(d) { return d.size; });
+        // .sort(function(a, b) { return b.value - a.value; }); //disabled sorting to maintain taxonomic order
 
     // For efficiency, filter nodes to keep only those large enough to see.
     var nodes = partition(root).descendants()
