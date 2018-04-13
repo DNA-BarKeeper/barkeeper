@@ -1,12 +1,10 @@
 require 'net/http'
-require 'nokogiri'
 
 namespace :data do
 
-  desc "Delete faulty primer reads and import them again correctly"
-
+  desc 'Delete faulty primer reads and import them again correctly'
   task :reimport_chromatograms => :environment do
-    nil_reads = PrimerRead.where(:sequence => nil)
+    nil_reads = PrimerRead.where(sequence: nil)
 
     # download chromatograms of records without sequence
     nil_reads.each do |r|
@@ -16,6 +14,6 @@ namespace :data do
     end
 
     # destroy all reads without sequence
-    PrimerRead.where(:sequence => nil).destroy_all
+    PrimerRead.where(sequence: nil).destroy_all
   end
 end

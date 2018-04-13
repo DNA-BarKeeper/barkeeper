@@ -10,7 +10,10 @@ GBOLapp::Application.routes.draw do
 
   get 'overview_diagram/index'
   get 'overview_diagram/all_species', :defaults => { :format => 'json' }
-  get 'overview_diagram/finished_species', :defaults => { :format => 'json' }
+  get 'overview_diagram/finished_species_trnlf', :defaults => { :format => 'json' }
+  get 'overview_diagram/finished_species_its', :defaults => { :format => 'json' }
+  get 'overview_diagram/finished_species_rpl16', :defaults => { :format => 'json' }
+  get 'overview_diagram/finished_species_trnk_matk', :defaults => { :format => 'json' }
 
   get 'specimens_xls', action: :xls, controller: 'individuals'
   get 'specimens_create_xls', action: :create_xls, controller: 'individuals'

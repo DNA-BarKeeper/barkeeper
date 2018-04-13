@@ -1,8 +1,8 @@
 namespace :data do
 
-  desc 'Get information about verified marker sequences and contigs in database'
+  desc 'Get information about verified marker sequences (with associated species) and contigs in database'
   task :sequence_info_verified => [:environment, :general_info] do
-    marker_sequences = MarkerSequence.verified # TODO: only count sequences with an attached species
+    marker_sequences = MarkerSequence.has_species.verified
     contigs = Contig.verified.joins(:primer_reads)
 
     get_information(marker_sequences, contigs)
@@ -20,8 +20,9 @@ namespace :data do
   task :general_info => :environment do
     puts "Number of marker sequences: #{MarkerSequence.all.size}"
     puts "Number of verified marker sequences in database: #{MarkerSequence.verified.size}"
-    puts "Number of marker sequences without associated contigs: #{MarkerSequence.includes(:contigs).where(contigs: {id: nil}).size}"
-    puts "Number of marker sequences without associated isolate: #{MarkerSequence.includes(:isolate).where(isolate: nil).size}"
+    puts "Number of verified marker sequences with associated species in database: #{MarkerSequence.has_species.verified.length}"
+    puts "Number of marker sequences without associated contigs: #{MarkerSequence.includes(:contigs).where(contigs: { id: nil }).size}"
+    puts "Number of marker sequences without associated isolate: #{MarkerSequence.includes(:isolate).where( isolate: nil ).size}"
     puts ''
 
     puts "Number of contigs in database: #{Contig.all.size}"
