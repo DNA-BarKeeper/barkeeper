@@ -9,14 +9,21 @@
 </p>
 
 <p>
-  <strong>Responsibilities</strong>
-  <%= @user.responsibilities.map { |responsibility| responsibility.name }.join(', ') %>
+  <strong>Role:</strong>
+  <%= @user.role %>
 </p>
 
 <p>
-  <strong>Role</strong>
-  <%= @user.admin? %>
+  <strong>Lab:</strong>
+  <%= @user.lab&.labcode %>
 </p>
 
-<%= link_to 'Edit', edit_project_path(@project) %> |
-<%= link_to 'Back', projects_path %>
+<p>
+  <strong>Responsibilities:</strong>
+  <%= @user.responsibilities&.map { |responsibility| responsibility.name }.join(', ') %>
+</p>
+
+<p>
+  <strong>Projects:</strong>
+  <%= @user.projects&.map { |project| project.name }.join(', ') %>
+</p>
