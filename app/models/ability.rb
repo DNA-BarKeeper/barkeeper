@@ -50,6 +50,7 @@ class Ability
       can :manage, :all
 
       cannot :manage, User
+      can [:home], User
       cannot :manage, Project
       cannot :manage, Responsibility
 

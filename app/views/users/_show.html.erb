@@ -1,0 +1,22 @@
+<p>
+  <strong>Name:</strong>
+  <%= @user.name %>
+</p>
+
+<p>
+  <strong>E-Mail:</strong>
+  <%= @user.email %>
+</p>
+
+<p>
+  <strong>Responsibilities</strong>
+  <%= @user.responsibilities.map { |responsibility| responsibility.name }.join(', ') %>
+</p>
+
+<p>
+  <strong>Role</strong>
+  <%= @user.admin? %>
+</p>
+
+<%= link_to 'Edit', edit_project_path(@project) %> |
+<%= link_to 'Back', projects_path %>

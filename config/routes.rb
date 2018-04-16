@@ -193,7 +193,11 @@ GBOLapp::Application.routes.draw do
     get '/login' => 'devise/sessions#new'
     get '/logout' => 'devise/sessions#destroy'
   end
-  resources :users, :controller => "users"
+  resources :users, :controller => 'users' do
+    member do
+      get 'home'
+    end
+  end
 
   post 'create_user' => 'users#create', as: :create_user
   delete '/users/:id' => 'users#destroy', :as => :destroy_user
