@@ -12,15 +12,16 @@
           <th>Name</th>
           <th>E-mail</th>
           <th>Lab</th>
+          <th>Projects</th>
+          <th>Role</th>
           <th>Responsibilities</th>
           <th>Last sign-in</th>
-          <th>Role</th>
           <th></th>
         </tr>
         </thead>
 
         <tbody>
-        <% @users.includes(:lab, :responsibilities).each do |user| %>
+        <% @users.includes(:lab, :responsibilities, :projects).each do |user| %>
           <tr>
             <%= render user %>
             <td>
@@ -35,5 +36,3 @@
 </div>
 
 <p><%= link_to 'Sign up a new user', new_user_path %></p>
-
-<p><%= link_to 'Responsibilities', responsibilities_path %></p>

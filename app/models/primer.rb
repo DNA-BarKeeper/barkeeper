@@ -4,6 +4,8 @@ class Primer < ApplicationRecord
   belongs_to :marker
   has_many :primer_reads
   has_many :primer_pos_on_genomes
+  has_and_belongs_to_many :projects
+
   validates_presence_of :name
 
 

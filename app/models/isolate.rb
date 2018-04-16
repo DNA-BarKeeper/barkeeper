@@ -8,6 +8,7 @@ class Isolate < ApplicationRecord
   belongs_to :tissue
   belongs_to :individual
   has_and_belongs_to_many :projects
+
   validates_presence_of :lab_nr
 
   before_create :assign_specimen

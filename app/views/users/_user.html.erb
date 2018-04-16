@@ -3,14 +3,17 @@
 </td>
 <td><%= user.email %></td>
 <td>
-  <% if user.lab.present? %>
-    <%= link_to user.lab.labcode, edit_lab_path(user.lab.id) %>
-  <% end %>
+  <%= link_to user.lab.labcode, edit_lab_path(user.lab.id) if user.lab.present? %>
 </td>
 <td>
-  <%= user.responsibilities.map { |responsibility| responsibility.name }.join(', ') %>
+  <%= user.projects&.map { |responsibility| responsibility.name }.join(', ') %>
 </td>
-<td><%= user.last_sign_in_at %></td>
 <td>
   <%= user.role&.capitalize %>
+</td>
+<td>
+  <%= user.responsibilities&.map { |responsibility| responsibility.name }.join(', ') %>
+</td>
+<td>
+  <%= user.last_sign_in_at %>
 </td>

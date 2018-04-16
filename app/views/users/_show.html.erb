@@ -22,8 +22,3 @@
   <strong>Responsibilities:</strong>
   <%= @user.responsibilities&.map { |responsibility| responsibility.name }.join(', ') %>
 </p>
-
-<p>
-  <strong>Projects:</strong>
-  <%= @user.projects&.map { |project| project.name }.join(', ') %>
-</p>

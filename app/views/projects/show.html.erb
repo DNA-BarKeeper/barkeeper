@@ -20,5 +20,10 @@
   <%= @project.due %>
 </p>
 
+<p>
+  <strong>Users:</strong>
+  <%= @project.users.map { |user| user.name }.join(', ') %>
+</p>
+
 <%= link_to 'Edit', edit_project_path(@project) %> |
 <%= link_to 'Back', projects_path %>

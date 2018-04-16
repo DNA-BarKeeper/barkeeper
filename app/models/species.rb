@@ -6,26 +6,15 @@ class Species < ApplicationRecord
   belongs_to :family
   has_and_belongs_to_many :projects
 
-
   def filter
     @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:name)
   end
-
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
     spp=Species.select("species_component").joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     subspp=Species.select("id").joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     [spp.uniq.count, subspp.count]
   end
-
-
-  # def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-  #   contigs=Contig.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-  #   contigs_i=Contig.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-  #
-  #   [contigs.count, contigs.uniq.count, contigs_i.uniq.count]
-  # end
-
 
   def self.import_gbolII(file)
     spreadsheet = CommonFunctions.open_spreadsheet(file)
@@ -74,7 +63,6 @@ class Species < ApplicationRecord
     end
   end
 
-
   def self.import(file, valid_keys)
     spreadsheet = CommonFunctions.open_spreadsheet(file)
     header = spreadsheet.row(1)
@@ -115,7 +103,6 @@ class Species < ApplicationRecord
     end
   end
 
-
   def self.import_Stuttgart(file)
     valid_keys = %w('genus_name',
                   'species_epithet',
@@ -129,7 +116,6 @@ class Species < ApplicationRecord
     self.import(file, valid_keys)
   end
 
-
   def self.import_Berlin(file)
     valid_keys = %w('genus_name',
                     'species_epithet',
@@ -141,7 +127,6 @@ class Species < ApplicationRecord
 
     self.import(file, valid_keys)
   end
-
 
   def self.import_Stuttgart_set_class(file)
     spreadsheet = CommonFunctions.open_spreadsheet(file)
@@ -169,7 +154,6 @@ class Species < ApplicationRecord
     end
   end
 
-
   def self.to_csv(options = {})
     CSV.generate(options) do |csv|
       csv << column_names
@@ -180,11 +164,9 @@ class Species < ApplicationRecord
     end
   end
 
-
   def full_name
     "#{self.genus_name} #{self.species_epithet} #{self.infraspecific}".strip
   end
-
 
   def name_for_display
     if self.infraspecific.nil? or self.infraspecific.blank?
@@ -198,16 +180,13 @@ class Species < ApplicationRecord
     end
   end
 
-
   def get_species_component
     "#{self.genus_name} #{self.species_epithet}".strip
   end
 
-
   def family_name
     family.try(:name)
   end
-
 
   def family_name=(name)
     self.family = Family.find_or_create_by(:name => name) if name.present?
