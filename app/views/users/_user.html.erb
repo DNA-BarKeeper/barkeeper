@@ -1,9 +1,5 @@
 <td>
-  <% if user.admin? && !current_user.admin? %>
-    <%= user.name %>
-  <% else %>
-    <%= link_to user.name, edit_user_path(user) %>
-  <% end %>
+  <%= link_to user.name, edit_user_path(user) %>
 </td>
 <td><%= user.email %></td>
 <td>
