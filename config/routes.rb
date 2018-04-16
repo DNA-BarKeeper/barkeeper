@@ -180,6 +180,8 @@ GBOLapp::Application.routes.draw do
     end
   end
 
+  resources :responsibilities
+
   #hack: avoid malicious users to directly type in the sign-up route
   #later: use authorization system to
   devise_scope :user do
