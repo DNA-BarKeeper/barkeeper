@@ -6,7 +6,7 @@ class MarkerSequenceSearch < ApplicationRecord
   end
 
   def as_fasta
-    fasta = ""
+    fasta = ''
 
     marker_sequences.each do |marker_sequence|
       sequence = Bio::Sequence::NA.new(marker_sequence.sequence)

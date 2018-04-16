@@ -2,7 +2,7 @@ class MarkerSequence < ApplicationRecord
   belongs_to :isolate
   has_many :contigs
   belongs_to :marker
-  #validates_presence_of :sequence
+  has_and_belongs_to_many :projects
 
   scope :verified, -> { joins(:contigs).where(contigs: { verified: true }) }
   scope :not_verified, -> { joins(:contigs).where(contigs: { verified: false }) }

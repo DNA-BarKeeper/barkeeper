@@ -9,13 +9,17 @@ class Individual < ApplicationRecord
 
   scope :without_species, -> { where(:species => nil) }
 
-  scope :without_isolates, ->{ joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
+  scope :without_isolates, -> {
+    joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
       select('individuals.id').
-      group('individuals.id').having('count(isolates.id) = 0')}
+      group('individuals.id').having('count(isolates.id) = 0')
+  }
 
-  scope :no_species_isolates, ->{ without_species.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
+  scope :no_species_isolates, -> {
+    without_species.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
       select('individuals.id').
-      group('individuals.id').having('count(isolates.id) = 0')}
+      group('individuals.id').having('count(isolates.id) = 0')
+  }
 
   # in rc count how many have no isolate:
   # Individual.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').where('isolates.id' => nil).count
@@ -23,7 +27,7 @@ class Individual < ApplicationRecord
   scope :recent_crap, -> { where('individuals.updated_at > ? AND individuals.specimen_id = ?', 3.days.ago, "<no info available in DNA Bank>")}
   scope :bad_location, -> { where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
   scope :good_location, -> { where('individuals.longitude_original SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
-  scope :no_location, -> { where('individuals.longitude_original = ?', nil ) }
+  scope :no_location, -> { where('individuals.longitude_original = ?', nil) }
 
 
   def self.to_csv(options = {})

@@ -3,7 +3,6 @@ class PartialCon < ApplicationRecord
   has_many :primer_reads
 
   def mira_consensus_qualities
-
     group_probs_all_pos=[]
 
     # for each position:

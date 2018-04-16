@@ -6,7 +6,7 @@ class PrimerRead < ApplicationRecord
   has_and_belongs_to_many :projects
 
   has_attached_file :chromatogram,
-                    :default_url => "/chromatograms/primer_read.scf"
+                    :default_url => '/chromatograms/primer_read.scf'
 
   #do_not_validate_attachment_file_type :chromatogram
 

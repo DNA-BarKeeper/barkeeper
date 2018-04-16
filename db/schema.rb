@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180416093403) do
+ActiveRecord::Schema.define(version: 20180416125519) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -295,6 +295,12 @@ ActiveRecord::Schema.define(version: 20180416093403) do
     t.string   "reference"
   end
 
+  create_table "marker_sequences_projects", id: false, force: :cascade do |t|
+    t.integer "marker_sequence_id", null: false
+    t.integer "project_id",         null: false
+    t.index ["marker_sequence_id", "project_id"], name: "index_marker_sequences_projects", using: :btree
+  end
+
   create_table "markers", force: :cascade do |t|
     t.string   "name",           limit: 255
     t.datetime "created_at"
@@ -302,6 +308,12 @@ ActiveRecord::Schema.define(version: 20180416093403) do
     t.integer  "expected_reads"
     t.boolean  "is_gbol"
     t.string   "alt_name"
+  end
+
+  create_table "markers_projects", id: false, force: :cascade do |t|
+    t.integer "marker_id",  null: false
+    t.integer "project_id", null: false
+    t.index ["marker_id", "project_id"], name: "index_markers_projects_on_marker_id_and_project_id", using: :btree
   end
 
   create_table "micronic_plates", force: :cascade do |t|
@@ -426,6 +438,12 @@ ActiveRecord::Schema.define(version: 20180416093403) do
     t.integer  "position"
   end
 
+  create_table "primers_projects", id: false, force: :cascade do |t|
+    t.integer "primer_id",  null: false
+    t.integer "project_id", null: false
+    t.index ["primer_id", "project_id"], name: "index_primers_projects_on_primer_id_and_project_id", using: :btree
+  end
+
   create_table "projects", force: :cascade do |t|
     t.string   "name",        limit: 255
     t.text     "description"
@@ -543,6 +561,7 @@ ActiveRecord::Schema.define(version: 20180416093403) do
     t.string   "name",                   limit: 255
     t.integer  "lab_id"
     t.integer  "role"
+    t.integer  "default_project_id"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end

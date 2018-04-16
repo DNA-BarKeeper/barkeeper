@@ -11,6 +11,31 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
+    <h3 class="panel-title">Projects</h3>
+  </div>
+  <div class="panel-body" id="main">
+    <div>
+      <p>
+        <strong>Projects:</strong>
+        <%= @user.projects&.map { |project| project.name }.join(', ') %>
+      </p>
+
+      <%= form_for @user do |f| %>
+        <%= f.label 'Default project:' %>
+        <%= f.collection_select :default_project_id, @user.projects, :id, :name %>
+
+        <div class="form-actions">
+          <%= f.submit 'Change default project', :class => 'btn btn-warning' %>(This will influence what contents are shown throughout this web application.)
+        </div>
+
+      <% end %>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
     <h3 class="panel-title">Saved searches</h3>
   </div>
   <div class="panel-body" id="main">
@@ -30,6 +55,7 @@
       <div>
         <%= link_to 'Users', users_path, :class => 'btn btn-default' %>
         <%= link_to 'Projects', projects_path, :class => 'btn btn-default' %>
+        <%= link_to 'Responsibilities', responsibilities_path, :class => 'btn btn-default' %>
       </div>
     </div>
   </div>

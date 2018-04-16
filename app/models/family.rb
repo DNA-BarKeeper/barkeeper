@@ -1,8 +1,9 @@
 class Family < ApplicationRecord
   has_many :species
   belongs_to :order
-  validates_presence_of :name
   has_and_belongs_to_many :projects
+
+  validates_presence_of :name
 
   # Returns the number of species for which at least one marker sequence for this marker exists
   def completed_species_cnt(marker_id)

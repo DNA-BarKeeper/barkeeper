@@ -4,10 +4,11 @@ class Contig < ApplicationRecord
   belongs_to :marker
   belongs_to :isolate
   has_many :primer_reads
-  validates_presence_of :name
   has_many :issues
   has_many :partial_cons
   has_and_belongs_to_many :projects
+
+  validates_presence_of :name
 
   scope :caryophyllales, -> { includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => :order }}}).where(orders: {name: "Caryophyllales"})}
   scope :caryo_matK, -> { caryophyllales.includes(:marker).where(:marker_id => 7) }

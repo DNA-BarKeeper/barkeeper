@@ -5,49 +5,7 @@
 
   <div class="panel-body">
     <%= form_for @user do |f| %>
-
-      <div class="form-group">
-        <%= f.label :name %>
-        <%= f.text_field :name, class: 'form-control' %>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :email %>
-        <%= f.text_field :email, class: 'form-control' %>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :password %>
-        <%= f.password_field :password, :autocomplete => 'off', class: 'form-control' %>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :password_confirmation %>
-        <%= f.password_field :password_confirmation, class: 'form-control' %>
-      </div>
-
-      <div class="form-group">
-        <% roles = current_user.admin? ? User.roles.keys : User.roles.keys.reject {|role| role == 'admin'} %>
-        <% roles.each do |role| %>
-          <%= f.radio_button :role, role %>
-          <%= f.label role.to_sym %>
-        <% end %>
-      </div>
-
-      <div class="form-group">
-        <%= f.label 'Lab' %><br>
-        <%= f.collection_select :lab_id, Lab.order(:labcode), :id, :labcode %>
-      </div>
-
-      <div class="form-group">
-        <%= f.label 'Responsibilities' %><br>
-        <%= f.collection_select :responsibility_ids, Responsibility.order(:name), :id, :name, {include_blank:'None specified'}, {multiple: true} %>
-      </div>
-
-      <div class="form-actions">
-        <%= f.button :submit %>
-      </div>
-
+      <%= render 'form', :f => f %>
     <% end %>
   </div>
 </div>

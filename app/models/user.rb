@@ -10,6 +10,13 @@ class User < ApplicationRecord
   has_and_belongs_to_many :responsibilities
 
   validates_presence_of :email # necessary for devise
+  validates :projects, presence: true
+
+  before_save :default_project
 
   enum role: [:guest, :user, :supervisor, :admin]
+
+  def default_project
+    self.default_project_id ||= projects.first.id
+  end
 end
