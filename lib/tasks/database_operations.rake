@@ -278,4 +278,18 @@ namespace :data do
       project.delete if responsibility.save
     end
   end
+
+  desc 'Set user roles with new enum attribute'
+  task :set_user_roles => :environment do
+    User.update_all(role: 'user')
+
+    User.find_by_name('Sarah Wiechers').update(role: 'admin')
+    User.find_by_name('Kai Müller').update(role: 'admin')
+    User.find_by_name('Dietmar Quandt').update(role: 'supervisor')
+
+    User.find_by_name('Matthias Geiger').update(role: 'guest')
+    User.find_by_name('Birgit Gemeinholzer').update(role: 'guest')
+    User.find_by_name('Andreas Kolter').update(role: 'guest')
+    User.find_by_name('Stephanie Swenson-Friedrich').update(role: 'guest')
+  end
 end
