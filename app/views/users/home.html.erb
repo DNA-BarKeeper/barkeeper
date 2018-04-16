@@ -1,11 +1,19 @@
 <% provide(:title, 'User home area') %>
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">Home area for user <%= @user.name %></h3>
+    <h3 class="panel-title">Profile information</h3>
   </div>
   <div class="panel-body" id="main">
-
+    <%= render 'show' %>
     <div><%= link_to 'Edit profile', edit_user_registration_path, :class => 'btn btn-default' %></div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Saved searches</h3>
+  </div>
+  <div class="panel-body" id="main">
     <div>
       <%= link_to 'Your past contig searches', contig_searches_path, :class => 'btn btn-default' %>
       <%= link_to 'Your past marker sequence searches', marker_sequence_searches_path, :class => 'btn btn-default' %>
