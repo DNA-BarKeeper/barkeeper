@@ -16,13 +16,5 @@
 </td>
 <td><%= user.last_sign_in_at %></td>
 <td>
-  <% if user.admin? %>
-    Admin
-  <% elsif user.supervisor? %>
-    Supervisor
-  <% elsif user.guest? %>
-    Guest
-  <% else %>
-    User
-  <% end %>
+  <%= user.role&.capitalize %>
 </td>

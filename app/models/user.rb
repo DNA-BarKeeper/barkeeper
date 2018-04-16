@@ -10,4 +10,6 @@ class User < ApplicationRecord
   has_and_belongs_to_many :responsibilities
 
   validates_presence_of :email # necessary for devise
+
+  enum role: [:guest, :user, :supervisor, :admin]
 end
