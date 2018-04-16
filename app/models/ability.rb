@@ -66,6 +66,8 @@ class Ability
         can :manage, User
         can :manage, Project
         can :manage, Responsibility
+
+        cannot [:create, :update, :destroy], User, role: 'admin' if user.supervisor?
       end
 
       cannot :manage, ContigSearch

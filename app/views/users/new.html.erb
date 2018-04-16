@@ -27,8 +27,10 @@
       </div>
 
       <div class="form-group">
-        <%= f.label role.to_sym %>
-        <%= f.radio_button :role, role %>
+        <% User.roles.keys.each do |role| %>
+          <%= f.radio_button :role, role %>
+          <%= f.label role.to_sym %>
+        <% end %>
       </div>
 
       <div class="form-group">
