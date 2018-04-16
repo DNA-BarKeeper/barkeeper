@@ -51,6 +51,7 @@ class Ability
 
       cannot :manage, User
       cannot :manage, Project
+      cannot :manage, Responsibility
 
       # Additional permissions for guests
       if user.guest?
@@ -63,6 +64,7 @@ class Ability
       if user.admin? || user.supervisor?
         can :manage, User
         can :manage, Project
+        can :manage, Responsibility
       end
 
       cannot :manage, ContigSearch

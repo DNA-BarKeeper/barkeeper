@@ -1,0 +1,2 @@
+module ResponsibilitiesHelper
+end

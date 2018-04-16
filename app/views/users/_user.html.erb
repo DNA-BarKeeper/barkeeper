@@ -12,9 +12,7 @@
   <% end %>
 </td>
 <td>
-  <% if user.projects.size == 1 %>
-    <%= user.projects.first.name %>
-  <% end %>
+  <%= user.responsibilities.map { |responsibility| responsibility.name }.join(', ') %>
 </td>
 <td><%= user.last_sign_in_at %></td>
 <td>

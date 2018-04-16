@@ -12,7 +12,7 @@
           <th>Name</th>
           <th>E-mail</th>
           <th>Lab</th>
-          <th>Responsibility</th>
+          <th>Responsibilities</th>
           <th>Last sign-in</th>
           <th>Role</th>
           <th></th>
@@ -20,7 +20,7 @@
         </thead>
 
         <tbody>
-        <% @users.includes(:lab).each do |user| %>
+        <% @users.includes(:lab, :responsibilities).each do |user| %>
           <tr>
             <%= render user %>
             <td>
@@ -34,4 +34,6 @@
   </div>
 </div>
 
-<%= link_to 'Sign up a new user', new_user_path %>
+<p><%= link_to 'Sign up a new user', new_user_path %></p>
+
+<p><%= link_to 'Responsibilities', responsibilities_path %></p>
