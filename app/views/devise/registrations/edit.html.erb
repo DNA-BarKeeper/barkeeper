@@ -21,9 +21,9 @@
         </div>
 
         <div>
-          <%= f.label :project, 'Responsibilities' %>
+          <%= f.label :responsibilities, 'Responsibilities' %>
           <br>
-          <%= resource.projects.first&.name %>
+          <%= resource.responsibilities.map { |responsibility| responsibility.name }.join(', ') %>
           <br><br>
         </div>
 

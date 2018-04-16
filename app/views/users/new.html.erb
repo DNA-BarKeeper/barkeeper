@@ -39,7 +39,7 @@
 
       <div class="form-group">
         <%= f.label 'Responsibility' %><br>
-        <%= f.collection_select :project_ids, Project.order(:name), :id, :name, {}, {multiple:true} %>
+        <%= f.collection_select :responsibility_ids, Responsibility.order(:name), :id, :name, {include_blank:'None specified'}, { multiple:true } %>
       </div>
 
       <div class="form-actions">
