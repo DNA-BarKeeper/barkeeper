@@ -5,9 +5,10 @@ class IsolateDatatable
 
   delegate :params, :link_to, :h, to: :@view
 
-  def initialize(view, no_specimen)
+  def initialize(view, no_specimen, current_default_project)
     @view = view
     @no_specimen = no_specimen
+    @current_default_project = current_default_project
   end
 
   def as_json(options = {})
@@ -20,24 +21,18 @@ class IsolateDatatable
   end
 
   private
-
   def data
     isolates.map do |isolate|
 
-      lab_nr=''
-      if isolate.lab_nr
-        lab_nr = link_to isolate.lab_nr, edit_isolate_path(isolate)
-      end
+      lab_nr = ''
+      lab_nr = link_to isolate.lab_nr, edit_isolate_path(isolate) if isolate.lab_nr
 
       species_name = ''
+      species_name = link_to isolate.individual.species.name_for_display, edit_species_path(isolate.individual.species) if isolate.individual and isolate.individual.species
 
-      if isolate.individual and isolate.individual.species
-        species_name = link_to isolate.individual.species.name_for_display, edit_species_path(isolate.individual.species)
-      end
-
-      individual=''
+      individual = ''
       if isolate.individual and isolate.individual.specimen_id!=nil
-        individual =link_to isolate.individual.specimen_id, edit_individual_path(isolate.individual)
+        individual = link_to isolate.individual.specimen_id, edit_individual_path(isolate.individual)
       end
 
       [
@@ -47,7 +42,6 @@ class IsolateDatatable
           isolate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
           link_to('Delete', isolate, method: :delete, data: { confirm: 'Are you sure?' })
       ]
-
     end
   end
 
@@ -56,12 +50,11 @@ class IsolateDatatable
   end
 
   def fetch_isolates
-
     if @no_specimen
-      isolates = Isolate.includes(:individual => :species).where(:individual => nil).where(:negative_control => false).order("#{sort_column} #{sort_direction}")
+      isolates = Isolate.includes(:individual => :species).where(:individual => nil).where(:negative_control => false).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     else
       # for standard index view
-      isolates = Isolate.includes(:individual => :species).order("#{sort_column} #{sort_direction}")
+      isolates = Isolate.includes(:individual => :species).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
     isolates = isolates.page(page).per_page(per_page)

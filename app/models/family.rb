@@ -5,6 +5,10 @@ class Family < ApplicationRecord
 
   validates_presence_of :name
 
+  def self.in_default_project(project_id)
+    joins(:projects).where(projects: { id: project_id }).uniq
+  end
+
   # Returns the number of species for which at least one marker sequence for this marker exists
   def completed_species_cnt(marker_id)
     cnt = 0
@@ -17,14 +21,14 @@ class Family < ApplicationRecord
       end
       cnt += 1 if has_ms
     end
-    return cnt
+    cnt
   end
 
   def self.in_higher_order_taxon(higher_order_taxon_id)
-    count=0
+    count = 0
 
     HigherOrderTaxon.find(higher_order_taxon_id).orders.each do |ord|
-      count+=ord.families.count
+      count += ord.families.count
     end
 
     count

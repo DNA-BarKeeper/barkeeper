@@ -33,7 +33,7 @@ class ContigsController < ApplicationController
       contig_name += "_#{marker}"
 
       # mk case insensitiv
-      contig=Contig.where("name ILIKE ?", contig_name).first
+      contig=Contig.in_default_project(current_user.default_project_id).where("name ILIKE ?", contig_name).first
 
       #ignore if not verified
 
@@ -209,10 +209,10 @@ class ContigsController < ApplicationController
     contig_name=c[0...-4]
 
     #match found?
-    contig = Contig.where("name ILIKE ?", contig_name).first
+    contig = Contig.in_default_project(current_user.default_project_id).where("name ILIKE ?", contig_name).first
 
     if contig
-      return contig
+      return contig if contig
     else
 
       # retry by extracting one primer name and selecting the marker this primer is assigned to
@@ -231,7 +231,7 @@ class ContigsController < ApplicationController
             if marker
               true_marker_name=marker.name
               true_contig_name=isolate_name+"_#{true_marker_name}"
-              contig = Contig.where("name ILIKE ?", true_contig_name).first
+              contig = Contig.in_default_project(current_user.default_project_id).where("name ILIKE ?", true_contig_name).first
               if contig
                 return contig
               end
@@ -249,14 +249,14 @@ class ContigsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, "all") }
+      format.json { render json: ContigDatatable.new(view_context, "all", current_user.default_project_id) }
     end
   end
 
   def duplicates
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, "duplicates") }
+      format.json { render json: ContigDatatable.new(view_context, "duplicates", current_user.default_project_id) }
     end
   end
 
@@ -266,7 +266,6 @@ class ContigsController < ApplicationController
       format.json { render json: ContigDatatable.new(view_context, "need_verification") }
     end
   end
-
 
   def caryophyllales_need_verification #assembly finished according to app but still need manual check
     respond_to do |format|
@@ -328,8 +327,8 @@ class ContigsController < ApplicationController
   end
 
   def filter
-    @contigs = Contig.order(:name).where("name ilike ?", "%#{params[:term]}%").limit(100)
-    size = Contig.order(:name).where("name ilike ?", "%#{params[:term]}%").size
+    @contigs = Contig.in_default_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").limit(100)
+    size = Contig.in_default_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").size
 
     if size > 100
       message = "and #{size} more..."
@@ -375,7 +374,7 @@ class ContigsController < ApplicationController
     ms.isolate = @contig.isolate
     ms.save
 
-    @next_contig=Contig.need_verification.first
+    @next_contig=Contig.in_default_project(current_user.default_project_id).need_verification.first
 
     redirect_to edit_contig_path(@next_contig), notice: "Verified & linked marker sequence updated for #{@contig.name}. Showing #{@next_contig.name}."
 

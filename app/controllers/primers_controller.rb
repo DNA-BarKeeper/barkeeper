@@ -6,7 +6,7 @@ class PrimersController < ApplicationController
   # GET /primers
   # GET /primers.json
   def index
-    @primers = Primer.includes(:marker).all
+    @primers = Primer.includes(:marker).in_default_project(current_user.default_project_id)
   end
 
   def import

@@ -8,6 +8,10 @@ class Primer < ApplicationRecord
 
   validates_presence_of :name
 
+  def self.in_default_project(project_id)
+    joins(:projects).where(projects: { id: project_id }).uniq
+  end
+
 
   def self.import(file)
     spreadsheet = CommonFunctions.open_spreadsheet(file)

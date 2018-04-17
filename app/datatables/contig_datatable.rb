@@ -7,9 +7,10 @@ class ContigDatatable
   delegate :params, :link_to, :h, to: :@view
 
   # def initialize(view, need_verify, imported, duplicates)
-  def initialize(view, contigs_to_show)
+  def initialize(view, contigs_to_show, current_default_project)
     @view = view
     @contigs_to_show = contigs_to_show
+    @current_default_project = current_default_project
   end
 
   def as_json(options = {})
@@ -65,7 +66,7 @@ class ContigDatatable
 
       when "duplicates"
         names_with_multiple = Contig.group(:name).having("count(name) > 1").count.keys
-        contigs=Contig.where(name: names_with_multiple).order("#{sort_column} #{sort_direction}")
+        contigs=Contig.where(name: names_with_multiple).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
       when "need_verification"
         contigs = Contig.need_verification.order("#{sort_column} #{sort_direction}")
       when "imported"
@@ -83,7 +84,7 @@ class ContigDatatable
       when "festuca_not_assembled"
         contigs=Contig.festuca.not_assembled.order("#{sort_column} #{sort_direction}")
       else
-        contigs = Contig.order("#{sort_column} #{sort_direction}")
+        contigs = Contig.in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
     contigs = contigs.page(page).per_page(per_page)
