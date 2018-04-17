@@ -1,7 +1,6 @@
 namespace :data do
   task :add_general_project => :environment do
-    project = Project.new(name: 'All', description: 'Contains all records')
-    project.save
+    project = Project.find_or_create_by(name: 'All')
 
     values = User.all.map { |user| "(#{project.id},#{user.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO projects_users (project_id, user_id) VALUES #{values}")
@@ -15,22 +14,22 @@ namespace :data do
     values = Marker.all.map { |marker| "(#{marker.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO markers_projects (marker_id, project_id) VALUES #{values}")
 
-    values = Isolate.all.map { |isolate| "(#{isolate.id},#{project.id})" }.join(',')
+    values = Isolate.find_each.map { |isolate| "(#{isolate.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO isolates_projects (isolate_id, project_id) VALUES #{values}")
 
-    values = PrimerRead.all.map { |read| "(#{read.id},#{project.id})" }.join(',')
+    values = PrimerRead.find_each.map { |read| "(#{read.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO primer_reads_projects (primer_read_id, project_id) VALUES #{values}")
 
-    values = Contig.all.map { |contig| "(#{contig.id},#{project.id})" }.join(',')
+    values = Contig.find_each.map { |contig| "(#{contig.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO contigs_projects (contig_id, project_id) VALUES #{values}")
 
-    values = MarkerSequence.all.map { |ms| "(#{ms.id},#{project.id})" }.join(',')
+    values = MarkerSequence.find_each.map { |ms| "(#{ms.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO marker_sequences_projects (marker_sequence_id, project_id) VALUES #{values}")
 
-    values = Individual.all.map { |individual| "(#{individual.id},#{project.id})" }.join(',')
+    values = Individual.find_each.map { |individual| "(#{individual.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO individuals_projects (individual_id, project_id) VALUES #{values}")
 
-    values = Species.all.map { |species| "(#{project.id},#{species.id})" }.join(',')
+    values = Species.find_each.map { |species| "(#{project.id},#{species.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO projects_species (project_id, species_id) VALUES #{values}")
 
     values = Family.all.map { |family| "(#{family.id},#{project.id})" }.join(',')
@@ -46,39 +45,52 @@ namespace :data do
     ActiveRecord::Base.connection.execute("INSERT INTO labs_projects (lab_id, project_id) VALUES #{values}")
   end
 
-
+  desc 'Add GBOL5 project to all eligible records.'
   task :add_gbol5_project => :environment do
-    project = Project.new(name: 'All', description: 'Contains all records')
-    project.save
+    project = Project.find_or_create_by(name: 'GBOL5')
 
-    values = User.all.map { |user| "(#{project.id},#{user.id})" }.join(',')
+    gbol_labs = %w(BGBM IEB NEES ZFMK Gießen)
+    values = Lab.where(labcode: gbol_labs).map { |lab| "(#{lab.id},#{project.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO labs_projects (lab_id, project_id) VALUES #{values}")
+
+    # All users who belong to a GBOL5 lab
+    values = User.joins(:lab).merge(Lab.joins(:projects).where(projects: { id: project.id })).map { |user| "(#{project.id},#{user.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO projects_users (project_id, user_id) VALUES #{values}")
 
-    values = Issue.all.map { |issue| "(#{issue.id},#{project.id})" }.join(',')
-    ActiveRecord::Base.connection.execute("INSERT INTO issues_projects (issue_id, project_id) VALUES #{values}")
-
-    values = Primer.all.map { |primer| "(#{primer.id},#{project.id})" }.join(',')
-    ActiveRecord::Base.connection.execute("INSERT INTO primers_projects (primer_id, project_id) VALUES #{values}")
-
-    values = Marker.all.map { |marker| "(#{marker.id},#{project.id})" }.join(',')
+    # All GBOL5 markers
+    values = Marker.gbol_marker.map { |marker| "(#{marker.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO markers_projects (marker_id, project_id) VALUES #{values}")
 
-    values = Isolate.all.map { |isolate| "(#{isolate.id},#{project.id})" }.join(',')
+    # All primers that belong to a GBOL5 marker
+    values = Primer.joins(:marker).merge(Marker.joins(:projects).where(projects: { id: project.id })).map { |primer| "(#{primer.id},#{project.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO primers_projects (primer_id, project_id) VALUES #{values}")
+
+    # All isolates with either GBOL or DB in their name
+    values = Isolate.where("lab_nr ilike ?", "gbol%").or(Isolate.where("lab_nr ilike ?", "db%")).map { |isolate| "(#{isolate.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO isolates_projects (isolate_id, project_id) VALUES #{values}")
 
-    values = PrimerRead.all.map { |read| "(#{read.id},#{project.id})" }.join(',')
-    ActiveRecord::Base.connection.execute("INSERT INTO primer_reads_projects (primer_read_id, project_id) VALUES #{values}")
-
-    values = Contig.all.map { |contig| "(#{contig.id},#{project.id})" }.join(',')
+    # All contigs with either GBOL or DB in their name
+    values = Contig.where("name ilike ?", "gbol%").or(Contig.where("name ilike ?", "db%")).map { |contig| "(#{contig.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO contigs_projects (contig_id, project_id) VALUES #{values}")
 
-    values = MarkerSequence.all.map { |ms| "(#{ms.id},#{project.id})" }.join(',')
+    # All primer reads that belong to GBOL5 contigs
+    values = PrimerRead.joins(:contig).merge(Contig.joins(:projects).where(projects: { id: project.id })).map { |read| "(#{read.id},#{project.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO primer_reads_projects (primer_read_id, project_id) VALUES #{values}")
+
+    # All issues that either belong to contigs or primer reads within the GBOL5 project
+    values = Issue.joins(:contigs).merge(Contig.joins(:projects).where(projects: { id: project.id })).or(Issue.joins(:primer_reads).merge(PrimerRead.joins(:projects).where(projects: { id: project.id }))).map { |issue| "(#{issue.id},#{project.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO issues_projects (issue_id, project_id) VALUES #{values}")
+
+    # All sequences with either GBOL or DB in their name
+    values = MarkerSequence.where("name ilike ?", "gbol%").or(MarkerSequence.where("name ilike ?", "db%")).map { |ms| "(#{ms.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO marker_sequences_projects (marker_sequence_id, project_id) VALUES #{values}")
 
-    values = Individual.all.map { |individual| "(#{individual.id},#{project.id})" }.join(',')
+    # All specimens which belong to a GBOL5 isolate
+    values = Individual.joins(:isolates).merge(Isolate.joins(:projects).where(projects: { id: project.id })).map { |individual| "(#{individual.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO individuals_projects (individual_id, project_id) VALUES #{values}")
 
-    values = Species.all.map { |species| "(#{project.id},#{species.id})" }.join(',')
+    # All species, families, orders and taxa
+    values = Species.find_each.map { |species| "(#{project.id},#{species.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO projects_species (project_id, species_id) VALUES #{values}")
 
     values = Family.all.map { |family| "(#{family.id},#{project.id})" }.join(',')
@@ -89,8 +101,5 @@ namespace :data do
 
     values = HigherOrderTaxon.all.map { |hot| "(#{hot.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO higher_order_taxa_projects (higher_order_taxon_id, project_id) VALUES #{values}")
-
-    values = Lab.all.map { |lab| "(#{lab.id},#{project.id})" }.join(',')
-    ActiveRecord::Base.connection.execute("INSERT INTO labs_projects (lab_id, project_id) VALUES #{values}")
   end
 end
