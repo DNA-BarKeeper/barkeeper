@@ -8,8 +8,9 @@ class IssueDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view)
+  def initialize(view, current_default_project)
     @view = view
+    @current_default_project = current_default_project
   end
 
   def as_json(options = {})
@@ -52,7 +53,7 @@ class IssueDatatable
 
   def fetch_issues
 
-    issues = Issue.order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    issues = Issue.in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     issues = issues.page(page).per_page(per_page)
 
     if params[:sSearch].present?

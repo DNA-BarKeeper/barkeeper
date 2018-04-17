@@ -8,7 +8,7 @@ class IssuesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: IssueDatatable.new(view_context) }
+      format.json { render json: IssueDatatable.new(view_context, current_user.default_project_id) }
     end
   end
 
@@ -67,13 +67,14 @@ class IssuesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_issue
-      @issue = Issue.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def issue_params
-      params.require(:issue).permit(:title, :description)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_issue
+    @issue = Issue.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def issue_params
+    params.require(:issue).permit(:title, :description)
+  end
 end

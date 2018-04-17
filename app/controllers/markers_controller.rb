@@ -6,7 +6,7 @@ class MarkersController < ApplicationController
   # GET /markers
   # GET /markers.json
   def index
-    @markers = Marker.all
+    @markers = Marker.in_default_project(current_user.default_project_id)
   end
 
   # GET /markers/1

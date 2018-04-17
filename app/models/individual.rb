@@ -29,6 +29,9 @@ class Individual < ApplicationRecord
   scope :good_location, -> { where('individuals.longitude_original SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
   scope :no_location, -> { where('individuals.longitude_original = ?', nil) }
 
+  def self.in_default_project(project_id)
+    joins(:projects).where(projects: { id: project_id }).uniq
+  end
 
   def self.to_csv(options = {})
     # change to_csv block to list attributes/values individually

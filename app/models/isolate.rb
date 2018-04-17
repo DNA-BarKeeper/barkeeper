@@ -16,6 +16,10 @@ class Isolate < ApplicationRecord
   scope :recent, ->  { where('isolates.updated_at > ?', 1.hours.ago)}
   scope :no_controls, -> { where(:negative_control => false)}
 
+  def self.in_default_project(project_id)
+    joins(:projects).where(projects: { id: project_id }).uniq
+  end
+
   def assign_specimen
     self.individual_id = CommonFunctions.search_dna_bank(self.lab_nr)&.id # only assign individual id if dna bank search had a result
   end

@@ -9,6 +9,10 @@ class Marker < ApplicationRecord
 
   scope :gbol_marker, -> { where(:is_gbol => true) }
 
+  def self.in_default_project(project_id)
+    joins(:projects).where(projects: { id: project_id }).uniq
+  end
+
   def spp_in_higher_order_taxon(higher_order_taxon_id)
     ms = MarkerSequence.select("species_id").includes(:isolate => :individual).joins(:isolate =>
                                                                                        { :individual =>

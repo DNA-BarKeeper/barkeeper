@@ -6,6 +6,10 @@ class Species < ApplicationRecord
   belongs_to :family
   has_and_belongs_to_many :projects
 
+  def self.in_default_project(project_id)
+    joins(:projects).where(projects: { id: project_id }).uniq
+  end
+
   def filter
     @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:name)
   end
