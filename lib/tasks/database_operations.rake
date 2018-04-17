@@ -265,7 +265,7 @@ namespace :data do
     puts "#{delete_cnt} duplicate reads could be deleted."
   end
 
-  desc 'Migrate responsibilities from project to responsibilities'
+  desc 'Migrate responsibilities from project to new model responsibilities'
   task :migrate_responsibilities => :environment do
     Project.all.each do |project|
       # Create new responsibilities from old project records
