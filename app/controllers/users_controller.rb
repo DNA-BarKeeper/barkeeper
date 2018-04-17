@@ -34,7 +34,7 @@ class UsersController < ApplicationController
       params[:user].delete(:password_confirmation) if params[:user][:password].blank? and params[:user][:password_confirmation].blank?
 
       if @user.update(user_params)
-        redirect_to users_path, notice: 'User was successfully updated.'
+        redirect_back(fallback_location: root_path, notice: 'User was successfully updated.')
       else
         redirect_to edit_user_path(@user), alert: 'User could not be updated.'
       end
@@ -59,6 +59,6 @@ class UsersController < ApplicationController
 
   private
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :role, :lab_id, :project_ids => [], :responsibility_ids => [])
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :role, :lab_id, :default_project_id, :project_ids => [], :responsibility_ids => [])
   end
 end
