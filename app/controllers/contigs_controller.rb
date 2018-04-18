@@ -6,15 +6,100 @@ class ContigsController < ApplicationController
   before_action :set_contig, only: [:verify_next, :verify, :pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :overlap_background, :show, :edit,\
    :update, :destroy]
 
+  # GET /contigs
+  # GET /contigs.json
+  def index
+    respond_to do |format|
+      format.html
+      format.json { render json: ContigDatatable.new(view_context, '', current_user.default_project_id) }
+    end
+  end
+
+  def duplicates
+    respond_to do |format|
+      format.html
+      format.json { render json: ContigDatatable.new(view_context, 'duplicates', current_user.default_project_id) }
+    end
+  end
+
   def externally_verified
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, "imported") }
+      format.json { render json: ContigDatatable.new(view_context, 'imported', current_user.default_project_id) }
+    end
+  end
+
+  def filter
+    @contigs = Contig.in_default_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").limit(100)
+    size = Contig.in_default_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").size
+
+    if size > 100
+      message = "and #{size} more..."
+      render json: @contigs.map(&:name).push(message)
+    else
+      render json: @contigs.map(&:name)
+    end
+  end
+
+  # GET /contigs/1
+  # GET /contigs/1.json
+  def show
+  end
+
+  # GET /contigs/new
+  def new
+    @contig = Contig.new
+  end
+
+  # GET /contigs/1/edit
+  def edit
+  end
+
+  # POST /contigs
+  # POST /contigs.json
+  def create
+    @contig = Contig.new(contig_params)
+
+    respond_to do |format|
+      if @contig.save
+
+        format.html { redirect_to @contig, notice: 'Contig was successfully created.' }
+        format.json { render :show, status: :created, location: @contig }
+      else
+        format.html { render :new }
+        format.json { render json: @contig.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /contigs/1
+  # PATCH/PUT /contigs/1.json
+  def update
+    respond_to do |format|
+      if @contig.update(contig_params)
+        format.html {
+          Issue.create(:title => "Contig updated by #{current_user.name}", :contig_id => @contig.id)
+          redirect_back(fallback_location: edit_contig_path(@contig), notice: 'Contig was successfully updated.')
+        }
+        format.json { render :show, status: :ok, location: @contig }
+      else
+        format.html { render :edit }
+        format.json { render json: @contig.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /contigs/1
+  # DELETE /contigs/1.json
+  def destroy
+    @contig.destroy
+    respond_to do |format|
+      format.html { redirect_back(fallback_location: contigs_url) }
+      format.json { head :no_content }
     end
   end
 
   def as_fasq
-
     contig_names=params[:contig_names]
 
     marker=params[:marker]
@@ -186,7 +271,6 @@ class ContigsController < ApplicationController
   end
 
   def identify_primer_read(read_name)
-
     primer_read=PrimerRead.where("name ILIKE ?", "#{read_name}.scf").first
 
     if primer_read
@@ -201,11 +285,9 @@ class ContigsController < ApplicationController
     end
 
     return nil
-
   end
 
   def identify_contig(c)
-
     contig_name=c[0...-4]
 
     #match found?
@@ -244,98 +326,15 @@ class ContigsController < ApplicationController
     end
   end
 
-  # GET /contigs
-  # GET /contigs.json
-  def index
-    respond_to do |format|
-      format.html
-      format.json { render json: ContigDatatable.new(view_context, "all", current_user.default_project_id) }
-    end
-  end
-
-  def duplicates
-    respond_to do |format|
-      format.html
-      format.json { render json: ContigDatatable.new(view_context, "duplicates", current_user.default_project_id) }
-    end
-  end
-
-  def show_need_verify #assembly finished according to app but still need manual check
-    respond_to do |format|
-      format.html
-      format.json { render json: ContigDatatable.new(view_context, "need_verification") }
-    end
-  end
-
-  def caryophyllales_need_verification #assembly finished according to app but still need manual check
-    respond_to do |format|
-      format.html
-      format.json { render json: ContigDatatable.new(view_context, "caryophyllales_need_verification") }
-    end
-  end
-
-  def upload_caryo_matK_contigs
-    CaryoContigExport.perform_async
-    redirect_to caryophyllales_need_verification_contigs_path, notice: "Writing zip file to S3 in background. May take a minute or so."
-  end
-
   def zip
     redirect_to ContigPdeUploader.last.uploaded_file.url
   end
-
-  def caryophyllales_not_assembled #assembly finished according to app but still need manual check
-    respond_to do |format|
-      format.html
-      format.json { render json: ContigDatatable.new(view_context, "caryophyllales_not_assembled") }
-    end
-  end
-
-  def caryophyllales_verified #assembly finished according to app but still need manual check
-    respond_to do |format|
-      format.html
-      format.json { render json: ContigDatatable.new(view_context, "caryophyllales_verified") }
-    end
-  end
-
-  def festuca_need_verification #assembly finished according to app but still need manual check
-    respond_to do |format|
-      format.html
-      format.json { render json: ContigDatatable.new(view_context, "festuca_need_verification") }
-    end
-  end
-
-  def festuca_not_assembled #assembly finished according to app but still need manual check
-    respond_to do |format|
-      format.html
-      format.json { render json: ContigDatatable.new(view_context, "festuca_not_assembled") }
-    end
-  end
-
-  def festuca_verified #assembly finished according to app but still need manual check
-    respond_to do |format|
-      format.html
-      format.json { render json: ContigDatatable.new(view_context, "festuca_verified") }
-    end
-  end
-
 
   def assemble_all
     Contig.where(:assembled => false).each do |c|
       ContigAssembly.perform_async(c.id)
     end
     redirect_to contigs_path, notice: "Assembly for #{Contig.where(:assembled => false).count} contigs started in background."
-  end
-
-  def filter
-    @contigs = Contig.in_default_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").limit(100)
-    size = Contig.in_default_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").size
-
-    if size > 100
-      message = "and #{size} more..."
-      render json: @contigs.map(&:name).push(message)
-    else
-      render json: @contigs.map(&:name)
-    end
   end
 
   def verify
@@ -380,64 +379,6 @@ class ContigsController < ApplicationController
 
   end
 
-  # GET /contigs/1
-  # GET /contigs/1.json
-  def show
-  end
-
-  # GET /contigs/new
-  def new
-    @contig = Contig.new
-  end
-
-  # GET /contigs/1/edit
-  def edit
-  end
-
-  # POST /contigs
-  # POST /contigs.json
-  def create
-    @contig = Contig.new(contig_params)
-
-    respond_to do |format|
-      if @contig.save
-
-        format.html { redirect_to @contig, notice: 'Contig was successfully created.' }
-        format.json { render :show, status: :created, location: @contig }
-      else
-        format.html { render :new }
-        format.json { render json: @contig.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /contigs/1
-  # PATCH/PUT /contigs/1.json
-  def update
-    respond_to do |format|
-      if @contig.update(contig_params)
-        format.html {
-          Issue.create(:title => "Contig updated by #{current_user.name}", :contig_id => @contig.id)
-          redirect_back(fallback_location: edit_contig_path(@contig), notice: 'Contig was successfully updated.')
-        }
-        format.json { render :show, status: :ok, location: @contig }
-      else
-        format.html { render :edit }
-        format.json { render json: @contig.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /contigs/1
-  # DELETE /contigs/1.json
-  def destroy
-    @contig.destroy
-    respond_to do |format|
-      format.html { redirect_back(fallback_location: contigs_url) }
-      format.json { head :no_content }
-    end
-  end
-
   def overlap
     if @contig.primer_reads.where(:used_for_con => true).count <= 4
       @contig.auto_overlap
@@ -456,43 +397,13 @@ class ContigsController < ApplicationController
     redirect_to edit_contig_path, notice: 'Assembly started in background.'
   end
 
-  # def pde_all
-  #   Contig.all.each do |c|
-  #     unless c.pde.nil?
-  #       # send_data does not work with muliple
-  #       #send_data(str, :filename => "#{c.name}.pde", :type => "application/txt")
-  #
-  #       cleaned_name=c.name.gsub('/', '_')
-  #
-  #       t=File.new("/Users/kai/Desktop/PDEexport/#{cleaned_name}.pde", "w+")
-  #       t.write(c.pde)
-  #       t.close
-  #     end
-  #   end
-  #
-  #   redirect_to contigs_path
-  #
-  # end
-
   def pde
-    str=@contig.as_pde
+    str = @contig.as_pde
     send_data(str, :filename => "#{@contig.name}.pde", :type => "application/txt")
   end
 
-
   def fasta
-    # old v. : inline computation
-    # used_reads = @c.primer_reads.where("used_for_con = ? AND assembled = ?", true, true).order('position')
-    # str=""
-    # used_reads.each  do |r|
-    #   str= str + ">#{r.name}\n#{r.aligned_seq}\n"
-    # end
-
-    # new version: get from db:
-
-    str=@contig.as_fas
-
-    # send_data str
+    str = @contig.as_fas
     send_data(str, :filename => "#{@contig.name}.fas", :type => "application/txt")
   end
 
@@ -519,6 +430,7 @@ class ContigsController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_contig
     @contig = Contig.includes(:isolate =>  :individual).find(params[:id])
@@ -529,5 +441,4 @@ class ContigsController < ApplicationController
     params.require(:contig).permit(:mira, :marker, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names, :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
                                    :isolate_name, :verified)
   end
-
 end
