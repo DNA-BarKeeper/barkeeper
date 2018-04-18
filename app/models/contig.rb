@@ -12,36 +12,23 @@ class Contig < ApplicationRecord
 
   validates_presence_of :name
 
-  scope :caryophyllales, -> { includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => :order }}}).where(orders: {name: "Caryophyllales"})}
-  scope :caryo_matK, -> { caryophyllales.includes(:marker).where(:marker_id => 7) }
-  scope :festuca, -> { includes(:isolate => :individual).joins(:isolate => {:individual => :species}).where(species: {genus_name: "Festuca"})}
-
-  scope :assembled, -> { where(:assembled => true)}
-  scope :not_assembled, -> { where.not(:assembled => true)}
-  scope :externally_edited, -> { where(:imported => true)}
-  scope :internally_edited, -> { where(:imported => false )}
-  scope :internally_verified, -> { internally_edited.where(:verified => true)}
-  scope :externally_verified, -> { externally_edited.where(:verified => true)}
-  scope :need_verification, -> { assembled.where(:verified => false) }
-  scope :verified, -> { where(:verified => true)}
-
-  scope :in2016, -> { where('contigs.created_at > ? AND contigs.created_at < ?',  1.years.ago.beginning_of_year, Time.zone.now.beginning_of_year)}
-  scope :in2016_until_now, ->  { where('contigs.created_at > ? AND contigs.created_at < ?',  1.years.ago.beginning_of_year, Time.zone.now)}
-
-  scope :verified_in2016, ->  { where('contigs.verified_at > ? AND contigs.verified_at < ?',  1.years.ago.beginning_of_year, Time.zone.now.beginning_of_year)}
-  scope :verified_in2016_until_now, ->  { where('contigs.verified_at > ? AND contigs.verified_at < ?',  1.years.ago.beginning_of_year, Time.zone.now)}
-
-  scope :verified_in2015, ->  { where('contigs.verified_at > ? AND contigs.verified_at < ?',  2.years.ago.beginning_of_year, 2.years.ago.end_of_year)}
+  scope :assembled, -> { where(assembled: true) }
+  scope :not_assembled, -> { where.not(assembled: true) }
+  scope :verified, -> { where(verified: true) }
+  scope :need_verification, -> { assembled.where(verified: false) }
+  scope :externally_edited, -> { where(imported: true) }
+  scope :internally_edited, -> { where(imported: false) }
+  scope :externally_verified, -> { externally_edited.verified }
+  scope :internally_verified, -> { internally_edited.verified }
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-    # todo (how to) includes spp. etc (on top of individual)
-    contigs=Contig.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    contigs_s=Contig.select("species_component").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    contigs_i=Contig.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    # TODO: (how to) includes spp. etc (on top of individual)
+    contigs = Contig.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    contigs_s = Contig.select("species_component").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    contigs_i = Contig.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
 
     [contigs.count, contigs_s.distinct.count, contigs.distinct.count, contigs_i.distinct.count]
   end
-
 
   def isolate_name
     isolate.try(:lab_nr)
@@ -285,7 +272,6 @@ class Contig < ApplicationRecord
 
   end
 
-
   def auto_overlap
 
     self.partial_cons.destroy_all
@@ -415,7 +401,7 @@ class Contig < ApplicationRecord
 
   end
 
-  # recursive assembly function
+  # Recursive assembly function
   def assemble(growing_consensus, assembled_reads, partial_contigs, remaining_reads)
 
     # Try overlap all remaining_reads with growing_consensus
@@ -491,8 +477,7 @@ class Contig < ApplicationRecord
 
   end
 
-  #perform Needleman-Wunsch-based overlapping:
-
+  # Perform Needleman-Wunsch-based overlapping:
   def overlap(growing_cons_hash, read, qualities)
     growing_consensus = growing_cons_hash[:consensus]
     growing_consensus_qualities = growing_cons_hash[:consensus_qualities]
@@ -800,7 +785,6 @@ class Contig < ApplicationRecord
     end
   end
 
-
   def not_assembled
     self.primer_reads.not_assembled.as_json
   end
@@ -915,7 +899,6 @@ class Contig < ApplicationRecord
 
 
   end
-
 end
 
 

@@ -10,7 +10,7 @@ class PrimerRead < ApplicationRecord
   has_attached_file :chromatogram,
                     :default_url => '/chromatograms/primer_read.scf'
 
-  #do_not_validate_attachment_file_type :chromatogram
+  # Do_not_validate_attachment_file_type :chromatogram
 
   # Validate content type
   validates_attachment_content_type :chromatogram, :content_type => /\Aapplication\/octet-stream/
@@ -33,9 +33,6 @@ class PrimerRead < ApplicationRecord
   scope :processed, -> {where(:processed => true)}
   scope :unprocessed, -> {where(:processed => false)}
   scope :contig_not_verified, -> {joins(:contig).where(:contigs => {:verified => false, :verified_by => nil})}
-
-  scope :in2016, ->  { where('primer_reads.created_at > ? AND primer_reads.created_at < ?',  1.years.ago.beginning_of_year, Time.zone.now.beginning_of_year)}
-  scope :in2016_until_now, ->  { where('primer_reads.created_at > ? AND primer_reads.created_at < ?',  1.years.ago.beginning_of_year, Time.zone.now)}
 
   validates_attachment_presence :chromatogram
 
