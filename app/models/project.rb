@@ -19,6 +19,7 @@ class Project < ApplicationRecord
 
   has_and_belongs_to_many :labs
   has_and_belongs_to_many :freezers
+  has_and_belongs_to_many :shelves
   has_and_belongs_to_many :lab_racks
   has_and_belongs_to_many :micronic_plates
   has_and_belongs_to_many :plant_plates

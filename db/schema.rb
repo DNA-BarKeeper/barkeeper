@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180418085911) do
+ActiveRecord::Schema.define(version: 20180418142950) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -479,6 +479,12 @@ ActiveRecord::Schema.define(version: 20180418085911) do
     t.datetime "updated_at"
   end
 
+  create_table "projects_shelves", id: false, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "shelf_id",   null: false
+    t.index ["project_id", "shelf_id"], name: "index_projects_shelves_on_project_id_and_shelf_id", using: :btree
+  end
+
   create_table "projects_species", id: false, force: :cascade do |t|
     t.integer "project_id"
     t.integer "species_id"
@@ -506,6 +512,8 @@ ActiveRecord::Schema.define(version: 20180418085911) do
     t.string   "name",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "freezer_id"
+    t.index ["freezer_id"], name: "index_shelves_on_freezer_id", using: :btree
   end
 
   create_table "species", force: :cascade do |t|
@@ -602,6 +610,7 @@ ActiveRecord::Schema.define(version: 20180418085911) do
   end
 
   add_foreign_key "plant_plates", "lab_racks"
+  add_foreign_key "shelves", "freezers"
 
   create_view "taxa_matview", materialized: true,  sql_definition: <<-SQL
       SELECT f.name AS family,
