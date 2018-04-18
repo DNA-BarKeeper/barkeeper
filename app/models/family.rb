@@ -1,13 +1,11 @@
 class Family < ApplicationRecord
+  extend ProjectModule
+
   has_many :species
   belongs_to :order
   has_and_belongs_to_many :projects
 
   validates_presence_of :name
-
-  def self.in_default_project(project_id)
-    joins(:projects).where(projects: { id: project_id }).uniq
-  end
 
   # Returns the number of species for which at least one marker sequence for this marker exists
   def completed_species_cnt(marker_id)

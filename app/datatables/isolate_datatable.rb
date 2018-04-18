@@ -13,10 +13,10 @@ class IsolateDatatable
 
   def as_json(options = {})
     {
-        sEcho: params[:sEcho].to_i,
-        iTotalRecords: Isolate.count,
-        iTotalDisplayRecords: isolates.total_entries,
-        aaData: data
+      sEcho: params[:sEcho].to_i,
+      iTotalRecords: Isolate.count,
+      iTotalDisplayRecords: isolates.total_entries,
+      aaData: data
     }
   end
 
@@ -31,16 +31,16 @@ class IsolateDatatable
       species_name = link_to isolate.individual.species.name_for_display, edit_species_path(isolate.individual.species) if isolate.individual and isolate.individual.species
 
       individual = ''
-      if isolate.individual and isolate.individual.specimen_id!=nil
+      if isolate.individual && !isolate.individual.specimen_id.nil?
         individual = link_to isolate.individual.specimen_id, edit_individual_path(isolate.individual)
       end
 
       [
-          lab_nr,
-          species_name,
-          individual,
-          isolate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', isolate, method: :delete, data: { confirm: 'Are you sure?' })
+        lab_nr,
+        species_name,
+        individual,
+        isolate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        link_to('Delete', isolate, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end

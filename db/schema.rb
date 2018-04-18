@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180416125519) do
+ActiveRecord::Schema.define(version: 20180418085911) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -130,6 +130,12 @@ ActiveRecord::Schema.define(version: 20180416125519) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "lab_id"
+  end
+
+  create_table "freezers_projects", id: false, force: :cascade do |t|
+    t.integer "freezer_id", null: false
+    t.integer "project_id", null: false
+    t.index ["freezer_id", "project_id"], name: "index_freezers_projects_on_freezer_id_and_project_id", using: :btree
   end
 
   create_table "genera", force: :cascade do |t|
@@ -257,6 +263,12 @@ ActiveRecord::Schema.define(version: 20180416125519) do
     t.string   "shelf"
   end
 
+  create_table "lab_racks_projects", id: false, force: :cascade do |t|
+    t.integer "lab_rack_id", null: false
+    t.integer "project_id",  null: false
+    t.index ["lab_rack_id", "project_id"], name: "index_lab_racks_projects_on_lab_rack_id_and_project_id", using: :btree
+  end
+
   create_table "labs", force: :cascade do |t|
     t.string   "labcode",    limit: 255
     t.datetime "created_at"
@@ -325,6 +337,12 @@ ActiveRecord::Schema.define(version: 20180416125519) do
     t.integer  "lab_rack_id"
   end
 
+  create_table "micronic_plates_projects", id: false, force: :cascade do |t|
+    t.integer "micronic_plate_id", null: false
+    t.integer "project_id",        null: false
+    t.index ["micronic_plate_id", "project_id"], name: "index_micronic_plates_projects", using: :btree
+  end
+
   create_table "news", force: :cascade do |t|
     t.string   "title",      limit: 255
     t.text     "body"
@@ -369,6 +387,14 @@ ActiveRecord::Schema.define(version: 20180416125519) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "location_in_rack", limit: 255
+    t.integer  "lab_rack_id"
+    t.index ["lab_rack_id"], name: "index_plant_plates_on_lab_rack_id", using: :btree
+  end
+
+  create_table "plant_plates_projects", id: false, force: :cascade do |t|
+    t.integer "plant_plate_id", null: false
+    t.integer "project_id",     null: false
+    t.index ["plant_plate_id", "project_id"], name: "index_plant_plates_projects_on_plant_plate_id_and_project_id", using: :btree
   end
 
   create_table "primer_pos_on_genomes", force: :cascade do |t|
@@ -575,6 +601,7 @@ ActiveRecord::Schema.define(version: 20180416125519) do
     t.datetime "updated_at"
   end
 
+  add_foreign_key "plant_plates", "lab_racks"
 
   create_view "taxa_matview", materialized: true,  sql_definition: <<-SQL
       SELECT f.name AS family,

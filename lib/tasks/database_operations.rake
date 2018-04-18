@@ -106,7 +106,7 @@ namespace :data do
     Contig.select("name").each do |i|
       a << i.name
     end
-    d=a.select{ |e| a.count(e) > 1 }.uniq
+    d = a.select{ |e| a.count(e) > 1 }.uniq
 
     # iterate over duplicate lab_nrs:
     d.each do |duplicate|

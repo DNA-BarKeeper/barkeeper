@@ -6,8 +6,9 @@ class FreezerDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view)
+  def initialize(view, current_default_project)
     @view = view
+    @current_default_project = current_default_project
   end
 
   def as_json(options = {})
@@ -52,7 +53,7 @@ class FreezerDatatable
 
   def fetch_freezers
 
-    freezers = Freezer.order("#{sort_column} #{sort_direction}")
+    freezers = Freezer.in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     freezers = freezers.page(page).per_page(per_page)
 

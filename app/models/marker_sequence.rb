@@ -1,4 +1,6 @@
 class MarkerSequence < ApplicationRecord
+  extend ProjectModule
+
   belongs_to :isolate
   has_many :contigs
   belongs_to :marker
@@ -8,15 +10,11 @@ class MarkerSequence < ApplicationRecord
   scope :not_verified, -> { joins(:contigs).where(contigs: { verified: false }) }
   scope :has_species, -> { joins(isolate: [individual: :species]) }
 
-  def self.in_default_project(project_id)
-    joins(:projects).where(projects: { id: project_id }).uniq
-  end
-
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
     ms = MarkerSequence.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     ms_s = MarkerSequence.select("species_component").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     ms_i = MarkerSequence.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    [ms.count, ms_s.uniq.count, ms.uniq.count, ms_i.uniq.count]
+    [ms.count, ms_s.distinct.count, ms.distinct.count, ms_i.distinct.count]
   end
 
   def generate_name

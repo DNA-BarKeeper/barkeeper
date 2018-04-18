@@ -6,7 +6,7 @@ class LabsController < ApplicationController
   # GET /labs
   # GET /labs.json
   def index
-    @labs = Lab.all
+    @labs = Lab.in_default_project(current_user.default_project_id)
   end
 
   # GET /labs/1
@@ -64,13 +64,14 @@ class LabsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_lab
-      @lab = Lab.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def lab_params
-      params.require(:lab).permit(:labcode)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_lab
+    @lab = Lab.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def lab_params
+    params.require(:lab).permit(:labcode)
+  end
 end

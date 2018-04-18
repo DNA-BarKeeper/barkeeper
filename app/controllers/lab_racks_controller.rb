@@ -8,7 +8,7 @@ class LabRacksController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json:  LabRackDatatable.new(view_context)}
+      format.json { render json: LabRackDatatable.new(view_context, current_user.default_project_id)}
     end
   end
 
@@ -67,13 +67,14 @@ class LabRacksController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_lab_rack
-      @lab_rack = LabRack.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def lab_rack_params
-      params.require(:lab_rack).permit(:shelf, :rack_position, :rackcode, :freezer_id)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_lab_rack
+    @lab_rack = LabRack.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def lab_rack_params
+    params.require(:lab_rack).permit(:shelf, :rack_position, :rackcode, :freezer_id)
+  end
 end

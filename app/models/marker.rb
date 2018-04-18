@@ -1,4 +1,6 @@
 class Marker < ApplicationRecord
+  extend ProjectModule
+
   has_many :marker_sequences
   has_many :contigs
   has_many :primers
@@ -8,10 +10,6 @@ class Marker < ApplicationRecord
   validates_presence_of :name
 
   scope :gbol_marker, -> { where(:is_gbol => true) }
-
-  def self.in_default_project(project_id)
-    joins(:projects).where(projects: { id: project_id }).uniq
-  end
 
   def spp_in_higher_order_taxon(higher_order_taxon_id)
     ms = MarkerSequence.select("species_id").includes(:isolate => :individual).joins(:isolate =>
@@ -27,6 +25,6 @@ class Marker < ApplicationRecord
                                                                                                       {:order => :higher_order_taxon}}}}).
         where(orders: { higher_order_taxon_id: higher_order_taxon_id }, marker_sequences: { marker_id: self.id })
 
-    [ms.count, ms.uniq.count, ms_i.uniq.count]
+    [ms.count, ms.distinct.count, ms_i.distinct.count]
   end
 end

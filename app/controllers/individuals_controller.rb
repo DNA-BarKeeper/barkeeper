@@ -3,19 +3,16 @@ class IndividualsController < ApplicationController
 
   before_action :set_individual, :only => [:show, :edit, :update, :destroy]
 
-
   def specimens_without_species
-
   end
 
   def problematic_location_data
-
   end
 
   def index
     respond_to do |format|
       format.html
-      format.json { render json: IndividualDatatable.new(view_context, nil) }
+      format.json { render json: IndividualDatatable.new(view_context, nil, current_user.default_project_id) }
     end
   end
 
@@ -30,25 +27,21 @@ class IndividualsController < ApplicationController
   end
 
   def problematic_specimens
-    # liste Bundesländer to check state_province against:
+    # Liste aller Bundesländer to check 'state_province' against:
+    @states = %w(Baden-Württemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein Thüringen)
+    @individuals = []
 
-    @states=%w(Baden-Württemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein Thüringen)
-
-    @individuals=[]
-
-    Individual.all.each do |i|
+    Individual.in_default_project(current_user.default_project_id).each do |i|
       if i.country == "Germany"
-        unless @states.include? i.state_province
-          @individuals.push(i)
-        end
+        @individuals.push(i) unless @states.include? i.state_province
       end
     end
 
   end
 
   def filter
-    @individuals = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").limit(100)
-    size = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").size
+    @individuals = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").in_default_project(current_user.default_project_id).limit(100)
+    size = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").in_default_project(current_user.default_project_id).size
 
     if size > 100
       message = "and #{size} more..."
@@ -118,13 +111,11 @@ class IndividualsController < ApplicationController
     @individual = Individual.find(params[:id])
   end
 
-  def get_all_individuals
-    @individuals=Individual.includes(:species => :family).all
-  end
-
   # Never trust parameters from the scary internet, only allow the white list through.
   def individual_params
-    params.require(:individual).permit(:specimen_id, :DNA_bank_id, :collector,
+    params.require(:individual).permit(:specimen_id,
+                                       :DNA_bank_id,
+                                       :collector,
                                        :specimen_id,
                                        :herbarium,
                                        :voucher,

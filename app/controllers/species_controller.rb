@@ -19,19 +19,18 @@ class SpeciesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: SpeciesDatatable.new(view_context, nil, nil) }
-      format.csv { send_data @species.to_csv}
+      format.json { render json: SpeciesDatatable.new(view_context, nil, nil, current_user.default_project_id) }
+      format.csv { send_data @species.to_csv }
       format.xls
     end
   end
 
   def filter
-    @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:composed_name).limit(100)
-    size = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:composed_name).size
+    @species = Species.where("composed_name ILIKE ?", "%#{params[:term]}%").in_default_project(current_user.default_project_id).order(:composed_name).limit(100)
+    size = Species.where("composed_name ILIKE ?", "%#{params[:term]}%").in_default_project(current_user.default_project_id).order(:composed_name).size
 
     if size > 100
-      message = "and #{size} more..."
-      render json: @species.map(&:composed_name).push(message)
+      render json: @species.map(&:composed_name).push("and #{size} more...")
     else
       render json: @species.map(&:composed_name)
     end
@@ -40,7 +39,7 @@ class SpeciesController < ApplicationController
   def show_individuals
     respond_to do |format|
       format.html
-      format.json { render json: IndividualDatatable.new(view_context, params[:id]) }
+      format.json { render json: IndividualDatatable.new(view_context, params[:id], current_user.default_project_id) }
     end
   end
 
@@ -50,13 +49,13 @@ class SpeciesController < ApplicationController
     file = params[:file]
 
     #todo if needed, add logic to distinguish between xls / xlsx / error etc here -> mv from model.
-    Species.import_Stuttgart(file) # when adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
+    Species.import_stuttgart(file) # when adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
     redirect_to species_index_path, notice: "Imported."
   end
 
   def import_berlin
     file = params[:file]
-    Species.import_Berlin(file)
+    Species.import_berlin(file)
     redirect_to species_index_path, notice: "Imported."
   end
 
@@ -67,25 +66,25 @@ class SpeciesController < ApplicationController
   end
 
   def get_mar
-    ht=HigherOrderTaxon.find(4)
+    ht = HigherOrderTaxon.find(4)
     collect_and_send_species(ht)
   end
 
   def get_bry
-    ht=HigherOrderTaxon.find(9)
+    ht = HigherOrderTaxon.find(9)
     collect_and_send_species(ht)
   end
 
   def get_ant
-    ht=HigherOrderTaxon.find(8)
+    ht = HigherOrderTaxon.find(8)
     collect_and_send_species(ht)
   end
 
   def collect_and_send_species(ht)
-    str=''
+    str = ''
 
-    @species=Species.joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: ht.id}).each do |s|
-      str+=s.id.to_s+"\t"+s.name_for_display+"\n"
+    @species=Species.joins(:family => { :order => :higher_order_taxon }).where(orders: { higher_order_taxon_id: ht.id }).each do |s|
+      str += s.id.to_s + "\t" + s.name_for_display + "\n"
     end
 
     send_data(str, :filename => "#{ht.name}.txt", :type => "application/txt")
@@ -154,14 +153,15 @@ class SpeciesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_species
-      @species = Species.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def species_params
-      params.require(:species).permit(:term, :originalFileName, :file, :infraspecific, :comment, :author_infra, :family_name, :family_id,
-                                      :author, :genus_name, :species_epithet, :composed_name)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_species
+    @species = Species.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def species_params
+    params.require(:species).permit(:term, :originalFileName, :file, :infraspecific, :comment, :author_infra, :family_name, :family_id,
+                                    :author, :genus_name, :species_epithet, :composed_name)
+  end
 end

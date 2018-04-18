@@ -1,5 +1,6 @@
 class Primer < ApplicationRecord
   include CommonFunctions
+  extend ProjectModule
 
   belongs_to :marker
   has_many :primer_reads
@@ -7,11 +8,6 @@ class Primer < ApplicationRecord
   has_and_belongs_to_many :projects
 
   validates_presence_of :name
-
-  def self.in_default_project(project_id)
-    joins(:projects).where(projects: { id: project_id }).uniq
-  end
-
 
   def self.import(file)
     spreadsheet = CommonFunctions.open_spreadsheet(file)

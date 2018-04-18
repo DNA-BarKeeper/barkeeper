@@ -5,17 +5,17 @@ class LabRackDatatable
 
   delegate :params, :link_to, :h, to: :@view
 
-
-  def initialize(view)
+  def initialize(view, current_default_project)
     @view = view
+    @current_default_project = current_default_project
   end
 
   def as_json(options = {})
     {
-        sEcho: params[:sEcho].to_i,
-        iTotalRecords: LabRack.count,
-        iTotalDisplayRecords: lab_racks.total_entries,
-        aaData: data
+      sEcho: params[:sEcho].to_i,
+      iTotalRecords: LabRack.count,
+      iTotalDisplayRecords: lab_racks.total_entries,
+      aaData: data
     }
   end
 
@@ -31,13 +31,14 @@ class LabRackDatatable
       end
 
 
-      shelf=''
+      shelf = ''
       if lab_rack.shelf
-        shelf=lab_rack.shelf
+        shelf = lab_rack.shelf
       end
 
-      freezer=''
-      lab=''
+      freezer = ''
+      lab = ''
+
       if lab_rack.freezer
         freezer=link_to lab_rack.freezer.freezercode, edit_freezer_path(lab_rack.freezer)
         if lab_rack.freezer.lab
@@ -45,14 +46,13 @@ class LabRackDatatable
         end
       end
 
-
       [
-          rackcode,
-          shelf,
-          freezer,
-          lab,
-          lab_rack.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', lab_rack, method: :delete, data: { confirm: 'Are you sure?' })
+        rackcode,
+        shelf,
+        freezer,
+        lab,
+        lab_rack.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        link_to('Delete', lab_rack, method: :delete, data: { confirm: 'Are you sure?' })
       ]
 
     end
@@ -60,20 +60,19 @@ class LabRackDatatable
   end
 
   def lab_racks
-    @freezers ||= fetch_freezers
+    @lab_racks ||= fetch_lab_racks
   end
 
-  def fetch_freezers
+  def fetch_lab_racks
+    lab_racks = LabRack.in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
-    freezers = LabRack.order("#{sort_column} #{sort_direction}")
-
-    freezers = freezers.page(page).per_page(per_page)
+    lab_racks = lab_racks.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      freezers = freezers.where("rackcode ILIKE :search", search: "%#{params[:sSearch]}%")
+      lab_racks = lab_racks.where("rackcode ILIKE :search", search: "%#{params[:sSearch]}%")
     end
 
-    freezers
+    lab_racks
   end
 
   def page

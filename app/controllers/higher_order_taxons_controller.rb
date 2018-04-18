@@ -6,14 +6,14 @@ class HigherOrderTaxonsController < ApplicationController
   # GET /higher_order_taxons
   # GET /higher_order_taxons.json
   def index
-    @higher_order_taxons = HigherOrderTaxon.order(:position).all
+    @higher_order_taxons = HigherOrderTaxon.order(:position).in_default_project(current_user.default_project_id)
   end
 
   def show_species
     respond_to do |format|
-          format.html
-          format.json { render json: SpeciesDatatable.new(view_context, nil, params[:id]) }
-        end
+      format.html
+      format.json { render json: SpeciesDatatable.new(view_context, nil, params[:id], current_user.default_project_id) }
+    end
   end
 
   # GET /higher_order_taxons/1
@@ -71,13 +71,14 @@ class HigherOrderTaxonsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_higher_order_taxon
-      @higher_order_taxon = HigherOrderTaxon.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def higher_order_taxon_params
-      params.require(:higher_order_taxon).permit(:position, :name, :german_name,:marker_ids => [])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_higher_order_taxon
+    @higher_order_taxon = HigherOrderTaxon.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def higher_order_taxon_params
+    params.require(:higher_order_taxon).permit(:position, :name, :german_name,:marker_ids => [])
+  end
 end
