@@ -47,6 +47,9 @@ namespace :data do
     values = Freezer.all.map { |freezer| "(#{freezer.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO freezers_projects (freezer_id, project_id) VALUES #{values}")
 
+    values = Shelf.all.map { |shelf| "(#{project.id},#{shelf.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO projects_shelves (project_id, shelf_id) VALUES #{values}")
+
     values = LabRack.all.map { |lab_rack| "(#{lab_rack.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO lab_racks_projects (lab_rack_id, project_id) VALUES #{values}")
 
@@ -67,6 +70,10 @@ namespace :data do
 
     values = Freezer.joins(:lab).merge(Lab.in_project(project.id)).map { |freezer| "(#{freezer.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO freezers_projects (freezer_id, project_id) VALUES #{values}")
+
+    Shelf.update_all(freezer_id: Freezer.first.id)
+    values = Shelf.joins(:freezer).merge(Freezer.in_project(project.id)).map { |shelf| "(#{project.id},#{shelf.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO projects_shelves (project_id, shelf_id) VALUES #{values}")
 
     values = LabRack.joins(:freezer).merge(Freezer.in_project(project.id)).map { |lab_rack| "(#{lab_rack.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO lab_racks_projects (lab_rack_id, project_id) VALUES #{values}")

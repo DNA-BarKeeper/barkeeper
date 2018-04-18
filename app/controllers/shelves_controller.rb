@@ -6,7 +6,7 @@ class ShelvesController < ApplicationController
   # GET /shelves
   # GET /shelves.json
   def index
-    @shelves = Shelf.all
+    @shelves = Shelf.in_project(current_user.default_project_id).order(:name)
   end
 
   # GET /shelves/1
@@ -64,13 +64,14 @@ class ShelvesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_shelf
-      @shelf = Shelf.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def shelf_params
-      params.require(:shelf).permit(:name)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_shelf
+    @shelf = Shelf.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def shelf_params
+    params.require(:shelf).permit(:name)
+  end
 end
