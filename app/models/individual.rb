@@ -1,4 +1,5 @@
 class Individual < ApplicationRecord
+  extend ProjectModule
   include PgSearch
 
   has_many :isolates
@@ -28,10 +29,6 @@ class Individual < ApplicationRecord
   scope :bad_location, -> { where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
   scope :good_location, -> { where('individuals.longitude_original SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
   scope :no_location, -> { where('individuals.longitude_original = ?', nil) }
-
-  def self.in_default_project(project_id)
-    joins(:projects).where(projects: { id: project_id }).uniq
-  end
 
   def self.to_csv(options = {})
     # change to_csv block to list attributes/values individually
@@ -82,7 +79,7 @@ def self.export(file)
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
     individuals= Individual.select("species_id").joins(:species => {:family => {:order => :higher_order_taxon}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     individuals_s= Individual.select("species_component").joins(:species => {:family => {:order => :higher_order_taxon}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    [individuals.count, individuals_s.uniq.count, individuals.uniq.count]
+    [individuals.count, individuals_s.distinct.count, individuals.distinct.count]
   end
 
   def species_name

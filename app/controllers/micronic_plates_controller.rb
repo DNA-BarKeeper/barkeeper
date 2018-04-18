@@ -8,7 +8,7 @@ class MicronicPlatesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json:  MicronicPlateDatatable.new(view_context)}
+      format.json { render json: MicronicPlateDatatable.new(view_context, current_user.default_project_id)}
     end
   end
 
@@ -67,13 +67,14 @@ class MicronicPlatesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_micronic_plate
-      @micronic_plate = MicronicPlate.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def micronic_plate_params
-      params.require(:micronic_plate).permit(:location_in_rack, :micronic_plate_id, :name)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_micronic_plate
+    @micronic_plate = MicronicPlate.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def micronic_plate_params
+    params.require(:micronic_plate).permit(:location_in_rack, :micronic_plate_id, :name)
+  end
 end

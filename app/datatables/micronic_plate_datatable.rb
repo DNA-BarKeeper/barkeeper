@@ -6,16 +6,17 @@ class MicronicPlateDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view)
+  def initialize(view, current_default_project)
     @view = view
+    @current_default_project = current_default_project
   end
 
   def as_json(options = {})
     {
-        sEcho: params[:sEcho].to_i,
-        iTotalRecords: PlantPlate.count,
-        iTotalDisplayRecords: micronic_plates.total_entries,
-        aaData: data
+      sEcho: params[:sEcho].to_i,
+      iTotalRecords: MicronicPlate.count,
+      iTotalDisplayRecords: micronic_plates.total_entries,
+      aaData: data
     }
   end
 
@@ -24,34 +25,34 @@ class MicronicPlateDatatable
   def data
     micronic_plates.map do |micronic_plate|
 
-      micronic_plate_id=''
+      micronic_plate_id = ''
       if micronic_plate.micronic_plate_id
         micronic_plate_id = link_to micronic_plate.micronic_plate_id, edit_micronic_plate_path(micronic_plate)
       end
 
-      lab_rack=''
-      rack_position=''
-      shelf=''
-      freezer=''
+      lab_rack = ''
+      rack_position = ''
+      shelf = ''
+      freezer = ''
 
       if micronic_plate.lab_rack
         lab_rack = link_to micronic_plate.lab_rack.rackcode, edit_lab_rack_path(micronic_plate.lab_rack)
-        shelf= micronic_plate.lab_rack.shelf
+        shelf = micronic_plate.lab_rack.shelf
         if micronic_plate.lab_rack.freezer
-          freezer=micronic_plate.lab_rack.freezer.freezercode
+          freezer = micronic_plate.lab_rack.freezer.freezercode
         end
       end
 
       rack_position = micronic_plate.location_in_rack
 
       [
-          micronic_plate_id,
-          lab_rack,
-          rack_position,
-          shelf,
-          freezer,
-          micronic_plate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', micronic_plate, method: :delete, data: { confirm: 'Are you sure?' })
+        micronic_plate_id,
+        lab_rack,
+        rack_position,
+        shelf,
+        freezer,
+        micronic_plate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        link_to('Delete', micronic_plate, method: :delete, data: { confirm: 'Are you sure?' })
       ]
 
     end
@@ -59,20 +60,19 @@ class MicronicPlateDatatable
   end
 
   def micronic_plates
-    @freezers ||= fetch_plant_plates
+    @micronic_plates ||= fetch_micronic_plates
   end
 
-  def fetch_plant_plates
+  def fetch_micronic_plates
+    micronic_plates = MicronicPlate.in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
-    plant_plates = MicronicPlate.order("#{sort_column} #{sort_direction}")
-
-    plant_plates = plant_plates.page(page).per_page(per_page)
+    micronic_plates = micronic_plates.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      plant_plates = plant_plates.where("name ILIKE :search", search: "%#{params[:sSearch]}%")
+      micronic_plates = micronic_plates.where("name ILIKE :search", search: "%#{params[:sSearch]}%")
     end
 
-    plant_plates
+    micronic_plates
   end
 
   def page

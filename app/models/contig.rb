@@ -1,5 +1,7 @@
 # noinspection RubyStringKeysInHashInspection
 class Contig < ApplicationRecord
+  extend ProjectModule
+
   belongs_to :marker_sequence
   belongs_to :marker
   belongs_to :isolate
@@ -31,19 +33,13 @@ class Contig < ApplicationRecord
 
   scope :verified_in2015, ->  { where('contigs.verified_at > ? AND contigs.verified_at < ?',  2.years.ago.beginning_of_year, 2.years.ago.end_of_year)}
 
-  def self.in_default_project(project_id)
-    joins(:projects).where(projects: { id: project_id }).uniq
-  end
-
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-
     # todo (how to) includes spp. etc (on top of individual)
     contigs=Contig.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     contigs_s=Contig.select("species_component").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     contigs_i=Contig.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
 
-    [contigs.count, contigs_s.uniq.count, contigs.uniq.count, contigs_i.uniq.count]
-
+    [contigs.count, contigs_s.distinct.count, contigs.distinct.count, contigs_i.distinct.count]
   end
 
 

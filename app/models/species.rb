@@ -1,23 +1,16 @@
 class Species < ApplicationRecord
   include CommonFunctions
+  extend ProjectModule
 
   has_many :individuals
   has_many :primer_pos_on_genomes
   belongs_to :family
   has_and_belongs_to_many :projects
 
-  def self.in_default_project(project_id)
-    joins(:projects).where(projects: { id: project_id }).uniq
-  end
-
-  def filter
-    @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").order(:name)
-  end
-
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-    spp=Species.select("species_component").joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    subspp=Species.select("id").joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    [spp.uniq.count, subspp.count]
+    spp = Species.select("species_component").joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    subspp = Species.select("id").joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    [spp.distinct.count, subspp.count]
   end
 
   def self.import_gbolII(file)
@@ -67,7 +60,7 @@ class Species < ApplicationRecord
     end
   end
 
-  def self.import(file, valid_keys)
+  def self.import_species(file, valid_keys)
     spreadsheet = CommonFunctions.open_spreadsheet(file)
     header = spreadsheet.row(1)
 
@@ -107,32 +100,33 @@ class Species < ApplicationRecord
     end
   end
 
-  def self.import_Stuttgart(file)
-    valid_keys = %w('genus_name',
+  def self.import_stuttgart(file)
+    # Only direct attributes; associations are extra
+    valid_keys = ['genus_name',
                   'species_epithet',
                   'id',
                   'author',
                   'author_infra',
                   'infraspecific',
                   'comment',
-                  'german_name') # Only direct attributes; associations are extra
+                  'german_name']
 
-    self.import(file, valid_keys)
+    import_species(file, valid_keys)
   end
 
-  def self.import_Berlin(file)
-    valid_keys = %w('genus_name',
-                    'species_epithet',
-                    'id',
-                    'author',
-                    'infraspecific',
-                    'author_infra',
-                    'comment') # Only direct attributes; associations are extra
+  def self.import_berlin(file)
+    valid_keys = ['genus_name',
+                  'species_epithet',
+                  'id',
+                  'author',
+                  'infraspecific',
+                  'author_infra',
+                  'comment'] # Only direct attributes; associations are extra
 
-    self.import(file, valid_keys)
+    import_species(file, valid_keys)
   end
 
-  def self.import_Stuttgart_set_class(file)
+  def self.import_stuttgart_set_class(file)
     spreadsheet = CommonFunctions.open_spreadsheet(file)
 
     header = spreadsheet.row(1)
@@ -169,7 +163,7 @@ class Species < ApplicationRecord
   end
 
   def full_name
-    "#{self.genus_name} #{self.species_epithet} #{self.infraspecific}".strip
+    "#{genus_name} #{species_epithet} #{infraspecific}".strip
   end
 
   def name_for_display

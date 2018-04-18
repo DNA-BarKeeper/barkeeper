@@ -18,11 +18,10 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :higher_order_taxa
 
   has_and_belongs_to_many :labs
-  # Freezers, lab racks and plates are only associated with a project via their lab. Change if needed.
-  has_many :freezers, through: :labs
-  has_many :lab_racks, through: :freezers
-  has_many :micronic_plates, through: :lab_racks
-  has_many :plant_plates, through: :lab_racks
+  has_and_belongs_to_many :freezers
+  has_and_belongs_to_many :lab_racks
+  has_and_belongs_to_many :micronic_plates
+  has_and_belongs_to_many :plant_plates
 
   validates_presence_of :name
 end

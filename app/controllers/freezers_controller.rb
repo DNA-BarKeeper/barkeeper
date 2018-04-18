@@ -8,7 +8,7 @@ class FreezersController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: FreezerDatatable.new(view_context) }
+      format.json { render json: FreezerDatatable.new(view_context, current_user.default_project_id) }
     end
   end
 
@@ -67,13 +67,14 @@ class FreezersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_freezer
-      @freezer = Freezer.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def freezer_params
-      params.require(:freezer).permit(:freezercode, :lab_id)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_freezer
+    @freezer = Freezer.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def freezer_params
+    params.require(:freezer).permit(:freezercode, :lab_id)
+  end
 end

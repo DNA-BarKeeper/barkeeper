@@ -6,18 +6,19 @@ class SpeciesDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view, family_id, higher_order_id)
+  def initialize(view, family_id, higher_order_id, current_default_project)
     @view = view
     @family_id = family_id
-    @higher_order_id=higher_order_id
+    @higher_order_id = higher_order_id
+    @current_default_project = current_default_project
   end
 
   def as_json(options = {})
     {
-        sEcho: params[:sEcho].to_i,
-        iTotalRecords: Species.count,
-        iTotalDisplayRecords: species.total_entries,
-        aaData: data
+      sEcho: params[:sEcho].to_i,
+      iTotalRecords: Species.count,
+      iTotalDisplayRecords: species.total_entries,
+      aaData: data
     }
   end
 
@@ -25,17 +26,16 @@ class SpeciesDatatable
 
   def data
     species.map do |single_species|
-
-      family=''
+      family = ''
       if single_species.family
-        family=link_to(single_species.family.name, edit_family_path(single_species.family))
+        family = link_to(single_species.family.name, edit_family_path(single_species.family))
       end
       [
-          link_to(single_species.name_for_display, edit_species_path(single_species)),
-          single_species.author,
-          family,
-          single_species.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', single_species, method: :delete, data: { confirm: 'Are you sure?' }),
+        link_to(single_species.name_for_display, edit_species_path(single_species)),
+        single_species.author,
+        family,
+        single_species.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        link_to('Delete', single_species, method: :delete, data: { confirm: 'Are you sure?' }),
       ]
     end
   end
@@ -45,29 +45,28 @@ class SpeciesDatatable
   end
 
   def fetch_species
-
     if @higher_order_id
-      species=Species.includes(:family).joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: @higher_order_id}).order("#{sort_column} #{sort_direction}")
+      species = Species.includes(:family).joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: @higher_order_id}).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     elsif @family_id
-      species = Species.includes(:family).where(:family_id => @family_id).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+      species = Species.includes(:family).where(:family_id => @family_id).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     else
-      species = Species.includes(:family).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+      species = Species.includes(:family).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     end
     species = species.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
-      species = species.where("composed_name ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      species = species.where("composed_name ILIKE :search", search: "%#{params[:sSearch]}%")
     end
+
     species
   end
 
   def page
-    params[:iDisplayStart].to_i/per_page + 1
+    params[:iDisplayStart].to_i / per_page + 1
   end
 
   def per_page
-    params[:iDisplayLength].to_i > 0 ? params[:iDisplayLength].to_i : 10
+    params[:iDisplayLength].to_i.positive? ? params[:iDisplayLength].to_i : 10
   end
 
   def sort_column

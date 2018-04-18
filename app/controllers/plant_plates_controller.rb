@@ -8,7 +8,7 @@ class PlantPlatesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json:  PlantPlateDatatable.new(view_context)}
+      format.json { render json: PlantPlateDatatable.new(view_context, current_user.default_project_id)}
     end
   end
 
@@ -67,13 +67,14 @@ class PlantPlatesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_plant_plate
-      @plant_plate = PlantPlate.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def plant_plate_params
-      params.require(:plant_plate).permit(:name, :how_many)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_plant_plate
+    @plant_plate = PlantPlate.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def plant_plate_params
+    params.require(:plant_plate).permit(:name, :how_many)
+  end
 end

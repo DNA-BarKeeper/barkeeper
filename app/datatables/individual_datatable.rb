@@ -8,17 +8,18 @@ class IndividualDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view, species_id)
+  def initialize(view, species_id, current_default_project)
     @view = view
-    @species_id=species_id
+    @species_id = species_id
+    @current_default_project = current_default_project
   end
 
   def as_json(options = {})
     {
-        sEcho: params[:sEcho].to_i,
-        iTotalRecords: Individual.count,
-        iTotalDisplayRecords: individuals.total_entries,
-        aaData: data
+      sEcho: params[:sEcho].to_i,
+      iTotalRecords: Individual.count,
+      iTotalDisplayRecords: individuals.total_entries,
+      aaData: data
     }
   end
 
@@ -26,19 +27,20 @@ class IndividualDatatable
 
   def data
     individuals.map do |individual|
+      species = ''
 
-      species=''
       if individual.species
-        species=link_to individual.species.name_for_display, edit_species_path(individual.species)
+        species = link_to individual.species.name_for_display, edit_species_path(individual.species)
       end
+
       [
-          link_to(individual.specimen_id, edit_individual_path(individual)),
-          species,
-          individual.herbarium,
-          individual.collector,
-          individual.collection_nr,
-          individual.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', individual, method: :delete, data: { confirm: 'Are you sure?' })
+        link_to(individual.specimen_id, edit_individual_path(individual)),
+        species,
+        individual.herbarium,
+        individual.collector,
+        individual.collection_nr,
+        individual.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        link_to('Delete', individual, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end
@@ -49,9 +51,9 @@ class IndividualDatatable
 
   def fetch_individuals
     if @species_id
-      individuals = Individual.includes(:species).where(:species_id => @species_id).order("#{sort_column} #{sort_direction}")
+      individuals = Individual.includes(:species).where(:species_id => @species_id).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     else
-      individuals = Individual.includes(:species).order("#{sort_column} #{sort_direction}")
+      individuals = Individual.includes(:species).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
     individuals = individuals.page(page).per_page(per_page)
@@ -70,7 +72,7 @@ class IndividualDatatable
   end
 
   def per_page
-    params[:iDisplayLength].to_i > 0 ? params[:iDisplayLength].to_i : 10
+    params[:iDisplayLength].to_i.positive? ? params[:iDisplayLength].to_i : 10
   end
 
   def sort_column

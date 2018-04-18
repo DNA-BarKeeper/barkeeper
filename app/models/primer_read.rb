@@ -1,4 +1,6 @@
 class PrimerRead < ApplicationRecord
+  extend ProjectModule
+
   belongs_to :contig
   belongs_to :partial_con
   belongs_to :primer
@@ -40,7 +42,6 @@ class PrimerRead < ApplicationRecord
   def file_name_id
     self.name.gsub('.', "_#{self.id}.")
   end
-
 
   def slice_to_json(start_pos, end_pos)
 

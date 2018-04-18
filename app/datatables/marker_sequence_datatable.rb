@@ -8,8 +8,9 @@ class MarkerSequenceDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view)
+  def initialize(view, current_default_project)
     @view = view
+    @current_default_project = current_default_project
   end
 
   def as_json(options = {})
@@ -24,23 +25,22 @@ class MarkerSequenceDatatable
   private
 
   def data
-
     marker_sequences.map do |marker_sequence|
 
-      species_name=''
-      species_id=0
+      species_name = ''
+      species_id = 0
 
       if marker_sequence.try(:isolate).try(:individual).try(:species)
-        species_name=marker_sequence.isolate.individual.species.name_for_display
-        species_id=marker_sequence.isolate.individual.species.id
+        species_name = marker_sequence.isolate.individual.species.name_for_display
+        species_id = marker_sequence.isolate.individual.species.id
       end
 
       [
-          link_to(marker_sequence.name, edit_marker_sequence_path(marker_sequence)),
-          link_to(species_name, edit_species_path(species_id)),
-          # species_name,
-          marker_sequence.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', marker_sequence, method: :delete, data: { confirm: 'Are you sure?' })
+        link_to(marker_sequence.name, edit_marker_sequence_path(marker_sequence)),
+        link_to(species_name, edit_species_path(species_id)),
+        # species_name,
+        marker_sequence.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        link_to('Delete', marker_sequence, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end
@@ -50,22 +50,22 @@ class MarkerSequenceDatatable
   end
 
   def fetch_marker_sequences
-
-    marker_sequences = MarkerSequence.includes(:isolate).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    marker_sequences = MarkerSequence.includes(:isolate).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     marker_sequences = marker_sequences.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-        marker_sequences = marker_sequences.where("name ILIKE :search", search: "%#{params[:sSearch]}%") #  todo --> fix to use case-insensitive / postgres
+      marker_sequences = marker_sequences.where("name ILIKE :search", search: "%#{params[:sSearch]}%") #  todo --> fix to use case-insensitive / postgres
     end
+
     marker_sequences
   end
 
   def page
-    params[:iDisplayStart].to_i/per_page + 1
+    params[:iDisplayStart].to_i / per_page + 1
   end
 
   def per_page
-    params[:iDisplayLength].to_i > 0 ? params[:iDisplayLength].to_i : 10
+    params[:iDisplayLength].to_i.positive? ? params[:iDisplayLength].to_i : 10
   end
 
   def sort_column
@@ -74,6 +74,6 @@ class MarkerSequenceDatatable
   end
 
   def sort_direction
-    params[:sSortDir_0] == "desc" ? "desc" : "asc"
+    params[:sSortDir_0] == 'desc' ? 'desc' : 'asc'
   end
 end

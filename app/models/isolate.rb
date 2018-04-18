@@ -1,5 +1,6 @@
 class Isolate < ApplicationRecord
   include CommonFunctions
+  extend ProjectModule
 
   has_many :marker_sequences
   has_many :contigs
@@ -15,10 +16,6 @@ class Isolate < ApplicationRecord
 
   scope :recent, ->  { where('isolates.updated_at > ?', 1.hours.ago)}
   scope :no_controls, -> { where(:negative_control => false)}
-
-  def self.in_default_project(project_id)
-    joins(:projects).where(projects: { id: project_id }).uniq
-  end
 
   def assign_specimen
     self.individual_id = CommonFunctions.search_dna_bank(self.lab_nr)&.id # only assign individual id if dna bank search had a result
@@ -86,7 +83,7 @@ class Isolate < ApplicationRecord
     isolates_s=Isolate.select("species_component").includes(:individual).joins(:individual => {:species => {:family => {:order => :higher_order_taxon}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     isolates_i=Isolate.select("individual_id").joins(:individual => {:species => {:family => {:order => :higher_order_taxon}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
 
-    [isolates.count, isolates_s.uniq.count, isolates.uniq.count, isolates_i.uniq.count]
+    [isolates.count, isolates_s.distinct.count, isolates.distinct.count, isolates_i.distinct.count]
   end
 
 

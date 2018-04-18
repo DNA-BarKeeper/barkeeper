@@ -43,6 +43,18 @@ namespace :data do
 
     values = Lab.all.map { |lab| "(#{lab.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO labs_projects (lab_id, project_id) VALUES #{values}")
+
+    values = Freezer.all.map { |freezer| "(#{freezer.id},#{project.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO freezers_projects (freezer_id, project_id) VALUES #{values}")
+
+    values = LabRack.all.map { |lab_rack| "(#{lab_rack.id},#{project.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO lab_racks_projects (lab_rack_id, project_id) VALUES #{values}")
+
+    values = MicronicPlate.all.map { |micronic_plate| "(#{micronic_plate.id},#{project.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO micronic_plates_projects (micronic_plate_id, project_id) VALUES #{values}")
+
+    values = PlantPlate.all.map { |plant_plate| "(#{plant_plate.id},#{project.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO plant_plates_projects (plant_plate_id, project_id) VALUES #{values}")
   end
 
   desc 'Add GBOL5 project to all eligible records.'
@@ -53,8 +65,20 @@ namespace :data do
     values = Lab.where(labcode: gbol_labs).map { |lab| "(#{lab.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO labs_projects (lab_id, project_id) VALUES #{values}")
 
+    values = Freezer.joins(:lab).merge(Lab.in_default_project(project.id)).map { |freezer| "(#{freezer.id},#{project.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO freezers_projects (freezer_id, project_id) VALUES #{values}")
+
+    values = LabRack.joins(:freezer).merge(Freezer.in_default_project(project.id)).map { |lab_rack| "(#{lab_rack.id},#{project.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO lab_racks_projects (lab_rack_id, project_id) VALUES #{values}")
+
+    values = MicronicPlate.joins(:lab_rack).merge(LabRack.in_default_project(project.id)).map { |micronic_plate| "(#{micronic_plate.id},#{project.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO micronic_plates_projects (micronic_plate_id, project_id) VALUES #{values}")
+
+    values = PlantPlate.all.map { |plant_plate| "(#{plant_plate.id},#{project.id})" }.join(',')
+    ActiveRecord::Base.connection.execute("INSERT INTO plant_plates_projects (plant_plate_id, project_id) VALUES #{values}")
+
     # All users who belong to a GBOL5 lab
-    values = User.joins(:lab).merge(Lab.joins(:projects).where(projects: { id: project.id })).map { |user| "(#{project.id},#{user.id})" }.join(',')
+    values = User.joins(:lab).merge(Lab.in_default_project(project.id)).map { |user| "(#{project.id},#{user.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO projects_users (project_id, user_id) VALUES #{values}")
 
     # All GBOL5 markers
@@ -62,7 +86,7 @@ namespace :data do
     ActiveRecord::Base.connection.execute("INSERT INTO markers_projects (marker_id, project_id) VALUES #{values}")
 
     # All primers that belong to a GBOL5 marker
-    values = Primer.joins(:marker).merge(Marker.joins(:projects).where(projects: { id: project.id })).map { |primer| "(#{primer.id},#{project.id})" }.join(',')
+    values = Primer.joins(:marker).merge(Marker.in_default_project(project.id)).map { |primer| "(#{primer.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO primers_projects (primer_id, project_id) VALUES #{values}")
 
     # All isolates with either GBOL or DB in their name
@@ -74,11 +98,11 @@ namespace :data do
     ActiveRecord::Base.connection.execute("INSERT INTO contigs_projects (contig_id, project_id) VALUES #{values}")
 
     # All primer reads that belong to GBOL5 contigs
-    values = PrimerRead.joins(:contig).merge(Contig.joins(:projects).where(projects: { id: project.id })).map { |read| "(#{read.id},#{project.id})" }.join(',')
+    values = PrimerRead.joins(:contig).merge(Contig.in_default_project(project.id)).map { |read| "(#{read.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO primer_reads_projects (primer_read_id, project_id) VALUES #{values}")
 
     # All issues that either belong to contigs or primer reads within the GBOL5 project
-    values = Issue.joins(:contigs).merge(Contig.joins(:projects).where(projects: { id: project.id })).or(Issue.joins(:primer_reads).merge(PrimerRead.joins(:projects).where(projects: { id: project.id }))).map { |issue| "(#{issue.id},#{project.id})" }.join(',')
+    values = Issue.joins(:contigs).merge(Contig.in_default_project(project.id)).or(Issue.joins(:primer_reads).merge(PrimerRead.in_default_project(project.id))).map { |issue| "(#{issue.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO issues_projects (issue_id, project_id) VALUES #{values}")
 
     # All sequences with either GBOL or DB in their name
@@ -86,7 +110,7 @@ namespace :data do
     ActiveRecord::Base.connection.execute("INSERT INTO marker_sequences_projects (marker_sequence_id, project_id) VALUES #{values}")
 
     # All specimens which belong to a GBOL5 isolate
-    values = Individual.joins(:isolates).merge(Isolate.joins(:projects).where(projects: { id: project.id })).map { |individual| "(#{individual.id},#{project.id})" }.join(',')
+    values = Individual.joins(:isolates).merge(Isolate.in_default_project(project.id)).map { |individual| "(#{individual.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO individuals_projects (individual_id, project_id) VALUES #{values}")
 
     # All species, families, orders and taxa

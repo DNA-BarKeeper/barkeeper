@@ -6,16 +6,17 @@ class PlantPlateDatatable
   delegate :params, :link_to, :h, to: :@view
 
 
-  def initialize(view)
+  def initialize(view, current_default_project)
     @view = view
+    @current_default_project = current_default_project
   end
 
   def as_json(options = {})
     {
-        sEcho: params[:sEcho].to_i,
-        iTotalRecords: PlantPlate.count,
-        iTotalDisplayRecords: plant_plates.total_entries,
-        aaData: data
+      sEcho: params[:sEcho].to_i,
+      iTotalRecords: PlantPlate.count,
+      iTotalDisplayRecords: plant_plates.total_entries,
+      aaData: data
     }
   end
 
@@ -30,21 +31,20 @@ class PlantPlateDatatable
       end
 
       [
-          name,
-          plant_plate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', plant_plate, method: :delete, data: { confirm: 'Are you sure?' })
+        name,
+        plant_plate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        link_to('Delete', plant_plate, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
 
   end
 
   def plant_plates
-    @freezers ||= fetch_plant_plates
+    @plant_plates ||= fetch_plant_plates
   end
 
   def fetch_plant_plates
-
-    plant_plates = PlantPlate.order("#{sort_column} #{sort_direction}")
+    plant_plates = PlantPlate.in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     plant_plates = plant_plates.page(page).per_page(per_page)
 
@@ -71,5 +71,4 @@ class PlantPlateDatatable
   def sort_direction
     params[:sSortDir_0] == "desc" ? "desc" : "asc"
   end
-  
 end

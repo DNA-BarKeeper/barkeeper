@@ -19,7 +19,7 @@ class FamiliesController < ApplicationController
   def show_species
     respond_to do |format|
       format.html
-      format.json { render json: SpeciesDatatable.new(view_context, params[:id], nil) }
+      format.json { render json: SpeciesDatatable.new(view_context, params[:id], nil, current_user.default_project_id) }
     end
   end
 
@@ -78,6 +78,7 @@ class FamiliesController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_family
     @family = Family.find(params[:id])
