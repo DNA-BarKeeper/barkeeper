@@ -6,17 +6,15 @@ class PrimersController < ApplicationController
   # GET /primers
   # GET /primers.json
   def index
-    @primers = Primer.includes(:marker).in_default_project(current_user.default_project_id)
+    @primers = Primer.includes(:marker).in_project(current_user.default_project_id)
   end
 
   def import
-    # Species.import(params[:file])
-
     file = params[:file]
 
-    #todo if needed, add logic to distinguish between xls / xlsx / error etc here -> mv from model.
-    Primer.import(file) # when adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
-    redirect_to primers_path, notice: "Imported."
+    # TODO: if needed, add logic to distinguish between xls / xlsx / error etc here -> mv from model.
+    Primer.import(file) # When adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
+    redirect_to primers_path, notice: 'Imported.'
   end
 
   # GET /primers/1

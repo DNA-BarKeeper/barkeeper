@@ -2,12 +2,13 @@ class ContigSearch < ApplicationRecord
   belongs_to :user
 
   def contigs
-    contigs ||= find_contigs
+    @contigs ||= find_contigs
   end
 
   private
+
   def find_contigs
-    contigs = Contig.order(:name)
+    contigs = Contig.in_project(current_user.default_project_id).order(:name)
     contigs = contigs.where("contigs.name ilike ?", "%#{name}%") if name.present?
 
     if assembled != 'both'

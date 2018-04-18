@@ -71,21 +71,7 @@ class PrimerReadsController < ApplicationController
     @primer_read = PrimerRead.new
   end
 
-=begin
-  def batch_create
-    if params[:chromatograms]
-      params[:chromatograms].each { |chromatogram|
-        PrimerRead.create(chromatogram: chromatogram, name: chromatogram.original_filename)
-      }
-    end
-    @primer_reads = PrimerRead.all
-    #render :index
-    redirect_to root_url, notice: 'Chromatograms imported.'
-  end
-=end
-
   def trim
-
     msg_hash = @primer_read.auto_trim(false)
 
     if msg_hash[:create_issue]
@@ -93,7 +79,6 @@ class PrimerReadsController < ApplicationController
     else
       redirect_to edit_primer_read_path, notice: msg_hash[:msg]
     end
-
   end
 
   # tries to extract associated primer and isolate from primer read name (in turn based on uploaded scf file name):
@@ -276,6 +261,7 @@ class PrimerReadsController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_primer_read
     @primer_read = PrimerRead.includes(:contig => { :isolate => :individual }).find(params[:id])

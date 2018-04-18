@@ -55,15 +55,15 @@ class Contig < ApplicationRecord
   end
 
   def generate_name
-    if self.marker.present? and self.isolate.present?
+    if self.marker.present? && self.isolate.present?
       self.name = "#{self.isolate.lab_nr}_#{self.marker.name}"
     else
-      self.name='<unnamed>'
+      self.name = '<unnamed>'
     end
   end
 
   def mda(width,height)
-    Array.new(width).map!{ Array.new(height) }
+    Array.new(width).map! { Array.new(height) }
   end
 
   def degapped_consensus
@@ -107,11 +107,9 @@ class Contig < ApplicationRecord
       height+=1
 
       max_width = partial_con.aligned_sequence.length if  partial_con.aligned_sequence.length > max_width
-
     end
 
     # add not_assembled stuff etc:
-
     if self.primer_reads.not_assembled.count > 0
       self.primer_reads.not_assembled.each do |read|
         pde_header+="<seq idx=\"#{height}\"><e id=\"1\">#{read.file_name_id}</e><e id=\"2\">#{read.file_name_id}</e><e id=\"32\">#{app_url}primer_reads/#{read.id}/edit</e></seq>\n"

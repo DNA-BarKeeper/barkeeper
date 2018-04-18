@@ -44,7 +44,7 @@ class PlantPlateDatatable
   end
 
   def fetch_plant_plates
-    plant_plates = PlantPlate.in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+    plant_plates = PlantPlate.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     plant_plates = plant_plates.page(page).per_page(per_page)
 

@@ -51,10 +51,10 @@ class IsolateDatatable
 
   def fetch_isolates
     if @no_specimen
-      isolates = Isolate.includes(:individual => :species).where(:individual => nil).where(:negative_control => false).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      isolates = Isolate.includes(:individual => :species).where(:individual => nil).where(:negative_control => false).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     else
       # for standard index view
-      isolates = Isolate.includes(:individual => :species).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      isolates = Isolate.includes(:individual => :species).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
     isolates = isolates.page(page).per_page(per_page)

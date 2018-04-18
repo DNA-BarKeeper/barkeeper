@@ -51,9 +51,9 @@ class IndividualDatatable
 
   def fetch_individuals
     if @species_id
-      individuals = Individual.includes(:species).where(:species_id => @species_id).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      individuals = Individual.includes(:species).where(:species_id => @species_id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     else
-      individuals = Individual.includes(:species).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      individuals = Individual.includes(:species).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
     individuals = individuals.page(page).per_page(per_page)

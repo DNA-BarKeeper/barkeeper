@@ -18,7 +18,6 @@ class PrimerRead < ApplicationRecord
   # Validate filename
   validates_attachment_file_name :chromatogram, :matches => [/scf\Z/, /ab1\Z/]
 
-
   before_create :default_name
 
   scope :assembled, -> {use_for_assembly.where(:assembled => true)}
@@ -36,12 +35,30 @@ class PrimerRead < ApplicationRecord
 
   validates_attachment_presence :chromatogram
 
+  def self.in_higher_order_taxon(higher_order_taxon_id)
+    count=0
+
+    HigherOrderTaxon.find(higher_order_taxon_id).orders.each do |ord|
+      ord.families.each do |fam|
+        fam.species.each do  |sp|
+          sp.individuals.each do |ind|
+            ind.isolates.each do |iso|
+              iso.contigs.each do |con|
+                count += con.primer_reads.count
+              end
+            end
+          end
+        end
+      end
+    end
+
+    count
+  end
   def file_name_id
     self.name.gsub('.', "_#{self.id}.")
   end
 
   def slice_to_json(start_pos, end_pos)
-
     # get trace position corresponding to first / last aligned_peaks index that exists and is not -1:
 
     start_pos_trace=start_pos
@@ -68,7 +85,6 @@ class PrimerRead < ApplicationRecord
       end_pos_trace-=1
       xend=self.aligned_peak_indices[end_pos_trace]
     end
-
 
     # create hash with x-pos as key, ya, yc, … as value
     traces=Hash.new
@@ -125,27 +141,6 @@ class PrimerRead < ApplicationRecord
     original_positions
   end
 
-
-  def self.in_higher_order_taxon(higher_order_taxon_id)
-    count=0
-
-    HigherOrderTaxon.find(higher_order_taxon_id).orders.each do |ord|
-      ord.families.each do |fam|
-        fam.species.each do  |sp|
-          sp.individuals.each do |ind|
-            ind.isolates.each do |iso|
-              iso.contigs.each do |con|
-                count += con.primer_reads.count
-              end
-            end
-          end
-        end
-      end
-    end
-
-    count
-  end
-
   def contig_name
     contig.try(:name)
   end
@@ -188,80 +183,55 @@ class PrimerRead < ApplicationRecord
 
     if name_components
       primer_name = name_components[3]
+      name_variants_t7 = %w[T7promoter T7 T7-1] # T7 is always forward
+      name_variants_m13 = %w[M13R-pUC M13-RP M13-RP-1] #M13R-pU
 
       #logic if T7promoter or M13R-pUC.scf:
-      if primer_name == 'T7promoter' or primer_name== 'T7' or primer_name== 'T7-1' #T7 is always forward
-        # get first part out of name_components[2]
+      if name_variants_t7.include? primer_name
         rgx = /^_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/
-        mtchs= name_components[2].match(rgx) #--> uv2
-
-        primer_name=mtchs[1]
+        matches = name_components[2].match(rgx) # --> uv2
+        primer_name = matches[1]
 
         primer = Primer.where("primers.name ILIKE ?", "#{primer_name}").first
-
-        if !primer
-          primer = Primer.where("primers.alt_name ILIKE ?", "#{primer_name}").first
-        end
+        primer ||= Primer.where("primers.alt_name ILIKE ?", "#{primer_name}").first
 
         if primer
-          if primer.reverse
-            primer_name=mtchs[2]
-          end
+          primer_name = matches[2] if primer.reverse
+        else
+          output_message = "Cannot find primer with name #{primer_name}."
+          create_issue = true
+        end
+      elsif name_variants_m13.include? primer_name
+        rgx = /^_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/
+        matches = name_components[2].match(rgx) # --> 4
+        primer_name = matches[2] # --> uv4
+
+        primer = Primer.where("primers.name ILIKE ?", "#{primer_name}").first
+        primer ||= Primer.where("primers.alt_name ILIKE ?", "#{primer_name}").first
+
+        if primer
+          primer_name = matches[1] unless primer.reverse
         else
           output_message= "Cannot find primer with name #{primer_name}."
           create_issue = true
         end
-
-      elsif primer_name == 'M13R-pUC'  or primer_name=='M13-RP' or primer_name=='M13-RP-1' #M13R-pU
-
-        # get second part out of m[2] and add "uv"
-        # get first part out of m[2]
-        rgx = /^_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/
-        mtchs= name_components[2].match(rgx) #--> 4
-
-        #prn='uv'+mtchs[2]  ##--> uv4
-        #changed again 13:04 20.09.2014 to match _uv2_uv4
-
-        primer_name=mtchs[2]  ##--> uv4
-
-        primer = Primer.where("primers.name ILIKE ?", "#{primer_name}").first
-
-        if !primer
-          primer = Primer.where("primers.alt_name ILIKE ?", "#{primer_name}").first
-        end
-
-        if primer
-          unless primer.reverse
-            primer_name=mtchs[1]
-          end
-        else
-          output_message= "Cannot find primer with name #{primer_name}."
-          create_issue = true
-        end
-
       else
-        #leave primer_name as is
+        # Leave primer_name as is
       end
 
-      # find & assign primer
+      # Find & assign primer
 
       primer = Primer.where("primers.name ILIKE ?", "#{primer_name}").first
-
-      if !primer
-        primer = Primer.where("primers.alt_name ILIKE ?", "#{primer_name}").first
-      end
+      primer ||= Primer.where("primers.alt_name ILIKE ?", "#{primer_name}").first
 
       if primer
-
         self.update(:primer_id => primer.id, :reverse => primer.reverse)
 
         # find marker that primer belongs to
         marker = primer.marker
 
         if marker
-
-          # try to find matching isolate
-
+          # Try to find matching isolate
           isolate_component = name_components[1] # GBoL number
 
           # BGBM cases:
@@ -272,15 +242,9 @@ class PrimerRead < ApplicationRecord
             isolate_component = "#{db_number_name_components[1]} #{db_number_name_components[2]}" # DNABank number
           end
 
-          isolate = Isolate.where("isolates.lab_nr ILIKE ?", "#{isolate_component}").first
-
-          if isolate.nil?
-            isolate = Isolate.where("isolates.dna_bank_id ILIKE ?", "#{isolate_component}").first
-          end
-
-          if isolate.nil?
-            isolate = Isolate.create(:lab_nr => isolate_component)
-          end
+          isolate = Isolate.where("isolates.lab_nr ILIKE ?", isolate_component.to_s).first
+          isolate ||= Isolate.where("isolates.dna_bank_id ILIKE ?", isolate_component.to_s).first
+          isolate ||= Isolate.create(:lab_nr => isolate_component)
 
           if db_number_name_components
             isolate.update(:dna_bank_id => isolate_component)
@@ -288,57 +252,48 @@ class PrimerRead < ApplicationRecord
 
           self.update(:isolate_id => isolate.id)
 
-          # figure out which contig to assign to
-
+          # Figure out which contig to assign to
           matching_contig = Contig.where("contigs.marker_id = ? AND contigs.isolate_id = ?", marker.id, isolate.id).first
 
           if matching_contig
-
-            self.contig=matching_contig
+            self.contig = matching_contig
             self.save
-
             output_message = "Assigned to contig #{matching_contig.name}."
-
           else
-            # create new contig, auto assign to primer, copy, auto-name
+            # Create new contig, auto assign to primer, copy, auto-name
+            contig = Contig.new(:marker_id => marker.id, :isolate_id => isolate.id, :assembled => false)
 
-            ct = Contig.new(:marker_id => marker.id, :isolate_id => isolate.id, :assembled => false)
+            contig.generate_name
+            contig.save
 
-            ct.generate_name
-            ct.save
-
-            self.contig=ct
+            self.contig=contig
             self.save
 
-            output_message = "Created contig #{ct.name} and assigned primer read to it."
-
+            output_message = "Created contig #{contig.name} and assigned primer read to it."
           end
-
         else
-          output_message= "No marker assigned to primer #{primer.name}."
+          output_message = "No marker assigned to primer #{primer.name}."
           create_issue = true
         end
       else
-        output_message= "Cannot find primer with name #{primer_name}."
+        output_message = "Cannot find primer with name #{primer_name}."
         create_issue = true
       end
     else
-      output_message= "No match for #{regex_read_name} in name."
+      output_message = "No match for #{regex_read_name} in name."
       create_issue = true
     end
 
     if create_issue
-      i=Issue.create(:title => output_message, :primer_read_id => self.id)
-    else #worked
+      i = Issue.create(:title => output_message, :primer_read_id => self.id)
+    else # Everything worked
       self.contig.update(:assembled => false, :assembly_tried => false)
     end
 
-    {:msg => output_message, :create_issue => create_issue}
-
+    { :msg => output_message, :create_issue => create_issue }
   end
 
   def get_position_in_marker(p)
-
     # get position in marker
 
     pp=nil

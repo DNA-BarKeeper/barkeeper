@@ -64,7 +64,7 @@ class LabRackDatatable
   end
 
   def fetch_lab_racks
-    lab_racks = LabRack.in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+    lab_racks = LabRack.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     lab_racks = lab_racks.page(page).per_page(per_page)
 

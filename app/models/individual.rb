@@ -9,29 +9,12 @@ class Individual < ApplicationRecord
   pg_search_scope :quick_search, against: [:specimen_id, :herbarium, :collector , :collection_nr]
 
   scope :without_species, -> { where(:species => nil) }
-
-  scope :without_isolates, -> {
-    joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
-      select('individuals.id').
-      group('individuals.id').having('count(isolates.id) = 0')
-  }
-
-  scope :no_species_isolates, -> {
-    without_species.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').
-      select('individuals.id').
-      group('individuals.id').having('count(isolates.id) = 0')
-  }
-
-  # in rc count how many have no isolate:
-  # Individual.joins('LEFT OUTER JOIN isolates ON isolates.individual_id = individuals.id').where('isolates.id' => nil).count
-
-  scope :recent_crap, -> { where('individuals.updated_at > ? AND individuals.specimen_id = ?', 3.days.ago, "<no info available in DNA Bank>")}
+  scope :without_isolates, -> { left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
+  scope :no_species_isolates, -> { without_species.left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
   scope :bad_location, -> { where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
-  scope :good_location, -> { where('individuals.longitude_original SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
-  scope :no_location, -> { where('individuals.longitude_original = ?', nil) }
 
   def self.to_csv(options = {})
-    # change to_csv block to list attributes/values individually
+    # Change to_csv block to list attributes/values individually
     CSV.generate(options) do |csv|
       csv << column_names
       all.each do |individual|
@@ -40,45 +23,9 @@ class Individual < ApplicationRecord
     end
   end
 
-def self.export(file)
-
-    # GBOL-Nr.
-    # Feldnummer
-    # Institut
-    # Sammlungs-Nr.
-    # Familie
-    # Taxon-Name
-    # Erstbeschreiber Jahr
-    # evtl. Bemerkung Taxonomie
-    # Name
-    # Datum
-    # Gewebetyp und Menge
-    # Anzahl Individuen
-    # Fixierungsmethode
-    # Entwicklungsstadium
-    # Sex
-    # evtl. Bemerkungen zur Probe
-    # Fundortbeschreibung
-    # Region
-    # Bundesland
-    # Land
-    # Datum
-    # Sammelmethode
-    # Breitengrad
-    # Längengrad
-    # Benutzte Methode
-    # Ungenauigkeitsangabe
-    # Höhe/Tiefe [m]
-    # Habitat
-    # Sammler
-    # Nummer
-    # Behörde
-
-  end
-
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-    individuals= Individual.select("species_id").joins(:species => {:family => {:order => :higher_order_taxon}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    individuals_s= Individual.select("species_component").joins(:species => {:family => {:order => :higher_order_taxon}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    individuals = Individual.select("species_id").joins(:species => {:family => {:order => :higher_order_taxon}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    individuals_s = Individual.select("species_component").joins(:species => {:family => {:order => :higher_order_taxon}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
     [individuals.count, individuals_s.distinct.count, individuals.distinct.count]
   end
 
@@ -117,5 +64,4 @@ def self.export(file)
       self.comments
     end
   end
-
 end

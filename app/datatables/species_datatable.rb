@@ -46,11 +46,11 @@ class SpeciesDatatable
 
   def fetch_species
     if @higher_order_id
-      species = Species.includes(:family).joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: @higher_order_id}).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      species = Species.includes(:family).joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: @higher_order_id}).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     elsif @family_id
-      species = Species.includes(:family).where(:family_id => @family_id).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+      species = Species.includes(:family).where(:family_id => @family_id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     else
-      species = Species.includes(:family).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+      species = Species.includes(:family).in_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     end
     species = species.page(page).per_page(per_page)
 

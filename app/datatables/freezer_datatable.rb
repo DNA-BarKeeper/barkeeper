@@ -53,7 +53,7 @@ class FreezerDatatable
 
   def fetch_freezers
 
-    freezers = Freezer.in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+    freezers = Freezer.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     freezers = freezers.page(page).per_page(per_page)
 

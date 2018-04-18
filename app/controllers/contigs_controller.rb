@@ -30,8 +30,8 @@ class ContigsController < ApplicationController
   end
 
   def filter
-    @contigs = Contig.in_default_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").limit(100)
-    size = Contig.in_default_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").size
+    @contigs = Contig.in_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").limit(100)
+    size = Contig.in_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").size
 
     if size > 100
       message = "and #{size} more..."
@@ -118,7 +118,7 @@ class ContigsController < ApplicationController
       contig_name += "_#{marker}"
 
       # mk case insensitiv
-      contig=Contig.in_default_project(current_user.default_project_id).where("name ILIKE ?", contig_name).first
+      contig=Contig.in_project(current_user.default_project_id).where("name ILIKE ?", contig_name).first
 
       #ignore if not verified
 
@@ -291,7 +291,7 @@ class ContigsController < ApplicationController
     contig_name=c[0...-4]
 
     #match found?
-    contig = Contig.in_default_project(current_user.default_project_id).where("name ILIKE ?", contig_name).first
+    contig = Contig.in_project(current_user.default_project_id).where("name ILIKE ?", contig_name).first
 
     if contig
       return contig if contig
@@ -313,7 +313,7 @@ class ContigsController < ApplicationController
             if marker
               true_marker_name=marker.name
               true_contig_name=isolate_name+"_#{true_marker_name}"
-              contig = Contig.in_default_project(current_user.default_project_id).where("name ILIKE ?", true_contig_name).first
+              contig = Contig.in_project(current_user.default_project_id).where("name ILIKE ?", true_contig_name).first
               if contig
                 return contig
               end
@@ -331,10 +331,11 @@ class ContigsController < ApplicationController
   end
 
   def assemble_all
-    Contig.where(:assembled => false).each do |c|
+    contigs = Contig.in_project(current_user.default_project_id).not_assembled
+    contigs.each do |c|
       ContigAssembly.perform_async(c.id)
     end
-    redirect_to contigs_path, notice: "Assembly for #{Contig.where(:assembled => false).count} contigs started in background."
+    redirect_to contigs_path, notice: "Assembly for #{contigs.size} contigs started in background."
   end
 
   def verify
@@ -373,7 +374,7 @@ class ContigsController < ApplicationController
     ms.isolate = @contig.isolate
     ms.save
 
-    @next_contig=Contig.in_default_project(current_user.default_project_id).need_verification.first
+    @next_contig = Contig.in_project(current_user.default_project_id).need_verification.first
 
     redirect_to edit_contig_path(@next_contig), notice: "Verified & linked marker sequence updated for #{@contig.name}. Showing #{@next_contig.name}."
 
