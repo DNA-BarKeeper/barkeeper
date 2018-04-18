@@ -2,7 +2,6 @@ class SpeciesXmlUploader < ApplicationRecord
 
 # write SPECIMENS & STATUS  to Excel-XML (xls) for use by ZFMK for their "Portal / db : bolgermany.de "
 
-
 #todo later rename  :uploaded_file to xml_File or s.th.
 
   has_attached_file :uploaded_file,
@@ -27,9 +26,8 @@ class SpeciesXmlUploader < ApplicationRecord
   end
 
   def xml_string
-
-    # get all species:
-    @species=Species.includes(:family => { :order => :higher_order_taxon}).all
+    # Get all species in current project:
+    @species = Species.includes( :family => { :order => :higher_order_taxon} ).in_project(current_user.default_project_id)
 
     @header_cells = ["UAbteilung/Klasse",
                      "Ordnung",
@@ -131,12 +129,8 @@ class SpeciesXmlUploader < ApplicationRecord
           }
         }
       }
-
     end
 
     builder.to_xml
-
   end
-
-
 end

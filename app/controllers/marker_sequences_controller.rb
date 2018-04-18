@@ -14,8 +14,8 @@ class MarkerSequencesController < ApplicationController
   end
 
   def filter
-    @marker_sequences = MarkerSequence.where('name ILIKE ?', "%#{params[:term]}%").in_default_project(current_user.default_project_id).order(:name).limit(100)
-    size = MarkerSequence.where('name ILIKE ?', "%#{params[:term]}%").in_default_project(current_user.default_project_id).order(:name).size
+    @marker_sequences = MarkerSequence.where('name ILIKE ?', "%#{params[:term]}%").in_project(current_user.default_project_id).order(:name).limit(100)
+    size = MarkerSequence.where('name ILIKE ?', "%#{params[:term]}%").in_project(current_user.default_project_id).order(:name).size
 
     if size > 100
       message = "and #{size} more..."

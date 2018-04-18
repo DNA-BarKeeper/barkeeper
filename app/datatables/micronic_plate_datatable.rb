@@ -64,7 +64,7 @@ class MicronicPlateDatatable
   end
 
   def fetch_micronic_plates
-    micronic_plates = MicronicPlate.in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+    micronic_plates = MicronicPlate.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     micronic_plates = micronic_plates.page(page).per_page(per_page)
 

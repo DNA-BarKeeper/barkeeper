@@ -50,7 +50,7 @@ class MarkerSequenceDatatable
   end
 
   def fetch_marker_sequences
-    marker_sequences = MarkerSequence.includes(:isolate).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    marker_sequences = MarkerSequence.includes(:isolate).in_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     marker_sequences = marker_sequences.page(page).per_page(per_page)
 
     if params[:sSearch].present?

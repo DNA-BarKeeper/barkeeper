@@ -21,7 +21,7 @@ class IsolatesController < ApplicationController
   end
 
   def filter
-    @isolates = Isolate.in_default_project(current_user.default_project_id).select('lab_nr, id').where('lab_nr ILIKE ?', "%#{params[:term]}%").order(:lab_nr)
+    @isolates = Isolate.in_project(current_user.default_project_id).select('lab_nr, id').where('lab_nr ILIKE ?', "%#{params[:term]}%").order(:lab_nr)
     render json: @isolates.map(&:lab_nr)
   end
 
@@ -79,6 +79,7 @@ class IsolatesController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_isolate
     @isolate = Isolate.includes(:individual).find(params[:id])

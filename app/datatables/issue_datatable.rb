@@ -53,7 +53,7 @@ class IssueDatatable
 
   def fetch_issues
 
-    issues = Issue.in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    issues = Issue.in_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     issues = issues.page(page).per_page(per_page)
 
     if params[:sSearch].present?

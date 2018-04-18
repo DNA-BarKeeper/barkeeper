@@ -1,10 +1,8 @@
-# write SPECIMENS & STATUS  to Excel-XML (xls) for use by ZFMK for their "Portal / db : bolgermany.de "
-
+# Write SPECIMENS & STATUS to Excel-XML (xls) for use by ZFMK for their "Portal / db : bolgermany.de "
 class XmlUploader < ApplicationRecord
   include ActionView::Helpers
 
-  #todo later rename  :uploaded_file to xml_File or s.th.
-
+  # TODO: later rename  :uploaded_file to xml_File or s.th.
   has_attached_file :uploaded_file,
                     :path => "/specimens.xls"
 
@@ -15,22 +13,24 @@ class XmlUploader < ApplicationRecord
   validates_attachment_file_name :uploaded_file, :matches => [/xls\Z/]
 
   def create_uploaded_file
-
     file_to_upload = File.open("specimens.xls", "w")
-
     file_to_upload.write(xml_string)
     file_to_upload.close
+
     self.uploaded_file = File.open("specimens.xls")
     self.save!
-
-    # puts xml_string
   end
 
   def xml_string
-    # get all gbol markers
-    gbol_markers = Marker.gbol_marker
+    # Get all markers in current project
+    begin
+      project_id = current_user.default_project_id
+    rescue
+      project_id = Project.find_by_name('All')
+    end
+    markers = Marker.in_project(project_id)
 
-    @states=%w(Baden-WÃ¼rttemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein ThÃ¼ringen)
+    @states = %w(Baden-WÃ¼rttemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein ThÃ¼ringen)
 
     @header_cells = ["GBOL5 specimen ID",
                      "Feldnummer",
@@ -65,7 +65,7 @@ class XmlUploader < ApplicationRecord
                      "BehÃ¶rde"
     ]
 
-    gbol_markers.each do |m|
+    markers.each do |m|
       @header_cells << "#{m.name} - URL"
       @header_cells << "#{m.name} - Marker Sequence"
       @header_cells << "#{m.name} - Genbank ID"
@@ -81,7 +81,7 @@ class XmlUploader < ApplicationRecord
                    'xmlns:html'=>"http://www.w3.org/TR/REC-html40") {
         xml.Worksheet('ss:Name'=>"Sheet1") {
           xml.Table {
-            xml.Row{
+            xml.Row {
 
               @header_cells.each do |o|
                 xml.Cell {
@@ -93,10 +93,10 @@ class XmlUploader < ApplicationRecord
 
             }
 
-            # get all Individuals
-            Individual.includes(isolates: [contigs: [:marker_sequence, :marker, :isolate]], species: :family).find_each do |individual|
+            # get all Individuals in current project
+            Individual.includes(isolates: [contigs: [:marker_sequence, :marker, :isolate]], species: :family).in_project(project_id).find_each do |individual|
 
-              xml.Row{
+              xml.Row {
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
                     # previous version with "Gbol-Nr.":
@@ -284,7 +284,7 @@ class XmlUploader < ApplicationRecord
                 longest_sequences = {}
 
                 individual.try(:isolates).each do |iso|
-                  gbol_markers.each do |current_marker|
+                  markers.each do |current_marker|
 
                     current_contig = iso.try(:contigs).includes(marker_sequence: :contigs).where(:marker_id => current_marker.id).first
                     current_marker_sequence = current_contig&.marker_sequence
@@ -300,7 +300,7 @@ class XmlUploader < ApplicationRecord
                   end
                 end
 
-                gbol_markers.each do |marker|
+                markers.each do |marker|
                   current_sequence = longest_sequences[marker.id]
                   current_ms = current_sequence&.sequence
 
@@ -337,12 +337,8 @@ class XmlUploader < ApplicationRecord
           }
         }
       }
-
     end
 
     builder.to_xml
-
   end
-
-
 end

@@ -26,8 +26,8 @@ class SpeciesController < ApplicationController
   end
 
   def filter
-    @species = Species.where("composed_name ILIKE ?", "%#{params[:term]}%").in_default_project(current_user.default_project_id).order(:composed_name).limit(100)
-    size = Species.where("composed_name ILIKE ?", "%#{params[:term]}%").in_default_project(current_user.default_project_id).order(:composed_name).size
+    @species = Species.where("composed_name ILIKE ?", "%#{params[:term]}%").in_project(current_user.default_project_id).order(:composed_name).limit(100)
+    size = Species.where("composed_name ILIKE ?", "%#{params[:term]}%").in_project(current_user.default_project_id).order(:composed_name).size
 
     if size > 100
       render json: @species.map(&:composed_name).push("and #{size} more...")
@@ -83,7 +83,7 @@ class SpeciesController < ApplicationController
   def collect_and_send_species(ht)
     str = ''
 
-    @species=Species.joins(:family => { :order => :higher_order_taxon }).where(orders: { higher_order_taxon_id: ht.id }).each do |s|
+    @species = Species.joins(:family => { :order => :higher_order_taxon }).where(orders: { higher_order_taxon_id: ht.id }).in_project(current_user.default_project_id).each do |s|
       str += s.id.to_s + "\t" + s.name_for_display + "\n"
     end
 

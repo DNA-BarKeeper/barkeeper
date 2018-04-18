@@ -6,7 +6,7 @@ class OrdersController < ApplicationController
   # GET /orders
   # GET /orders.json
   def index
-    @orders = Order.includes(:higher_order_taxon).in_default_project(current_user.default_project_id)
+    @orders = Order.includes(:higher_order_taxon).in_project(current_user.default_project_id)
   end
 
   # GET /orders/1

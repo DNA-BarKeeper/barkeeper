@@ -56,11 +56,11 @@ class ContigDatatable
     case @to_show
     when 'duplicates'
       names_with_multiple = Contig.group(:name).having("count(name) > 1").count.keys
-      contigs = Contig.where(name: names_with_multiple).in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      contigs = Contig.where(name: names_with_multiple).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     when 'imported'
       contigs = Contig.externally_edited.order("#{sort_column} #{sort_direction}")
     else
-      contigs = Contig.in_default_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      contigs = Contig.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
     contigs = contigs.page(page).per_page(per_page)

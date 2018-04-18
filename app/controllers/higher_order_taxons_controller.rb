@@ -6,7 +6,7 @@ class HigherOrderTaxonsController < ApplicationController
   # GET /higher_order_taxons
   # GET /higher_order_taxons.json
   def index
-    @higher_order_taxons = HigherOrderTaxon.order(:position).in_default_project(current_user.default_project_id)
+    @higher_order_taxons = HigherOrderTaxon.order(:position).in_project(current_user.default_project_id)
   end
 
   def show_species

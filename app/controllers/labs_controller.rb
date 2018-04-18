@@ -6,7 +6,7 @@ class LabsController < ApplicationController
   # GET /labs
   # GET /labs.json
   def index
-    @labs = Lab.in_default_project(current_user.default_project_id)
+    @labs = Lab.in_project(current_user.default_project_id)
   end
 
   # GET /labs/1
