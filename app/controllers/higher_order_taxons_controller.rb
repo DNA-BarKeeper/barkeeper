@@ -34,6 +34,7 @@ class HigherOrderTaxonsController < ApplicationController
   # POST /higher_order_taxons.json
   def create
     @higher_order_taxon = HigherOrderTaxon.new(higher_order_taxon_params)
+    @higher_order_taxon.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @higher_order_taxon.save
@@ -79,6 +80,6 @@ class HigherOrderTaxonsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def higher_order_taxon_params
-    params.require(:higher_order_taxon).permit(:position, :name, :german_name,:marker_ids => [])
+    params.require(:higher_order_taxon).permit(:position, :name, :german_name,:marker_ids => [], :project_ids => [])
   end
 end

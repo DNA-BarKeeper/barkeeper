@@ -1,8 +1,8 @@
 class Shelf < ApplicationRecord
-  extend ProjectModule
+  include ProjectModule
 
   belongs_to :freezer
-  has_and_belongs_to_many :projects
+  has_and_belongs_to_many :projects, -> { distinct }
 
   validates_presence_of :name
 end

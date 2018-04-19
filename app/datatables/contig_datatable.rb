@@ -1,13 +1,12 @@
 class ContigDatatable
-  # TODO: fig out if this inclusion is necessary. Found on https://gist.github.com/jhjguxin/4544826, but unclear if makes sense. "delegate" statement alone does not work.
   include Rails.application.routes.url_helpers
 
   delegate :url_helpers, to: 'Rails.application.routes'
   delegate :params, :link_to, :h, to: :@view
 
-  def initialize(view, to_show, current_default_project)
+  def initialize(view, contigs_to_show, current_default_project)
     @view = view
-    @to_show = to_show
+    @contigs_to_show = contigs_to_show
     @current_default_project = current_default_project
   end
 
@@ -53,7 +52,7 @@ class ContigDatatable
   end
 
   def fetch_contigs
-    case @to_show
+    case @contigs_to_show
     when 'duplicates'
       names_with_multiple = Contig.group(:name).having("count(name) > 1").count.keys
       contigs = Contig.where(name: names_with_multiple).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")

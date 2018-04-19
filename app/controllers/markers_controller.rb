@@ -27,6 +27,7 @@ class MarkersController < ApplicationController
   # POST /markers.json
   def create
     @marker = Marker.new(marker_params)
+    @marker.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @marker.save
@@ -71,6 +72,6 @@ class MarkersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def marker_params
-      params.require(:marker).permit(:alt_name, :is_gbol, :expected_reads, :name, :sequence, :accession, :higher_order_taxon_ids => [])
+      params.require(:marker).permit(:alt_name, :is_gbol, :expected_reads, :name, :sequence, :accession, :higher_order_taxon_ids => [], :project_ids => [])
     end
 end

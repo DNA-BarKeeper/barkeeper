@@ -59,10 +59,10 @@ class ContigsController < ApplicationController
   # POST /contigs.json
   def create
     @contig = Contig.new(contig_params)
+    @contig.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @contig.save
-
         format.html { redirect_to @contig, notice: 'Contig was successfully created.' }
         format.json { render :show, status: :created, location: @contig }
       else
@@ -440,6 +440,6 @@ class ContigsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def contig_params
     params.require(:contig).permit(:mira, :marker, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names, :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
-                                   :isolate_name, :verified)
+                                   :isolate_name, :verified, :project_ids => [])
   end
 end

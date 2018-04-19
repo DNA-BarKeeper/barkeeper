@@ -1,6 +1,6 @@
 class Isolate < ApplicationRecord
   include CommonFunctions
-  extend ProjectModule
+  include ProjectModule
 
   has_many :marker_sequences
   has_many :contigs
@@ -8,7 +8,7 @@ class Isolate < ApplicationRecord
   belongs_to :plant_plate
   belongs_to :tissue
   belongs_to :individual
-  has_and_belongs_to_many :projects
+  has_and_belongs_to_many :projects, -> { distinct }
 
   validates_presence_of :lab_nr
 

@@ -41,6 +41,7 @@ class FamiliesController < ApplicationController
   # POST /families.json
   def create
     @family = Family.new(family_params)
+    @family.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @family.save
@@ -86,6 +87,6 @@ class FamiliesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def family_params
-    params.require(:family).permit(:name, :author, :order_id, :term)
+    params.require(:family).permit(:name, :author, :order_id, :term, :project_ids => [])
   end
 end

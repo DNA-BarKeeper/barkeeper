@@ -30,6 +30,7 @@ class LabRacksController < ApplicationController
   # POST /lab_racks.json
   def create
     @lab_rack = LabRack.new(lab_rack_params)
+    @lab_rack.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @lab_rack.save
@@ -75,6 +76,6 @@ class LabRacksController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def lab_rack_params
-    params.require(:lab_rack).permit(:shelf, :rack_position, :rackcode, :freezer_id)
+    params.require(:lab_rack).permit(:shelf, :rack_position, :rackcode, :freezer_id, :project_ids => [])
   end
 end

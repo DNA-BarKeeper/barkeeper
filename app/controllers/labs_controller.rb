@@ -27,6 +27,7 @@ class LabsController < ApplicationController
   # POST /labs.json
   def create
     @lab = Lab.new(lab_params)
+    @lab.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @lab.save
@@ -72,6 +73,6 @@ class LabsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def lab_params
-    params.require(:lab).permit(:labcode)
+    params.require(:lab).permit(:labcode, :project_ids => [])
   end
 end

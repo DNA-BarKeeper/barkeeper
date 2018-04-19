@@ -30,6 +30,7 @@ class FreezersController < ApplicationController
   # POST /freezers.json
   def create
     @freezer = Freezer.new(freezer_params)
+    @freezer.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @freezer.save
@@ -75,6 +76,6 @@ class FreezersController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def freezer_params
-    params.require(:freezer).permit(:freezercode, :lab_id)
+    params.require(:freezer).permit(:freezercode, :lab_id, :project_ids => [])
   end
 end
