@@ -30,6 +30,7 @@ class PlantPlatesController < ApplicationController
   # POST /plant_plates.json
   def create
     @plant_plate = PlantPlate.new(plant_plate_params)
+    @plant_plate.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @plant_plate.save
@@ -75,6 +76,6 @@ class PlantPlatesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def plant_plate_params
-    params.require(:plant_plate).permit(:name, :how_many)
+    params.require(:plant_plate).permit(:name, :how_many, :project_ids => [])
   end
 end

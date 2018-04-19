@@ -35,6 +35,7 @@ class PrimersController < ApplicationController
   # POST /primers.json
   def create
     @primer = Primer.new(primer_params)
+    @primer.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @primer.save
@@ -79,6 +80,6 @@ class PrimersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def primer_params
-      params.require(:primer).permit(:alt_name, :position, :file, :name, :sequence, :reverse, :marker_id)
+      params.require(:primer).permit(:alt_name, :position, :file, :name, :sequence, :reverse, :marker_id, :project_ids => [])
     end
 end

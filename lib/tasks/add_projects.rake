@@ -97,27 +97,35 @@ namespace :data do
     ActiveRecord::Base.connection.execute("INSERT INTO primers_projects (primer_id, project_id) VALUES #{values}")
 
     # All isolates with either GBOL or DB in their name
-    values = Isolate.where("lab_nr ilike ?", "gbol%").or(Isolate.where("lab_nr ilike ?", "db%")).map { |isolate| "(#{isolate.id},#{project.id})" }.join(',')
+    values = Isolate.where("lab_nr ilike ?", "gbol%").or(Isolate.where("lab_nr ilike ?", "db%")).find_each.map { |isolate| "(#{isolate.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO isolates_projects (isolate_id, project_id) VALUES #{values}")
 
     # All contigs with either GBOL or DB in their name
-    values = Contig.where("name ilike ?", "gbol%").or(Contig.where("name ilike ?", "db%")).map { |contig| "(#{contig.id},#{project.id})" }.join(',')
+    values = Contig.where("name ilike ?", "gbol%").or(Contig.where("name ilike ?", "db%")).find_each.map { |contig| "(#{contig.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO contigs_projects (contig_id, project_id) VALUES #{values}")
 
     # All primer reads that belong to GBOL5 contigs
-    values = PrimerRead.joins(:contig).merge(Contig.in_project(project.id)).map { |read| "(#{read.id},#{project.id})" }.join(',')
-    ActiveRecord::Base.connection.execute("INSERT INTO primer_reads_projects (primer_read_id, project_id) VALUES #{values}")
+    reads = PrimerRead.joins(:contig).merge(Contig.in_project(project.id)).first(7500).find_in_batches(batch_size: 500, start: 0)
+    reads << PrimerRead.joins(:contig).merge(Contig.in_project(project.id)).find_in_batches(batch_size: 500, start: 7501)
+    ActiveRecord::Base.transaction do
+      reads.each do |read|
+        read.projects << project
+      end
+    end
+
+    # values = PrimerRead.joins(:contig).merge(Contig.in_project(project.id)).find_each.map { |read| "(#{read.id},#{project.id})" }.join(',')
+    # ActiveRecord::Base.connection.execute("INSERT INTO primer_reads_projects (primer_read_id, project_id) VALUES #{values}")
 
     # All issues that either belong to contigs or primer reads within the GBOL5 project
-    values = Issue.joins(:contigs).merge(Contig.in_project(project.id)).or(Issue.joins(:primer_reads).merge(PrimerRead.in_project(project.id))).map { |issue| "(#{issue.id},#{project.id})" }.join(',')
+    values = Issue.joins(:contigs).merge(Contig.in_project(project.id)).or(Issue.joins(:primer_reads).merge(PrimerRead.in_project(project.id))).find_each.map { |issue| "(#{issue.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO issues_projects (issue_id, project_id) VALUES #{values}")
 
     # All sequences with either GBOL or DB in their name
-    values = MarkerSequence.where("name ilike ?", "gbol%").or(MarkerSequence.where("name ilike ?", "db%")).map { |ms| "(#{ms.id},#{project.id})" }.join(',')
+    values = MarkerSequence.where("name ilike ?", "gbol%").or(MarkerSequence.where("name ilike ?", "db%")).find_each.map { |ms| "(#{ms.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO marker_sequences_projects (marker_sequence_id, project_id) VALUES #{values}")
 
     # All specimens which belong to a GBOL5 isolate
-    values = Individual.joins(:isolates).merge(Isolate.in_project(project.id)).map { |individual| "(#{individual.id},#{project.id})" }.join(',')
+    values = Individual.joins(:isolates).merge(Isolate.in_project(project.id)).find_each.map { |individual| "(#{individual.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO individuals_projects (individual_id, project_id) VALUES #{values}")
 
     # All species, families, orders and taxa

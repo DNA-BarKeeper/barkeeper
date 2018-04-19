@@ -43,11 +43,11 @@ class MarkerSequencesController < ApplicationController
   # POST /marker_sequences.json
   def create
     @marker_sequence = MarkerSequence.new(marker_sequence_params)
+    @marker_sequence.add_project(current_user.default_project_id)
+
     @marker_sequence.save
 
-    if @marker_sequence.name.empty?
-        @marker_sequence.generate_name
-    end
+    @marker_sequence.generate_name if @marker_sequence.name.empty?
 
     respond_to do |format|
       if @marker_sequence.save
@@ -92,6 +92,6 @@ class MarkerSequencesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def marker_sequence_params
-    params.require(:marker_sequence).permit(:genbank, :name, :sequence, :isolate_id, :marker_id, :contig_id, :isolate_lab_nr, :reference)
+    params.require(:marker_sequence).permit(:genbank, :name, :sequence, :isolate_id, :marker_id, :contig_id, :isolate_lab_nr, :reference, :project_ids => [])
   end
 end

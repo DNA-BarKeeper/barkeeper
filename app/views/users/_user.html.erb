@@ -6,7 +6,7 @@
   <%= link_to user.lab.labcode, edit_lab_path(user.lab.id) if user.lab.present? %>
 </td>
 <td>
-  <%= user.projects&.map { |responsibility| responsibility.name }.join(', ') %>
+  <%= user.projects&.order(:name).map { |project| project.name }.join(', ') %>
 </td>
 <td>
   <%= user.role&.capitalize %>

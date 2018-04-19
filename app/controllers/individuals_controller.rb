@@ -69,6 +69,7 @@ class IndividualsController < ApplicationController
   # POST /individuals.json
   def create
     @individual = Individual.new(individual_params)
+    @individual.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @individual.save
@@ -139,6 +140,7 @@ class IndividualsController < ApplicationController
                                        :confirmation,
                                        :comments,
                                        :species_id,
-                                       :species_name)
+                                       :species_name,
+                                       :project_ids => [])
   end
 end

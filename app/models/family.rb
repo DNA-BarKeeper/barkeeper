@@ -1,9 +1,9 @@
 class Family < ApplicationRecord
-  extend ProjectModule
+  include ProjectModule
 
   has_many :species
   belongs_to :order
-  has_and_belongs_to_many :projects
+  has_and_belongs_to_many :projects, -> { distinct }
 
   validates_presence_of :name
 

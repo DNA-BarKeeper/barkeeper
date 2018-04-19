@@ -46,6 +46,7 @@ class IsolatesController < ApplicationController
 
   def create
     @isolate = Isolate.new(isolate_params)
+    @isolate.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @isolate.save
@@ -91,6 +92,7 @@ class IsolatesController < ApplicationController
                                     :tissue_id, :micronic_plate_id, :plant_plate_id, :term,
                                     :file,
                                     :individual_name,
-                                    :query)
+                                    :query,
+                                    :project_ids => [])
   end
 end

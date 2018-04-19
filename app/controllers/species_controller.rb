@@ -109,11 +109,12 @@ class SpeciesController < ApplicationController
   # POST /species.json
   def create
     @species = Species.new(species_params)
+    @species.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @species.save
         @species.update(:species_component => @species.get_species_component)
-        @species.update(:composed_name=>@species.full_name)
+        @species.update(:composed_name => @species.full_name)
         format.html { redirect_to species_index_path, notice: 'Species was successfully created.' }
         format.json { render :show, status: :created, location: @species }
       else
@@ -162,6 +163,6 @@ class SpeciesController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def species_params
     params.require(:species).permit(:term, :originalFileName, :file, :infraspecific, :comment, :author_infra, :family_name, :family_id,
-                                    :author, :genus_name, :species_epithet, :composed_name)
+                                    :author, :genus_name, :species_epithet, :composed_name, :project_ids => [])
   end
 end

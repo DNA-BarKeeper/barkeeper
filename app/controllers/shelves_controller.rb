@@ -27,6 +27,7 @@ class ShelvesController < ApplicationController
   # POST /shelves.json
   def create
     @shelf = Shelf.new(shelf_params)
+    @shelf.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @shelf.save
@@ -72,6 +73,6 @@ class ShelvesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def shelf_params
-    params.require(:shelf).permit(:name)
+    params.require(:shelf).permit(:name, :project_ids => [])
   end
 end

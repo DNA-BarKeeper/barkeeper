@@ -30,6 +30,7 @@ class MicronicPlatesController < ApplicationController
   # POST /micronic_plates.json
   def create
     @micronic_plate = MicronicPlate.new(micronic_plate_params)
+    @micronic_plate.add_project(current_user.default_project_id)
 
     respond_to do |format|
       if @micronic_plate.save
@@ -75,6 +76,6 @@ class MicronicPlatesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def micronic_plate_params
-    params.require(:micronic_plate).permit(:location_in_rack, :micronic_plate_id, :name)
+    params.require(:micronic_plate).permit(:location_in_rack, :micronic_plate_id, :name, :project_ids => [])
   end
 end
