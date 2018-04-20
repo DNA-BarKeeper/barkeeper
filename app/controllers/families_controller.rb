@@ -1,4 +1,6 @@
 class FamiliesController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_family, only: [:show, :edit, :update, :destroy]
@@ -7,19 +9,19 @@ class FamiliesController < ApplicationController
   # GET /families.json
 
   def index
-    @families = Family.includes(:order).in_project(current_user.default_project_id).order('name asc')
+    @families = Family.includes(:order).in_project(current_project_id).order('name asc')
     respond_to :html, :json
   end
 
   def filter
-    @families = Family.in_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%")
+    @families = Family.in_project(current_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%")
     render json: @families.map(&:name)
   end
 
   def show_species
     respond_to do |format|
       format.html
-      format.json { render json: SpeciesDatatable.new(view_context, params[:id], nil, current_user.default_project_id) }
+      format.json { render json: SpeciesDatatable.new(view_context, params[:id], nil, current_project_id) }
     end
   end
 
@@ -41,7 +43,7 @@ class FamiliesController < ApplicationController
   # POST /families.json
   def create
     @family = Family.new(family_params)
-    @family.add_project(current_user.default_project_id)
+    @family.add_project(current_project_id)
 
     respond_to do |format|
       if @family.save

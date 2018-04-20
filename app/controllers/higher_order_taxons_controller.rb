@@ -1,4 +1,6 @@
 class HigherOrderTaxonsController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_higher_order_taxon, only: [:show, :edit, :update, :destroy]
@@ -6,13 +8,13 @@ class HigherOrderTaxonsController < ApplicationController
   # GET /higher_order_taxons
   # GET /higher_order_taxons.json
   def index
-    @higher_order_taxons = HigherOrderTaxon.order(:position).in_project(current_user.default_project_id)
+    @higher_order_taxons = HigherOrderTaxon.order(:position).in_project(current_project_id)
   end
 
   def show_species
     respond_to do |format|
       format.html
-      format.json { render json: SpeciesDatatable.new(view_context, nil, params[:id], current_user.default_project_id) }
+      format.json { render json: SpeciesDatatable.new(view_context, nil, params[:id], current_project_id) }
     end
   end
 
@@ -34,7 +36,7 @@ class HigherOrderTaxonsController < ApplicationController
   # POST /higher_order_taxons.json
   def create
     @higher_order_taxon = HigherOrderTaxon.new(higher_order_taxon_params)
-    @higher_order_taxon.add_project(current_user.default_project_id)
+    @higher_order_taxon.add_project(current_project_id)
 
     respond_to do |format|
       if @higher_order_taxon.save

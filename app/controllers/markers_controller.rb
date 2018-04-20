@@ -1,4 +1,6 @@
 class MarkersController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_marker, only: [:show, :edit, :update, :destroy]
@@ -6,7 +8,7 @@ class MarkersController < ApplicationController
   # GET /markers
   # GET /markers.json
   def index
-    @markers = Marker.in_project(current_user.default_project_id)
+    @markers = Marker.in_project(current_project_id)
   end
 
   # GET /markers/1
@@ -27,7 +29,7 @@ class MarkersController < ApplicationController
   # POST /markers.json
   def create
     @marker = Marker.new(marker_params)
-    @marker.add_project(current_user.default_project_id)
+    @marker.add_project(current_project_id)
 
     respond_to do |format|
       if @marker.save

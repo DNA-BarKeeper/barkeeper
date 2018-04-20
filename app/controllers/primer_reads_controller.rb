@@ -1,4 +1,6 @@
 class PrimerReadsController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
   skip_authorize_resource only: [:change_base, :change_left_clip, :change_right_clip]
   skip_authorization_check only: [:change_base, :change_left_clip, :change_right_clip]
@@ -47,7 +49,7 @@ class PrimerReadsController < ApplicationController
   # POST /primer_reads.json
   def create
     @primer_read = PrimerRead.new(primer_read_params)
-    @primer_read.add_project(current_user.default_project_id)
+    @primer_read.add_project(current_project_id)
 
     if @primer_read.save
       PherogramProcessing.perform_async(@primer_read.id)

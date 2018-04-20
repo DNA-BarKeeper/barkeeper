@@ -1,4 +1,6 @@
 class OrdersController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_order, only: [:show, :edit, :update, :destroy]
@@ -6,7 +8,7 @@ class OrdersController < ApplicationController
   # GET /orders
   # GET /orders.json
   def index
-    @orders = Order.includes(:higher_order_taxon).in_project(current_user.default_project_id)
+    @orders = Order.includes(:higher_order_taxon).in_project(current_project_id)
   end
 
   # GET /orders/1
@@ -27,7 +29,7 @@ class OrdersController < ApplicationController
   # POST /orders.json
   def create
     @order = Order.new(order_params)
-    @order.add_project(current_user.default_project_id)
+    @order.add_project(current_project_id)
 
     respond_to do |format|
       if @order.save

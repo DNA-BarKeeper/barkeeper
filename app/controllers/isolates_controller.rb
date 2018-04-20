@@ -1,4 +1,6 @@
 class IsolatesController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_isolate, only: [:show, :edit, :update, :destroy]
@@ -6,7 +8,7 @@ class IsolatesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: IsolateDatatable.new(view_context, false, current_user.default_project_id) }
+      format.json { render json: IsolateDatatable.new(view_context, false, current_project_id) }
     end
   end
 
@@ -16,12 +18,12 @@ class IsolatesController < ApplicationController
   def no_specimen
     respond_to do |format|
       format.html
-      format.json { render json: IsolateDatatable.new(view_context, true, current_user.default_project_id) }
+      format.json { render json: IsolateDatatable.new(view_context, true, current_project_id) }
     end
   end
 
   def filter
-    @isolates = Isolate.in_project(current_user.default_project_id).select('lab_nr, id').where('lab_nr ILIKE ?', "%#{params[:term]}%").order(:lab_nr)
+    @isolates = Isolate.in_project(current_project_id).select('lab_nr, id').where('lab_nr ILIKE ?', "%#{params[:term]}%").order(:lab_nr)
     render json: @isolates.map(&:lab_nr)
   end
 
@@ -46,7 +48,7 @@ class IsolatesController < ApplicationController
 
   def create
     @isolate = Isolate.new(isolate_params)
-    @isolate.add_project(current_user.default_project_id)
+    @isolate.add_project(current_project_id)
 
     respond_to do |format|
       if @isolate.save

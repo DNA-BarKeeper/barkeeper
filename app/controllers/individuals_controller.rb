@@ -1,4 +1,6 @@
 class IndividualsController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_individual, :only => [:show, :edit, :update, :destroy]
@@ -12,7 +14,7 @@ class IndividualsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: IndividualDatatable.new(view_context, nil, current_user.default_project_id) }
+      format.json { render json: IndividualDatatable.new(view_context, nil, current_project_id) }
     end
   end
 
@@ -31,7 +33,7 @@ class IndividualsController < ApplicationController
     @states = %w(Baden-Württemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein Thüringen)
     @individuals = []
 
-    Individual.in_project(current_user.default_project_id).each do |i|
+    Individual.in_project(current_project_id).each do |i|
       if i.country == "Germany"
         @individuals.push(i) unless @states.include? i.state_province
       end
@@ -40,8 +42,8 @@ class IndividualsController < ApplicationController
   end
 
   def filter
-    @individuals = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").in_project(current_user.default_project_id).limit(100)
-    size = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").in_project(current_user.default_project_id).size
+    @individuals = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").in_project(current_project_id).limit(100)
+    size = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").in_project(current_project_id).size
 
     if size > 100
       message = "and #{size} more..."
@@ -69,7 +71,7 @@ class IndividualsController < ApplicationController
   # POST /individuals.json
   def create
     @individual = Individual.new(individual_params)
-    @individual.add_project(current_user.default_project_id)
+    @individual.add_project(current_project_id)
 
     respond_to do |format|
       if @individual.save

@@ -1,4 +1,6 @@
 class PrimersController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_primer, only: [:show, :edit, :update, :destroy]
@@ -6,7 +8,7 @@ class PrimersController < ApplicationController
   # GET /primers
   # GET /primers.json
   def index
-    @primers = Primer.includes(:marker).in_project(current_user.default_project_id)
+    @primers = Primer.includes(:marker).in_project(current_project_id)
   end
 
   def import
@@ -35,7 +37,7 @@ class PrimersController < ApplicationController
   # POST /primers.json
   def create
     @primer = Primer.new(primer_params)
-    @primer.add_project(current_user.default_project_id)
+    @primer.add_project(current_project_id)
 
     respond_to do |format|
       if @primer.save
