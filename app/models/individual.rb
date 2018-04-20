@@ -1,10 +1,9 @@
 class Individual < ApplicationRecord
-  include ProjectModule
+  include ProjectRecord
   include PgSearch
 
   has_many :isolates
   belongs_to :species
-  has_and_belongs_to_many :projects, -> { distinct }
 
   pg_search_scope :quick_search, against: [:specimen_id, :herbarium, :collector , :collection_nr]
 

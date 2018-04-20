@@ -1,11 +1,10 @@
 class PrimerRead < ApplicationRecord
-  include ProjectModule
+  include ProjectRecord
 
   belongs_to :contig
   belongs_to :partial_con
   belongs_to :primer
   has_many :issues
-  has_and_belongs_to_many :projects, -> { distinct }
 
   has_attached_file :chromatogram,
                     :default_url => '/chromatograms/primer_read.scf'

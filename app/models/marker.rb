@@ -1,11 +1,10 @@
 class Marker < ApplicationRecord
-  include ProjectModule
+  include ProjectRecord
 
   has_many :marker_sequences
   has_many :contigs
   has_many :primers
   has_and_belongs_to_many :higher_order_taxa
-  has_and_belongs_to_many :projects, -> { distinct }
 
   validates_presence_of :name
 
