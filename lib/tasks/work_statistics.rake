@@ -1,16 +1,10 @@
-require 'net/http'
-require 'nokogiri'
-
-
 namespace :data do
 
-  desc 'Do work statistics'
-  task :work_statistics => [:environment] do |t, args|
-    # args.with_defaults(:range => Time.now.beginning_of_year..Time.now)
-    # range = eval args[:range]
-    range = 1.year.ago.all_year # 2017
+  desc 'Do work statistics for <year>'
+  task :work_statistics_yearly, [:year] => [:environment] do |t, args|
+    range = Time.new(args[:year].to_i, 1, 1).all_year
 
-    puts "Calculating activities from #{range.begin.to_formatted_s(:db)} until #{range.end.to_formatted_s(:db)}..."
+    puts "Calculating activities for #{range.first.year}..."
 
     newly_verified_contigs = Contig.where(:verified_at => range).select(:id, :name)
     newly_verified_contigs_bonn_cnt = newly_verified_contigs.where("name ilike ?", "%gbol%").length
@@ -27,8 +21,15 @@ namespace :data do
     new_isolates_berlin_cnt = new_isolates.where("lab_nr ilike ?", "%db%").length
     puts "Newly created isolates: #{new_isolates.length} (total), #{new_isolates_bonn_cnt} (Bonn), #{new_isolates_berlin_cnt} (Berlin)"
 
-    base_count = MarkerSequence.where(:created_at => range).select(:id, :sequence, :name).sum('length(sequence)')
+    marker_sequences = MarkerSequence.where(:created_at => range).select(:id, :sequence, :name)
+    base_count = marker_sequences.sum('length(sequence)')
+    puts "Number of generated barcode sequences: #{marker_sequences.size}"
     puts "Sequenced base pairs: #{base_count}"
+  end
+
+  desc 'Do work statistics'
+  task :work_statistics_total => [:environment] do |t, args|
+    gbol_marker = Marker.gbol_marker
 
     puts "Calculating activities in total..."
 
@@ -38,24 +39,15 @@ namespace :data do
     other_isolates_count = all_isolates_count - isolates_bonn_cnt - isolates_berlin_cnt
     puts "Number of isolates: #{all_isolates_count} (total), #{isolates_bonn_cnt} (Bonn), #{isolates_berlin_cnt} (Berlin), #{other_isolates_count} (not assigned to a lab)"
 
-    Marker.gbol_marker.each do |marker|
-      sequence_cnt = MarkerSequence.where(:marker_id => marker.id).length
-      puts "#{sequence_cnt} sequences exist for marker '#{marker.name}'"
+    sequence_cnt_per_marker = {}
+    verified_count_per_marker = {}
+
+    gbol_marker.each do |marker|
+      sequence_cnt_per_marker[marker.name] = MarkerSequence.where(marker_id: marker.id).size
+      verified_count_per_marker[marker.name] = Isolate.joins(contigs: :marker).where(contigs: { verified: true , marker_id: marker.id}).count('contigs.id')
     end
 
-    verified_count_per_marker = Hash.new
-    Marker.gbol_marker.each { |marker| verified_count_per_marker[marker.name] = 0 }
-
-    Isolate.all.each do |isolate|
-      isolate.contigs.each do |c|
-
-        if c.verified && c.marker.is_gbol
-          verified_count_per_marker[c.marker.name] += 1
-        end
-
-      end
-    end
-
+    puts "Number of barcode sequences per marker: #{sequence_cnt_per_marker}"
     puts "Isolates with verified contigs per marker: #{verified_count_per_marker}"
 
     # isolates_larger_three = Isolate.joins(:marker_sequences).group('isolates.id').having('count(marker_sequences) > 3')

@@ -8,7 +8,7 @@ class Marker < ApplicationRecord
 
   validates_presence_of :name
 
-  scope :gbol_marker, -> { where(:is_gbol => true) }
+  scope :gbol_marker, -> { in_project(Project.find_by_name('GBOL5')) }
 
   def spp_in_higher_order_taxon(higher_order_taxon_id)
     ms = MarkerSequence.select("species_id").includes(:isolate => :individual).joins(:isolate =>
