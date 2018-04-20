@@ -1,4 +1,6 @@
 class IssuesController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_issue, only: [:show, :edit, :update, :destroy]
@@ -8,7 +10,7 @@ class IssuesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: IssueDatatable.new(view_context, current_user.default_project_id) }
+      format.json { render json: IssueDatatable.new(view_context, current_project_id) }
     end
   end
 
@@ -30,7 +32,7 @@ class IssuesController < ApplicationController
   # POST /issues.json
   def create
     @issue = Issue.new(issue_params)
-    @issue.add_project(current_user.default_project_id)
+    @issue.add_project(current_project_id)
 
     respond_to do |format|
       if @issue.save

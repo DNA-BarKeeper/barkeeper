@@ -1,4 +1,6 @@
 class MicronicPlatesController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_micronic_plate, only: [:show, :edit, :update, :destroy]
@@ -8,7 +10,7 @@ class MicronicPlatesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: MicronicPlateDatatable.new(view_context, current_user.default_project_id)}
+      format.json { render json: MicronicPlateDatatable.new(view_context, current_project_id)}
     end
   end
 
@@ -30,7 +32,7 @@ class MicronicPlatesController < ApplicationController
   # POST /micronic_plates.json
   def create
     @micronic_plate = MicronicPlate.new(micronic_plate_params)
-    @micronic_plate.add_project(current_user.default_project_id)
+    @micronic_plate.add_project(current_project_id)
 
     respond_to do |format|
       if @micronic_plate.save

@@ -1,4 +1,6 @@
 class LabRacksController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_lab_rack, only: [:show, :edit, :update, :destroy]
@@ -8,7 +10,7 @@ class LabRacksController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: LabRackDatatable.new(view_context, current_user.default_project_id)}
+      format.json { render json: LabRackDatatable.new(view_context, current_project_id)}
     end
   end
 
@@ -30,7 +32,7 @@ class LabRacksController < ApplicationController
   # POST /lab_racks.json
   def create
     @lab_rack = LabRack.new(lab_rack_params)
-    @lab_rack.add_project(current_user.default_project_id)
+    @lab_rack.add_project(current_project_id)
 
     respond_to do |format|
       if @lab_rack.save

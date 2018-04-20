@@ -1,4 +1,6 @@
 class LabsController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_lab, only: [:show, :edit, :update, :destroy]
@@ -6,7 +8,7 @@ class LabsController < ApplicationController
   # GET /labs
   # GET /labs.json
   def index
-    @labs = Lab.in_project(current_user.default_project_id)
+    @labs = Lab.in_project(current_project_id)
   end
 
   # GET /labs/1
@@ -27,7 +29,7 @@ class LabsController < ApplicationController
   # POST /labs.json
   def create
     @lab = Lab.new(lab_params)
-    @lab.add_project(current_user.default_project_id)
+    @lab.add_project(current_project_id)
 
     respond_to do |format|
       if @lab.save

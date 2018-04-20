@@ -8,7 +8,7 @@ class ContigSearch < ApplicationRecord
   private
 
   def find_contigs
-    contigs = Contig.in_project(current_user.default_project_id).order(:name)
+    contigs = Contig.in_project(current_project_id).order(:name)
     contigs = contigs.where("contigs.name ilike ?", "%#{name}%") if name.present?
 
     if assembled != 'both'

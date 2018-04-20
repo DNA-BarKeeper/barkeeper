@@ -27,7 +27,7 @@ class SpeciesXmlUploader < ApplicationRecord
 
   def xml_string
     # Get all species in current project:
-    @species = Species.includes( :family => { :order => :higher_order_taxon} ).in_project(current_user.default_project_id)
+    @species = Species.includes( :family => { :order => :higher_order_taxon} ).in_project(current_project_id)
 
     @header_cells = ["UAbteilung/Klasse",
                      "Ordnung",

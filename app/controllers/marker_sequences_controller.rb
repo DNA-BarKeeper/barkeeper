@@ -1,4 +1,6 @@
 class MarkerSequencesController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_marker_sequence, only: [:show, :edit, :update, :destroy]
@@ -8,14 +10,14 @@ class MarkerSequencesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: MarkerSequenceDatatable.new(view_context, current_user.default_project_id)}
+      format.json { render json: MarkerSequenceDatatable.new(view_context, current_project_id)}
     end
 
   end
 
   def filter
-    @marker_sequences = MarkerSequence.where('name ILIKE ?', "%#{params[:term]}%").in_project(current_user.default_project_id).order(:name).limit(100)
-    size = MarkerSequence.where('name ILIKE ?', "%#{params[:term]}%").in_project(current_user.default_project_id).order(:name).size
+    @marker_sequences = MarkerSequence.where('name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:name).limit(100)
+    size = MarkerSequence.where('name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:name).size
 
     if size > 100
       message = "and #{size} more..."
@@ -43,7 +45,7 @@ class MarkerSequencesController < ApplicationController
   # POST /marker_sequences.json
   def create
     @marker_sequence = MarkerSequence.new(marker_sequence_params)
-    @marker_sequence.add_project(current_user.default_project_id)
+    @marker_sequence.add_project(current_project_id)
 
     @marker_sequence.save
 

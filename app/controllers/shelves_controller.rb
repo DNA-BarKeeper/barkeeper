@@ -1,4 +1,6 @@
 class ShelvesController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_shelf, only: [:show, :edit, :update, :destroy]
@@ -6,7 +8,7 @@ class ShelvesController < ApplicationController
   # GET /shelves
   # GET /shelves.json
   def index
-    @shelves = Shelf.in_project(current_user.default_project_id).order(:name)
+    @shelves = Shelf.in_project(current_project_id).order(:name)
   end
 
   # GET /shelves/1
@@ -27,7 +29,7 @@ class ShelvesController < ApplicationController
   # POST /shelves.json
   def create
     @shelf = Shelf.new(shelf_params)
-    @shelf.add_project(current_user.default_project_id)
+    @shelf.add_project(current_project_id)
 
     respond_to do |format|
       if @shelf.save

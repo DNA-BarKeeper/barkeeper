@@ -1,4 +1,6 @@
 class PlantPlatesController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_plant_plate, only: [:show, :edit, :update, :destroy]
@@ -8,7 +10,7 @@ class PlantPlatesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: PlantPlateDatatable.new(view_context, current_user.default_project_id)}
+      format.json { render json: PlantPlateDatatable.new(view_context, current_project_id)}
     end
   end
 
@@ -30,7 +32,7 @@ class PlantPlatesController < ApplicationController
   # POST /plant_plates.json
   def create
     @plant_plate = PlantPlate.new(plant_plate_params)
-    @plant_plate.add_project(current_user.default_project_id)
+    @plant_plate.add_project(current_project_id)
 
     respond_to do |format|
       if @plant_plate.save

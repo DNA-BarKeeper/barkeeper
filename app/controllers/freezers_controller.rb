@@ -1,4 +1,6 @@
 class FreezersController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_freezer, only: [:show, :edit, :update, :destroy]
@@ -8,7 +10,7 @@ class FreezersController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: FreezerDatatable.new(view_context, current_user.default_project_id) }
+      format.json { render json: FreezerDatatable.new(view_context, current_project_id) }
     end
   end
 
@@ -30,7 +32,7 @@ class FreezersController < ApplicationController
   # POST /freezers.json
   def create
     @freezer = Freezer.new(freezer_params)
-    @freezer.add_project(current_user.default_project_id)
+    @freezer.add_project(current_project_id)
 
     respond_to do |format|
       if @freezer.save

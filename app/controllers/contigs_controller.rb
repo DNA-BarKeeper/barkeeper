@@ -1,4 +1,6 @@
 class ContigsController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   skip_before_action :verify_authenticity_token
@@ -11,27 +13,27 @@ class ContigsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, '', current_user.default_project_id) }
+      format.json { render json: ContigDatatable.new(view_context, '', current_project_id) }
     end
   end
 
   def duplicates
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, 'duplicates', current_user.default_project_id) }
+      format.json { render json: ContigDatatable.new(view_context, 'duplicates', current_project_id) }
     end
   end
 
   def externally_verified
     respond_to do |format|
       format.html
-      format.json { render json: ContigDatatable.new(view_context, 'imported', current_user.default_project_id) }
+      format.json { render json: ContigDatatable.new(view_context, 'imported', current_project_id) }
     end
   end
 
   def filter
-    @contigs = Contig.in_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").limit(100)
-    size = Contig.in_project(current_user.default_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").size
+    @contigs = Contig.in_project(current_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").limit(100)
+    size = Contig.in_project(current_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").size
 
     if size > 100
       message = "and #{size} more..."
@@ -59,7 +61,7 @@ class ContigsController < ApplicationController
   # POST /contigs.json
   def create
     @contig = Contig.new(contig_params)
-    @contig.add_project(current_user.default_project_id)
+    @contig.add_project(current_project_id)
 
     respond_to do |format|
       if @contig.save
@@ -118,7 +120,7 @@ class ContigsController < ApplicationController
       contig_name += "_#{marker}"
 
       # mk case insensitiv
-      contig=Contig.in_project(current_user.default_project_id).where("name ILIKE ?", contig_name).first
+      contig=Contig.in_project(current_project_id).where("name ILIKE ?", contig_name).first
 
       #ignore if not verified
 
@@ -291,7 +293,7 @@ class ContigsController < ApplicationController
     contig_name=c[0...-4]
 
     #match found?
-    contig = Contig.in_project(current_user.default_project_id).where("name ILIKE ?", contig_name).first
+    contig = Contig.in_project(current_project_id).where("name ILIKE ?", contig_name).first
 
     if contig
       return contig if contig
@@ -313,7 +315,7 @@ class ContigsController < ApplicationController
             if marker
               true_marker_name=marker.name
               true_contig_name=isolate_name+"_#{true_marker_name}"
-              contig = Contig.in_project(current_user.default_project_id).where("name ILIKE ?", true_contig_name).first
+              contig = Contig.in_project(current_project_id).where("name ILIKE ?", true_contig_name).first
               if contig
                 return contig
               end
@@ -331,7 +333,7 @@ class ContigsController < ApplicationController
   end
 
   def assemble_all
-    contigs = Contig.in_project(current_user.default_project_id).not_assembled
+    contigs = Contig.in_project(current_project_id).not_assembled
     contigs.each do |c|
       ContigAssembly.perform_async(c.id)
     end
@@ -374,7 +376,7 @@ class ContigsController < ApplicationController
     ms.isolate = @contig.isolate
     ms.save
 
-    @next_contig = Contig.in_project(current_user.default_project_id).need_verification.first
+    @next_contig = Contig.in_project(current_project_id).need_verification.first
 
     redirect_to edit_contig_path(@next_contig), notice: "Verified & linked marker sequence updated for #{@contig.name}. Showing #{@next_contig.name}."
 
