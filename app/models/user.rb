@@ -18,6 +18,6 @@ class User < ApplicationRecord
   enum role: [:guest, :user, :supervisor, :admin]
 
   def default_project
-    self.default_project_id ||= projects.first.id
+    self.default_project_id ||= projects&.first&.id
   end
 end
