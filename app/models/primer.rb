@@ -1,11 +1,10 @@
 class Primer < ApplicationRecord
   include CommonFunctions
-  include ProjectModule
+  include ProjectRecord
 
   belongs_to :marker
   has_many :primer_reads
   has_many :primer_pos_on_genomes
-  has_and_belongs_to_many :projects, -> { distinct }
 
   validates_presence_of :name
 

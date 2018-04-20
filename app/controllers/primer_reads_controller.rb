@@ -10,21 +10,21 @@ class PrimerReadsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: PrimerReadDatatable.new(view_context, '', current_user.default_project_id)}
+      format.json { render json: PrimerReadDatatable.new(view_context, '', current_project_id)}
     end
   end
 
   def duplicates
     respond_to do |format|
       format.html
-      format.json { render json: PrimerReadDatatable.new(view_context, 'duplicates', current_user.default_project_id)}
+      format.json { render json: PrimerReadDatatable.new(view_context, 'duplicates', current_project_id)}
     end
   end
 
   def reads_without_contigs
     respond_to do |format|
       format.html
-      format.json { render json: PrimerReadDatatable.new(view_context, 'no_contig', current_user.default_project_id)}
+      format.json { render json: PrimerReadDatatable.new(view_context, 'no_contig', current_project_id)}
     end
   end
 

@@ -1,6 +1,6 @@
 # noinspection RubyStringKeysInHashInspection
 class Contig < ApplicationRecord
-  include ProjectModule
+  include ProjectRecord
 
   belongs_to :marker_sequence
   belongs_to :marker
@@ -8,7 +8,6 @@ class Contig < ApplicationRecord
   has_many :primer_reads
   has_many :issues
   has_many :partial_cons
-  has_and_belongs_to_many :projects, -> { distinct }
 
   validates_presence_of :name
 

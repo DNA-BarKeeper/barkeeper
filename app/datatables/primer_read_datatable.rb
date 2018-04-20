@@ -24,7 +24,7 @@ class PrimerReadDatatable
   def data
     primer_reads.map do |pr|
       read_name = pr.processed ? link_to(pr.name, edit_primer_read_path(pr)) : pr.name
-      assembled = pr.assembled ? 'yes' : 'No'
+      assembled = pr.assembled ? 'Yes' : 'No'
       contig_link = pr.contig.nil? ? '' : link_to(pr.contig.name, edit_contig_path(pr.contig))
       delete = pr.processed ? link_to('Delete', pr, method: :delete, data: { confirm: 'Are you sure?' }) : 'Processing...'
 
@@ -47,7 +47,7 @@ class PrimerReadDatatable
     case @reads_to_show
     when 'duplicates'
       names_with_multiple = PrimerRead.select(:name).in_project(@current_default_project).group(:name).having("count(name) > 1").count.keys
-      primer_reads = PrimerRead.where(name: names_with_multiple).order("#{sort_column} #{sort_direction}")
+      primer_reads = PrimerRead.includes(:contig).where(name: names_with_multiple).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).order("#{sort_column} #{sort_direction}")
     when 'no_contig'
       primer_reads = PrimerRead.includes(:contig).where(:contig => nil).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     else
@@ -59,6 +59,7 @@ class PrimerReadDatatable
     if params[:sSearch].present?
       primer_reads = primer_reads.where("name ILIKE :search", search: "%#{params[:sSearch]}%")
     end
+
     primer_reads
   end
 
