@@ -45,18 +45,3 @@
     </div>
   </div>
 </div>
-
-<% if user_signed_in? && (current_user.admin? || current_user.supervisor?) %>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Admin area</h3>
-    </div>
-    <div class="panel-body" id="main">
-      <div>
-        <%= link_to 'Users', users_path, :class => 'btn btn-default' %>
-        <%= link_to 'Projects', projects_path, :class => 'btn btn-default' %>
-        <%= link_to 'Responsibilities', responsibilities_path, :class => 'btn btn-default' %>
-      </div>
-    </div>
-  </div>
-<% end %>

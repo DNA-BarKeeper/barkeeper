@@ -20,7 +20,7 @@ class MarkerSequenceSearch < ApplicationRecord
   private
 
   def find_marker_sequences
-    marker_sequences = MarkerSequence.in_project(current_project_id).order(:name)
+    marker_sequences = MarkerSequence.in_project(user.default_project_id).order(:name)
     marker_sequences = marker_sequences.where("marker_sequences.name ilike ?", "%#{name}%") if name.present?
 
     if verified != 'both'

@@ -22,9 +22,7 @@ class XmlUploader < ApplicationRecord
   end
 
   def xml_string
-    # Get all markers in current project
-    project_id = current_project_id
-    markers = Marker.in_project(project_id)
+    markers = Marker.gbol_marker
 
     @states = %w(Baden-WÃ¼rttemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein ThÃ¼ringen)
 

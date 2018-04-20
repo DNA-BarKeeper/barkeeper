@@ -15,25 +15,23 @@ class Primer < ApplicationRecord
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
-      valid_keys = ['alt_name', 'sequence', 'author', 'name', 'tm', 'target_group'] #only direct attributes; associations are extra:
+      valid_keys = ['alt_name', 'sequence', 'author', 'name', 'tm', 'target_group'] # Only direct attributes; associations are extra:
 
-      # update existing spp or create new
-      pri = find_by_name(row['name']) || new
+      # Update existing spp or create new
+      primer = find_or_create_by(name: row['name'])
 
-      # add marker or assign to existing:
-      fa = Marker.find_or_create_by(:name => row['marker'])
+      # Add marker or assign to existing:
+      marker = Marker.find_or_create_by(:name => row['marker'])
+      primer.marker_id = marker.id
 
-      #add orientation
+      # Add orientation
+      primer.reverse = (row['reverse'] == 'R')
 
-      if row['reverse']=='R'
-        pri.reverse=true
-      else
-        pri.reverse=false
-      end
+      primer.attributes = row.to_hash.slice(*valid_keys)
 
-      pri.attributes = row.to_hash.slice(*valid_keys)
-      pri.marker_id=fa.id
-      pri.save!
+      primer.add_project(current_project_id)
+
+      primer.save!
     end
   end
 end
