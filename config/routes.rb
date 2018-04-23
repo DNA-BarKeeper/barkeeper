@@ -83,6 +83,7 @@ GBOLapp::Application.routes.draw do
       post :batch_create
       get 'duplicates'
     end
+
     member do
       get 'do_not_use_for_assembly'
       get 'use_for_assembly'
