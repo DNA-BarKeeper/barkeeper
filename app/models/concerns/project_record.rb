@@ -11,6 +11,11 @@ module ProjectRecord
     projects << project unless projects.include?(project)
   end
 
+  def add_project_and_save(project_id)
+    add_project(project_id)
+    save
+  end
+
   module ClassMethods
     def in_project(project_id)
       joins(:projects).where(projects: { id: project_id }).distinct

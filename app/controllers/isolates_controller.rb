@@ -29,10 +29,7 @@ class IsolatesController < ApplicationController
 
   def import
     file = params[:file]
-
-    # Isolate.correct_coordinates(file.path)
-    Isolate.import(file)
-    # Isolate.import_dnabank_info(file.path)
+    Isolate.import(file, current_user.default_project_id)
     redirect_to isolates_path, notice: 'Imported.'
   end
 
