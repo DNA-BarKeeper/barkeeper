@@ -35,7 +35,7 @@ gem 'cancancan'
 gem 'simple_form' #todo check if used anywhere, rm
 gem 'bio'
 gem 'paperclip'
-gem 'aws-sdk', '~> 2'
+gem 'aws-sdk'
 # gem 's3_direct_upload' # does not seem to be used anywhere
 gem 'pg_search'
 gem 'will_paginate', '> 3.0'
