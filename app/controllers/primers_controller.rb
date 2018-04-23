@@ -15,7 +15,7 @@ class PrimersController < ApplicationController
     file = params[:file]
 
     # TODO: if needed, add logic to distinguish between xls / xlsx / error etc here -> mv from model.
-    Primer.import(file) # When adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
+    Primer.import(file, current_project_id) # When adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
     redirect_to primers_path, notice: 'Imported.'
   end
 

@@ -11,10 +11,6 @@ module ProjectRecord
     projects << project unless projects.include?(project)
   end
 
-  def current_project_id
-    user_signed_in? ? current_user.default_project_id : Project.find_by_name('All').id
-  end
-
   module ClassMethods
     def in_project(project_id)
       joins(:projects).where(projects: { id: project_id }).distinct
