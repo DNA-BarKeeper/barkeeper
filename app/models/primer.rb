@@ -1,5 +1,5 @@
 class Primer < ApplicationRecord
-  include CommonFunctions
+  include Import
   include ProjectRecord
 
   belongs_to :marker
@@ -9,7 +9,7 @@ class Primer < ApplicationRecord
   validates_presence_of :name
 
   def self.import(file, project_id)
-    spreadsheet = CommonFunctions.open_spreadsheet(file)
+    spreadsheet = open_spreadsheet(file)
 
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
@@ -22,6 +22,8 @@ class Primer < ApplicationRecord
 
       # Add marker or assign to existing:
       marker = Marker.find_or_create_by(:name => row['marker'])
+      marker.add_project_and_save(project_id)
+
       primer.marker_id = marker.id
 
       # Add orientation
