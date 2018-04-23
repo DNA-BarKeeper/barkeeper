@@ -8,7 +8,7 @@ class Primer < ApplicationRecord
 
   validates_presence_of :name
 
-  def self.import(file)
+  def self.import(file, project_id)
     spreadsheet = CommonFunctions.open_spreadsheet(file)
 
     header = spreadsheet.row(1)
@@ -29,7 +29,7 @@ class Primer < ApplicationRecord
 
       primer.attributes = row.to_hash.slice(*valid_keys)
 
-      primer.add_project(current_project_id)
+      primer.add_project(project_id)
 
       primer.save!
     end
