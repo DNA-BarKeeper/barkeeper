@@ -15,10 +15,10 @@ class MarkerSequenceDatatable
 
   def as_json(options = {})
     {
-        sEcho: params[:sEcho].to_i,
-        iTotalRecords: MarkerSequence.count,
-        iTotalDisplayRecords: marker_sequences.total_entries,
-        aaData: data
+      sEcho: params[:sEcho].to_i,
+      iTotalRecords: MarkerSequence.count,
+      iTotalDisplayRecords: marker_sequences.total_entries,
+      aaData: data
     }
   end
 
@@ -54,7 +54,7 @@ class MarkerSequenceDatatable
     marker_sequences = marker_sequences.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      marker_sequences = marker_sequences.where("name ILIKE :search", search: "%#{params[:sSearch]}%") #  todo --> fix to use case-insensitive / postgres
+      marker_sequences = marker_sequences.where("marker_sequences.name ILIKE :search", search: "%#{params[:sSearch]}%")
     end
 
     marker_sequences

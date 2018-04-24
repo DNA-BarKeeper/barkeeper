@@ -49,7 +49,7 @@ class PlantPlateDatatable
     plant_plates = plant_plates.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      plant_plates = plant_plates.where("name ILIKE :search", search: "%#{params[:sSearch]}%")
+      plant_plates = plant_plates.where("plant_plates.name ILIKE :search", search: "%#{params[:sSearch]}%")
     end
 
     plant_plates

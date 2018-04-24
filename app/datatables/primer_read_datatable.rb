@@ -57,7 +57,7 @@ class PrimerReadDatatable
     primer_reads = primer_reads.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      primer_reads = primer_reads.where("name ILIKE :search", search: "%#{params[:sSearch]}%")
+      primer_reads = primer_reads.where("primer_reads.name ILIKE :search", search: "%#{params[:sSearch]}%")
     end
 
     primer_reads

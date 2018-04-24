@@ -58,7 +58,7 @@ class IssueDatatable
 
     if params[:sSearch].present?
       # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
-      issues = issues.where("title ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
+      issues = issues.where("issues.title ILIKE :search", search: "%#{params[:sSearch]}%") # todo --> fix to use case-insensitive / postgres
     end
     issues
   end
