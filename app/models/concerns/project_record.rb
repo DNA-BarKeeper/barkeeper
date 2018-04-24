@@ -6,9 +6,13 @@ module ProjectRecord
     has_and_belongs_to_many :projects, -> { distinct }
   end
 
+  # Adds the given project as well as the general project if not already added
   def add_project(project_id)
     project = Project.find(project_id)
+    project_all = Project.find_by_name('All')
+
     projects << project unless projects.include?(project)
+    projects << project_all unless projects.include?(project_all)
   end
 
   def add_project_and_save(project_id)
