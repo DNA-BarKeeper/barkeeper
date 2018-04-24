@@ -25,7 +25,6 @@ module AdvancedSearchHelper
       when 'max_length'
         "Length maximum: #{v}"
       else
-        p k
         "#{k.capitalize}: #{v}"
       end
     end

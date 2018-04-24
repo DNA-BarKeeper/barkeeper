@@ -1,6 +1,4 @@
 module ApplicationHelper
-  include AdvancedSearchHelper
-
   require 'net/http'
   require 'nokogiri'
 
