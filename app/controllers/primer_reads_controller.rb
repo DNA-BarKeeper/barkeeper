@@ -166,47 +166,38 @@ class PrimerReadsController < ApplicationController
 
   def change_base
     if can? :change_base, @primer_read
-      sequence= @primer_read.sequence
-      pos=params[:position].to_i
-      base=params[:base]
+      sequence = @primer_read.sequence
+      pos = params[:position].to_i
+      base = params[:base]
 
-      # if insertions needed: handle inserting new elements in qualities etc. arrays
+      # If insertions needed: handle inserting new elements in qualities etc. arrays
       if base.length > 1
+        insertions_needed = base.length-1
 
-        insertions_needed=base.length-1
-
-        qualities=@primer_read.qualities
+        qualities = @primer_read.qualities
         insertions_needed.times do
-          # insert placeholder element into qualities
-          qualities.insert(pos+1,-10) #-1 already taken by aligned_qualities to indicate "gap" to be drawn in contig view
+          # Insert placeholder element into qualities
+          qualities.insert(pos + 1, -10) #-1 already taken by aligned_qualities to indicate "gap" to be drawn in contig view
         end
 
-        peak_indices=@primer_read.peak_indices
+        peak_indices = @primer_read.peak_indices
 
-        #compute new indices based on existing neighbors:
-        left_index=peak_indices[pos]
-        right_index=peak_indices[pos+1]
-        distance=right_index-left_index
-        x_increment=(distance/base.length)
+        # Compute new indices based on existing neighbors:
+        left_index = peak_indices[pos]
+        right_index = peak_indices[pos+1]
+        distance = right_index-left_index
+        x_increment = (distance/base.length)
 
-        x=left_index
+        x = left_index
         insertions_needed.times do
-          x=x+x_increment
-          # insert placeholder element into peak_indices:
-          peak_indices.insert(pos+1,x)
+          x += x_increment
+          peak_indices.insert(pos + 1, x) # Insert placeholder element into peak_indices
         end
-
       end
 
-      #in all cases (replacement, insertion & deletion) insert string:
+      # In all cases (replacement, insertion & deletion) insert string:
       sequence[pos] = base
       @primer_read.update(:sequence => sequence)
-
-      # do not auto assemble after base change!
-      # if @primer_read.contig
-      #   ContigAssembly.perform_async(@primer_read.contig.id)
-      # end
-
       head :ok
     else
       head :unauthorized
@@ -216,12 +207,6 @@ class PrimerReadsController < ApplicationController
   def change_left_clip
     if can? :change_left_clip, @primer_read
       @primer_read.update(:trimmedReadStart => params[:position].to_i)
-
-      # do not auto assemble after clipping changed!
-      # if @primer_read.contig
-      #   ContigAssembly.perform_async(@primer_read.contig.id)
-      # end
-
       head :ok
     else
       head :unauthorized
@@ -231,12 +216,6 @@ class PrimerReadsController < ApplicationController
   def change_right_clip
     if can? :change_right_clip, @primer_read
       @primer_read.update(:trimmedReadEnd => params[:position].to_i)
-
-      # do not auto assemble after clipping changed!
-      # if @primer_read.contig
-      #   ContigAssembly.perform_async(@primer_read.contig.id)
-      # end
-
       head :ok
     else
       head :unauthorized

@@ -1,30 +1,59 @@
 namespace :data do
 
   desc 'Do work statistics for <year>'
-  task :work_statistics_yearly, [:year] => [:environment] do |t, args|
+  task :work_statistics_yearly, [:year, :labcode] => [:environment] do |t, args|
+    lab_prefixes = { nees: 'gbol', bgbm: 'db' }
+
     range = Time.new(args[:year].to_i, 1, 1).all_year
+    prefix = lab_prefixes[args[:labcode].downcase.to_sym]
 
-    puts "Calculating activities for #{range.first.year}..."
+    puts prefix
 
-    newly_verified_contigs = Contig.where(:verified_at => range).select(:id, :name)
-    newly_verified_contigs_bonn_cnt = newly_verified_contigs.where("name ilike ?", "%gbol%").length
-    newly_verified_contigs_berlin_cnt = newly_verified_contigs.where("name ilike ?", "%db%").length
-    puts "Newly verified contigs: #{newly_verified_contigs.length} (total), #{newly_verified_contigs_bonn_cnt} (Bonn), #{newly_verified_contigs_berlin_cnt} (Berlin)"
+    isolates = Isolate.where("lab_nr ilike ?", "#{prefix}%")
+                      .where(:created_at => range)
+                      .select(:id, :lab_nr)
+    contigs = Contig.where("contigs.name ilike ?", "#{prefix}%")
+                    .where(verified_at: range)
+                    .select(:id, :name)
+    reads = PrimerRead.where("primer_reads.name ilike ?", "#{prefix}%")
+                      .where(:created_at => range)
+                      .select(:id, :name)
+    marker_sequences = MarkerSequence.where("marker_sequences.name ilike ?", "#{prefix}%")
+                                     .where(:created_at => range)
+                                     .select(:id, :sequence, :name)
 
-    new_primer_reads = PrimerRead.where(:created_at => range).select(:id, :name)
-    new_primer_reads_bonn_cnt = new_primer_reads.where("name ilike ?", "%gbol%").length
-    new_primer_reads_berlin_cnt = new_primer_reads.where("name ilike ?", "%db%").length
-    puts "Newly uploaded primer reads: #{new_primer_reads.length} (total), #{new_primer_reads_bonn_cnt} (Bonn), #{new_primer_reads_berlin_cnt} (Berlin)"
+    puts "Calculating activities for #{range.first.year} in lab #{args[:labcode]}...\n"
 
-    new_isolates = Isolate.where(:created_at => range).select(:id, :lab_nr)
-    new_isolates_bonn_cnt = new_isolates.where("lab_nr ilike ?", "%gbol%").length
-    new_isolates_berlin_cnt = new_isolates.where("lab_nr ilike ?", "%db%").length
-    puts "Newly created isolates: #{new_isolates.length} (total), #{new_isolates_bonn_cnt} (Bonn), #{new_isolates_berlin_cnt} (Berlin)"
+    puts "Number of new isolates: #{isolates.size}"
+    puts "Number of new contigs: #{contigs.size}"
+    puts "Number of new primer reads: #{reads.size}"
+    puts "Number of new marker sequences: #{marker_sequences.size}"
+    puts ''
 
-    marker_sequences = MarkerSequence.where(:created_at => range).select(:id, :sequence, :name)
-    base_count = marker_sequences.sum('length(sequence)')
-    puts "Number of generated barcode sequences: #{marker_sequences.size}"
-    puts "Sequenced base pairs: #{base_count}"
+    # Split output for groups 4 (Marchantiophytina), 9 (Bryophytina), 5 (Filicophytina) and 1 + 10 (Magnoliopsida + Coniferopsida / Spermatophytina)
+    group_ids = [1, 4, 5, 9, 10]
+    taxa = HigherOrderTaxon.where(id: group_ids).select(:id, :name)
+
+    taxa.each do |taxon|
+      isolates_in_taxon = isolates.joins(individual: [species: [family: [order: :higher_order_taxon]]])
+                                  .where(individual: { species: { family: { orders: { higher_order_taxon_id: taxon.id } } } })
+      puts "Newly created isolates for #{taxon.name}: #{isolates_in_taxon.distinct.size}"
+
+      contigs_in_taxon = contigs.joins(isolate: [individual: [species: [family: [order: :higher_order_taxon]]]])
+                                .where(isolate: { individual: { species: { family: { orders: { higher_order_taxon_id: taxon.id } } } } })
+      puts "Newly verified contigs for #{taxon.name}: #{contigs_in_taxon.distinct.size}"
+
+      primer_reads_in_taxon = reads.joins(contig: [isolate: [individual: [species: [family: [order: :higher_order_taxon]]]]])
+                                   .where(contig: { isolate: { individual: { species: { family: { orders: { higher_order_taxon_id: taxon.id } } } } } })
+      puts "Newly uploaded primer reads for #{taxon.name}: #{primer_reads_in_taxon.distinct.size}"
+
+      marker_sequences_in_taxon = marker_sequences.joins(contigs: [isolate: [individual: [species: [family: [order: :higher_order_taxon]]]]])
+                                                  .where(contigs: { isolate: { individual: { species: { family: { orders: { higher_order_taxon_id: taxon.id } } } } } })
+      base_count = marker_sequences_in_taxon.sum('length(sequence)')
+      puts "Number of newly generated barcode sequences for #{taxon.name}: #{marker_sequences_in_taxon.distinct.size}"
+      puts "Sequenced base pairs for #{taxon.name}: #{base_count}"
+      puts ''
+    end
   end
 
   desc 'Do work statistics'
