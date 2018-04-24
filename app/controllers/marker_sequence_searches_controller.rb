@@ -14,7 +14,10 @@ class MarkerSequenceSearchesController < ApplicationController
 
   def create
     @marker_sequence_search = MarkerSequenceSearch.create!(marker_sequence_search_params)
+
     @marker_sequence_search.update(:user_id => current_user.id)
+    @marker_sequence_search.update(:project_id => current_user.default_project_id)
+
     redirect_to @marker_sequence_search
   end
 
@@ -44,6 +47,6 @@ class MarkerSequenceSearchesController < ApplicationController
   private
   # Never trust parameters from the scary internet, only allow the white list through.
   def marker_sequence_search_params
-    params.require(:marker_sequence_search).permit(:title, :name, :marker, :order, :species, :specimen, :family, :verified, :max_length, :min_length)
+    params.require(:marker_sequence_search).permit(:title, :name, :marker, :order, :species, :specimen, :family, :verified, :max_length, :min_length, :project_id)
   end
 end

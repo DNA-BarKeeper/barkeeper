@@ -79,7 +79,7 @@ GBOLapp::Application.routes.draw do
 
   resources :primer_reads do
     collection do
-      post :import_species
+      post :import
       post :batch_create
       get 'duplicates'
     end
@@ -153,7 +153,7 @@ GBOLapp::Application.routes.draw do
 
   resources :primers do
     collection do
-      post :import_species
+      post :import
     end
   end
 
@@ -168,7 +168,7 @@ GBOLapp::Application.routes.draw do
       get 'filter'
       get 'duplicates'
       get 'no_specimen'
-      post :import_species
+      post :import
     end
   end
 

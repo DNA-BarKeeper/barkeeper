@@ -1,5 +1,6 @@
 class MarkerSequenceSearch < ApplicationRecord
   belongs_to :user
+  belongs_to :project
 
   def marker_sequences
     @marker_sequences ||= find_marker_sequences
