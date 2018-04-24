@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180418142950) do
+ActiveRecord::Schema.define(version: 20180424090325) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,8 @@ ActiveRecord::Schema.define(version: 20180418142950) do
     t.date     "max_update"
     t.string   "title"
     t.integer  "user_id"
+    t.integer  "project_id"
+    t.index ["project_id"], name: "index_contig_searches_on_project_id", using: :btree
   end
 
   create_table "contigs", force: :cascade do |t|
@@ -294,6 +296,8 @@ ActiveRecord::Schema.define(version: 20180418142950) do
     t.string   "marker"
     t.integer  "min_length"
     t.integer  "max_length"
+    t.integer  "project_id"
+    t.index ["project_id"], name: "index_marker_sequence_searches_on_project_id", using: :btree
   end
 
   create_table "marker_sequences", force: :cascade do |t|
@@ -609,6 +613,8 @@ ActiveRecord::Schema.define(version: 20180418142950) do
     t.datetime "updated_at"
   end
 
+  add_foreign_key "contig_searches", "projects"
+  add_foreign_key "marker_sequence_searches", "projects"
   add_foreign_key "plant_plates", "lab_racks"
   add_foreign_key "shelves", "freezers"
 

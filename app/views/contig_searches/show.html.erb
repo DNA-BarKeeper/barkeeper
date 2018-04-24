@@ -1,21 +1,10 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <p><h3 class="panel-title">Contig Search Results <%= "- #{@contig_search.title} " unless @contig_search.title&.empty? %></h3></p>
+    <p><h3 class="panel-title">Contig Search Results <%= "- #{title(@contig_search)}" %></h3></p>
     <p>Search parameters:<br>
-      <%= "Name: #{@contig_search.name}, " unless @contig_search.name&.empty? %>
-      <%= "assembled, " if @contig_search.assembled == 'assembled' %>
-      <%= "not assembled, " if @contig_search.assembled == 'unassembled' %>
-      <%= "verified, " if @contig_search.verified == 'verified' %>
-      <%= "not verified, " if @contig_search.verified == 'unverified' %>
-      <%= "Marker: #{@contig_search.marker}, " unless @contig_search.marker&.empty? %>
-      <%= "Specimen: #{@contig_search.specimen}, " unless @contig_search.specimen&.empty? %>
-      <%= "Species: #{@contig_search.species}, " unless @contig_search.species&.empty? %>
-      <%= "Family: #{@contig_search.family}, " unless @contig_search.family&.empty? %>
-      <%= "Order: #{@contig_search.order}, " unless @contig_search.order&.empty? %>
-      <%= "Created since: #{@contig_search.min_age.strftime("%F")}, " if @contig_search.min_age %>
-      <%= "Created before: #{@contig_search.max_age.strftime("%F")}, " if @contig_search.max_age %>
-      <%= "Updated since: #{@contig_search.min_update.strftime("%F")}, " if @contig_search.min_update %>
-      <%= "Updated before: #{@contig_search.max_update.strftime("%F")}, " if @contig_search.max_update %>
+      <%= "Searched project: #{project(@contig_search)}" %>
+      <br>
+      <%= attributes(@contig_search) %>
     </p>
   </div>
   <div class="panel-body">

@@ -1,5 +1,6 @@
 class ContigSearch < ApplicationRecord
   belongs_to :user
+  belongs_to :project
 
   def contigs
     @contigs ||= find_contigs

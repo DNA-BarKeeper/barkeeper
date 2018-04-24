@@ -1,17 +1,10 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <p><h3 class="panel-title">Marker Sequence Search Results<%= " - #{@marker_sequence_search.title} " unless @marker_sequence_search.title&.empty? %></h3></p>
+    <p><h3 class="panel-title">Marker Sequence Search Results <%= "- #{title(@marker_sequence_search)}" %></h3></p>
     <p>Search parameters:<br>
-      <%= "Name: #{@marker_sequence_search.name}, " unless @marker_sequence_search.name&.empty? %>
-      <%= "verified, " if @marker_sequence_search.verified == 'verified' %>
-      <%= "not verified, " if @marker_sequence_search.verified == 'unverified' %>
-      <%= "Marker: #{@marker_sequence_search.marker}, " unless @marker_sequence_search.marker&.empty? %>
-      <%= "Specimen: #{@marker_sequence_search.specimen}, " unless @marker_sequence_search.specimen&.empty? %>
-      <%= "Species: #{@marker_sequence_search.species}, " unless @marker_sequence_search.species&.empty? %>
-      <%= "Family: #{@marker_sequence_search.family}, " unless @marker_sequence_search.family&.empty? %>
-      <%= "Order: #{@marker_sequence_search.order}, " unless @marker_sequence_search.order&.empty? %>
-      <%= "Length minimum: #{@marker_sequence_search.min_length}, " if @marker_sequence_search.min_length %>
-      <%= "Length maximum: #{@marker_sequence_search.max_length}, " if @marker_sequence_search.max_length %>
+      <%= "Searched project: #{project(@marker_sequence_search)}" %>
+      <br>
+      <%= attributes(@marker_sequence_search) %>
     </p>
   </div>
   <div class="panel-body">

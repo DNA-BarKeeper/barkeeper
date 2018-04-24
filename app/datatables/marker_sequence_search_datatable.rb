@@ -26,6 +26,7 @@ class MarkerSequenceSearchDatatable
     searches.map do |search|
       [
           link_to(search.title, marker_sequence_search_path(search)),
+          search.project&.name,
           search.created_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
           link_to('Delete', search, method: :delete, data: { confirm: 'Are you sure?' })
       ]
