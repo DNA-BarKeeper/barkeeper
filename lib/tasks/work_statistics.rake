@@ -1,6 +1,6 @@
 namespace :data do
 
-  desc 'Do work statistics for <year>'
+  desc 'Do work statistics for <year> and Lab with <labcode>'
   task :work_statistics_yearly, [:year, :labcode] => [:environment] do |t, args|
     lab_prefixes = { nees: 'gbol', bgbm: 'db' }
 

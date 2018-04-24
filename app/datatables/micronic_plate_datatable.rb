@@ -69,7 +69,7 @@ class MicronicPlateDatatable
     micronic_plates = micronic_plates.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      micronic_plates = micronic_plates.where("name ILIKE :search", search: "%#{params[:sSearch]}%")
+      micronic_plates = micronic_plates.where("micronic_plates.micronic_plate_id ILIKE :search", search: "%#{params[:sSearch]}%")
     end
 
     micronic_plates
