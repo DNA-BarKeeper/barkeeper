@@ -89,7 +89,7 @@ namespace :data do
     ActiveRecord::Base.connection.execute("INSERT INTO projects_users (project_id, user_id) VALUES #{values}")
 
     # All GBOL5 markers
-    values = Marker.gbol_marker.select(:id).map { |marker| "(#{marker.id},#{project.id})" }.join(',')
+    values = Marker.where(is_gbol: true).select(:id).map { |marker| "(#{marker.id},#{project.id})" }.join(',')
     ActiveRecord::Base.connection.execute("INSERT INTO markers_projects (marker_id, project_id) VALUES #{values}")
 
     # All primers that belong to a GBOL5 marker
