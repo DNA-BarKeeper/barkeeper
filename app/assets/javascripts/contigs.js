@@ -53,15 +53,14 @@ jQuery(function() {
         //todo: rm all other buttons for page navigation
 
         var partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
-        var page=0;
+        var page = 0;
 
         draw_as_single_page(partial_con_container_id, page);
     });
 
     $('.go-to-button-partial-con').click( function () {
-
         var partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
-        var partial_con_go_to =$(this).closest('table').find('.go-to-pos').val();
+        var partial_con_go_to = $(this).closest('table').find('.go-to-pos').val();
 
         draw_position(partial_con_container_id, partial_con_go_to);
     });
@@ -69,7 +68,7 @@ jQuery(function() {
     $('.first-page-button').click(function () {
 
         var partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
-        var page=0;
+        var page = 0;
 
         draw_page(partial_con_container_id, page);
     });
@@ -77,7 +76,7 @@ jQuery(function() {
     $('.last-page-button').click(function () {
 
         var partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
-        var page=1000;
+        var page = 1000;
 
         draw_page(partial_con_container_id, page);
     });
@@ -195,7 +194,7 @@ function draw_page(id, page){
     }
 }
 
-function draw_position(id, position){
+function draw_position(id, position) {
     // var id = $(this).attr("id");
 
     // get id without "p-..."
@@ -416,7 +415,6 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
         }
 
-        // console.log(atrace_line_data);
         var lineFunction = d3.line()
             .x(function(d) { return d.x; })
             .y(function(d) { return d.y; });

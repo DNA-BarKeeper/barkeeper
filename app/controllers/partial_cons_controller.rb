@@ -19,13 +19,13 @@ class PartialConsController < ApplicationController
     end
   end
 
+  private
+
   def set_partial_con
-    @partial_con= PartialCon.includes(:primer_reads).find(params[:id])
+    @partial_con = PartialCon.includes(:primer_reads).find(params[:id])
   end
 
   def partial_con_params
     params.require(:partial_con).permit(:page, :position, :width_in_bases)
   end
-
-
 end

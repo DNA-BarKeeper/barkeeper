@@ -33,6 +33,20 @@ namespace :data do
     puts ''
   end
 
+  task :duplicate_sequences => :environment do
+    gbol_sequences = MarkerSequence.where('marker_sequences.name ilike ?', 'gbol%')
+    ms_with_contig = gbol_sequences.joins(:contigs).distinct
+
+    duplicate_names = gbol_sequences.group(:name).having('count(name) > 1').count.keys
+    duplicate_ms = gbol_sequences.where(marker_sequences: { name: duplicate_names })
+    duplicate_ms_contig = ms_with_contig.where(marker_sequences: { name: duplicate_names })
+
+    puts "Number of all marker sequences in GBOL5: #{gbol_sequences.size}"
+    puts "Number of all marker sequences in GBOL5 with a contig: #{ms_with_contig.size}"
+    puts "Number of duplicate sequences: #{duplicate_ms.size}"
+    puts "Number of duplicate sequences with a contig: #{duplicate_ms_contig.size}"
+  end
+
   def get_information(marker_sequences, contigs)
     sequence_count = {}
     sequence_length_avg = {}
