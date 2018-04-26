@@ -63,24 +63,24 @@ group :development do
   gem 'capistrano-rbenv',   require: false
   gem 'capistrano-sidekiq', require: false, github: 'seuros/capistrano-sidekiq'
   gem 'capistrano3-puma',   require: false, github: 'seuros/capistrano-puma' # TODO: remove github once fixed version is officially deployed
+  gem 'spring' # Spring speeds up development by keeping your application running in the background
+  gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
 group :test do
-  gem 'minitest' # TODO: Replace by RSpec
-  gem 'minitest-fail-fast'
-  gem 'minitest-rails-capybara'
-  gem 'minitest-reporters'
-  gem 'rails-controller-testing'
-  gem 'selenium-webdriver' # TODO: Replace by phantom.js
   gem 'simplecov'
-  gem 'webrat'
+  gem 'selenium-webdriver' # TODO: Replace by phantom.js
 end
 
 group :development, :test do
   gem 'better_errors'
   gem 'bullet' # Checks for n+1 queries
+  gem 'capybara'
+  gem 'database_cleaner'
   gem 'launchy'
   gem 'meta_request' # Supporting gem for Google Chrome Rails Panel
+  gem 'poltergeist'
   gem 'rails_best_practices'
+  gem 'rspec-rails'
   gem 'yard' # Documentation generation tool
 end
