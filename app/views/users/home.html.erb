@@ -25,9 +25,9 @@
         <%= f.collection_select :default_project_id, @user.projects, :id, :name %>
 
         <div class="form-actions">
-          <%= f.submit 'Change default project', :class => 'btn btn-warning' %>(This will influence what contents are shown throughout this web application.)
+          <%= f.submit 'Change default project', :class => 'btn btn-warning' %>
         </div>
-
+        <p>(This will influence what contents are shown throughout this web application.)</p>
       <% end %>
       </p>
     </div>

@@ -26,11 +26,14 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
+    puts "ATTENTION"
+    puts params[:id], current_user.id
+
     if @user.admin? && !current_user.admin?
       redirect_to users_path, alert: 'Permission denied.'
     else
       params[:user].delete(:password) if params[:user][:password].blank?
-      params[:user].delete(:password_confirmation) if params[:user][:password].blank? and params[:user][:password_confirmation].blank?
+      params[:user].delete(:password_confirmation) if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
 
       if @user.update(user_params)
         if current_user == @user
