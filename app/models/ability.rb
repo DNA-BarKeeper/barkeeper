@@ -50,7 +50,6 @@ class Ability
       can :manage, :all
 
       cannot :manage, User
-      can [:home], User
       cannot :manage, Project
       cannot :manage, Responsibility
 
@@ -70,6 +69,8 @@ class Ability
         cannot [:create, :update, :destroy], User, role: 'admin' if user.supervisor?
       end
 
+      can :manage, User, id: user.id # User can edit own profile
+
       cannot :manage, ContigSearch
       can :create, ContigSearch
       can :manage, ContigSearch, user_id: user.id # Users can only edit their own searches
@@ -84,7 +85,7 @@ class Ability
         can :edit, [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
 
         # Restrictions for users in project "taxonomy"
-      elsif user.projects.exists?(:name => "taxonomy")
+      elsif user.projects.exists?(:name => 'taxonomy')
         cannot [:create, :update, :destroy], [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker,
                                               MarkerSequence, MicronicPlate, PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
         can :edit, [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker, MarkerSequence, MicronicPlate,
