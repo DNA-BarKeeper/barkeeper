@@ -43,10 +43,6 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
-  BetterErrors.editor = :subl
-
-  # ENV["REDISTOGO_URL"] = 'redis://redistogo:9f39a5b8a1b376f818dd3edc74c600b6@chubb.redistogo.com:9618/'
-
   Rails.application.configure do
     config.active_support.test_order = :sorted
   end

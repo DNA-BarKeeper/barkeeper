@@ -197,8 +197,8 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.string   "revision",           limit: 255
     t.string   "confirmation",       limit: 255
     t.text     "comments"
-    t.decimal  "latitude",                       precision: 15, scale: 6
-    t.decimal  "longitude",                      precision: 15, scale: 6
+    t.decimal  "latitude",                       precision: 15, scale: 5
+    t.decimal  "longitude",                      precision: 15, scale: 5
   end
 
   create_table "individuals_projects", id: false, force: :cascade do |t|
@@ -617,15 +617,6 @@ ActiveRecord::Schema.define(version: 20180424090325) do
   add_foreign_key "marker_sequence_searches", "projects"
   add_foreign_key "plant_plates", "lab_racks"
   add_foreign_key "shelves", "freezers"
-
-  create_view "taxa_matview", materialized: true,  sql_definition: <<-SQL
-      SELECT f.name AS family,
-      o.name AS "order",
-      hot.name AS higher_order_taxon
-     FROM ((families f
-       JOIN orders o ON ((f.order_id = o.id)))
-       JOIN higher_order_taxa hot ON ((o.higher_order_taxon_id = hot.id)));
-  SQL
 
   create_view "overview_all_taxa_matviews", materialized: true,  sql_definition: <<-SQL
       SELECT f.name AS family,
