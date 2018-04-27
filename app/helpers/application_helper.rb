@@ -2,6 +2,14 @@ module ApplicationHelper
   require 'net/http'
   require 'nokogiri'
 
+  def current_project_name
+    if user_signed_in?
+      Project.find(current_user.default_project_id).name
+    else
+      'Project'
+    end
+  end
+
   def display_base_errors(resource)
     return '' if resource.errors.empty? or resource.errors[:base].empty?
     messages = resource.errors[:base].map { |msg| content_tag(:p, msg) }.join
