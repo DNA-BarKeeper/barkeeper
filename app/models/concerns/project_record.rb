@@ -9,7 +9,7 @@ module ProjectRecord
   # Adds the given project as well as the general project if not already added
   def add_project(project_id)
     project = Project.find(project_id)
-    project_all = Project.find_by_name('All')
+    project_all = Project.where('name like ?', "All%").first
 
     projects << project unless projects.include?(project)
     projects << project_all unless projects.include?(project_all)
