@@ -1,5 +1,5 @@
 class Primer < ApplicationRecord
-  include Import
+  extend Import
   include ProjectRecord
 
   belongs_to :marker
@@ -9,7 +9,7 @@ class Primer < ApplicationRecord
   validates_presence_of :name
 
   def self.import(file, project_id)
-    spreadsheet = open_spreadsheet(file)
+    spreadsheet = Primer.open_spreadsheet(file)
 
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|

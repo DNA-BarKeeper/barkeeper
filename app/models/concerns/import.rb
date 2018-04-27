@@ -6,6 +6,7 @@ module Import
     when '.csv' then Roo::Csv.new(file.path)
     when '.xls' then Roo::Excel.new(file.path)
     when '.xlsx' then Roo::Excelx.new(file.path)
+    when '.ods' then Roo::OpenOffice.new(file.path)
     else raise "Unknown file type: #{file.original_filename}"
     end
   end
