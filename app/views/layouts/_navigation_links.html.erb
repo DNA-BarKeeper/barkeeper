@@ -1,7 +1,7 @@
 <% unless user_signed_in? %>
-    <% theClass="disabled" %>
+    <% link_disabled="disabled" %>
 <% else %>
-    <% theClass="" %>
+    <% link_disabled="" %>
 <% end %>
 
 <li class="dropdown">
@@ -48,16 +48,16 @@
     <li><%= link_to 'Isolates', isolates_path %></li>
     <li><%= link_to 'Primer Reads', primer_reads_path %></li>
     <li><%= link_to 'Contigs', contigs_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Marker Sequences', marker_sequences_path %></li>
+    <li class="<%= link_disabled %>"><%= link_to 'Marker Sequences', marker_sequences_path %></li>
     <li class="divider"></li>
-    <li class="<%= theClass %>"><%= link_to 'Markers', markers_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Primers', primers_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Tissue Types', tissues_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Labs', labs_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Freezers', freezers_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Racks', lab_racks_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Plates (DNA)', micronic_plates_path %></li>
-    <li class="<%= theClass %>"><%= link_to 'Plates (Tissue)', plant_plates_path%></li>
+    <li class="<%= link_disabled %>"><%= link_to 'Markers', markers_path %></li>
+    <li class="<%= link_disabled %>"><%= link_to 'Primers', primers_path %></li>
+    <li class="<%= link_disabled %>"><%= link_to 'Tissue Types', tissues_path %></li>
+    <li class="<%= link_disabled %>"><%= link_to 'Labs', labs_path %></li>
+    <li class="<%= link_disabled %>"><%= link_to 'Freezers', freezers_path %></li>
+    <li class="<%= link_disabled %>"><%= link_to 'Racks', lab_racks_path %></li>
+    <li class="<%= link_disabled %>"><%= link_to 'Plates (DNA)', micronic_plates_path %></li>
+    <li class="<%= link_disabled %>"><%= link_to 'Plates (Tissue)', plant_plates_path%></li>
   </ul>
 </li>
 
