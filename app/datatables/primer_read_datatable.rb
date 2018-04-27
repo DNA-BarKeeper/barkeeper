@@ -46,7 +46,7 @@ class PrimerReadDatatable
     # TODO: Maybe add find_each (batches!) later - if possible, probably conflicts with sorting
     case @reads_to_show
     when 'duplicates'
-      names_with_multiple = PrimerRead.select(:name).in_project(@current_default_project).group(:name).having("count(name) > 1").count.keys
+      names_with_multiple = PrimerRead.select(:name).in_project(@current_default_project).group(:name).having("count(primer_reads.name) > 1").count.keys
       primer_reads = PrimerRead.includes(:contig).where(name: names_with_multiple).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).order("#{sort_column} #{sort_direction}")
     when 'no_contig'
       primer_reads = PrimerRead.includes(:contig).where(:contig => nil).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
