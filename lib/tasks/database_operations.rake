@@ -3,13 +3,10 @@ require 'nokogiri'
 
 def get_state(i)
   if i.locality
-
     regex = /^([A-Za-z0-9\-]+)\..+/
-
     matches = i.locality.match(regex)
     if matches
       state_component = matches[1]
-
       i.update(:state_province => state_component)
     end
   end
@@ -291,5 +288,31 @@ namespace :data do
     User.find_by_name('Birgit Gemeinholzer').update(role: 'guest')
     User.find_by_name('Andreas Kolter').update(role: 'guest')
     User.find_by_name('Stephanie Swenson-Friedrich').update(role: 'guest')
+  end
+
+  desc 'Remove duplicate marker sequences not associated with a contig'
+  task :remove_duplicate_sequences_without_contig => :environment do
+    puts 'Deleting duplicate marker sequences not associated with a contig if one of the pair/group is associated with a contig...'
+
+    names_with_multiple = MarkerSequence.select(:name).group(:name).having("count(name) > 1").count.keys
+    sequences_count = MarkerSequence.where(name: names_with_multiple).count
+    delete_cnt = 0
+
+    puts "#{sequences_count} duplicate sequences were found."
+
+    names_with_multiple.each do |sequence_name|
+      duplicates = MarkerSequence.where(:name => sequence_name)
+      sequences_without_contig = []
+      duplicates.each { |d| sequences_without_contig << d if d.contigs.size == 0 }
+
+      if duplicates.size > sequences_without_contig.size && !sequences_without_contig.empty?
+        sequences_without_contig.each do |sequence|
+          delete_cnt += 1
+          sequence.destroy!
+        end
+      end
+    end
+
+    puts "#{delete_cnt} duplicate sequences could be deleted."
   end
 end
