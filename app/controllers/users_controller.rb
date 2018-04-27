@@ -3,6 +3,7 @@ class UsersController < ApplicationController
 
   def index
     @users = User.all.order(:id)
+    respond_to :html, :json
   end
 
   def new
