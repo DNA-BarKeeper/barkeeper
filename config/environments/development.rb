@@ -72,5 +72,4 @@ Rails.application.configure do
   config.paperclip_defaults = {
       :storage => 'filesystem'
   }
-
 end

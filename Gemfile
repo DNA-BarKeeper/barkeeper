@@ -5,7 +5,7 @@ ruby '2.3.3'
 gem 'rails', '5.0.0'
 
 # Postgres
-gem 'pg', '~> 0.21' # Rails does not work with pg 1.0.0 (fixed in Rails 5.1.5)
+gem 'pg', '~> 0.20.0' # Rails does not work with pg 1.0.0 (fixed in Rails 5.1.5), pg 0.21 gives constant deprecation warning: https://github.com/rails/rails/issues/29521
 gem 'pg_search'
 
 # Web server and background processing
@@ -63,24 +63,27 @@ group :development do
   gem 'capistrano-rbenv',   require: false
   gem 'capistrano-sidekiq', require: false, github: 'seuros/capistrano-sidekiq'
   gem 'capistrano3-puma',   require: false, github: 'seuros/capistrano-puma' # TODO: remove github once fixed version is officially deployed
+  gem 'better_errors' # Better error page for Rack apps
+  gem 'bullet' # Checks for n+1 queries
+  gem 'binding_of_caller' # Extends features of better_errors
+  gem 'meta_request' # Supporting gem for Google Chrome Rails Panel
   gem 'spring' # Spring speeds up development by keeping your application running in the background
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'yard' # Documentation generation tool
 end
 
 group :test do
+  gem 'capybara'
+  gem 'faker'
+  gem 'guard-rspec'
+  gem 'launchy'
   gem 'simplecov'
-  gem 'selenium-webdriver' # TODO: Replace by phantom.js
 end
 
 group :development, :test do
-  gem 'better_errors'
-  gem 'bullet' # Checks for n+1 queries
-  gem 'capybara'
   gem 'database_cleaner'
-  gem 'launchy'
-  gem 'meta_request' # Supporting gem for Google Chrome Rails Panel
+  gem 'factory_bot_rails'
   gem 'poltergeist'
   gem 'rails_best_practices'
   gem 'rspec-rails'
-  gem 'yard' # Documentation generation tool
 end
