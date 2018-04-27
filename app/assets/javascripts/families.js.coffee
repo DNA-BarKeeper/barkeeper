@@ -1,4 +1,3 @@
-
 jQuery ->
   $('#families').DataTable( {
     "columnDefs": [

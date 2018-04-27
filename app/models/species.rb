@@ -1,5 +1,5 @@
 class Species < ApplicationRecord
-  include Import
+  extend Import
   include ProjectRecord
 
   has_many :individuals
@@ -23,7 +23,7 @@ class Species < ApplicationRecord
   end
 
   def self.import_species(file, valid_keys, project_id)
-    spreadsheet = open_spreadsheet(file)
+    spreadsheet = Species.open_spreadsheet(file)
     header = spreadsheet.row(1)
 
     (2..spreadsheet.last_row).each do |i|
@@ -95,7 +95,7 @@ class Species < ApplicationRecord
 
   # TODO: Does not assign a project to new records
   def self.import_gbolII(file)
-    spreadsheet = open_spreadsheet(file)
+    spreadsheet = Species.open_spreadsheet(file)
     header = spreadsheet.row(1)
 
     (2..spreadsheet.last_row).each do |i|
@@ -143,7 +143,7 @@ class Species < ApplicationRecord
 
   # TODO: Does not assign a project to new records
   def self.import_stuttgart_set_class(file)
-    spreadsheet = open_spreadsheet(file)
+    spreadsheet = Species.open_spreadsheet(file)
 
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
