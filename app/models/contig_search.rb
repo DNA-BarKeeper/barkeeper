@@ -18,11 +18,7 @@ class ContigSearch < ApplicationRecord
 
         # Write chromatogram to a file and add this to the zip file
         contig.primer_reads.each do |read|
-          begin
-            archive.get_output_stream(read.file_name_id) { |file| file.write(URI.parse("http:#{read.chromatogram.url}").read) }
-          rescue Exception => e
-            archive.get_output_stream(read.file_name_id) { |file| file.write("File not found: #{read.chromatogram.url}\n#{e.class}") }
-          end
+          archive.get_output_stream(read.file_name_id) { |file| file.write(URI.parse("http:#{read.chromatogram.url}").read) }
         end
       end
     end
