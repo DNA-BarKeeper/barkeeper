@@ -30,7 +30,7 @@ GBOLapp::Application.routes.draw do
   get 'primer_reads/:id/edit/:pos', action: :go_to_pos, controller: 'primer_reads'
 
   resources :contig_searches do
-    post :export_results_as_pde
+    post :export_results_as_zip
   end
 
   resources :marker_sequence_searches do

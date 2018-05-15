@@ -38,7 +38,7 @@ class ContigSearchesController < ApplicationController
     end
   end
 
-  def export_results_as_pde
+  def export_results_as_zip
     @contig_search = ContigSearch.find(params[:contig_search_id])
     zip_file_name = @contig_search.title.empty? ? "contig_search_#{@contig_search.created_at}" : @contig_search.title
     archive_file = "#{Rails.root}/tmp/#{zip_file_name}.zip"
