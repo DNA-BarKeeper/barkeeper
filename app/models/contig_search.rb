@@ -6,6 +6,24 @@ class ContigSearch < ApplicationRecord
     @contigs ||= find_contigs
   end
 
+  def as_zip_file(archive_file)
+    FileUtils.rm_r "#{archive_file}" if File.exists?(archive_file)
+
+    # Create archive file
+    Zip::File.open(archive_file, Zip::File::CREATE) do |archive|
+      contigs.each do |contig|
+        # Write contig PDE to a file and add this to the zip file
+        file_name = "#{contig.name}.pde"
+        archive.get_output_stream(file_name) { |file| file.write(contig.as_pde) }
+
+        # Write chromatogram to a file and add this to the zip file
+        contig.primer_reads.each do |read|
+          archive.get_output_stream(read.file_name_id) { |file| file.write(URI.parse("http:#{read.chromatogram.url}").read) }
+        end
+      end
+    end
+  end
+
   private
 
   def find_contigs

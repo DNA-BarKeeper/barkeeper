@@ -19,8 +19,6 @@ GBOLapp::Application.routes.draw do
   get 'specimens_create_xls', action: :create_xls, controller: 'individuals'
   get 'species_xls', action: :xls, controller: 'species'
   get 'species_create_xls', action: :create_xls, controller: 'species'
-  get 'caryo_contigs_zip', action: :zip, controller: 'contigs'
-  get 'create_caryo_contigs_zip', action: :upload_caryo_matK_contigs, controller: 'contigs'
   get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'
   get 'specimens_without_species', action: :specimens_without_species, controller: 'individuals'
@@ -31,7 +29,9 @@ GBOLapp::Application.routes.draw do
 
   get 'primer_reads/:id/edit/:pos', action: :go_to_pos, controller: 'primer_reads'
 
-  resources :contig_searches
+  resources :contig_searches do
+    post :export_results_as_pde
+  end
 
   resources :marker_sequence_searches do
     post :export_as_fasta
