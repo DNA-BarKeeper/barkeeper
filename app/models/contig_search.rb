@@ -11,14 +11,18 @@ class ContigSearch < ApplicationRecord
 
     # Create archive file
     Zip::File.open(archive_file, Zip::File::CREATE) do |archive|
-      contigs.each do |contig|
+      contigs.includes(:primer_reads, partial_cons: :primer_reads).each do |contig|
         # Write contig PDE to a file and add this to the zip file
         file_name = "#{contig.name}.pde"
         archive.get_output_stream(file_name) { |file| file.write(contig.as_pde) }
 
         # Write chromatogram to a file and add this to the zip file
         contig.primer_reads.each do |read|
-          archive.get_output_stream(read.file_name_id) { |file| file.write(URI.parse("http:#{read.chromatogram.url}").read) }
+          begin
+            archive.get_output_stream(read.file_name_id) { |file| file.write(URI.parse("http:#{read.chromatogram.url}").read) }
+          rescue
+            archive.get_output_stream(read.file_name_id) { |file| file.write("File not found: #{read.chromatogram.url}") }
+          end
         end
       end
     end
