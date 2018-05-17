@@ -40,22 +40,18 @@ class ContigSearchesController < ApplicationController
 
   def export_results_as_zip
     @contig_search = ContigSearch.find(params[:contig_search_id])
-    zip_file_name = @contig_search.title.empty? ? "contig_search_#{@contig_search.created_at}" : @contig_search.title
-    archive_file = "#{Rails.root}/tmp/#{zip_file_name}.zip"
+    @contig_search.create_search_result_archive
 
-    # Create zip file
-    @contig_search.as_zip_file(archive_file)
+    download_results
+  end
 
-    # Download zip file
-    send_data(File.read(archive_file), :filename => "#{zip_file_name}.zip", :type => "application/zip")
-
-    # Remove zip file from server
-    FileUtils.rm_r "#{archive_file}"
+  def download_results
+    send_data(File.read(@contig_search.search_result_archive.path), :filename => @contig_search.search_result_archive_file_name, :type => "application/zip")
   end
 
   private
   # Never trust parameters from the scary internet, only allow the white list through.
   def contig_search_params
-    params.require(:contig_search).permit(:title, :assembled, :family, :marker, :max_age, :max_update, :min_age, :min_update, :name, :order, :species, :specimen, :verified, :project_id)
+    params.require(:contig_search).permit(:title, :assembled, :family, :marker, :max_age, :max_update, :min_age, :min_update, :name, :order, :species, :specimen, :verified, :project_id, :search_result_archive)
   end
 end
