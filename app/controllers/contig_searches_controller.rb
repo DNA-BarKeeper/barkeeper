@@ -40,13 +40,14 @@ class ContigSearchesController < ApplicationController
 
   def export_results_as_zip
     @contig_search = ContigSearch.find(params[:contig_search_id])
-    @contig_search.create_search_result_archive
 
-    download_results
+    ContigSearchResultExport.perform_async(@contig_search)
+    redirect_to @contig_search, notice: "Writing zip file to S3 in background. May take a minute or so. Download with 'Download results' button."
   end
 
   def download_results
-    send_data(File.read(@contig_search.search_result_archive.path), :filename => @contig_search.search_result_archive_file_name, :type => "application/zip")
+    @contig_search = ContigSearch.find(params[:contig_search_id])
+    send_data(File.read(@contig_search.search_result_archive.url), :filename => @contig_search.search_result_archive_file_name, :type => "application/zip")
   end
 
   private
