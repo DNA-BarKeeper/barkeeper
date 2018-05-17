@@ -32,12 +32,11 @@
 
 <p>
   <%= link_to 'Start a new contig search', new_contig_search_path, class: 'btn btn-default' %>
-
   <%= link_to 'Go to your contig searches index', contig_searches_path, class: 'btn btn-default' %>
-
   <%= link_to 'Go to contigs index', contigs_path, class: 'btn btn-default' %>
 </p>
 
-<!--<p>-->
-  <%#= link_to 'Download results', contig_search_export_results_as_zip_path(@contig_search), method: 'post', class: 'btn btn-default' %>
-<!--</p>-->
+<p>
+  <%= link_to 'Create result archive file on server', contig_search_export_results_as_zip_path(@contig_search), class: 'btn btn-default' %>
+  <%= link_to 'Download results', contig_search_download_results_path(@contig_search), method: 'post', class: 'btn btn-default' %>
+</p>
