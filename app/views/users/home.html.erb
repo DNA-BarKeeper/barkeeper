@@ -25,9 +25,12 @@
         <%= f.collection_select :default_project_id, @user.projects, :id, :name %>
 
         <div class="form-actions">
-          <%= f.submit 'Change default project', :class => 'btn btn-warning' %>
+          <%= f.submit 'Change project',
+                       :class => 'btn btn-warning',
+                       title: 'This will influence what contents are shown throughout this web application',
+                       'data-toggle' => 'tooltip',
+                       'data-placement' => 'right' %>
         </div>
-        <p>(This will influence what contents are shown throughout this web application.)</p>
       <% end %>
       </p>
     </div>

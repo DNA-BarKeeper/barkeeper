@@ -5,3 +5,7 @@ jQuery ->
       { "orderable": false, "targets": 7 }
     ]
   } );
+
+  $(document).on 'ready page:change', ->
+    $('.btn-warning').tooltip()
+    return
