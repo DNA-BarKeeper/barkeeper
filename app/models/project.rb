@@ -27,4 +27,12 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :plant_plates
 
   validates_presence_of :name
+
+  # def self.search_taxa_by_name
+  #
+  # end
+  #
+  # def add_project_to_taxa
+  #
+  # end
 end

@@ -1,5 +1,8 @@
 class Family < ApplicationRecord
   include ProjectRecord
+  include PgSearch
+
+  multisearchable :against => :name
 
   has_many :species
   belongs_to :order

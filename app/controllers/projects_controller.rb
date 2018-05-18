@@ -63,6 +63,14 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def search_taxa
+
+  end
+
+  def add_to_taxa
+
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project

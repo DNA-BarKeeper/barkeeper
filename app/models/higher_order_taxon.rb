@@ -1,5 +1,8 @@
 class HigherOrderTaxon < ApplicationRecord
   include ProjectRecord
+  include PgSearch
+
+  multisearchable :against => :name
 
   has_many :orders
   has_many :families, :through => :orders
