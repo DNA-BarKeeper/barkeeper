@@ -21,11 +21,11 @@
       </p>
 
       <%= form_for @user do |f| %>
-        <%= f.label 'Default project:' %>
+        <%= f.label 'Currently selected project:' %>
         <%= f.collection_select :default_project_id, @user.projects, :id, :name %>
 
         <div class="form-actions">
-          <%= f.submit 'Change project',
+          <%= f.submit 'Change selected project',
                        :class => 'btn btn-warning',
                        title: 'This will influence what contents are shown throughout this web application',
                        'data-toggle' => 'tooltip',

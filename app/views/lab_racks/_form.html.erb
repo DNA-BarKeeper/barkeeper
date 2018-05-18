@@ -25,6 +25,11 @@
           <%= f.collection_select(:freezer_id, Freezer.all, :id, :freezercode) %>
         </div>
 
+      <div class="form-group">
+        <%= f.label :projects, 'Projects this object belongs to' %>
+        <%= project_list(@lab_rack) %>
+      </div>
+
         <%= f.submit 'Update', :class => 'btn btn-default' %>
     <% end %>
   </div>

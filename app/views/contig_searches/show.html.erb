@@ -1,9 +1,9 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <p><h3 class="panel-title">Contig Search Results <%= "- #{title(@contig_search)}" %></h3></p>
-    <p>Search parameters:<br>
-      <%= "Searched project: #{project(@contig_search)}" %>
-      <br>
+    <b>Searched project: </b><%= project(@contig_search) %><br>
+    <p>
+      <b>Search parameters:</b><br>
       <%= attributes(@contig_search) %>
     </p>
   </div>

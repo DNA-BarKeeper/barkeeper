@@ -21,11 +21,11 @@
 
           <div class="tab-pane active" id="description">
             <br>
-
             <div class="form-group">
               <%= f.label :name %>
               <%= f.text_field :name,  class: 'form-control' %>
             </div>
+
             <div class="form-group">
               <%= f.label :author %>
               <%= f.text_field :author, class: 'form-control' %>
@@ -34,6 +34,11 @@
             <div class="form-group">
               <%= f.label 'Order' %>
               <%= f.collection_select(:order_id, Order.order(:name).all, :id, :name) %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :projects, 'Projects this object belongs to' %>
+              <%= project_list(@family) %>
             </div>
           </div>
 
