@@ -10,11 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180424090325) do
+ActiveRecord::Schema.define(version: 20180518095542) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
+  enable_extension "pg_trgm"
 
   create_table "alignments", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -41,8 +42,8 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.string   "marker"
     t.string   "name"
     t.string   "assembled"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.date     "min_age"
     t.date     "max_age"
     t.date     "min_update"
@@ -50,6 +51,10 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.string   "title"
     t.integer  "user_id"
     t.integer  "project_id"
+    t.string   "search_result_archive_file_name"
+    t.string   "search_result_archive_content_type"
+    t.integer  "search_result_archive_file_size"
+    t.datetime "search_result_archive_updated_at"
     t.index ["project_id"], name: "index_contig_searches_on_project_id", using: :btree
   end
 
@@ -383,6 +388,15 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.datetime "updated_at"
     t.integer  "contig_id"
     t.integer  "aligned_qualities", array: true
+  end
+
+  create_table "pg_search_documents", force: :cascade do |t|
+    t.text     "content"
+    t.string   "searchable_type"
+    t.integer  "searchable_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id", using: :btree
   end
 
   create_table "plant_plates", force: :cascade do |t|

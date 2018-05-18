@@ -1,6 +1,9 @@
 class Species < ApplicationRecord
   include Import
   include ProjectRecord
+  include PgSearch
+
+  multisearchable :against => :composed_name
 
   has_many :individuals
   has_many :primer_pos_on_genomes
