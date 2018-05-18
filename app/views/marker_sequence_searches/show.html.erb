@@ -1,9 +1,9 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <p><h3 class="panel-title">Marker Sequence Search Results <%= "- #{title(@marker_sequence_search)}" %></h3></p>
-    <p>Search parameters:<br>
-      <%= "Searched project: #{project(@marker_sequence_search)}" %>
-      <br>
+    <b>Searched project: </b><%= project(@marker_sequence_search) %><br>
+    <p>
+      <b>Search parameters:</b><br>
       <%= attributes(@marker_sequence_search) %>
     </p>
   </div>

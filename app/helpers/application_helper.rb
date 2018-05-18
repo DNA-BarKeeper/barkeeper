@@ -10,6 +10,18 @@ module ApplicationHelper
     end
   end
 
+  def project_list(record)
+    projects = record.projects.select(:id, :name) & current_user.projects.select(:id, :name)
+    html = '<ul>'
+
+    projects.each do |project|
+      html << content_tag(:li, project.name)
+    end
+
+    html << '</ul>'
+    html.html_safe
+  end
+
   # Returns the full title on a per-page basis.
   def full_title(page_title)
     base_title = 'GBOL5'

@@ -10,8 +10,6 @@
   <div class="panel-body">
 
     <%= form_for(@species) do |f| %>
-
-
         <!-- check if subsp.-->
         <% a=[] %>
 
@@ -32,9 +30,7 @@
 
         <!-- Tab panes -->
         <div class="tab-content">
-
           <div class="tab-pane active" id="description">
-
             <br>
             <div class="form-group">
               <%= f.label 'Genus' %>
@@ -46,19 +42,14 @@
               <%= f.text_field :species_epithet, class: 'form-control' %>
             </div>
 
-
             <div class="form-group">
               <%= f.label :author, 'Author' %>
-
               <%= f.text_field :author, class: 'form-control' %>
-
             </div>
 
             <div class="form-group">
               <%= f.label 'Subspecies' %>
-
               <%= f.text_field :infraspecific, class: 'form-control' %>
-
             </div>
 
             <div class="form-group">
@@ -76,22 +67,21 @@
 
             <div class="form-group">
               <%= f.label 'German name' %>
-
               <%= f.text_field :german_name, class: 'form-control' %>
-
             </div>
 
             <div class="form-group">
               <%= f.label 'Comment' %>
-
               <%= f.text_area :comment, class: 'form-control' %>
+            </div>
 
+            <div class="form-group">
+              <%= f.label :projects, 'Projects this object belongs to' %>
+              <%= project_list(@species) %>
             </div>
 
             <%= f.submit 'Update', :class =>  'btn btn-default'%>
-
           </div>
-
 
           <% if @species.id %>
             <% if a.count > 1 %>

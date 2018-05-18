@@ -14,16 +14,13 @@
   <div class="panel-body">
     <%= form_for(@individual) do |f| %>
 
-
         <ul class="nav nav-tabs" role="tablist">
           <li ><a href="#description" role="tab" data-toggle="tab">Description</a></li>
           <li class="active"><a href="#locality" role="tab" data-toggle="tab">Locality</a></li>
           <li ><a href="#assigned_isolates" role="tab" data-toggle="tab">Isolates</a></li>
         </ul>
 
-
         <div class="tab-content">
-
           <div class="tab-pane" id="description">
             <br>
 
@@ -32,12 +29,10 @@
               <%= f.text_field :specimen_id, class: 'form-control' %>
             </div>
 
-
             <div class="form-group">
               <%= f.label :DNA_bank_id, 'DNA Bank ID' %>
               <%= f.text_field :DNA_bank_id, class: 'form-control' %>
             </div>
-
 
             <div class="form-group">
               <%= f.label 'Species' %>
@@ -47,31 +42,25 @@
               <%= f.text_field :species_name, data: {autocomplete_source: filter_species_index_path}, class: 'form-control'%>
             </div>
 
-
             <div class="form-group">
               <%= f.label :herbarium %>
               <%= f.text_field :herbarium, class: 'form-control' %>
             </div>
-
 
             <div class="form-group">
               <%= f.label :voucher %>
               <%= f.text_field :voucher, class: 'form-control' %>
             </div>
 
-
             <div class="form-group">
               <%= f.label :life_form %>
               <%= f.text_field :life_form, class: 'form-control' %>
-
             </div>
-
 
             <div class="form-group">
               <%= f.label :collector %>
               <%= f.text_field :collector, class: 'form-control' %>
             </div>
-
 
             <div class="form-group">
               <%= f.label :collection_nr, 'Collection Number' %>
@@ -103,6 +92,10 @@
               <%= f.text_area :comments, class: 'form-control' %>
             </div>
 
+            <div class="form-group">
+              <%= f.label :projects, 'Projects this object belongs to' %>
+              <%= project_list(@individual) %>
+            </div>
           </div>
 
           <div class="tab-pane active" id="locality" >
