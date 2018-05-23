@@ -12,16 +12,16 @@ class XmlUploader < ApplicationRecord
   # Validate filename
   validates_attachment_file_name :uploaded_file, :matches => [/xls\Z/]
 
-  def create_uploaded_file
+  def create_uploaded_file(project_id)
     file_to_upload = File.open("specimens.xls", "w")
-    file_to_upload.write(xml_string)
+    file_to_upload.write(xml_string(project_id))
     file_to_upload.close
 
     self.uploaded_file = File.open("specimens.xls")
     self.save!
   end
 
-  def xml_string
+  def xml_string(project_id)
     markers = Marker.gbol_marker
 
     @states = %w(Baden-WÃ¼rttemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein ThÃ¼ringen)
@@ -101,7 +101,7 @@ class XmlUploader < ApplicationRecord
                 xml.Cell {
                   xml.Data('ss:Type' => "String") {
                     if individual.collection_nr
-                      if individual.collection_nr.include? 's.n.' or individual.collection_nr.include? 's. n.'
+                      if individual.collection_nr.include?('s.n.') || individual.collection_nr.include?('s. n.')
                         xml.text('')
                       else
                         xml.text(individual.collection_nr)

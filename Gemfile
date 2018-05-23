@@ -78,6 +78,7 @@ end
 
 group :development, :test do
   gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'bullet' # Checks for n+1 queries
   gem 'launchy'
   gem 'meta_request' # Supporting gem for Google Chrome Rails Panel

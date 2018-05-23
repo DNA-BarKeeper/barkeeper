@@ -70,7 +70,6 @@ Rails.application.configure do
   end
 
   config.paperclip_defaults = {
-      :storage => 'filesystem'
+    :storage => 'filesystem'
   }
-
 end
