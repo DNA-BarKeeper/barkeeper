@@ -49,18 +49,19 @@ namespace :data do
 
   desc 'Get the number of species with more than 1, 2, 3, 4 or 5 sequences per marker'
   task :sequences_per_species => :environment do
+    # TODO: Exclude cases where one individual has multiple isolates or one isolate has multiple sequences per marker
     species = Species.joins(individuals: [isolates: :marker_sequences]).distinct
-    columns = %w(gt_one gt_two gt_three gt_four gt_five)
+    columns = %w(min_one gt_one gt_two gt_three gt_four gt_five)
     its = {}
     rpl16 = {}
     trnk_matk = {}
     trnlf = {}
 
     columns.each_with_index do |column, i|
-      trnlf[column.to_sym] = species_count_with_ms_count(species, 4, i + 1)
-      its[column.to_sym] = species_count_with_ms_count(species, 5, i + 1)
-      rpl16[column.to_sym] = species_count_with_ms_count(species, 6, i + 1)
-      trnk_matk[column.to_sym] = species_count_with_ms_count(species, 7, i + 1)
+      trnlf[column.to_sym] = species_count_with_ms_count(species, 4, i)
+      its[column.to_sym] = species_count_with_ms_count(species, 5, i)
+      rpl16[column.to_sym] = species_count_with_ms_count(species, 6, i)
+      trnk_matk[column.to_sym] = species_count_with_ms_count(species, 7, i)
     end
 
     puts 'Number of species with the given amount of marker sequences:'
@@ -68,6 +69,12 @@ namespace :data do
     p "ITS: #{its}"
     p "rpl16: #{rpl16}"
     p "trnK-matK: #{trnk_matk}"
+
+    # Number of individuals with more than one isolate:
+    # Individual.joins(:isolates).group(:id).having('count(isolates) > ?', 1).length
+
+    # Number of isolates per marker with more than one sequence:
+    # Isolate.joins(:marker_sequences).where(marker_sequences: { marker: 5 }).group(:id).having('count(marker_sequences) > ?', 1).length
   end
 
   def species_count_with_ms_count(species, marker_id, ms_count)
