@@ -13,20 +13,18 @@ class SpeciesXmlUploader < ApplicationRecord
   # Validate filename
   validates_attachment_file_name :uploaded_file, :matches => [/xls\Z/]
 
-  def create_uploaded_file
-
+  def create_uploaded_file(project_id)
     file_to_upload = File.open("species.xls", "w")
 
-    file_to_upload.write(xml_string)
+    file_to_upload.write(xml_string(project_id))
     file_to_upload.close
+
     self.uploaded_file = File.open("species.xls")
     self.save!
-
-    # puts xml_string
   end
 
-  def xml_string
-    @species = Species.includes( :family => { :order => :higher_order_taxon} ).all
+  def xml_string(project_id)
+    @species = Species.includes( :family => { :order => :higher_order_taxon }).in_project(project_id)
 
     @header_cells = ["UAbteilung/Klasse",
                      "Ordnung",
@@ -52,7 +50,7 @@ class SpeciesXmlUploader < ApplicationRecord
           xml.Table {
 
             # header
-            xml.Row{
+            xml.Row {
 
               @header_cells.each do |o|
                 xml.Cell {
@@ -65,7 +63,7 @@ class SpeciesXmlUploader < ApplicationRecord
             }
 
             @species.each do |species|
-              xml.Row{
+              xml.Row {
 
                 # UAbteilung/Klasse",
 
