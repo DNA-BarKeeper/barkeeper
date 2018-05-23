@@ -47,6 +47,35 @@ namespace :data do
     puts "Number of duplicate sequences with a contig: #{duplicate_ms_contig.size}"
   end
 
+  desc 'Get the number of species with more than 1, 2, 3, 4 or 5 sequences per marker'
+  task :sequences_per_species => :environment do
+    species = Species.joins(individuals: [isolates: :marker_sequences]).distinct
+    columns = %w(gt_one gt_two gt_three gt_four gt_five)
+    its = {}
+    rpl16 = {}
+    trnk_matk = {}
+    trnlf = {}
+
+    columns.each_with_index do |column, i|
+      trnlf[column.to_sym] = species_count_with_ms_count(species, 4, i + 1)
+      its[column.to_sym] = species_count_with_ms_count(species, 5, i + 1)
+      rpl16[column.to_sym] = species_count_with_ms_count(species, 6, i + 1)
+      trnk_matk[column.to_sym] = species_count_with_ms_count(species, 7, i + 1)
+    end
+
+    puts 'Number of species with the given amount of marker sequences:'
+    p "trnLF: #{trnlf}"
+    p "ITS: #{its}"
+    p "rpl16: #{rpl16}"
+    p "trnK-matK: #{trnk_matk}"
+  end
+
+  def species_count_with_ms_count(species, marker_id, ms_count)
+    species.where(individuals: { isolates: { marker_sequences: { marker: marker_id } } })
+           .group(:id)
+           .having('count(marker_sequences) > ?', ms_count).length
+  end
+
   def get_information(marker_sequences, contigs)
     sequence_count = {}
     sequence_length_avg = {}
