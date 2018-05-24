@@ -14,6 +14,11 @@ class HomeController < ApplicationController
     authorize! :impressum, :home
   end
 
+  def privacy_policy
+    @about_page = true
+    authorize! :privacy_policy, :home
+  end
+
   def help
 
   end
