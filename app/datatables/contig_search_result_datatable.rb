@@ -24,22 +24,17 @@ class ContigSearchResultDatatable
 
   def data
     contigs_data.map do |contig|
-
-      assembled='No'
-      if contig.assembled
-        assembled='Yes'
-      end
-
-      species_name=''
-      species_id=0
-      individual_name=''
-      individual_id=0
+      assembled = contig.assembled ? 'Yes' : 'No'
+      species_name = ''
+      species_id = 0
+      individual_name = ''
+      individual_id = 0
 
       if contig.try(:isolate).try(:individual).try(:species)
-        species_name=contig.isolate.individual.species.name_for_display
-        species_id=contig.isolate.individual.species.id
-        individual_name=contig.isolate.individual.specimen_id
-        individual_id=contig.isolate.individual.id
+        species_name = contig.isolate.individual.species.name_for_display
+        species_id = contig.isolate.individual.species.id
+        individual_name = contig.isolate.individual.specimen_id
+        individual_id = contig.isolate.individual.id
       end
 
       [
@@ -54,7 +49,7 @@ class ContigSearchResultDatatable
   end
 
   def contigs_data
-    @search_result ||= ContigSearch.find_by_id(@search_id).contigs.reorder("#{sort_column} #{sort_direction}")
+    @search_result ||= ContigSearch.find_by_id(@search_id).contigs.includes(isolate: [individual: :species]).reorder("#{sort_column} #{sort_direction}")
 
     @search_result = @search_result.page(page).per_page(per_page)
 

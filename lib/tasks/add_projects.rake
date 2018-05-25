@@ -1,7 +1,7 @@
 namespace :data do
   desc 'Add general project to all records.'
   task :add_general_project => :environment do
-    project = Project.find_or_create_by(name: 'All')
+    project = Project.find_or_create_by(name: 'All Records')
 
     add_to_join_table(project, Individual.all.select(:id).find_each)
     add_to_join_table(project, Species.all.select(:id).find_each)
