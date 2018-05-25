@@ -7,10 +7,6 @@
     <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "GBOL5 Web App" %>">
 
     <%= stylesheet_link_tag 'application', media: 'all'%>
-
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
-
     <%= javascript_include_tag 'application'%>
 
     <%= csrf_meta_tags %>
