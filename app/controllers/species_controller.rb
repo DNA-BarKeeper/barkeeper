@@ -7,12 +7,12 @@ class SpeciesController < ApplicationController
   before_action :set_species, only: [:show, :edit, :update, :destroy]
 
   def create_xls
-    SpeciesExport.perform_async
+    SpeciesExport.perform_async(current_project_id)
     redirect_to species_index_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Species index page > 'Download last species export'."
   end
 
   def xls
-    data = open("http:#{SpeciesXmlUploader.last.uploaded_file.url}")
+    data = Rails.env.development? ? open(Rails.root.to_s + SpeciesXmlUploader.last.uploaded_file.path) : open("http:#{SpeciesXmlUploader.last.uploaded_file.url}")
     send_data data.read, filename: 'species.xls', type: 'application/vnd.ms-excel', disposition: 'attachment', stream: 'true', buffer_size: '4096'
   end
 

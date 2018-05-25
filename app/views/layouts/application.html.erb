@@ -1,54 +1,55 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no">
-  <title><%= full_title(yield(:title)) %></title>
-  <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "GBOL5 Web App" %>">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title><%= full_title(yield(:title)) %></title>
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "GBOL5 Web App" %>">
 
-  <%= stylesheet_link_tag 'application', media: 'all'%>
+    <%= stylesheet_link_tag 'application', media: 'all'%>
 
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
 
-  <%= javascript_include_tag 'application'%>
+    <%= javascript_include_tag 'application'%>
 
-  <%= csrf_meta_tags %>
+    <%= csrf_meta_tags %>
 
-</head>
+  </head>
 
 
-<body class="<%= @about_page ? 'about_page' : ''%>">
+  <body class="<%= @about_page ? 'about_page' : ''%>">
 
-<div class="sk-circle">
-  <div class="sk-circle1 sk-child"></div>
-  <div class="sk-circle2 sk-child"></div>
-  <div class="sk-circle3 sk-child"></div>
-  <div class="sk-circle4 sk-child"></div>
-  <div class="sk-circle5 sk-child"></div>
-  <div class="sk-circle6 sk-child"></div>
-  <div class="sk-circle7 sk-child"></div>
-  <div class="sk-circle8 sk-child"></div>
-  <div class="sk-circle9 sk-child"></div>
-  <div class="sk-circle10 sk-child"></div>
-  <div class="sk-circle11 sk-child"></div>
-  <div class="sk-circle12 sk-child"></div>
-</div>
+    <div class="sk-circle">
+      <div class="sk-circle1 sk-child"></div>
+      <div class="sk-circle2 sk-child"></div>
+      <div class="sk-circle3 sk-child"></div>
+      <div class="sk-circle4 sk-child"></div>
+      <div class="sk-circle5 sk-child"></div>
+      <div class="sk-circle6 sk-child"></div>
+      <div class="sk-circle7 sk-child"></div>
+      <div class="sk-circle8 sk-child"></div>
+      <div class="sk-circle9 sk-child"></div>
+      <div class="sk-circle10 sk-child"></div>
+      <div class="sk-circle11 sk-child"></div>
+      <div class="sk-circle12 sk-child"></div>
+    </div>
 
-<header>
-  <%= render 'layouts/navigation' %>
-</header>
+    <header>
+      <%= render 'layouts/navigation' %>
+    </header>
 
-<div style="height: 20px;"></div>
+    <div style="height: 20px;"></div>
 
-<main role="main">
+    <main role="main">
+      <%= render 'layouts/messages' %>
+      <%= yield %>
+    </main>
 
-  <%= render 'layouts/messages' %>
+    <footer class="page-footer">
+      <%= render 'layouts/footer' %>
+    </footer>
 
-  <%= yield %>
-
-</main>
-
-</body>
+  </body>
 
 </html>

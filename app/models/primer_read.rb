@@ -53,6 +53,7 @@ class PrimerRead < ApplicationRecord
 
     count
   end
+
   def file_name_id
     self.name.gsub('.', "_#{self.id}.")
   end

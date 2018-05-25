@@ -33,7 +33,7 @@ class Ability
     can [:edit, :index, :filter, :change_via_script, :compare_contigs, :as_fasq], Contig
     can [:edit, :index, :filter, :show_species], Family
     can [:edit, :index, :show_species], HigherOrderTaxon
-    can [:about, :overview, :impressum], :home
+    can [:about, :overview, :impressum, :privacy_policy], :home
     can [:edit, :index, :filter, :xls], Individual
     can [:edit, :index, :filter], Isolate
     can [:filter], MarkerSequence

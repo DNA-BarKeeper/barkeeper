@@ -1,5 +1,5 @@
 class Isolate < ApplicationRecord
-  include Import
+  extend Import
   include ProjectRecord
 
   has_many :marker_sequences
@@ -25,7 +25,7 @@ class Isolate < ApplicationRecord
   end
 
   def self.import(file, project_id)
-    spreadsheet = open_spreadsheet(file)
+    spreadsheet = Isolate.open_spreadsheet(file)
     header = spreadsheet.row(1)
 
     (2..spreadsheet.last_row).each do |i|
@@ -93,7 +93,7 @@ class Isolate < ApplicationRecord
   end
 
   def assign_specimen
-    self.individual_id = search_dna_bank(lab_nr)&.id # Only assign individual_id if DNA bank search had a result
+    self.individual_id = Isolate.search_dna_bank(lab_nr)&.id # Only assign individual_id if DNA bank search had a result
   end
 
   def individual_name

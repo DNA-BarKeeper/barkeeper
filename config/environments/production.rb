@@ -51,7 +51,7 @@ Rails.application.configure do
   # config.action_cable.allowed_request_origins = [ 'http://example.com', /http:\/\/example.*/ ]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
@@ -111,6 +111,8 @@ Rails.application.configure do
 
   config.paperclip_defaults = {
       :storage => :s3,
+      :url =>':s3_domain_url',
+      :path => '/:class/:attachment/:id_partition/:style/:filename',
       :s3_credentials => {
           :bucket => ENV['S3_BUCKET_NAME'],
           :access_key_id => ENV['AWS_ACCESS_KEY_ID'],

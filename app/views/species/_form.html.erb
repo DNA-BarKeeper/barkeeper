@@ -121,14 +121,14 @@
             </div>
             <div class="tab-pane" id="info">
               <br>
-              <% url="http://www.google.com/search?q=#{@species.genus_name}+#{@species.species_epithet}" %>
+              <% url="https://www.google.com/search?q=#{@species.genus_name}+#{@species.species_epithet}" %>
               <div>
                 <a target=”_blank” href=<%=url %>>Search Google ...</a>
               </div>
               <br>
               <% name_str=@species.species_component %>
               <% name_str=name_str.gsub!(' ', '_') %>
-              <% url="http://de.m.wikipedia.org/wiki/#{name_str}" %>
+              <% url="https://de.m.wikipedia.org/wiki/#{name_str}" %>
               <div class="wideTable">
                 <object id="wiki" type="text/html" data=<%= url %> width="800px" height="600px">
                 </object>

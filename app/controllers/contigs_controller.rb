@@ -328,10 +328,6 @@ class ContigsController < ApplicationController
     end
   end
 
-  def zip
-    redirect_to ContigPdeUploader.last.uploaded_file.url
-  end
-
   def assemble_all
     contigs = Contig.in_project(current_project_id).not_assembled
     contigs.each do |c|

@@ -19,12 +19,12 @@ class IndividualsController < ApplicationController
   end
 
   def create_xls
-    SpecimenExport.perform_async
+    SpecimenExport.perform_async(current_project_id)
     redirect_to individuals_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Specimens index page > 'Download last specimens export'."
   end
 
   def xls
-    data = open("http:#{XmlUploader.last.uploaded_file.url}")
+    data = Rails.env.development? ? open(Rails.root.to_s + XmlUploader.last.uploaded_file.path) : open("http:#{XmlUploader.last.uploaded_file.url}")
     send_data data.read, filename: 'specimens.xls', type: 'application/vnd.ms-excel', disposition: 'attachment', stream: 'true', buffer_size: '4096'
   end
 
