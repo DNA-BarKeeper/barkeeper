@@ -38,8 +38,10 @@
   </div>
 </div>
 
-<%= link_to 'New Project', new_project_path %><br>
-<br>
+<% if user_signed_in? && (current_user.admin? || current_user.supervisor?) %>
+  <%= link_to 'New Project', new_project_path %><br>
+  <br>
+<% end %>
 
 <%= form_tag search_taxa_projects_path(@result), method: :get do %>
   <p>
