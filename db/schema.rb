@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180518095542) do
+ActiveRecord::Schema.define(version: 20180528143409) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -639,45 +639,6 @@ ActiveRecord::Schema.define(version: 20180518095542) do
      FROM ((families f
        JOIN orders o ON ((f.order_id = o.id)))
        JOIN higher_order_taxa hot ON ((o.higher_order_taxon_id = hot.id)));
-  SQL
-
-  create_view "overview_all_taxa_matviews", materialized: true,  sql_definition: <<-SQL
-      SELECT f.name AS family,
-      count(sp.family_id) AS species_cnt
-     FROM (families f
-       LEFT JOIN species sp ON ((f.id = sp.family_id)))
-    GROUP BY f.id, f.name;
-  SQL
-
-  create_view "overview_finished_taxa_matviews", materialized: true,  sql_definition: <<-SQL
-      SELECT count(
-          CASE
-              WHEN (marker_sequences.marker_id = 4) THEN 1
-              ELSE NULL::integer
-          END) AS trnlf_cnt,
-      count(
-          CASE
-              WHEN (marker_sequences.marker_id = 5) THEN 1
-              ELSE NULL::integer
-          END) AS its_cnt,
-      count(
-          CASE
-              WHEN (marker_sequences.marker_id = 6) THEN 1
-              ELSE NULL::integer
-          END) AS rpl16_cnt,
-      count(
-          CASE
-              WHEN (marker_sequences.marker_id = 7) THEN 1
-              ELSE NULL::integer
-          END) AS trnk_matk_cnt,
-      families.name AS families_name
-     FROM ((((marker_sequences
-       JOIN isolates ON ((isolates.id = marker_sequences.isolate_id)))
-       JOIN individuals ON ((individuals.id = isolates.individual_id)))
-       JOIN species ON ((species.id = individuals.species_id)))
-       JOIN families ON ((families.id = species.family_id)))
-    GROUP BY families.name
-    ORDER BY families.name;
   SQL
 
 end

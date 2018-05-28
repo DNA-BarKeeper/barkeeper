@@ -44,7 +44,6 @@ gem 'jbuilder', '~> 2.5' # Build JSON APIs with ease. Read more: https://github.
 gem 'mime-types'
 gem 'roo-xls' # Handle excel files
 gem 'rubyzip' # Handle zip files
-gem 'scenic' # Adds methods for creating and managing database views
 gem 'simple_form'
 gem 'slim' # TODO: Used anywhere?
 gem 'sprockets-rails', :require => 'sprockets/railtie'
@@ -77,8 +76,8 @@ group :test do
 end
 
 group :development, :test do
-  gem 'better_errors'
-  gem 'binding_of_caller'
+  gem 'better_errors' # More useful error pages in development
+  gem 'binding_of_caller' # Adds interactive shell to error pages
   gem 'bullet' # Checks for n+1 queries
   gem 'launchy'
   gem 'meta_request' # Supporting gem for Google Chrome Rails Panel
