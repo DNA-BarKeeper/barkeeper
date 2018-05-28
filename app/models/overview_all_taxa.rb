@@ -1,16 +1,10 @@
-class OverviewAllTaxaMatview < ApplicationRecord
-  def self.refresh
-    Scenic.database.refresh_materialized_view(table_name, concurrently: false, cascade: false)
-  end
+class OverviewAllTaxa < ApplicationRecord
+  include ProjectRecord
 
-  def readonly?
-    true
-  end
-
-  def self.all_taxa_json
+  def self.all_taxa_json(current_project_id)
     root = { :name => 'root', 'children' => [] }
-    taxa = HigherOrderTaxon.includes(orders: [:families]).order(:position)
-    families_mat = OverviewAllTaxaMatview.group(:family).order(:family).sum(:species_cnt)
+    taxa = HigherOrderTaxon.in_project(current_project_id).includes(orders: [:families]).order(:position)
+    species_count_per_family = Species.in_project(current_project_id).joins(:family).order('families.name').group('families.name').count
 
     i = 0
     taxa.each do |taxon|
@@ -25,7 +19,7 @@ class OverviewAllTaxaMatview < ApplicationRecord
         k = 0
         families.each do |family|
           children3 = children2[j]['children']
-          children3[k] = { name: family.name, size: families_mat[family.name].to_i }
+          children3[k] = { name: family.name, size: species_count_per_family[family.name].to_i }
           k += 1
         end
         j += 1

@@ -1,16 +1,10 @@
-class OverviewFinishedTaxaMatview < ApplicationRecord
-  def self.refresh
-    Scenic.database.refresh_materialized_view(table_name, concurrently: false, cascade: false)
-  end
+class OverviewFinishedTaxa < ApplicationRecord
+  include ProjectRecord
 
-  def readonly?
-    true
-  end
-
-  def self.finished_taxa_json(marker_name)
+  def self.finished_taxa_json(current_project_id, marker_id)
     root = { :name => 'root', 'children' => [] }
-    taxa = HigherOrderTaxon.includes(orders: [:families]).order(:position)
-    marker_sequence_cnts = OverviewFinishedTaxaMatview.group(:families_name).order(:families_name).sum(marker_name.downcase.gsub('-', '_') + '_cnt')
+    taxa = HigherOrderTaxon.in_project(current_project_id).includes(orders: [:families]).order(:position)
+    marker_sequence_cnts = MarkerSequence.in_project(current_project_id).joins(isolate: [individual: [species: :family]]).where(:marker => marker_id).order('families.name').group('families.name').count
 
     i = 0
     taxa.each do |taxon|
