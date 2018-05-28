@@ -1,0 +1,19 @@
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Taxon Search Results for "<%= params[:query] %>"</h3>
+  </div>
+
+  <div class="panel-body">
+    <%= taxon_search_result(@result, 'Species') %>
+    <%= taxon_search_result(@result, 'Family') %>
+    <%= taxon_search_result(@result, 'Order') %>
+    <%= taxon_search_result(@result, 'HigherOrderTaxon') %>
+
+    <%= form_tag add_to_taxa_projects_path, :method => :get do %>
+      <%= label :project, 'Select one or more projects to add them to all selected taxa recursively:' %><br>
+      <%= collection_select :project, :id, user_projects, :id, :name, {}, { multiple: true } %><br>
+      <%= button_to 'Add project(s)', type: 'Submit', method: 'get', class: 'btn btn-default' %>
+    <% end %>
+  </div>
+</div>

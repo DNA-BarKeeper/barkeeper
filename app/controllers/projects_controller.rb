@@ -6,7 +6,11 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all
+    if user_signed_in?
+      @projects = current_user.admin? ? Project.all : current_user.projects
+    else
+      @projects = []
+    end
   end
 
   # GET /projects/1
@@ -64,11 +68,18 @@ class ProjectsController < ApplicationController
   end
 
   def search_taxa
-
+    @result = PgSearch.multisearch(params[:query])
+    session[:search_result] = @result.pluck(:searchable_id, :searchable_type)
   end
 
   def add_to_taxa
+    Project.where(id: params[:project][:id]).each { |project| project.add_project_to_taxa(session[:search_result]) }
+    session.delete(:search_result)
 
+    respond_to do |format|
+      format.html { redirect_to projects_url, notice: "Added project(s) to all selected taxa." }
+      format.json { head :no_content }
+    end
   end
 
   private

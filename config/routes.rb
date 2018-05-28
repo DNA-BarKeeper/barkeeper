@@ -131,7 +131,12 @@ GBOLapp::Application.routes.draw do
 
   resources :alignments
 
-  resources :projects
+  resources :projects do
+    collection do
+      get :search_taxa
+      get :add_to_taxa
+    end
+  end
 
   resources :shelves
 
