@@ -28,11 +28,40 @@ class Project < ApplicationRecord
 
   validates_presence_of :name
 
-  # def self.search_taxa_by_name
-  #
-  # end
-  #
-  # def add_project_to_taxa
-  #
-  # end
+  def add_project_to_taxa(results)
+    results.each do |result|
+      result_id = result[0].to_i # searchable_id
+
+      case result[1] # searchable_type
+      when 'HigherOrderTaxon'
+        add_project_to_hot_rec(result_id)
+      when 'Order'
+        add_project_to_order_rec(result_id)
+      when 'Family'
+        add_project_to_family_rec(result_id)
+      when 'Species'
+        Species.find(result_id).add_project_and_save(id)
+      end
+    end
+  end
+
+  private
+
+  def add_project_to_hot_rec(hot_id)
+    hot = HigherOrderTaxon.find(hot_id)
+    hot.add_project_and_save(id)
+    hot.orders.each { |o| add_project_to_order_rec(o.id) }
+  end
+
+  def add_project_to_order_rec(order_id)
+    order = Order.find(order_id)
+    order.add_project_and_save(id)
+    order.families.each { |f| add_project_to_family_rec(f.id) }
+  end
+
+  def add_project_to_family_rec(family_id)
+    family = Family.find(family_id)
+    family.add_project_and_save(id)
+    family.species.each { |s| s.add_project_and_save(id) }
+  end
 end

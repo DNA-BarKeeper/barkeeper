@@ -53,6 +53,8 @@ class Ability
       cannot :manage, Project
       cannot :manage, Responsibility
 
+      can [:read, :search_taxa, :add_to_taxa], Project, id: user.project_ids
+
       # Additional permissions for guests
       if user.guest?
         cannot [:change_base, :change_left_clip, :change_right_clip], PrimerRead

@@ -22,7 +22,7 @@
 
       <%= form_for @user do |f| %>
         <%= f.label 'Currently selected project:' %>
-        <%= f.collection_select :default_project_id, @user.projects, :id, :name %>
+        <%= f.collection_select :default_project_id, @user.projects, :id, :name %><br>
 
         <div class="form-actions">
           <%= f.submit 'Change selected project',
@@ -30,7 +30,10 @@
                        title: 'This will influence what contents are shown throughout this web application',
                        'data-toggle' => 'tooltip',
                        'data-placement' => 'right' %>
+
+          <%= link_to 'View projects', projects_path, class: 'btn btn-default' %>
         </div>
+
       <% end %>
       </p>
     </div>

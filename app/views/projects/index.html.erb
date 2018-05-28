@@ -38,4 +38,14 @@
   </div>
 </div>
 
-<%= link_to 'New Project', new_project_path %>
+<%= link_to 'New Project', new_project_path %><br>
+<br>
+
+<%= form_tag search_taxa_projects_path(@result), method: :get do %>
+  <p>
+    <%= label :query, 'Search records across species, families, orders and higher order taxa in order to add them to projects:' %>
+    <br>
+    <%= text_field_tag :query, params[:query] %>
+    <%= submit_tag 'Search', name: nil %>
+  </p>
+<% end %>
