@@ -47,7 +47,7 @@
   <p>
     <%= label :query, 'Search records across species, families, orders and higher order taxa in order to add them to projects:' %>
     <br>
-    <%= text_field_tag :query, params[:query] %>
-    <%= submit_tag 'Search', name: nil %>
+    <%= text_field_tag :query, params[:query], class: 'form-control', style: 'display: inline;' %>
+    <%= submit_tag 'Search', name: nil, class: 'btn btn-default' %>
   </p>
 <% end %>

@@ -4,21 +4,25 @@ module ProjectHelper
     current_user.admin? ? Project.all : current_user.projects
   end
 
-  def taxon_search_result(result, taxon_type)
-    taxa = result.where(searchable_type: taxon_type)
+  def taxa_grouped_select(results)
+    groups = %w(HigherOrderTaxon Order Family Species)
     html = ''
 
-    unless taxa.blank?
-      html << "<strong>#{taxon_type.titleize}:</strong><br>"
-      html << '<ul>'
+    html << "<select id=\"taxa_id\" multiple=\"multiple\">"
+    groups.each_with_index do |group, index|
+      taxa = results.where(searchable_type: group)
 
-      taxa.each do |taxon|
-        html << content_tag(:li, taxon.content)
+      unless taxa.blank?
+        html << "<optgroup label=\"#{group.titleize}\" class=\"group-#{index + 1}\">"
+
+        taxa.each { |taxon| html << content_tag(:option, taxon.content, :value => taxon.searchable_id) }
+
+        html << "</optgroup>"
       end
-
-      html << '</ul><br>'
-
-      html.html_safe
     end
+
+    html << "</select>"
+
+    html.html_safe
   end
 end

@@ -11,4 +11,5 @@
 //= require bootstrap
 //= require keyboard_shortcuts
 //= require d3.min
+//= require bootstrap-multiselect
 //= require_tree .

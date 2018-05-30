@@ -36,6 +36,7 @@ gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
 gem 'jquery-fileupload-rails'
 gem 'jquery-turbolinks'
 gem 'select2-rails' # Integrate Select2 Javascript library
+gem 'bootstrap-multiselect_rails' # multi select boxes using bootstrap
 
 gem 'bcrypt', '~> 3.1.7', platforms: :ruby
 gem 'bio' # BioRuby
