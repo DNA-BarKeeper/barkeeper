@@ -11,15 +11,20 @@ module ApplicationHelper
   end
 
   def project_list(record)
-    projects = record.projects.select(:id, :name) & current_user.projects.select(:id, :name)
-    html = '<ul>'
-
-    projects.each do |project|
-      html << content_tag(:li, project.name)
+    if user_signed_in?
+      projects = record.projects.select(:id, :name) & current_user.projects.select(:id, :name)
+    else
+      projects = record.projects.select(:id, :name) & Project.where(name: 'GBOL5').select(:id, :name)
     end
 
-    html << '</ul>'
-    html.html_safe
+      html = '<ul>'
+
+      projects.each do |project|
+        html << content_tag(:li, project.name)
+      end
+
+      html << '</ul>'
+      html.html_safe
   end
 
   # Returns the full title on a per-page basis.
