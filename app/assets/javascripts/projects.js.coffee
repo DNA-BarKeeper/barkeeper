@@ -1,9 +1,17 @@
 jQuery ->
   $(document).ready ->
-    $('#taxa_id').multiselect
+    $('#species_id').multiselect
       maxHeight: 200
-      enableClickableOptGroups: true
-      enableCollapsibleOptGroups: true
+      includeSelectAllOption: true
+
+    $('#family_id').multiselect
+      maxHeight: 200
+
+    $('#order_id').multiselect
+      maxHeight: 200
+
+    $('#higherordertaxon_id').multiselect
+      maxHeight: 200
 
     $('#project_id').multiselect
       maxHeight: 200

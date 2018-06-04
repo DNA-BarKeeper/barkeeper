@@ -4,24 +4,55 @@ module ProjectHelper
     current_user.admin? ? Project.all : current_user.projects
   end
 
-  def taxa_grouped_select(results)
+  def taxa_selects(results)
     groups = %w(HigherOrderTaxon Order Family Species)
     html = ''
 
-    html << "<select id=\"taxa_id\" multiple=\"multiple\">"
-    groups.each_with_index do |group, index|
+    groups.each do |group|
       taxa = results.where(searchable_type: group)
 
       unless taxa.blank?
-        html << "<optgroup label=\"#{group.titleize}\" class=\"group-#{index + 1}\">"
-
-        taxa.each { |taxon| html << content_tag(:option, taxon.content, :value => taxon.searchable_id) }
-
-        html << "</optgroup>"
+        html << '<div>'
+        html << label(group.downcase.to_sym, group.titleize)
+        html << '<br>'
+        html << collection_select(group.downcase.to_sym, :id, @result.where(searchable_type: group), :searchable_id, :content, {}, { multiple: true })
+        html << '</div>'
+        html << '<br>'
       end
     end
 
-    html << "</select>"
+    html.html_safe
+  end
+
+  def taxa_grouped_select(results)
+    groups = %w(HigherOrderTaxon Order Family Species)
+    html = ''
+    optgroups = ''
+
+    groups.each_with_index do |group, index|
+      taxa = results.where(searchable_type: group)
+      options = ''
+
+      unless taxa.blank?
+        taxa.each { |taxon| options << content_tag(:option, taxon.content, :value => taxon.searchable_id) }
+
+        optgroups << content_tag(:optgroup, options.html_safe, label: group.titleize, class: "group-#{index + 1}")
+      end
+    end
+
+    html << select_tag(:taxa, optgroups.html_safe, { multiple: true }) #html << '<select id=\"taxa_id\" name=\"taxa[id][]\" multiple=\"multiple\">'
+
+    html.html_safe
+  end
+
+  def taxon_select(result, taxon_type)
+    taxa = result.where(searchable_type: taxon_type)
+    html = ''
+    options = ''
+
+    taxa.each { |taxon| options << content_tag(:option, taxon.content, :value => taxon.searchable_id) } unless taxa.blank?
+
+    html << select_tag(:taxa, options.html_safe, { multiple: true, name: taxon_type.titleize })
 
     html.html_safe
   end

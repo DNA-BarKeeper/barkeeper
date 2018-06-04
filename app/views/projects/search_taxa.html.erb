@@ -7,10 +7,7 @@
   <div class="panel-body">
 
     <%= form_tag add_to_taxa_projects_path, :method => :get do %>
-      <div>
-        <%= label :taxa, 'Select some or all found taxa:' %><br>
-        <%= taxa_grouped_select(@result) %>
-      </div>
+      <div><%= taxa_selects(@result) %></div>
 
       <br>
 
