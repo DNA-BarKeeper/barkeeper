@@ -28,40 +28,36 @@ class Project < ApplicationRecord
 
   validates_presence_of :name
 
-  def add_project_to_taxa(results)
-    results.each do |result|
-      result_id = result[0].to_i # searchable_id
-
-      case result[1] # searchable_type
-      when 'HigherOrderTaxon'
-        add_project_to_hot_rec(result_id)
-      when 'Order'
-        add_project_to_order_rec(result_id)
-      when 'Family'
-        add_project_to_family_rec(result_id)
-      when 'Species'
-        Species.includes(:projects).find(result_id).add_project_and_save(id)
-      end
-    end
+  def add_project_to_taxa(taxa_selection)
+    taxa_selection[:hot]&.each { |hot_id| add_project_to_hot_rec(hot_id) }
+    taxa_selection[:order]&.each { |order_id| add_project_to_order_rec(order_id) }
+    taxa_selection[:family]&.each { |family_id| add_project_to_family_rec(family_id) }
+    taxa_selection[:species]&.each { |species_id| Species.includes(:projects).find(species_id).add_project_and_save(id) unless species_id.blank? }
   end
 
   private
 
   def add_project_to_hot_rec(hot_id)
-    hot = HigherOrderTaxon.includes(:projects).find(hot_id)
-    hot.add_project_and_save(id)
-    hot.orders.each { |o| add_project_to_order_rec(o.id) }
+    unless hot_id.blank?
+      hot = HigherOrderTaxon.includes(:projects).find(hot_id)
+      hot.add_project_and_save(id)
+      hot.orders.each { |o| add_project_to_order_rec(o.id) }
+    end
   end
 
   def add_project_to_order_rec(order_id)
-    order = Order.includes(:projects).find(order_id)
-    order.add_project_and_save(id)
-    order.families.each { |f| add_project_to_family_rec(f.id) }
+    unless order_id.blank?
+      order = Order.includes(:projects).find(order_id)
+      order.add_project_and_save(id)
+      order.families.each { |f| add_project_to_family_rec(f.id) }
+    end
   end
 
   def add_project_to_family_rec(family_id)
-    family = Family.includes(:projects).find(family_id)
-    family.add_project_and_save(id)
-    family.species.each { |s| s.add_project_and_save(id) }
+    unless family_id.blank?
+      family = Family.includes(:projects).find(family_id)
+      family.add_project_and_save(id)
+      family.species.each { |s| s.add_project_and_save(id) }
+    end
   end
 end

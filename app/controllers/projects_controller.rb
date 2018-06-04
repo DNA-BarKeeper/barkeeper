@@ -69,13 +69,17 @@ class ProjectsController < ApplicationController
 
   def search_taxa
     @result = PgSearch.multisearch(params[:query])
-    session[:search_result] = @result.pluck(:searchable_id, :searchable_type)
   end
 
   def add_to_taxa
-    Project.where(id: params[:project][:id]).each { |project| project.add_project_to_taxa(session[:search_result]) }
-    session.delete(:search_result)
+    taxa = {}
+    taxa[:hot] = params[:higherordertaxon][:id] if params[:higherordertaxon]
+    taxa[:order] = params[:order][:id] if params[:order]
+    taxa[:family] = params[:family][:id] if params[:family]
+    taxa[:species] = params[:species][:id] if params[:species]
 
+    Project.where(id: params[:project][:id]).each { |project| project.add_project_to_taxa(taxa) }
+    # TODO: redirect back if no projects and/or taxa were selected
     respond_to do |format|
       format.html { redirect_to projects_url, notice: "Added project(s) to all selected taxa." }
       format.json { head :no_content }
@@ -83,13 +87,13 @@ class ProjectsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_project
-      @project = Project.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_project
+    @project = Project.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def project_params
-      params.require(:project).permit(:name, :description, :start, :due, :user_ids => [])
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def project_params
+    params.require(:project).permit(:name, :description, :start, :due, :user_ids => [])
+  end
 end
