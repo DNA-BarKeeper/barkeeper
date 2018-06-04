@@ -52,7 +52,6 @@ gem 'sprockets-rails', :require => 'sprockets/railtie'
 gem 'whenever', require: false # Runs scheduled jobs via cron
 gem 'will_paginate', '> 3.0' # TODO: Really needed?
 gem 'will_paginate-bootstrap' # TODO: Really needed?
-gem 'scenic'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
