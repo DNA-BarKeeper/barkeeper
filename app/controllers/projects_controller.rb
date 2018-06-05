@@ -79,10 +79,16 @@ class ProjectsController < ApplicationController
     taxa[:species] = params[:species][:id] if params[:species]
 
     Project.where(id: params[:project][:id]).each { |project| project.add_project_to_taxa(taxa) }
+
     # TODO: redirect back if no projects and/or taxa were selected
     respond_to do |format|
-      format.html { redirect_to projects_url, notice: "Added project(s) to all selected taxa." }
-      format.json { head :no_content }
+      # if params[:project][:id].all?(&:blank?) # No project selected
+      #   format.html { render :search_taxa }
+      #   format.json { render json: @project.errors, status: :unprocessable_entity }
+      # else
+        format.html { redirect_to projects_url, notice: "Added project(s) to all selected taxa." }
+        format.json { head :no_content }
+      # end
     end
   end
 
