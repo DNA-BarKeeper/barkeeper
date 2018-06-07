@@ -37,6 +37,7 @@ GBOLapp::Application.routes.draw do
 
   resources :marker_sequence_searches do
     post :export_as_fasta
+    post :export_taxon_file
   end
 
   resources :contigs do
