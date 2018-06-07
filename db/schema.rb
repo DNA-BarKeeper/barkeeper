@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180528143409) do
+ActiveRecord::Schema.define(version: 20180607132126) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -293,8 +293,8 @@ ActiveRecord::Schema.define(version: 20180528143409) do
     t.string   "species"
     t.string   "order"
     t.string   "specimen"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
     t.integer  "user_id"
     t.string   "title"
     t.string   "family"
@@ -302,6 +302,7 @@ ActiveRecord::Schema.define(version: 20180528143409) do
     t.integer  "min_length"
     t.integer  "max_length"
     t.integer  "project_id"
+    t.boolean  "has_species"
     t.index ["project_id"], name: "index_marker_sequence_searches_on_project_id", using: :btree
   end
 

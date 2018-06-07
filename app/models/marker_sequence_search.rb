@@ -29,6 +29,8 @@ class MarkerSequenceSearch < ApplicationRecord
       marker_sequences = marker_sequences.not_verified if (verified == 'unverified')
     end
 
+    marker_sequences = marker_sequences.has_species if has_species.present?
+
     marker_sequences = marker_sequences.joins(:marker).where("markers.name ilike ?", "%#{marker}%") if marker.present?
 
     marker_sequences = marker_sequences.joins(isolate: { individual: {species: {family: :order}}}).where("orders.name ilike ?", "%#{order}%") if order.present?

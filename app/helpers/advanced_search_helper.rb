@@ -24,6 +24,8 @@ module AdvancedSearchHelper
         "Length minimum: #{v}"
       when 'max_length'
         "Length maximum: #{v}"
+      when 'has_species'
+        "Is assigned to a species"
       else
         "#{k.capitalize}: #{v}"
       end

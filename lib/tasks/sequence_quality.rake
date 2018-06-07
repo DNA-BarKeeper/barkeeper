@@ -107,6 +107,12 @@ namespace :data do
 
       puts ''
     end
+
+    # Check sequences for stop codons
+    stop_codons = %w(tag tga taa)
+    # sequence = Bio::Sequence::NA.new(MarkerSequence.gbol.first.sequence)
+    # codons = sequence.codon_usage
+    # stop_codons.each { |codon| puts codons[codon] }
   end
 
   def species_count_with_ms_count(species, marker_id, ms_count)
