@@ -18,6 +18,23 @@ class MarkerSequenceSearch < ApplicationRecord
     fasta
   end
 
+  def taxon_file
+    taxa = ''
+
+    marker_sequences.includes(isolate: [individual: [species: [family: [order: :higher_order_taxon]]]]).each do |marker_sequence|
+      species = marker_sequence.isolate&.individual&.species&.composed_name
+      family = marker_sequence.isolate&.individual&.species&.family&.name
+      order = marker_sequence.isolate&.individual&.species&.family&.order&.name
+      hot = marker_sequence.isolate&.individual&.species&.family&.order&.higher_order_taxon&.name
+
+      taxa << marker_sequence.name
+      taxa << "\t"
+      taxa << "Eukaryota;Embryophyta;#{hot};#{order};#{family};#{species}\n"
+    end
+
+    taxa
+  end
+
   private
 
   def find_marker_sequences
