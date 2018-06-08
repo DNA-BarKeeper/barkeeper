@@ -53,6 +53,6 @@ class MarkerSequenceSearchesController < ApplicationController
   private
   # Never trust parameters from the scary internet, only allow the white list through.
   def marker_sequence_search_params
-    params.require(:marker_sequence_search).permit(:title, :name, :has_species, :marker, :order, :species, :specimen, :family, :verified, :max_length, :min_length, :project_id)
+    params.require(:marker_sequence_search).permit(:title, :name, :has_species, :marker, :order, :higher_order_taxon, :species, :specimen, :family, :verified, :max_length, :min_length, :project_id)
   end
 end

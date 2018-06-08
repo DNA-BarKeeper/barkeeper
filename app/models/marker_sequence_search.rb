@@ -50,11 +50,13 @@ class MarkerSequenceSearch < ApplicationRecord
 
     marker_sequences = marker_sequences.joins(:marker).where("markers.name ilike ?", "%#{marker}%") if marker.present?
 
-    marker_sequences = marker_sequences.joins(isolate: { individual: {species: {family: :order}}}).where("orders.name ilike ?", "%#{order}%") if order.present?
+    marker_sequences = marker_sequences.joins(isolate: {individual: {species: {family: {order: :higher_order_taxon}}}}).where("higher_order_taxa.name ilike ?", "%#{higher_order_taxon}%") if higher_order_taxon.present?
 
-    marker_sequences = marker_sequences.joins(isolate: { individual: {species: :family}}).where("families.name ilike ?", "%#{family}%") if family.present?
+    marker_sequences = marker_sequences.joins(isolate: {individual: {species: {family: :order}}}).where("orders.name ilike ?", "%#{order}%") if order.present?
 
-    marker_sequences = marker_sequences.joins(isolate: { individual: :species }).where("species.composed_name ilike ?", "%#{species}%") if species.present?
+    marker_sequences = marker_sequences.joins(isolate: {individual: {species: :family}}).where("families.name ilike ?", "%#{family}%") if family.present?
+
+    marker_sequences = marker_sequences.joins(isolate: {individual: :species }).where("species.composed_name ilike ?", "%#{species}%") if species.present?
 
     marker_sequences = marker_sequences.joins(isolate: :individual).where("individuals.specimen_id ilike ?", "%#{specimen}%") if specimen.present?
 

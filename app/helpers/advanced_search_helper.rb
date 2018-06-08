@@ -27,7 +27,7 @@ module AdvancedSearchHelper
       when 'has_species'
         "Is assigned to a species"
       else
-        "#{k.capitalize}: #{v}"
+        "#{k.titleize}: #{v}"
       end
     end
     output.join(', ')
