@@ -41,7 +41,7 @@ jQuery(function() {
         }
     });
 
-    disableButton($("input:submit")); // Submit button is disabled on page load
+    disableButton($('input[type="submit"][value="Add project(s)"]')); // Submit button is disabled on page load
 });
 
 function noneSelected() {
@@ -57,7 +57,7 @@ function noneSelected() {
 }
 
 function changeSubmitButtonStatus() {
-    var button = $("input:submit");
+    var button = $('input[type="submit"][value="Add project(s)"]');
 
     if (noneSelected()) {
         disableButton(button);
@@ -72,8 +72,7 @@ function enableButton(button) {
     button.removeAttr('title');
 }
 
-function disableButton() {
-    var button = $("input:submit")
+function disableButton(button) {
     button.attr('disabled', 'disabled');
     button.attr('title', 'Please select at least one taxon and one project.');
 }
