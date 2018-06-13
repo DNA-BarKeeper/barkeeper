@@ -13,7 +13,7 @@
       <br>
 
       <div>
-        <%= label :project, 'Select one or more projects to add them to all selected taxa recursively:' %><br>
+        <%= label :project, 'Select one or more projects to add all selected taxa recursively:' %><br>
         <%= collection_select :project, :id, user_projects, :id, :name, {}, { multiple: true } %>
       </div>
 
