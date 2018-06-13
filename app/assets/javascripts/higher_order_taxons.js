@@ -5,6 +5,7 @@ jQuery(function() {
         ],
         "order": [ 2, 'asc' ]
     });
+
     $('#higher_order_taxon_marker_ids').chosen({
         allow_single_deselect: true,
         no_results_text: 'No results matched',
