@@ -16,7 +16,7 @@ jQuery(function() {
         sAjaxSource: $('#marker_sequence_search_results').data('source'),
         "columnDefs": [{
             "orderable": false,
-            "targets": 3
+            "targets": [1, 3]
         }],
         "order": [ 0, 'asc' ]
     });
