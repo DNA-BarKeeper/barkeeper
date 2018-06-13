@@ -1,6 +1,6 @@
 module AdvancedSearchHelper
   def title(search)
-    search.title unless search.title.blank?
+    "- #{search.title unless search.title.blank?}"
   end
 
   def project(search)
