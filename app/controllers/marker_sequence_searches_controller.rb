@@ -44,9 +44,15 @@ class MarkerSequenceSearchesController < ApplicationController
     send_data(@marker_sequence_search.as_fasta, :filename => "#{file_name}.fasta", :type => "application/txt")
   end
 
+  def export_taxon_file
+    @marker_sequence_search = MarkerSequenceSearch.find(params[:marker_sequence_search_id])
+    file_name = @marker_sequence_search.title.empty? ? "marker_sequence_search_#{@marker_sequence_search.created_at}" : @marker_sequence_search.title
+    send_data(@marker_sequence_search.taxon_file, :filename => "#{file_name}.tax", :type => "application/txt")
+  end
+
   private
   # Never trust parameters from the scary internet, only allow the white list through.
   def marker_sequence_search_params
-    params.require(:marker_sequence_search).permit(:title, :name, :marker, :order, :species, :specimen, :family, :verified, :max_length, :min_length, :project_id)
+    params.require(:marker_sequence_search).permit(:title, :name, :has_species, :marker, :order, :higher_order_taxon, :species, :specimen, :family, :verified, :max_length, :min_length, :project_id)
   end
 end

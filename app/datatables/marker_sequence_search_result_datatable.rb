@@ -43,7 +43,7 @@ class MarkerSequenceSearchResultDatatable
   end
 
   def marker_sequences_data
-    @search_result ||= MarkerSequenceSearch.find_by_id(@search_id).marker_sequences.includes(isolate: [individual: :species]).reorder("#{sort_column} #{sort_direction}")
+    @search_result ||= MarkerSequenceSearch.find_by_id(@search_id).marker_sequences.includes(isolate: [individual: :species]).select(:name, :species_id, :updated_at).reorder("#{sort_column} #{sort_direction}")
 
     @search_result = @search_result.page(page).per_page(per_page)
 
@@ -55,15 +55,15 @@ class MarkerSequenceSearchResultDatatable
   end
 
   def page
-    params[:iDisplayStart].to_i/per_page + 1
+    params[:iDisplayStart].to_i / per_page + 1
   end
 
   def per_page
-    params[:iDisplayLength].to_i > 0 ? params[:iDisplayLength].to_i : 10
+    params[:iDisplayLength].to_i.positive? ? params[:iDisplayLength].to_i : 10
   end
 
   def sort_column
-    columns = %w[name species_id updated_at]
+    columns = %w[marker_sequences.name species_id marker_sequences.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

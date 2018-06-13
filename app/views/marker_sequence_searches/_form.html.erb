@@ -23,6 +23,11 @@
         <%= f.label :both_verify, "Both" %>
       </div>
       <br/>
+      <div>
+        <%= f.check_box :has_species %>
+        <%= f.label :has_species, "Is assigned to a species" %>
+      </div>
+      <br/>
       <div class="field">
         <%= f.label :marker %><br />
         <%= f.text_field :marker, data: { autocomplete_source: Marker.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
@@ -42,6 +47,10 @@
       <div class="field">
         <%= f.label :order %><br />
         <%= f.text_field :order, data: { autocomplete_source: Order.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+      </div>
+      <div class="field">
+        <%= f.label :higher_order_taxon %><br />
+        <%= f.text_field :higher_order_taxon, data: { autocomplete_source: HigherOrderTaxon.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
       </div>
       <br>
       <div class="field">
