@@ -46,5 +46,9 @@ jQuery(function() {
 
     $('#marker_sequence_search_order').autocomplete({
         source: $('#marker_sequence_search_order').data('autocomplete-source')
+    })
+
+    $('#marker_sequence_search_higher_order_taxon').autocomplete({
+        source: $('#marker_sequence_search_higher_order_taxon').data('autocomplete-source')
     });
 });

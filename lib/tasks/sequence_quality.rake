@@ -2,42 +2,44 @@ namespace :data do
 
   desc 'Get information about verified marker sequences (with associated species) and contigs in database'
   task :sequence_info_verified => [:environment, :general_info] do
-    marker_sequences = MarkerSequence.has_species.verified
-    contigs = Contig.verified.joins(:primer_reads)
+    marker_sequences = MarkerSequence.gbol.has_species.verified
+    contigs = Contig.gbol.verified.joins(:primer_reads)
 
     get_information(marker_sequences, contigs)
   end
 
-  desc 'Get information about all marker sequences and contigs in database'
-  task :sequence_info_all => [:environment, :general_info] do
-    marker_sequences = MarkerSequence.all
-    contigs = Contig.joins(:primer_reads)
+  desc 'Get information about all gbol5 marker sequences and contigs in database'
+  task :sequence_info_gbol => [:environment, :general_info] do
+    marker_sequences = MarkerSequence.gbol
+    contigs = Contig.joins(:primer_reads).gbol
 
     get_information(marker_sequences, contigs)
   end
 
-  desc 'Get general information about marker sequences and contigs in database'
+  desc 'Get general information about gbol5 marker sequences and contigs in database'
   task :general_info => :environment do
-    puts "Number of marker sequences: #{MarkerSequence.all.size}"
-    puts "Number of verified marker sequences in database: #{MarkerSequence.verified.size}"
-    puts "Number of verified marker sequences with associated species in database: #{MarkerSequence.has_species.verified.length}"
-    puts "Number of marker sequences without associated contigs: #{MarkerSequence.includes(:contigs).where(contigs: { id: nil }).size}"
-    puts "Number of marker sequences without associated isolate: #{MarkerSequence.includes(:isolate).where( isolate: nil ).size}"
+    marker_sequences = MarkerSequence.gbol
+    puts "Number of marker sequences: #{marker_sequences.size}"
+    puts "Number of verified marker sequences in database: #{marker_sequences.verified.size}"
+    puts "Number of verified marker sequences with associated species in database: #{marker_sequences.has_species.verified.length}"
+    puts "Number of marker sequences without associated contigs: #{marker_sequences.includes(:contigs).where(contigs: { id: nil }).size}"
+    puts "Number of marker sequences without associated isolate: #{marker_sequences.includes(:isolate).where( isolate: nil ).size}"
     puts ''
 
-    puts "Number of contigs in database: #{Contig.all.size}"
-    puts "Number of verified contigs in database: #{Contig.verified.size}"
+    contigs = Contig.gbol
+    puts "Number of contigs in database: #{contigs.size}"
+    puts "Number of verified contigs in database: #{contigs.verified.size}"
     puts ''
 
-    puts "Number of specimen in database: #{Individual.all.size}"
+    puts "Number of specimen in database: #{Individual.gbol.size}"
     puts ''
   end
 
   task :duplicate_sequences => :environment do
-    gbol_sequences = MarkerSequence.where('marker_sequences.name ilike ?', 'gbol%')
+    gbol_sequences = MarkerSequence.gbol
     ms_with_contig = gbol_sequences.joins(:contigs).distinct
 
-    duplicate_names = gbol_sequences.group(:name).having('count(name) > 1').count.keys
+    duplicate_names = gbol_sequences.group('marker_sequences.name').having('count(marker_sequences.name) > 2').count.keys
     duplicate_ms = gbol_sequences.where(marker_sequences: { name: duplicate_names })
     duplicate_ms_contig = ms_with_contig.where(marker_sequences: { name: duplicate_names })
 
@@ -77,6 +79,42 @@ namespace :data do
     # Isolate.joins(:marker_sequences).where(marker_sequences: { marker: 5 }).group(:id).having('count(marker_sequences) > ?', 1).length
   end
 
+  task :get_high_quality_sequences => :environment do
+    sequences = MarkerSequence.gbol # Only GBOL5 sequences
+    puts "Number of GBOL5 sequences: #{sequences.size}"
+
+    sequences = sequences.has_species # Only sequences with assigned species
+    puts "Number of sequences with assigned species: #{sequences.size}"
+
+    duplicate_names = sequences.group('marker_sequences.name').having('count(marker_sequences.name) > 2').count.keys
+    sequences = sequences.where.not(marker_sequences: { name: duplicate_names }) # Exclude all duplicate sequences until it is solved which ones are valid
+    puts "Number of sequences without duplicates: #{sequences.size}"
+    puts "Duplicate sequences: #{duplicate_names.inspect}"
+
+    puts ''
+
+    sequences_per_marker = {}
+    Marker.gbol.each do |marker|
+      sequences_per_marker[marker.name.to_sym] = sequences.where(marker_id: marker.id)
+      puts "Number of sequences for #{marker.name}: #{sequences_per_marker[marker.name.to_sym].size}"
+
+      average_length = sequences_per_marker[marker.name.to_sym].average('length(sequence)').to_f.round(2)
+      puts "Average length of these sequences: #{average_length}"
+
+      threshold = (average_length * 0.70).to_f.round # Sequence length should be at least 70% of average length
+      sequences_per_marker[marker.name.to_sym] = sequences_per_marker[marker.name.to_sym].where('length(sequence) > ?', threshold)
+      puts "Number of sequences above length threshold of #{threshold}: #{sequences_per_marker[marker.name.to_sym].size}"
+
+      puts ''
+    end
+
+    # Check sequences for stop codons
+    stop_codons = %w(tag tga taa)
+    # sequence = Bio::Sequence::NA.new(MarkerSequence.gbol.first.sequence)
+    # codons = sequence.codon_usage
+    # stop_codons.each { |codon| puts codons[codon] }
+  end
+
   def species_count_with_ms_count(species, marker_id, ms_count)
     species.where(individuals: { isolates: { marker_sequences: { marker: marker_id } } })
            .group(:id)
@@ -92,15 +130,15 @@ namespace :data do
     reads_per_contig_min = {}
     reads_per_contig_max = {}
 
-    Marker.gbol_marker.each do |marker|
+    Marker.gbol.each do |marker|
       sequences = marker_sequences.where(marker_id: marker.id)
       contigs_marker = contigs.where(marker_id: marker.id)
 
       if sequences.size.positive?
         sequence_count[marker.name] = sequences.size
         sequence_length_avg[marker.name] = sequences.average('length(sequence)').to_f.round(2)
-        sequence_length_min[marker.name] = sequences.where.not(:sequence => nil).order('length(sequence) asc').first.sequence.length
-        sequence_length_max[marker.name] = sequences.where.not(:sequence => nil).order('length(sequence) desc').first.sequence.length
+        sequence_length_min[marker.name] = sequences.select(:sequence, 'length(sequence)').where.not(:sequence => nil).order('length(sequence) asc').first.sequence.length
+        sequence_length_max[marker.name] = sequences.select(:sequence, 'length(sequence)').where.not(:sequence => nil).order('length(sequence) desc').first.sequence.length
       end
 
       if contigs_marker.size.positive?
