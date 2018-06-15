@@ -180,6 +180,12 @@ GBOLapp::Application.routes.draw do
     end
   end
 
+  resources :mislabel_analyses do
+    collection do
+      post :import
+    end
+  end
+
   resources :families do
     collection do
       get 'filter'

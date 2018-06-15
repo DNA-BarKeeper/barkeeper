@@ -1,9 +1,11 @@
 class MarkerSequence < ApplicationRecord
   include ProjectRecord
 
-  belongs_to :isolate
   has_many :contigs
+  has_many :mislabels
+  has_and_belongs_to_many :mislabel_analyses
   belongs_to :marker
+  belongs_to :isolate
 
   scope :verified, -> { joins(:contigs).where(contigs: { verified: true }) }
   scope :not_verified, -> { joins(:contigs).where(contigs: { verified: false }) }

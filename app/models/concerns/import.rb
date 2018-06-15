@@ -3,7 +3,7 @@ module Import
 
   def open_spreadsheet(file)
     case File.extname(file.original_filename)
-    when '.csv' then Roo::Csv.new(file.path)
+    when '.csv' then Roo::CSV.new(file.path)
     when '.xls' then Roo::Excel.new(file.path)
     when '.xlsx' then Roo::Excelx.new(file.path)
     when '.ods' then Roo::OpenOffice.new(file.path)

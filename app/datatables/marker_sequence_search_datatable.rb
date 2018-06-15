@@ -35,8 +35,6 @@ class MarkerSequenceSearchDatatable
 
   def searches
     @searches = MarkerSequenceSearch.where.not(title: '').where(:user_id => @current_user_id).order("#{sort_column} #{sort_direction}")
-    p MarkerSequenceSearch.where.not(title: '').where(:user_id => @current_user_id).class
-
     @searches = @searches.page(page).per_page(per_page)
 
     if params[:sSearch].present?

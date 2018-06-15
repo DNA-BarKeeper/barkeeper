@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180608122922) do
+ActiveRecord::Schema.define(version: 20180615091603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -318,6 +318,12 @@ ActiveRecord::Schema.define(version: 20180608122922) do
     t.string   "reference"
   end
 
+  create_table "marker_sequences_mislabel_analyses", id: false, force: :cascade do |t|
+    t.integer "marker_sequence_id",   null: false
+    t.integer "mislabel_analysis_id", null: false
+    t.index ["marker_sequence_id", "mislabel_analysis_id"], name: "index_marker_sequences_mislabel_analyses", using: :btree
+  end
+
   create_table "marker_sequences_projects", id: false, force: :cascade do |t|
     t.integer "marker_sequence_id", null: false
     t.integer "project_id",         null: false
@@ -352,6 +358,26 @@ ActiveRecord::Schema.define(version: 20180608122922) do
     t.integer "micronic_plate_id", null: false
     t.integer "project_id",        null: false
     t.index ["micronic_plate_id", "project_id"], name: "index_micronic_plates_projects", using: :btree
+  end
+
+  create_table "mislabel_analyses", force: :cascade do |t|
+    t.string   "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "mislabels", force: :cascade do |t|
+    t.string   "level"
+    t.decimal  "confidence"
+    t.string   "proposed_label"
+    t.string   "proposed_path"
+    t.string   "path_confidence"
+    t.integer  "mislabel_analysis_id"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.integer  "marker_sequence_id"
+    t.index ["marker_sequence_id"], name: "index_mislabels_on_marker_sequence_id", using: :btree
+    t.index ["mislabel_analysis_id"], name: "index_mislabels_on_mislabel_analysis_id", using: :btree
   end
 
   create_table "news", force: :cascade do |t|
@@ -631,16 +657,8 @@ ActiveRecord::Schema.define(version: 20180608122922) do
 
   add_foreign_key "contig_searches", "projects"
   add_foreign_key "marker_sequence_searches", "projects"
+  add_foreign_key "mislabels", "marker_sequences"
+  add_foreign_key "mislabels", "mislabel_analyses"
   add_foreign_key "plant_plates", "lab_racks"
   add_foreign_key "shelves", "freezers"
-
-  create_view "taxa_matview", materialized: true,  sql_definition: <<-SQL
-      SELECT f.name AS family,
-      o.name AS "order",
-      hot.name AS higher_order_taxon
-     FROM ((families f
-       JOIN orders o ON ((f.order_id = o.id)))
-       JOIN higher_order_taxa hot ON ((o.higher_order_taxon_id = hot.id)));
-  SQL
-
 end
