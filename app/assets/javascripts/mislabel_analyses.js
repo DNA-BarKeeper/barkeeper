@@ -9,4 +9,15 @@ jQuery(function() {
         }],
         "order": [1, 'desc']
     });
+
+    $('#mislabel_analysis_results').dataTable({
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#mislabel_analysis_results').data('source'),
+        "columnDefs": [{
+            "orderable": false,
+            "targets": [2, 3, 4, 6]
+        }],
+        "order": [0, 'desc']
+    });
 });

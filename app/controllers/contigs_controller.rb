@@ -344,8 +344,8 @@ class ContigsController < ApplicationController
       @contig.update(:verified_by => current_user.id, :verified_at => Time.now, :assembled => true, :verified => true)
 
       # generate / update marker sequence
-      ms=MarkerSequence.find_or_create_by(:name => @contig.name)
-      partial_cons=@contig.partial_cons.first
+      ms = MarkerSequence.find_or_create_by(:name => @contig.name)
+      partial_cons = @contig.partial_cons.first
       ms.sequence = partial_cons.aligned_sequence.gsub('-','')
       ms.sequence = ms.sequence.gsub('?','')
       ms.contigs << @contig
