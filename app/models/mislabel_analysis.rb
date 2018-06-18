@@ -3,7 +3,7 @@ class MislabelAnalysis < ApplicationRecord
   has_and_belongs_to_many :marker_sequences
 
   def percentage_of_mislabels
-    mislabels.size / marker_sequences.size
+    ((mislabels.size / marker_sequences.size) * 100).round(2)
   end
 
   def self.import(file)

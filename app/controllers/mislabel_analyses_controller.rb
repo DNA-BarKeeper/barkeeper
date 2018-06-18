@@ -9,6 +9,12 @@ class MislabelAnalysesController < ApplicationController
   end
 
   def show
+    @mislabel_analysis = MislabelAnalysis.find(params[:id])
+
+    respond_to do |format|
+      format.html
+      format.json { render json: MislabelAnalysisResultDatatable.new(view_context, params[:id]) }
+    end
     # Show all sequences in analysis with columns for:
     #   possible_mislabel (e.g. little check mark)
     #   contig (with link)
