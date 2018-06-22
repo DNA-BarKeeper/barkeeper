@@ -13,12 +13,15 @@ class Contig < ApplicationRecord
 
   scope :assembled, -> { where(assembled: true) }
   scope :not_assembled, -> { where.not(assembled: true) }
+
   scope :verified, -> { where(verified: true) }
   scope :need_verification, -> { assembled.where(verified: false) }
   scope :externally_edited, -> { where(imported: true) }
   scope :internally_edited, -> { where(imported: false) }
   scope :externally_verified, -> { externally_edited.verified }
   scope :internally_verified, -> { internally_edited.verified }
+
+  scope :with_warnings, -> { joins(marker_sequence: :mislabels).where(marker_sequence: { mislabels: { solved: false } }) }
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
     # TODO: (how to) includes spp. etc (on top of individual)

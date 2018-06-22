@@ -6,7 +6,7 @@ module MislabelAnalysisHelper
   def mislabels(sequence)
     html = ''
 
-    sequence.mislabels.order(:solved).each do |mislabel|
+    sequence.mislabels.includes(:mislabel_analysis).order(:solved).each do |mislabel|
       solved = ''
 
       if mislabel.solved
@@ -28,6 +28,7 @@ module MislabelAnalysisHelper
       html << content_tag(:td, mislabel.confidence)
       html << content_tag(:td, mislabel.proposed_path)
       html << content_tag(:td, mislabel.path_confidence)
+      html << content_tag(:td, (link_to mislabel.mislabel_analysis.title, mislabel_analysis_path(mislabel.mislabel_analysis)))
       html << content_tag(:td, solved_by)
       html << '</tr>'
     end

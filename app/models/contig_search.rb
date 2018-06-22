@@ -62,8 +62,8 @@ class ContigSearch < ApplicationRecord
     end
 
     if has_warnings != 'both'
-      # contigs = contigs.with_warnings if (has_warnings == 'yes')
-      # contigs = contigs.where.not(id: MarkerSequence.with_warnings.pluck(:id)) if (has_warnings == 'no')
+      contigs = contigs.with_warnings if (has_warnings == 'yes')
+      contigs = contigs.where.not(id: Contig.with_warnings.pluck(:id)) if (has_warnings == 'no')
     end
 
     contigs = contigs.joins(:marker).where("markers.name ilike ?", "%#{marker}%") if marker.present?
