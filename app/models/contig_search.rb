@@ -2,6 +2,8 @@ class ContigSearch < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
+  enum has_warnings: [:both, :yes, :no]
+
   has_attached_file :search_result_archive,
                     :path => ":rails_root/contig_search_results/:filename"
 
@@ -57,6 +59,11 @@ class ContigSearch < ApplicationRecord
     if verified != 'both'
       contigs = contigs.verified if (verified == 'verified')
       contigs = contigs.where(verified: false) if (verified == 'unverified')
+    end
+
+    if has_warnings != 'both'
+      # contigs = contigs.with_warnings if (has_warnings == 'yes')
+      # contigs = contigs.where.not(id: MarkerSequence.with_warnings.pluck(:id)) if (has_warnings == 'no')
     end
 
     contigs = contigs.joins(:marker).where("markers.name ilike ?", "%#{marker}%") if marker.present?
