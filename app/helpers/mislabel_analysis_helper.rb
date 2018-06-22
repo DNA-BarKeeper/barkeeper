@@ -18,7 +18,7 @@ module MislabelAnalysisHelper
         solved_by = "Solved by #{user} on #{mislabel.solved_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")}"
       else
         solved = "<span class='glyphicon glyphicon-exclamation-sign' style='color: red'></span>".html_safe
-        solved_by = link_to('Mark mislabel warning as solved', solve_mislabel_path(mislabel))
+        solved_by = link_to('Mark issue as solved', solve_mislabel_path(mislabel))
       end
 
       html << '<tr>'

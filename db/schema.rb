@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180621122934) do
+ActiveRecord::Schema.define(version: 20180622121926) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 20180621122934) do
     t.string   "search_result_archive_content_type"
     t.integer  "search_result_archive_file_size"
     t.datetime "search_result_archive_updated_at"
+    t.integer  "has_warnings"
     t.index ["project_id"], name: "index_contig_searches_on_project_id", using: :btree
   end
 
