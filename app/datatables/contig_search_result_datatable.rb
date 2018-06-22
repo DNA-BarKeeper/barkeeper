@@ -69,7 +69,7 @@ class ContigSearchResultDatatable
   end
 
   def sort_column
-    columns = %w[name species_id individual_id assembled updated_at]
+    columns = %w[contigs.name species.composed_name individuals.specimen_id contigs.assembled contigs.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
