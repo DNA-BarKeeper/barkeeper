@@ -186,6 +186,12 @@ GBOLapp::Application.routes.draw do
     end
   end
 
+  resources :mislabels do
+    member do
+      get :solve
+    end
+  end
+
   resources :families do
     collection do
       get 'filter'

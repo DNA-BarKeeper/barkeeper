@@ -16,11 +16,20 @@
       <br/>
       <div>
         <%= f.radio_button :verified, "verified" %>
-        <%= f.label :assembled, "Verified" %>
+        <%= f.label :verified, "Verified" %>
         <%= f.radio_button :verified, "unverified" %>
         <%= f.label :unverified, "Unverified" %>
         <%= f.radio_button :verified, "both", :checked => true %>
         <%= f.label :both_verify, "Both" %>
+      </div>
+      <br/>
+      <div>
+        <%= f.radio_button :has_warnings, "yes" %>
+        <%= f.label :yes, "Has unsolved SATIVA warnings" %>
+        <%= f.radio_button :has_warnings, "no" %>
+        <%= f.label :no, "Does not have unsolved SATIVA warnings" %>
+        <%= f.radio_button :has_warnings, "both", :checked => true %>
+        <%= f.label :both, "Both" %>
       </div>
       <br/>
       <div>

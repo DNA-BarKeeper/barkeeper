@@ -10,6 +10,7 @@ class MarkerSequence < ApplicationRecord
   scope :verified, -> { joins(:contigs).where(contigs: { verified: true }) }
   scope :not_verified, -> { joins(:contigs).where(contigs: { verified: false }) }
   scope :has_species, -> { joins(isolate: [individual: :species]) }
+  scope :with_warnings, -> { joins(:mislabels).where(mislabels: { solved: false }) }
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
     ms = MarkerSequence.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
@@ -36,5 +37,9 @@ class MarkerSequence < ApplicationRecord
     else
       self.isolate = Isolate.find_or_create_by(:lab_nr => lab_nr) if lab_nr.present?
     end
+  end
+
+  def has_unsolved_mislabels
+    !mislabels.where(:solved => false).blank?
   end
 end

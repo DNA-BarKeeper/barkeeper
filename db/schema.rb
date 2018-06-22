@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180615091603) do
+ActiveRecord::Schema.define(version: 20180621122934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -304,6 +304,7 @@ ActiveRecord::Schema.define(version: 20180615091603) do
     t.integer  "project_id"
     t.boolean  "has_species"
     t.string   "higher_order_taxon"
+    t.integer  "has_warnings"
     t.index ["project_id"], name: "index_marker_sequence_searches_on_project_id", using: :btree
   end
 
@@ -373,9 +374,12 @@ ActiveRecord::Schema.define(version: 20180615091603) do
     t.string   "proposed_path"
     t.string   "path_confidence"
     t.integer  "mislabel_analysis_id"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
     t.integer  "marker_sequence_id"
+    t.boolean  "solved",               default: false
+    t.integer  "solved_by"
+    t.datetime "solved_at"
     t.index ["marker_sequence_id"], name: "index_mislabels_on_marker_sequence_id", using: :btree
     t.index ["mislabel_analysis_id"], name: "index_mislabels_on_mislabel_analysis_id", using: :btree
   end

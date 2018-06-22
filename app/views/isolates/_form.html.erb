@@ -19,6 +19,7 @@
           <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
           <li ><a href="#assigned_contigs" role="tab" data-toggle="tab">Contigs</a></li>
           <li><a href="#assigned_marker_sequences" role="tab" data-toggle="tab">Sequences</a></li>
+          <%= render :partial => 'shared/sativa_nav_tab', :locals => { :marker_sequences => @isolate.marker_sequences } %>
         </ul>
 
         <div class="tab-content">
@@ -250,6 +251,8 @@
 
             </table>
           </div>
+
+          <%= render :partial => 'shared/sativa_associated_warning', :locals => { :contigs => @isolate.contigs } %>
 
         </div>
 

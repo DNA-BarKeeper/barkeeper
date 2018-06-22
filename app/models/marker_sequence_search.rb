@@ -2,6 +2,8 @@ class MarkerSequenceSearch < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
+  enum has_warnings: [:both, :yes, :no]
+
   def marker_sequences
     @marker_sequences ||= find_marker_sequences
   end
@@ -47,6 +49,11 @@ class MarkerSequenceSearch < ApplicationRecord
     end
 
     marker_sequences = marker_sequences.has_species if has_species.present?
+
+    if has_warnings != 'both'
+      marker_sequences = marker_sequences.with_warnings if (has_warnings == 'yes')
+      marker_sequences = marker_sequences.where.not(id: MarkerSequence.with_warnings.pluck(:id)) if (has_warnings == 'no')
+    end
 
     marker_sequences = marker_sequences.joins(:marker).where("markers.name ilike ?", "%#{marker}%") if marker.present?
 

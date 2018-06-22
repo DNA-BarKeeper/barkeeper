@@ -1,8 +1,8 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <p><h3 class="panel-title">Mislabel Analysis Results <%= title(@mislabel_analysis) %></h3></p>
+    <p><h3 class="panel-title">Sequences identified as mislabeled in SATIVA Analysis <%= title(@mislabel_analysis) %></h3></p>
     <p>
-      Percentage of mislabels in this analysis: <%= percentage_mislabels(@mislabel_analysis) %>
+      <%= percentage_mislabels(@mislabel_analysis) %>
     </p>
   </div>
   <div class="panel-body">
@@ -30,5 +30,5 @@
 </div>
 
 <p>
-  <%= link_to 'Go back to all mislabel analyses', mislabel_analyses_path, class: 'btn btn-default' %>
+  <%= link_to 'Go back to all SATIVA analyses', mislabel_analyses_path, class: 'btn btn-default' %>
 </p>

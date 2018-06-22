@@ -1,0 +1,46 @@
+SATIVA v0.9-57-g8a99328, released on 2017-07-15. Last version: https://github.com/amkozlov/sativa 
+By A.Kozlov and J.Zhang, the Exelixis Lab. Based on RAxML 8.2.3 by A.Stamatakis.
+
+SATIVA was called as follows:
+
+/home/sarah/SATIVA/sativa/sativa.py -s gbol5_caryophyllales_ITS_aligned.fasta -t gbol5_caryophyllales_ITS.tax -x BOT
+
+*** STEP 1: Building the reference tree using provided alignment and taxonomic annotations ***
+
+=> Loading taxonomy from file: gbol5_caryophyllales_ITS.tax ...
+
+==> Loading reference alignment from file: gbol5_caryophyllales_ITS_aligned.fasta ...
+
+===> Validating taxonomy and alignment ...
+
+====> Building a multifurcating tree from taxonomy with 280 seqs ...
+
+=====> Building the reference alignment ...
+
+======> Saving the outgroup for later re-rooting ...
+
+=======> Resolving multifurcation: choosing the best topology from 1 independent RAxML runs ...
+
+========> Calling RAxML-EPA to obtain branch labels ...
+
+=========> Post-processing the EPA tree (re-rooting, taxonomic labeling etc.) ...
+
+==========> Saving the reference JSON file: ./gbol5_caryophyllales_ITS.refjson
+
+*** STEP 2: Searching for mislabels ***
+
+Running the leave-one-sequence-out test...
+
+Leave-one-out test identified 40 suspicious sequences; running final EPA test to check them...
+
+Mislabeled sequences by rank:
+Family      :	5
+Genus       :	29
+
+Total mislabels: 34 / 12.14 %
+
+Results were saved to: /home/sarah/RubymineProjects/gbol5/lib/sativa_test_files/gbol5_caryophyllales_ITS.mis
+Execution log was saved to: /home/sarah/RubymineProjects/gbol5/lib/sativa_test_files/gbol5_caryophyllales_ITS.log
+
+Analysis completed successfully, elapsed time: 1006 seconds (449s reftree, 557s leave-one-out)
+
