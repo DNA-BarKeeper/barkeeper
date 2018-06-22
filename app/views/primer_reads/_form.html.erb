@@ -23,6 +23,7 @@
           <li><a href="#description" role="tab" data-toggle="tab">Description</a></li>
           <li class="active"><a href="#quality" role="tab" data-toggle="tab">Quality</a></li>
           <li><a href="#files" role="tab" data-toggle="tab">Files</a></li>
+          <%= render :partial => 'shared/sativa_nav_tab', :locals => { :marker_sequences => [@primer_read.contig.marker_sequence] } %>
         </ul>
 
         <!-- Tab panes -->
@@ -67,6 +68,11 @@
             <div class="form-group">
               <%= f.label :comment %>
               <%= f.text_field :comment, class: 'form-control' %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :projects, 'Projects this object belongs to' %>
+              <%= project_list(@primer_read) %>
             </div>
 
           </div>
@@ -117,14 +123,11 @@
             <span class="glyphicon glyphicon-paperclip"></span> Attach scf/ab1 file:<%= f.file_field :chromatogram %>
             <br>
           </div>
+
+          <%= render :partial => 'shared/sativa_associated_warning', :locals => { :contigs => [@primer_read.contig] } %>
         </div>
 
       <div class="vertical-spacer"></div>
-
-      <div class="form-group">
-        <%= f.label :projects, 'Projects this object belongs to' %>
-        <%= project_list(@primer_read) %>
-      </div>
 
       <%= f.submit 'Update', :class =>  'btn btn-default' %>
 

@@ -15,6 +15,7 @@
       <li><a href="#description" role="tab" data-toggle="tab">Description</a></li>
       <li class="active"><a href="#assembly" role="tab" data-toggle="tab">Assembly</a></li>
       <li><a href="#downloads" role="tab" data-toggle="tab">Downloads</a></li>
+      <%= render :partial => 'shared/sativa_nav_tab', :locals => { :marker_sequences => [@contig.marker_sequence] } %>
     </ul>
 
     <!-- Tab panes -->
@@ -408,6 +409,8 @@
           <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download trimmed sequences as Fasta file',  fasta_trimmed_contig_path %><br>
           <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download raw sequences as Fasta file',  fasta_raw_contig_path %><br></div>
       </div>
+
+      <%= render :partial => 'shared/sativa_warnings', :locals => {:marker_sequence => @contig.marker_sequence} %>
     </div>
   </div>
 </div>

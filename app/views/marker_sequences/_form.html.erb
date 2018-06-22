@@ -20,6 +20,7 @@
         <ul class="nav nav-tabs" role="tablist">
           <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
           <li><a href="#assigned_contigs" role="tab" data-toggle="tab">Contigs</a></li>
+          <%= render :partial => 'shared/sativa_nav_tab', :locals => { :marker_sequences => [@marker_sequence] } %>
         </ul>
 
         <!-- Tab panes -->
@@ -77,6 +78,8 @@
                 </ul>
             <% end %>
           </div>
+
+          <%= render :partial => 'shared/sativa_warnings', :locals => {:marker_sequence => @marker_sequence} %>
         </div>
 
       <%= f.submit 'Update', :class => 'btn btn-default' %>

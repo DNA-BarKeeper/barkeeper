@@ -16,8 +16,8 @@ jQuery(function() {
         sAjaxSource: $('#mislabel_analysis_results').data('source'),
         "columnDefs": [{
             "orderable": false,
-            "targets": [2, 3, 4, 6]
+            "targets": 6
         }],
-        "order": [0, 'desc']
+        "order": [0, 'asc']
     });
 });

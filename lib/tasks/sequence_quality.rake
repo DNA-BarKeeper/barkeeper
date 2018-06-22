@@ -81,6 +81,7 @@ namespace :data do
 
   task :get_high_quality_sequences => :environment do
     sequences = MarkerSequence.gbol # Only GBOL5 sequences
+    # sequences = MarkerSequence.gbol.joins(isolate: {individual: {species: {family: :order}}}).where("orders.name ilike ?", "%Caryophyllales%")
     puts "Number of GBOL5 sequences: #{sequences.size}"
 
     sequences = sequences.has_species # Only sequences with assigned species
