@@ -24,17 +24,18 @@
       </div>
       <br/>
       <div>
-        <%= f.radio_button :has_warnings, "yes" %>
-        <%= f.label :yes, "Has unsolved SATIVA warnings" %>
-        <%= f.radio_button :has_warnings, "no" %>
-        <%= f.label :no, "Does not have unsolved SATIVA warnings" %>
-        <%= f.radio_button :has_warnings, "both", :checked => true %>
-        <%= f.label :both, "Both" %>
+        <%= f.check_box :has_species %>
+        <%= f.label :has_species, "Is assigned to a species" %>
       </div>
       <br/>
       <div>
-        <%= f.check_box :has_species %>
-        <%= f.label :has_species, "Is assigned to a species" %>
+        <%= f.label :has_warnings, 'Search for marker sequences with unsolved SATIVA warnings:' %><br>
+        <%= f.radio_button :has_warnings, "yes" %>
+        <%= f.label :yes, "Yes" %>
+        <%= f.radio_button :has_warnings, "no" %>
+        <%= f.label :no, "No" %>
+        <%= f.radio_button :has_warnings, "both", :checked => true %>
+        <%= f.label :both, "Search for both" %>
       </div>
       <br/>
       <div class="field">
