@@ -52,6 +52,8 @@ class Ability
       cannot :manage, User
       cannot :manage, Project
       cannot :manage, Responsibility
+      cannot [:create, :destroy], MislabelAnalysis
+      cannot [:create, :destroy], Mislabel
 
       can [:read, :search_taxa, :add_to_taxa], Project, id: user.project_ids
 
@@ -67,6 +69,8 @@ class Ability
         can :manage, User
         can :manage, Project
         can :manage, Responsibility
+        can :manage, MislabelAnalysis
+        can :manage, Mislabel
 
         cannot [:create, :update, :destroy], User, role: 'admin' if user.supervisor?
       end
