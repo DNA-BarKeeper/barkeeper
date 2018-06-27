@@ -15,10 +15,6 @@ class MislabelAnalysesController < ApplicationController
       format.html
       format.json { render json: MislabelAnalysisResultDatatable.new(view_context, params[:id]) }
     end
-    # Show all sequences in analysis with columns for:
-    #   possible_mislabel (e.g. little check mark)
-    #   contig (with link)
-    #   species
   end
 
   def create
@@ -32,17 +28,18 @@ class MislabelAnalysesController < ApplicationController
   def destroy
     @mislabel_analysis.destroy
     respond_to do |format|
-      format.html { redirect_to mislabel_analyses_path, notice: 'Mislabel analysis was successfully destroyed.' }
+      format.html { redirect_to mislabel_analyses_path, notice: 'SATIVA analysis was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
   def import
     file = params[:file]
-
-    @mislabel_analysis = MislabelAnalysis.import(file)
-
-    # redirect_to mislabel_analysis_path(@mislabel_analysis), notice: 'Imported analysis output. Possibly mislabeled sequences have been marked.'
-    redirect_to mislabel_analyses_path, notice: 'Imported analysis output. Possibly mislabeled sequences have been marked.'
+    if file.blank? || File.extname(file.original_filename) != '.mis'
+      redirect_to mislabel_analyses_path, alert: 'Please select a SATIVA output file (*.mis) to import results.'
+    else
+      @mislabel_analysis = MislabelAnalysis.import(file)
+      redirect_to mislabel_analysis_path(@mislabel_analysis), notice: 'Imported analysis output. Possibly mislabeled sequences have been marked.'
+    end
   end
 end
