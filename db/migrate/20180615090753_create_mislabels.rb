@@ -6,7 +6,7 @@ class CreateMislabels < ActiveRecord::Migration[5.0]
       t.string :proposed_label
       t.string :proposed_path
       t.string :path_confidence
-      t.references :mislabel_analyses, foreign_key: true
+      t.belongs_to :mislabel_analysis, index: true
 
       t.timestamps
     end

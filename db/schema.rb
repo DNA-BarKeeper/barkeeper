@@ -663,7 +663,6 @@ ActiveRecord::Schema.define(version: 20180622121926) do
   add_foreign_key "contig_searches", "projects"
   add_foreign_key "marker_sequence_searches", "projects"
   add_foreign_key "mislabels", "marker_sequences"
-  add_foreign_key "mislabels", "mislabel_analyses"
   add_foreign_key "plant_plates", "lab_racks"
   add_foreign_key "shelves", "freezers"
 end
