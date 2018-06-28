@@ -14,3 +14,7 @@ end
 every 1.day, :at => '2:30 am' do
   rake "data:remove_old_searches" # Delete all untitled contig searches older than a month
 end
+
+every 1.day, :at => '3:30 am' do
+  rake "data:check_new_marker_sequences" # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
+end
