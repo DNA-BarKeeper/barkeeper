@@ -8,12 +8,17 @@ class MarkerSequenceSearch < ApplicationRecord
     @marker_sequences ||= find_marker_sequences
   end
 
-  def as_fasta
+  def as_fasta(include_taxa)
     fasta = ''
 
     marker_sequences.each do |marker_sequence|
       sequence = Bio::Sequence::NA.new(marker_sequence.sequence)
-      name = "#{marker_sequence.name}|#{marker_sequence.isolate&.lab_nr}|#{marker_sequence.isolate&.individual&.specimen_id}|#{marker_sequence.isolate&.individual&.species&.composed_name}|#{marker_sequence.isolate&.individual&.species&.family&.name}"
+      
+      name = "#{marker_sequence.name}"
+      if include_taxa
+        name << "|#{marker_sequence.isolate&.lab_nr}|#{marker_sequence.isolate&.individual&.specimen_id}|#{marker_sequence.isolate&.individual&.species&.composed_name}|#{marker_sequence.isolate&.individual&.species&.family&.name}"
+      end
+
       fasta += sequence.to_fasta(name, 80)
     end
 
@@ -40,7 +45,7 @@ class MarkerSequenceSearch < ApplicationRecord
   private
 
   def find_marker_sequences
-    marker_sequences = MarkerSequence.in_project(user.default_project_id).order(:name)
+    marker_sequences = MarkerSequence.in_project(project_id).order(:name)
     marker_sequences = marker_sequences.where("marker_sequences.name ilike ?", "%#{name}%") if name.present?
 
     if verified != 'both'

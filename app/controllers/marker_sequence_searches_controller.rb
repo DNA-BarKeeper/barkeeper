@@ -15,8 +15,10 @@ class MarkerSequenceSearchesController < ApplicationController
   def create
     @marker_sequence_search = MarkerSequenceSearch.create!(marker_sequence_search_params)
 
-    @marker_sequence_search.update(:user_id => current_user.id)
-    @marker_sequence_search.update(:project_id => current_user.default_project_id)
+    if user_signed_in?
+      @marker_sequence_search.update(:user_id => current_user.id)
+      @marker_sequence_search.update(:project_id => current_user.default_project_id)
+    end
 
     redirect_to @marker_sequence_search
   end
@@ -41,7 +43,7 @@ class MarkerSequenceSearchesController < ApplicationController
   def export_as_fasta
     @marker_sequence_search = MarkerSequenceSearch.find(params[:marker_sequence_search_id])
     file_name = @marker_sequence_search.title.empty? ? "marker_sequence_search_#{@marker_sequence_search.created_at}" : @marker_sequence_search.title
-    send_data(@marker_sequence_search.as_fasta, :filename => "#{file_name}.fasta", :type => "application/txt")
+    send_data(@marker_sequence_search.as_fasta(true), :filename => "#{file_name}.fasta", :type => "application/txt")
   end
 
   def export_taxon_file

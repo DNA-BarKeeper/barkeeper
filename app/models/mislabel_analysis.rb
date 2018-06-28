@@ -1,4 +1,5 @@
 class MislabelAnalysis < ApplicationRecord
+  belongs_to :marker
   has_many :mislabels, :dependent => :destroy
   has_and_belongs_to_many :marker_sequences
 
@@ -6,13 +7,10 @@ class MislabelAnalysis < ApplicationRecord
     ((mislabels.size / marker_sequences.size) * 100).round(2)
   end
 
-  def self.import(file)
-    title = File.basename(file.original_filename, ".mis")
-    file = File.new(file.path)
-
+  def self.import(file, title, marker_id = nil, automatic = false)
     column_names = %w[SeqID MislabeledLevel OriginalLabel ProposedLabel Confidence OriginalTaxonomyPath ProposedTaxonomyPath PerRankConfidence]
 
-    mislabel_analysis = MislabelAnalysis.create(title: title)
+    mislabel_analysis = MislabelAnalysis.create(title: title, marker_id: marker_id, automatic: automatic)
 
     # Parse file
     File.open(file, 'r').each do |row|

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180622121926) do
+ActiveRecord::Schema.define(version: 20180628115013) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -364,8 +364,11 @@ ActiveRecord::Schema.define(version: 20180622121926) do
 
   create_table "mislabel_analyses", force: :cascade do |t|
     t.string   "title"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.boolean  "automatic",  default: false
+    t.integer  "marker_id"
+    t.index ["marker_id"], name: "index_mislabel_analyses_on_marker_id", using: :btree
   end
 
   create_table "mislabels", force: :cascade do |t|
@@ -662,6 +665,7 @@ ActiveRecord::Schema.define(version: 20180622121926) do
 
   add_foreign_key "contig_searches", "projects"
   add_foreign_key "marker_sequence_searches", "projects"
+  add_foreign_key "mislabel_analyses", "markers"
   add_foreign_key "mislabels", "marker_sequences"
   add_foreign_key "plant_plates", "lab_racks"
   add_foreign_key "shelves", "freezers"
