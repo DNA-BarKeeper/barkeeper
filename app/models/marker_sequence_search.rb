@@ -13,8 +13,8 @@ class MarkerSequenceSearch < ApplicationRecord
 
     marker_sequences.each do |marker_sequence|
       sequence = Bio::Sequence::NA.new(marker_sequence.sequence)
-      
-      name = "#{marker_sequence.name}"
+
+      name = "#{marker_sequence.name.gsub(' ', '')}"
       if include_taxa
         name << "|#{marker_sequence.isolate&.lab_nr}|#{marker_sequence.isolate&.individual&.specimen_id}|#{marker_sequence.isolate&.individual&.species&.composed_name}|#{marker_sequence.isolate&.individual&.species&.family&.name}"
       end
@@ -34,7 +34,7 @@ class MarkerSequenceSearch < ApplicationRecord
       order = marker_sequence.isolate&.individual&.species&.family&.order&.name
       hot = marker_sequence.isolate&.individual&.species&.family&.order&.higher_order_taxon&.name
 
-      taxa << marker_sequence.name
+      taxa << marker_sequence.name.gsub(' ', '')
       taxa << "\t"
       taxa << "Eukaryota;Embryophyta;#{hot};#{order};#{family};#{species}\n"
     end

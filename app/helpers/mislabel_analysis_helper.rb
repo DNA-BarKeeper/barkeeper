@@ -1,6 +1,12 @@
 module MislabelAnalysisHelper
   def percentage_mislabels(mislabel_analysis)
-    "Percentage of mislabeled sequences in this analysis: #{mislabel_analysis.mislabels.size} / #{mislabel_analysis.marker_sequences.size} (#{mislabel_analysis.percentage_of_mislabels}%)"
+    percentage = mislabel_analysis.percentage_of_mislabels
+
+    if percentage
+      "Percentage of mislabeled sequences in this analysis: #{mislabel_analysis.mislabels.size} / #{mislabel_analysis.total_seq_number} (#{mislabel_analysis.percentage_of_mislabels}%)"
+    else
+      "#{mislabel_analysis.mislabels.size} potentially mislabeled sequences were identified in this analysis"
+    end
   end
 
   def mislabels(sequence)
@@ -51,10 +57,14 @@ module MislabelAnalysisHelper
     "color: #{warnings_present(marker_sequences) ? 'red' : 'grey'}"
   end
 
+  def warning_color_individual(individual)
+    "color: #{individual.has_issue ? 'red' : 'grey'}"
+  end
+
   def contigs_with_warnings(contigs)
     list_elements = []
-    contigs.each do |c|
-      list_elements << content_tag(:li, link_to(c.name, edit_contig_path(c))) if c.marker_sequence.has_unsolved_mislabels
+    contigs.includes(:marker_sequence).each do |c|
+      list_elements << content_tag(:li, link_to(c.name, edit_contig_path(c))) if c.marker_sequence&.has_unsolved_mislabels
     end
 
     html = ''
@@ -62,6 +72,28 @@ module MislabelAnalysisHelper
       html << '<p>There are no SATIVA warnings associated with this record.</p>'
     else
       html << '<p>One or more contigs associated with this object contain warnings from a SATIVA analysis:</p>'
+      html << '<ul>'
+      list_elements.each { |li| html << li }
+      html << '</ul>'
+      html << '<p>Please visit the contig page(s) for more information.</p>'
+    end
+
+    html.html_safe
+  end
+
+  def contigs_with_warnings_individual(individual)
+    contigs = Contig.joins(isolate: :individual).distinct.with_warnings.where('individuals.id = ?', individual.id)
+
+    list_elements = []
+    contigs.includes(:marker_sequence).each do |c|
+      list_elements << content_tag(:li, link_to(c.name, edit_contig_path(c))) if c.marker_sequence&.has_unsolved_mislabels
+    end
+
+    html = ''
+    if list_elements.blank?
+      html << '<p>There are no SATIVA warnings associated with this record.</p>'
+    else
+      html << '<p>Multiple contigs associated with this object contain warnings from a SATIVA analysis:</p>'
       html << '<ul>'
       list_elements.each { |li| html << li }
       html << '</ul>'
