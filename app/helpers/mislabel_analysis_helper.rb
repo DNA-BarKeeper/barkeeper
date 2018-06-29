@@ -91,13 +91,13 @@ module MislabelAnalysisHelper
 
     html = ''
     if list_elements.blank?
-      html << '<p>There are no SATIVA warnings associated with this record.</p>'
+      html << '<p>No issues are present for this record..</p>'
     else
       html << '<p>Multiple contigs associated with this object contain warnings from a SATIVA analysis:</p>'
       html << '<ul>'
       list_elements.each { |li| html << li }
       html << '</ul>'
-      html << '<p>Please visit the contig page(s) for more information.</p>'
+      html << '<p>Please visit the contig page for more information.</p>'
     end
 
     html.html_safe
