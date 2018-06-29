@@ -18,6 +18,11 @@
           <li ><a href="#description" role="tab" data-toggle="tab">Description</a></li>
           <li class="active"><a href="#locality" role="tab" data-toggle="tab">Locality</a></li>
           <li ><a href="#assigned_isolates" role="tab" data-toggle="tab">Isolates</a></li>
+          <li>
+            <a href="#sativa_warnings" role="tab" data-toggle="tab" style="<%= warning_color_individual(@individual) %>">
+              <span class="glyphicon glyphicon-exclamation-sign"></span> Potential issues
+            </a>
+          </li>
         </ul>
 
         <div class="tab-content">
@@ -180,6 +185,10 @@
 
           </div>
 
+          <div class="tab-pane" id="sativa_warnings">
+            <br>
+            <%= contigs_with_warnings_individual(@individual) %>
+          </div>
 
         </div>
 

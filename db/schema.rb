@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180629094941) do
+ActiveRecord::Schema.define(version: 20180629112840) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -205,6 +205,7 @@ ActiveRecord::Schema.define(version: 20180629094941) do
     t.text     "comments"
     t.decimal  "latitude",                       precision: 15, scale: 6
     t.decimal  "longitude",                      precision: 15, scale: 6
+    t.boolean  "has_issue"
   end
 
   create_table "individuals_projects", id: false, force: :cascade do |t|
