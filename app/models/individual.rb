@@ -5,12 +5,14 @@ class Individual < ApplicationRecord
   has_many :isolates
   belongs_to :species
 
-  pg_search_scope :quick_search, against: [:specimen_id, :herbarium, :collector , :collection_nr]
+  pg_search_scope :quick_search, against: [:specimen_id, :herbarium, :collector, :collection_nr]
 
   scope :without_species, -> { where(:species => nil) }
   scope :without_isolates, -> { left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
   scope :no_species_isolates, -> { without_species.left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
-  scope :bad_location, -> { where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
+  scope :bad_longitude, -> { where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
+  scope :bad_latitude, -> { where('individuals.latitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}')}
+  scope :bad_location, -> { bad_latitude.or(Individual.bad_longitude) }
 
   def self.to_csv(options = {})
     # Change to_csv block to list attributes/values individually

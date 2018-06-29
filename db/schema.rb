@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180629112840) do
+ActiveRecord::Schema.define(version: 20180629124238) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -174,6 +174,24 @@ ActiveRecord::Schema.define(version: 20180629112840) do
   create_table "higher_order_taxa_projects", id: false, force: :cascade do |t|
     t.integer "higher_order_taxon_id"
     t.integer "project_id"
+  end
+
+  create_table "individual_searches", force: :cascade do |t|
+    t.string   "title"
+    t.integer  "has_species"
+    t.integer  "has_problematic_location"
+    t.integer  "has_issue"
+    t.string   "specimen_id"
+    t.string   "DNA_bank_id"
+    t.string   "species"
+    t.string   "family"
+    t.string   "order"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.integer  "project_id"
+    t.integer  "user_id"
+    t.index ["project_id"], name: "index_individual_searches_on_project_id", using: :btree
+    t.index ["user_id"], name: "index_individual_searches_on_user_id", using: :btree
   end
 
   create_table "individuals", force: :cascade do |t|
@@ -666,6 +684,8 @@ ActiveRecord::Schema.define(version: 20180629112840) do
   end
 
   add_foreign_key "contig_searches", "projects"
+  add_foreign_key "individual_searches", "projects"
+  add_foreign_key "individual_searches", "users"
   add_foreign_key "marker_sequence_searches", "projects"
   add_foreign_key "mislabel_analyses", "markers"
   add_foreign_key "mislabels", "marker_sequences"

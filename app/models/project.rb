@@ -2,6 +2,7 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :users
   has_many :contig_searches
   has_many :marker_sequence_searches
+  has_many :individual_searches
 
   has_and_belongs_to_many :issues
 
