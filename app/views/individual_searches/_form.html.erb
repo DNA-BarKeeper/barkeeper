@@ -1,0 +1,43 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3  class="panel-title">Advanced Specimen Search</h3>
+  </div>
+
+  <div class="panel-body">
+    <%= form_for @individual_search do |f| %>
+      <div class="field">
+        <%= f.label :title, 'Title (if you leave this field empty the search will not be saved)' %><br />
+        <%= f.text_field :title, class: 'form-control' %>
+      </div>
+      <div class="field">
+        <%= f.label :specimen_id, 'Specimen ID' %><br />
+        <%= f.text_field :specimen_id, data: { autocomplete_source: filter_individuals_path }, class: 'form-control' %>
+      </div>
+      <br/>
+      <div>
+        <%= f.label :has_issue, 'Search for specimen with unsolved issues:' %><br>
+        <%= f.radio_button :has_issue, "issues" %>
+        <%= f.label :yes, "Yes" %>
+        <%= f.radio_button :has_issue, "no_issues" %>
+        <%= f.label :no, "No" %>
+        <%= f.radio_button :has_issue, "all_issue", :checked => true %>
+        <%= f.label :both, "Search for both" %>
+      </div>
+      <br/>
+      <div class="field">
+        <%= f.label :species %><br />
+        <%= f.text_field :species, data: { autocomplete_source: filter_species_index_path }, include_blank: true, class: 'form-control' %>
+      </div>
+      <div class="field">
+        <%= f.label :family %><br />
+        <%= f.text_field :family, data: { autocomplete_source: filter_families_path }, include_blank: true, class: 'form-control' %>
+      </div>
+      <div class="field">
+        <%= f.label :order %><br />
+        <%= f.text_field :order, data: { autocomplete_source: Order.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+      </div>
+      <br>
+      <div class="actions"><%= f.submit "Search", class: 'btn btn-default'%></div>
+    <% end %>
+  </div>
+</div>

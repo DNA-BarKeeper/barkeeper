@@ -40,6 +40,8 @@ GBOLapp::Application.routes.draw do
     post :export_taxon_file
   end
 
+  resources :individual_searches
+
   resources :contigs do
 
     collection do
@@ -102,8 +104,6 @@ GBOLapp::Application.routes.draw do
   end
 
   resources :txt_uploaders
-
-  resources :individuals
 
   resources :issues
 

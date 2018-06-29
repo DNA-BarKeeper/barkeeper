@@ -52,7 +52,7 @@ class MislabelAnalysisResultDatatable
     @analysis = @analysis.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      @analysis = @analysis.where("mislabels.marker_sequence.name ILIKE :search", search: "%#{params[:sSearch]}%")
+      @analysis = @analysis.where("marker_sequences.name ILIKE :search", search: "%#{params[:sSearch]}%")
     end
 
     @analysis
