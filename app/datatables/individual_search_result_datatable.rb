@@ -33,6 +33,9 @@ class IndividualSearchResultDatatable
       [
           link_to(individual.specimen_id, edit_individual_path(individual)),
           link_to(species_name, edit_species_path(species_id)),
+          individual.herbarium,
+          individual.latitude_original,
+          individual.longitude_original,
           individual.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
           link_to('Delete', individual, method: :delete, data: { confirm: 'Are you sure?' })
       ]
@@ -60,7 +63,7 @@ class IndividualSearchResultDatatable
   end
 
   def sort_column
-    columns = %w[individuals.specimen_id species.composed_name individuals.updated_at]
+    columns = %w[individuals.specimen_id species.composed_name herbarium latitude_original longitude_original individuals.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
