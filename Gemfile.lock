@@ -986,6 +986,7 @@ DEPENDENCIES
   minitest-fail-fast
   minitest-rails-capybara
   minitest-reporters
+  net-scp
   net-ssh
   paperclip
   pg (~> 0.21)
