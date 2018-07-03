@@ -16,7 +16,7 @@ jQuery(function() {
         sAjaxSource: $('#individual_search_results').data('source'),
         "columnDefs": [{
             "orderable": false,
-            "targets": [1, 3]
+            "targets": 6
         }],
         "order": [ 0, 'asc' ]
     });

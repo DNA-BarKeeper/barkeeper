@@ -9,6 +9,18 @@ module AdvancedSearchHelper
 
   def attributes(search)
     exclude = %w[id title project_id user_id created_at updated_at]
+    output_text = {
+        all_issue: 'Has issues: both',
+        issues: 'Has issues: yes',
+        no_issues: 'Has issues: no',
+        all_species: 'Has species info: both',
+        species: 'Has species info: yes',
+        no_species: 'Has species info: no',
+        all_location: 'Location data status: both',
+        bad_location: 'Location data status: problematic',
+        location_okay: 'Location data status: okay'
+    }
+
     attributes = search.attributes.sort.select { |k, v| !v.blank? && !exclude.include?(k) }
     output = attributes.collect do |k, v|
       case k
@@ -24,12 +36,15 @@ module AdvancedSearchHelper
         "Length minimum: #{v}"
       when 'max_length'
         "Length maximum: #{v}"
-      when 'has_species'
-        "Is assigned to a species"
       else
-        "#{k.titleize}: #{v}"
+        if output_text[v.to_sym]
+          output_text[v.to_sym]
+        else
+          "#{k.titleize}: #{v}"
+        end
       end
     end
+
     output.join(', ')
   end
 

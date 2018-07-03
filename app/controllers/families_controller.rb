@@ -14,7 +14,7 @@ class FamiliesController < ApplicationController
   end
 
   def filter
-    @families = Family.in_project(current_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%")
+    @families = Family.in_project(current_project_id).order(:name).where("families.name ilike ?", "%#{params[:term]}%")
     render json: @families.map(&:name)
   end
 

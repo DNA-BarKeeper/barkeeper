@@ -9,19 +9,44 @@
         <%= f.label :title, 'Title (if you leave this field empty the search will not be saved)' %><br />
         <%= f.text_field :title, class: 'form-control' %>
       </div>
+      <br/>
       <div class="field">
         <%= f.label :specimen_id, 'Specimen ID' %><br />
         <%= f.text_field :specimen_id, data: { autocomplete_source: filter_individuals_path }, class: 'form-control' %>
+      </div>
+      <div class="field">
+        <%= f.label :DNA_bank_id, 'DNA bank ID' %><br />
+        <%= f.text_field :DNA_bank_id, class: 'form-control' %>
+      </div>
+      <br/>
+      <div>
+        <%= f.label :has_species, 'Search for specimen with or without species information:' %><br>
+        <%= f.radio_button :has_species, "species" %>
+        <%= f.label :species, "Only with" %>
+        <%= f.radio_button :has_species, "no_species" %>
+        <%= f.label :no_species, "Only without" %>
+        <%= f.radio_button :has_species, "all_species", :checked => true %>
+        <%= f.label :all_species, "Both" %>
       </div>
       <br/>
       <div>
         <%= f.label :has_issue, 'Search for specimen with unsolved issues:' %><br>
         <%= f.radio_button :has_issue, "issues" %>
-        <%= f.label :yes, "Yes" %>
+        <%= f.label :yes, "Only with" %>
         <%= f.radio_button :has_issue, "no_issues" %>
-        <%= f.label :no, "No" %>
+        <%= f.label :no, "Only without" %>
         <%= f.radio_button :has_issue, "all_issue", :checked => true %>
-        <%= f.label :both, "Search for both" %>
+        <%= f.label :both, "Both" %>
+      </div>
+      <br/>
+      <div>
+        <%= f.label :has_problematic_location, 'Search for specimen with problematic location data:' %><br>
+        <%= f.radio_button :has_problematic_location, "bad_location" %>
+        <%= f.label :bad_location, "Only with" %>
+        <%= f.radio_button :has_problematic_location, "location_okay" %>
+        <%= f.label :location_okay, "Only without" %>
+        <%= f.radio_button :has_problematic_location, "all_location", :checked => true %>
+        <%= f.label :all_location, "Both" %>
       </div>
       <br/>
       <div class="field">
