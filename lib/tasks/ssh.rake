@@ -46,7 +46,7 @@ namespace :data do
     end
 
     puts "#{current_time}: Establishing SSH connection to Xylocalyx..."
-    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx']) do |session| # TODO: use key gbol_xylocalyx in production
+    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
       analysis_dir = "/data/data1/sarah/SATIVA/#{title}"
 
       puts "#{current_time}: Creating analysis directory..."
