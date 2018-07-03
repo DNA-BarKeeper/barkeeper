@@ -2,25 +2,29 @@ namespace :data do
   require 'net/ssh'
   require 'net/scp'
 
+  desc 'Check how many sequences were created or updated since last analysis and redo analysis if necessary'
+  task :check_new_marker_sequences => :environment do
+    Marker.gbol_marker.each do |marker|
+      last_analysis = MislabelAnalysis.where(automatic: true, marker: Marker.find(5)).order(created_at: :desc).first
+      count = -1
+
+      if last_analysis
+        count = MarkerSequence.where(marker_id: marker.id).where("marker_sequences.updated_at >= ?", last_analysis.created_at).size
+      end
+
+      analyse_on_server(marker.name) if (count > 50) || (count == -1) # More than 50 new seqs OR no analysis was done before
+    end
+  end
+
+  task :run_sativa_test => :environment do
+    analyse_on_server(Marker.find_by_name('trnK-matK'))
+  end
+
   task :ssh_gbol5 => :environment do
     Net::SSH.start('gbol5.de', 'sarah', port: 1694) do |session|
       output = session.exec!('hostname')
       puts output
     end
-  end
-
-  desc 'Check how many sequences were created or updated since last analysis and redo analysis if necessary'
-  task :check_new_marker_sequences => :environment do
-    Marker.gbol_marker.each do |marker|
-      last_analysis_timestamp = MislabelAnalysis.where(automatic: true, marker: marker).order(created_at: :desc).first.created_at
-      count = MarkerSequence.where(marker_id: marker.id).where("marker_sequences.updated_at >= ?", last_analysis_timestamp).size
-
-      analyse_on_server(marker.name) if (count > 50)
-    end
-  end
-
-  task :run_sativa => :environment do
-    analyse_on_server(Marker.find_by_name('trnK-matK'))
   end
 
   private
