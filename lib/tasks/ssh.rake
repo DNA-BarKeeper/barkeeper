@@ -5,14 +5,14 @@ namespace :data do
   desc 'Check how many sequences were created or updated since last analysis and redo analysis if necessary'
   task :check_new_marker_sequences => :environment do
     Marker.gbol_marker.each do |marker|
-      last_analysis = MislabelAnalysis.where(automatic: true, marker: Marker.find(5)).order(created_at: :desc).first
+      last_analysis = MislabelAnalysis.where(automatic: true, marker: marker).order(created_at: :desc).first
       count = -1
 
       if last_analysis
         count = MarkerSequence.where(marker_id: marker.id).where("marker_sequences.updated_at >= ?", last_analysis.created_at).size
       end
 
-      analyse_on_server(marker.name) if (count > 50) || (count == -1) # More than 50 new seqs OR no analysis was done before
+      analyse_on_server(marker) if (count > 50) || (count == -1) # More than 50 new seqs OR no analysis was done before
     end
   end
 
