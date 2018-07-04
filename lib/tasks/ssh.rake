@@ -5,6 +5,7 @@ namespace :data do
   desc 'Check how many sequences were created or updated since last analysis and redo analysis if necessary'
   task :check_new_marker_sequences => :environment do
     Marker.gbol_marker.each do |marker|
+      puts "Checking if analysis is necessary for #{marker.name}..."
       last_analysis = MislabelAnalysis.where(automatic: true, marker: marker).order(created_at: :desc).first
       count = -1
 
@@ -33,7 +34,7 @@ namespace :data do
     min_lengths = { 'trnLF': 516, 'ITS': 485, 'rpl16': 580, 'trnK-matK': 1188 }
     marker_name = marker.name
 
-    puts "#{current_time}: Starting analysis..."
+    puts "#{current_time}: Starting analysis for marker '#{marker.name}'..."
     search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker_name, project_id: 5, min_length: min_lengths[marker_name.to_sym])
 
     title = "all_taxa_#{marker_name}_#{search.created_at.to_date.to_s}"
