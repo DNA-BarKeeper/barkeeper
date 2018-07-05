@@ -13,16 +13,15 @@
     <% if user_signed_in? %>
       <li ><%= link_to 'Advanced contig search', new_contig_search_path %></li>
       <li ><%= link_to 'Advanced marker sequence search', new_marker_sequence_search_path %></li>
+      <li ><%= link_to 'Advanced specimen search', new_individual_search_path %></li>
       <li class="divider"></li>
       <li><%= link_to 'SATIVA mislabel analyses', mislabel_analyses_path %></li>
       <li ><%= link_to 'Duplicate contigs', duplicates_contigs_path %></li>
       <!--<li ><%= link_to 'Externally verified contigs', externally_verified_contigs_path %></li>-->
       <li ><%= link_to 'Reads without contig', reads_without_contigs_path %></li>
       <li ><%= link_to 'Duplicate reads', duplicates_primer_reads_path %></li>
-      <li ><%= link_to 'Specimens without species', specimens_without_species_path %></li>
       <li ><%= link_to 'Isolates without specimens', no_specimen_isolates_path %></li>
       <li ><%= link_to 'Duplicate Isolates', duplicates_isolates_path %></li>
-      <li ><%= link_to 'Problematic location data', problematic_location_data_path %></li>
       <li ><%= link_to 'Last analysis output', analysis_output_path %></li>
       <li ><%= link_to 'Notifications', issues_path %></li>
     <% end %>
