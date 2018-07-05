@@ -22,8 +22,6 @@ GBOLapp::Application.routes.draw do
   get 'species_create_xls', action: :create_xls, controller: 'species'
   get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'
-  get 'specimens_without_species', action: :specimens_without_species, controller: 'individuals'
-  get 'problematic_location_data', action: :problematic_location_data, controller: 'individuals'
 
   get 'partial_cons/:id/:page/:width_in_bases', action: :show_page, controller: 'partial_cons', :defaults => { :format => 'json' }
   get 'partial_cons_pos/:id/:position/:width_in_bases', action: :show_position, controller: 'partial_cons', :defaults => { :format => 'json' }
