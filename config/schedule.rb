@@ -5,8 +5,9 @@ if defined? rbenv_root
   job_type :rake,    %{cd :path && :environment_variable=:environment :rbenv_root/bin/rbenv exec bundle exec rake :task --silent :output}
   job_type :runner,  %{cd :path && :rbenv_root/bin/rbenv exec bundle exec rails runner -e :environment ':task' :output}
   job_type :script,  %{cd :path && :environment_variable=:environment :rbenv_root/bin/rbenv exec bundle exec script/:task :output}
-  job_type :sidekiq, %{cd :path && :environment_variable=:environment bundle exec sidekiq-client push :task :output}
 end
+
+job_type :sidekiq, %{cd :path && :environment_variable=:environment bundle exec sidekiq-client push :task :output}
 
 every 1.day, :at => '1:30 am' do
   rake "data:create_xls" # Create Specimen.xls file from current database
