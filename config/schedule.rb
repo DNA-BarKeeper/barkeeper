@@ -5,6 +5,7 @@ if defined? rbenv_root
   job_type :rake,    %{cd :path && :environment_variable=:environment :rbenv_root/bin/rbenv exec bundle exec rake :task --silent :output}
   job_type :runner,  %{cd :path && :rbenv_root/bin/rbenv exec bundle exec rails runner -e :environment ':task' :output}
   job_type :script,  %{cd :path && :environment_variable=:environment :rbenv_root/bin/rbenv exec bundle exec script/:task :output}
+  job_type :sidekiq, %{cd :path && :environment_variable=:environment bundle exec sidekiq-client push :task :output}
 end
 
 every 1.day, :at => '1:30 am' do
@@ -16,7 +17,7 @@ every 1.day, :at => '2:30 am' do
 end
 
 every 1.day, :at => '3:00 am' do
-  rake "data:check_new_marker_sequences" # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
+  sidekiq "SativaAnalyses" # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
 end
 
 every 1.day, :at => '6:00 am' do

@@ -13,6 +13,7 @@ gem 'puma', '~> 3.0'
 gem 'redis', '~> 3.0' # Use Redis adapter to run Action Cable in production
 gem 'sidekiq'
 gem 'sidekiq-limit_fetch'
+gem 'sidekiq-client-cli'
 gem 'sinatra', :require => false # Needed to monitor sidekiq jobs
 
 # Asset pipeline
