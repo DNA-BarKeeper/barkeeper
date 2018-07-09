@@ -29,14 +29,14 @@
 </div>
 
 <p>
+  <%= link_to 'Download results as Fasta', marker_sequence_search_export_as_fasta_path(@marker_sequence_search), method: 'post', class: 'btn btn-default' %>
+  <%= link_to 'Download taxonomic information', marker_sequence_search_export_taxon_file_path(@marker_sequence_search), method: 'post', class: 'btn btn-default' %>
+</p>
+
+<p>
   <%= link_to 'Start a new marker sequence search', new_marker_sequence_search_path, class: 'btn btn-default' %>
 
   <%= link_to 'Go to your marker sequence searches index', marker_sequence_searches_path, class: 'btn btn-default' %>
 
   <%= link_to 'Go to marker sequences index', marker_sequences_path, class: 'btn btn-default' %>
-</p>
-
-<p>
-  <%= link_to 'Download results as Fasta', marker_sequence_search_export_as_fasta_path(@marker_sequence_search), method: 'post', class: 'btn btn-default' %>
-  <%= link_to 'Download taxonomic information', marker_sequence_search_export_taxon_file_path(@marker_sequence_search), method: 'post', class: 'btn btn-default' %>
 </p>
