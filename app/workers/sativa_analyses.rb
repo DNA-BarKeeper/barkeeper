@@ -64,7 +64,10 @@ class SativaAnalyses
       puts "#{current_time}: Running SATIVA analysis..."
       output = session.exec!("cd #{analysis_dir} && python /home/kai/sativa-master/sativa.py -s '#{alignment}' -t '#{title}.tax' -x BOT -T 50")
       puts output
+    end
 
+    # Start new connection in case task took too long and SSH connection timed out
+    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
       puts "#{current_time}: Downloading analysis results..."
       session.scp.download! "#{analysis_dir}/#{title}.mis", "#{Rails.root}/#{title}.mis"
     end
