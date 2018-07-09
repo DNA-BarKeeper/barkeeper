@@ -37,7 +37,7 @@ module AdvancedSearchHelper
       when 'max_length'
         "Length maximum: #{v}"
       else
-        if output_text[v.to_sym]
+        if v.is_a?(String) && output_text[v.to_sym]
           output_text[v.to_sym]
         else
           "#{k.titleize}: #{v}"
