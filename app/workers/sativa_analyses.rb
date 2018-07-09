@@ -33,6 +33,9 @@ class SativaAnalyses
     sequences = "#{Rails.root}/#{title}.fasta"
     tax_file = "#{Rails.root}/#{title}.tax"
 
+    analysis_dir = "/data/data1/sarah/SATIVA/#{title}"
+    alignment = "#{analysis_dir}/#{title}_mafft.fasta"
+
     puts "#{current_time}: Creating FASTA and taxon file..."
     File.open(sequences, "w+") do |f|
       f.write(search.as_fasta(false))
@@ -44,8 +47,6 @@ class SativaAnalyses
 
     puts "#{current_time}: Establishing SSH connection to Xylocalyx..."
     Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
-      analysis_dir = "/data/data1/sarah/SATIVA/#{title}"
-
       puts "#{current_time}: Creating analysis directory..."
       session.exec!("mkdir #{analysis_dir}")
 
@@ -54,7 +55,6 @@ class SativaAnalyses
       session.scp.upload! sequences, analysis_dir
 
       puts "#{current_time}: Creating alignment with MAFFT..."
-      alignment = "#{analysis_dir}/#{title}_mafft.fasta"
       output = session.exec!("mafft --thread 50 --maxiterate 1000 #{analysis_dir}/#{title}.fasta > #{alignment}")
       puts output
     end
