@@ -19,10 +19,14 @@ every 1.day, :at => '0:00 am' do
   rake "data:check_new_marker_sequences" # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
 end
 
-every 1.day, :at => '6:00 am' do
+every 1.day, :at => '8:00 am' do
+  rake "data:download_sativa_results" # Downloads any available SATIVA results
+end
+
+every 1.day, :at => '8:10 am' do
   rake "data:flag_specimen" # Places a warning on specimens with multiple sequences that have issues
 end
 
-every 1.day, :at => '8:00 am' do
-  rake "data:download_sativa_results" # Downloads any available SATIVA results
+every 1.day, :at => '8:15 am' do
+  rake "data:unflag_specimen" # Removes warnings from specimens with less than two sequences that have issues
 end
