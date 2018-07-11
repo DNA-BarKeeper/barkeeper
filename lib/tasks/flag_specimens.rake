@@ -13,4 +13,13 @@ namespace :data do
       Individual.find(individual_id).update(has_issue: true)
     end
   end
+
+  task :unflag_specimen => :environment do
+    individuals_with_flag = Individual.where(has_issue: true)
+
+    individuals_with_flag.each do |individual|
+      sequences = MarkerSequence.joins(isolate: :individual).distinct.with_warnings.where('individuals.id = ?', individual.id)
+      individual.update(has_issue: false) if (sequences.size < 2)
+    end
+  end
 end
