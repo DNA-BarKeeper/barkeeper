@@ -7,8 +7,6 @@ if defined? rbenv_root
   job_type :script,  %{cd :path && :environment_variable=:environment :rbenv_root/bin/rbenv exec bundle exec script/:task :output}
 end
 
-# job_type :sidekiq, %{cd :path && :environment_variable=:environment bundle exec sidekiq-client push :task :output}
-
 every 1.day, :at => '1:30 am' do
   rake "data:create_xls" # Create Specimen.xls file from current database
 end
@@ -17,14 +15,14 @@ every 1.day, :at => '2:30 am' do
   rake "data:remove_old_searches" # Delete all untitled contig searches older than a month
 end
 
-# every 1.day, :at => '3:00 am' do
-#   sidekiq "SativaAnalyses" # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
-# end
-
-every 1.day, :at => '3:00 am' do
+every 1.day, :at => '0:00 am' do
   rake "data:check_new_marker_sequences" # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
 end
 
 every 1.day, :at => '6:00 am' do
   rake "data:flag_specimen" # Places a warning on specimens with multiple sequences that have issues
+end
+
+every 1.day, :at => '8:00 am' do
+  rake "data:download_sativa_results" # Downloads any available SATIVA results
 end
