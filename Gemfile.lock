@@ -783,6 +783,8 @@ GEM
     mustermann (1.0.2)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
+    net-sftp (2.1.2)
+      net-ssh (>= 2.6.5)
     net-ssh (4.2.0)
     nio4r (1.2.1)
     nokogiri (1.8.2)
@@ -991,6 +993,7 @@ DEPENDENCIES
   minitest-rails-capybara
   minitest-reporters
   net-scp
+  net-sftp
   net-ssh
   paperclip
   pg (~> 0.21)

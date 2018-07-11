@@ -1,6 +1,7 @@
 namespace :data do
   require 'net/ssh'
   require 'net/scp'
+  require 'net/sftp'
 
   desc 'Check how many sequences were created or updated since last analysis and redo analysis if necessary'
   task :check_new_marker_sequences => :environment do
@@ -17,25 +18,47 @@ namespace :data do
     end
   end
 
-  task :run_sativa_test => :environment do
-    analyse_on_server(Marker.find_by_name('trnK-matK'))
-  end
+  desc 'Check if recent SATIVA results exist and download them'
+  task :download_sativa_results => :environment do
+    Marker.gbol_marker.each do |marker|
+      puts "Checking if analysis results exist for #{marker.name}..."
 
-  task :ssh_gbol5 => :environment do
-    Net::SSH.start('gbol5.de', 'sarah', port: 1694) do |session|
-      output = session.exec!('hostname')
-      puts output
+      exists = false
+      title = "all_taxa_#{marker.name}_#{Time.now.to_date.to_s}"
+      analysis_dir = "/data/data1/sarah/SATIVA/#{title}"
+
+      # Checks if file exists before download
+      Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx']) do |sftp|
+        sftp.stat("#{analysis_dir}/#{title}.mis") do |response|
+          if response.ok?
+            puts "#{current_time}: Downloading result file..."
+            sftp.download!("#{analysis_dir}/#{title}.mis", "#{Rails.root}/#{title}.mis")
+            exists = true
+          end
+        end
+      end
+
+      if exists
+        results = File.new("#{Rails.root}/#{title}.mis")
+        search = MarkerSequenceSearch.where(has_species: true, has_warnings: 'both', marker: marker.name, project_id: 5, min_length: min_lengths(marker.name), created_at: Time.now.beginning_of_day..Time.now.end_of_day).first
+
+        puts "#{current_time}: Importing analysis results..."
+        MislabelAnalysis.import(results, title, search.marker_sequences.size, marker.id, true)
+
+        FileUtils.rm(results)
+      end
     end
+
+    puts "#{current_time}: Done.\n"
   end
 
   private
 
   def analyse_on_server(marker)
-    min_lengths = { 'trnLF': 516, 'ITS': 485, 'rpl16': 580, 'trnK-matK': 1188 }
     marker_name = marker.name
 
     puts "#{current_time}: Starting analysis for marker '#{marker.name}'..."
-    search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker_name, project_id: 5, min_length: min_lengths[marker_name.to_sym])
+    search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker_name, project_id: 5, min_length: min_lengths(marker_name))
 
     title = "all_taxa_#{marker_name}_#{search.created_at.to_date.to_s}"
     sequences = "#{Rails.root}/#{title}.fasta"
@@ -62,6 +85,10 @@ namespace :data do
       session.scp.upload! tax_file, analysis_dir
       session.scp.upload! sequences, analysis_dir
 
+      puts "#{current_time}: Deleting local files..."
+      FileUtils.rm(sequences)
+      FileUtils.rm(tax_file)
+
       puts "#{current_time}: Creating alignment with MAFFT..."
       output = session.exec!("mafft --thread 50 --maxiterate 1000 #{analysis_dir}/#{title}.fasta > #{alignment}")
       puts output
@@ -74,21 +101,12 @@ namespace :data do
       puts output
     end
 
-    # Start new connection in case task took too long and SSH connection timed out
-    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
-      puts "#{current_time}: Downloading analysis results..."
-      session.scp.download! "#{analysis_dir}/#{title}.mis", "#{Rails.root}/#{title}.mis"
-    end
+    puts "Finished analysis at #{current_time}.\n"
+  end
 
-    results = File.new("#{Rails.root}/#{title}.mis")
-    MislabelAnalysis.import(results, title, search.marker_sequences.size, marker.id, true)
-
-    puts "#{current_time}: Deleting local files...\n"
-    FileUtils.rm(sequences)
-    FileUtils.rm(tax_file)
-    FileUtils.rm(results)
-
-    puts "Finished analysis at #{current_time}."
+  def min_lengths(marker_name)
+    min_lengths = { 'trnLF': 516, 'ITS': 485, 'rpl16': 580, 'trnK-matK': 1188 }
+    min_lengths[marker_name.to_sym]
   end
 
   def current_time
