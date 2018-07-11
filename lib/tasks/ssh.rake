@@ -28,7 +28,7 @@ namespace :data do
       analysis_dir = "/data/data1/sarah/SATIVA/#{title}"
 
       # Checks if file exists before download
-      Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx']) do |sftp|
+      Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
         sftp.stat("#{analysis_dir}/#{title}.mis") do |response|
           if response.ok?
             puts "#{current_time}: Downloading result file..."
