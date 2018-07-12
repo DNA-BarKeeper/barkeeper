@@ -14,9 +14,9 @@ class MarkerSequenceSearch < ApplicationRecord
     marker_sequences.each do |marker_sequence|
       sequence = Bio::Sequence::NA.new(marker_sequence.sequence)
 
-      name = "#{marker_sequence.name.gsub(' ', '')}"
+      name = marker_sequence.name.delete(' ')
       if include_taxa
-        name << "|#{marker_sequence.isolate&.lab_nr}|#{marker_sequence.isolate&.individual&.specimen_id}|#{marker_sequence.isolate&.individual&.species&.composed_name}|#{marker_sequence.isolate&.individual&.species&.family&.name}"
+        name << "_#{marker_sequence.isolate&.individual&.species&.composed_name&.gsub(' ', '_')}"
       end
 
       fasta += sequence.to_fasta(name, 80)
