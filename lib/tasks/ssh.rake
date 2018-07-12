@@ -40,7 +40,7 @@ namespace :data do
 
       if exists
         results = File.new("#{Rails.root}/#{title}.mis")
-        search = MarkerSequenceSearch.where(has_species: true, has_warnings: 'both', marker: marker.name, project_id: 5, min_length: min_lengths(marker.name), created_at: Time.now.beginning_of_day..Time.now.end_of_day).first
+        search = MarkerSequenceSearch.where(has_species: true, has_warnings: 'both', marker: marker.name, project_id: 5, created_at: Time.now.beginning_of_day..Time.now.end_of_day).first
 
         puts "#{current_time}: Importing analysis results..."
         MislabelAnalysis.import(results, title, search.marker_sequences.size, marker.id, true)
@@ -58,7 +58,7 @@ namespace :data do
     marker_name = marker.name
 
     puts "#{current_time}: Starting analysis for marker '#{marker.name}'..."
-    search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker_name, project_id: 5, min_length: min_lengths(marker_name))
+    search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker_name, project_id: 5)
 
     title = "all_taxa_#{marker_name}_#{search.created_at.to_date.to_s}"
     sequences = "#{Rails.root}/#{title}.fasta"
@@ -102,11 +102,6 @@ namespace :data do
     end
 
     puts "Finished analysis at #{current_time}.\n"
-  end
-
-  def min_lengths(marker_name)
-    min_lengths = { 'trnLF': 516, 'ITS': 485, 'rpl16': 580, 'trnK-matK': 1188 }
-    min_lengths[marker_name.to_sym]
   end
 
   def current_time
