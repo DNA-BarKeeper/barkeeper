@@ -63,7 +63,7 @@ module MislabelAnalysisHelper
 
   def contigs_with_warnings(contigs)
     list_elements = []
-    contigs.includes(:marker_sequence).each do |c|
+    contigs.each do |c|
       list_elements << content_tag(:li, link_to(c.name, edit_contig_path(c))) if c.marker_sequence&.has_unsolved_mislabels
     end
 
