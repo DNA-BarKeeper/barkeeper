@@ -91,7 +91,7 @@ module MislabelAnalysisHelper
 
     html = ''
     if list_elements.blank?
-      html << '<p>No issues are present for this record..</p>'
+      html << '<p>No issues are present for this record.</p>'
     else
       html << '<p>Multiple contigs associated with this object contain warnings from a SATIVA analysis:</p>'
       html << '<ul>'
