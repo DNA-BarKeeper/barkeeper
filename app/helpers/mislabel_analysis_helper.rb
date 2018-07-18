@@ -46,7 +46,7 @@ module MislabelAnalysisHelper
     has_warnings = false
 
     marker_sequences.each do |ms|
-      has_warnings = ms.has_unsolved_mislabels
+      has_warnings = ms&.has_unsolved_mislabels
       break if has_warnings
     end
 
