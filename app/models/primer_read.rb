@@ -35,7 +35,7 @@ class PrimerRead < ApplicationRecord
   validates_attachment_presence :chromatogram
 
   def self.in_higher_order_taxon(higher_order_taxon_id)
-    count=0
+    count = 0
 
     HigherOrderTaxon.find(higher_order_taxon_id).orders.each do |ord|
       ord.families.each do |fam|
@@ -212,7 +212,7 @@ class PrimerRead < ApplicationRecord
         if primer
           primer_name = matches[1] unless primer.reverse
         else
-          output_message= "Cannot find primer with name #{primer_name}."
+          output_message = "Cannot find primer with name #{primer_name}."
           create_issue = true
         end
       else
@@ -266,7 +266,7 @@ class PrimerRead < ApplicationRecord
             contig.generate_name
             contig.save
 
-            self.contig=contig
+            self.contig = contig
             self.save
 
             output_message = "Created contig #{contig.name} and assigned primer read to it."

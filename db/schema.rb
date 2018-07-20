@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180629124238) do
+ActiveRecord::Schema.define(version: 20180718141806) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -515,6 +515,7 @@ ActiveRecord::Schema.define(version: 20180629124238) do
     t.string   "comment"
     t.boolean  "overwritten",                           default: false
     t.integer  "aligned_peak_indices",                                  array: true
+    t.string   "chromatogram_fingerprint"
   end
 
   create_table "primer_reads_projects", id: false, force: :cascade do |t|

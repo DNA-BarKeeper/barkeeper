@@ -5,13 +5,14 @@ namespace :data do
 
   desc 'Check how many sequences were created or updated since last analysis and redo analysis if necessary'
   task :check_new_marker_sequences => :environment do
+    # TODO: Do analyses for all existing projects (except all_records)
     Marker.gbol_marker.each do |marker|
       puts "Checking if analysis is necessary for #{marker.name}..."
       last_analysis = MislabelAnalysis.where(automatic: true, marker: marker).order(created_at: :desc).first
       count = -1
 
       if last_analysis
-        count = MarkerSequence.where(marker_id: marker.id).where("marker_sequences.updated_at >= ?", last_analysis.created_at).size
+        count = MarkerSequence.where(marker_id: marker.id).where('marker_sequences.updated_at >= ?', last_analysis.created_at).size
       end
 
       analyse_on_server(marker) if (count > 50) || (count == -1) # More than 50 new seqs OR no analysis was done before
@@ -24,7 +25,7 @@ namespace :data do
       puts "Checking if analysis results exist for #{marker.name}..."
 
       exists = false
-      title = "all_taxa_#{marker.name}_#{Time.now.to_date.to_s}"
+      title = "all_taxa_#{marker.name}_#{Time.now.to_date}"
       analysis_dir = "/data/data1/sarah/SATIVA/#{title}"
 
       # Checks if file exists before download
@@ -60,7 +61,7 @@ namespace :data do
     puts "#{current_time}: Starting analysis for marker '#{marker.name}'..."
     search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker_name, project_id: 5)
 
-    title = "all_taxa_#{marker_name}_#{search.created_at.to_date.to_s}"
+    title = "all_taxa_#{marker_name}_#{search.created_at.to_date}"
     sequences = "#{Rails.root}/#{title}.fasta"
     tax_file = "#{Rails.root}/#{title}.tax"
 
@@ -68,11 +69,11 @@ namespace :data do
     alignment = "#{analysis_dir}/#{title}_mafft.fasta"
 
     puts "#{current_time}: Creating FASTA and taxon file..."
-    File.open(sequences, "w+") do |f|
+    File.open(sequences, 'w+') do |f|
       f.write(search.as_fasta)
     end
 
-    File.open(tax_file, "w+") do |f|
+    File.open(tax_file, 'w+') do |f|
       f.write(search.taxon_file)
     end
 
@@ -105,6 +106,6 @@ namespace :data do
   end
 
   def current_time
-    Time.now.strftime("%H:%M:%S")
+    Time.now.strftime('%H:%M:%S')
   end
 end

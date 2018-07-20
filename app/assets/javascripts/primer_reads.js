@@ -98,7 +98,6 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#primer_reads-duplicates').data('source'),
         "columnDefs": [
-            { "orderable": false, "targets": 2 },
             { "orderable": false, "targets": 4 }
         ],
         "order": [ 0, 'asc' ]
