@@ -23,7 +23,7 @@
           <li><a href="#description" role="tab" data-toggle="tab">Description</a></li>
           <li class="active"><a href="#quality" role="tab" data-toggle="tab">Quality</a></li>
           <li><a href="#files" role="tab" data-toggle="tab">Files</a></li>
-          <%= render :partial => 'shared/sativa_nav_tab', :locals => { :marker_sequences => [@primer_read.contig.marker_sequence] } %>
+          <%= render :partial => 'shared/sativa_nav_tab', :locals => { :marker_sequences => [@primer_read.contig&.marker_sequence] } %>
         </ul>
 
         <!-- Tab panes -->

@@ -54,6 +54,7 @@ class PrimerReadsController < ApplicationController
     if @primer_read.save
       PherogramProcessing.perform_async(@primer_read.id)
       @primer_read.update(:sequence => '') if @primer_read.sequence.nil?
+      @primer_read.update(:name => @primer_read.name + '_duplicate') if (PrimerRead.where(name: @primer_read.name).size > 1)
     end
   end
 

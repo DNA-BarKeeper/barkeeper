@@ -46,8 +46,8 @@ class PrimerReadDatatable
     # TODO: Maybe add find_each (batches!) later - if possible, probably conflicts with sorting
     case @reads_to_show
     when 'duplicates'
-      names_with_multiple = PrimerRead.select(:name).in_project(@current_default_project).group(:name).having("count(primer_reads.name) > 1").count.keys
-      primer_reads = PrimerRead.includes(:contig).where(name: names_with_multiple).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).order("#{sort_column} #{sort_direction}")
+      files_with_multiple = PrimerRead.select(:chromatogram_fingerprint).group(:chromatogram_fingerprint).having("count(primer_reads.chromatogram_fingerprint) > 1").count.keys
+      primer_reads = PrimerRead.includes(:contig).in_project(@current_default_project).where(chromatogram_fingerprint: files_with_multiple).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).order("#{sort_column} #{sort_direction}")
     when 'no_contig'
       primer_reads = PrimerRead.includes(:contig).where(:contig => nil).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     else
@@ -72,7 +72,7 @@ class PrimerReadDatatable
   end
 
   def sort_column
-    columns = %w[name assembled contig_id updated_at]
+    columns = %w[name assembled contigs.id updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
