@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180718141806) do
+ActiveRecord::Schema.define(version: 20180807101703) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -414,6 +414,21 @@ ActiveRecord::Schema.define(version: 20180718141806) do
     t.datetime "published"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "ngs_runs", force: :cascade do |t|
+    t.integer  "quality_threshold"
+    t.integer  "tag_mismates"
+    t.integer  "primer_mismatches"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.string   "name"
+  end
+
+  create_table "ngs_runs_projects", id: false, force: :cascade do |t|
+    t.integer "ngs_run_id", null: false
+    t.integer "project_id", null: false
+    t.index ["ngs_run_id", "project_id"], name: "index_ngs_runs_projects_on_ngs_run_id_and_project_id", using: :btree
   end
 
   create_table "oders", force: :cascade do |t|
