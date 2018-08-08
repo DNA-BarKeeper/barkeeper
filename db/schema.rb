@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180807101703) do
+ActiveRecord::Schema.define(version: 20180808143956) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -420,9 +420,19 @@ ActiveRecord::Schema.define(version: 20180807101703) do
     t.integer  "quality_threshold"
     t.integer  "tag_mismates"
     t.integer  "primer_mismatches"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.string   "name"
+    t.string   "fastq_file_name"
+    t.string   "fastq_content_type"
+    t.integer  "fastq_file_size"
+    t.datetime "fastq_updated_at"
+    t.string   "tag_primer_map_file_name"
+    t.string   "tag_primer_map_content_type"
+    t.integer  "tag_primer_map_file_size"
+    t.datetime "tag_primer_map_updated_at"
+    t.integer  "higher_order_taxon_id"
+    t.index ["higher_order_taxon_id"], name: "index_ngs_runs_on_higher_order_taxon_id", using: :btree
   end
 
   create_table "ngs_runs_projects", id: false, force: :cascade do |t|
@@ -705,6 +715,7 @@ ActiveRecord::Schema.define(version: 20180807101703) do
   add_foreign_key "marker_sequence_searches", "projects"
   add_foreign_key "mislabel_analyses", "markers"
   add_foreign_key "mislabels", "marker_sequences"
+  add_foreign_key "ngs_runs", "higher_order_taxa"
   add_foreign_key "plant_plates", "lab_racks"
   add_foreign_key "shelves", "freezers"
 end

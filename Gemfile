@@ -27,7 +27,7 @@ gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 gem 'cancancan'
 gem 'devise'
 
-# External file storage
+# File storage
 gem 'aws-sdk'
 gem 'paperclip'
 

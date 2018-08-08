@@ -2,7 +2,7 @@ class NgsRunsController < ApplicationController
   include ProjectConcern
   load_and_authorize_resource
 
-  before_action :set_ngs_run, only: [:show, :edit, :update, :destroy]
+  before_action :set_ngs_run, only: [:show, :edit, :update, :destroy, :import]
 
   def index
     respond_to do |format|
@@ -28,7 +28,7 @@ class NgsRunsController < ApplicationController
     respond_to do |format|
       if @ngs_run.save
         format.html { redirect_to ngs_runs_path, notice: 'NGS Run was successfully created.' }
-        format.json { render :show, status: :created, location: @ngs_run }
+        format.json { render :edit, status: :created, location: @ngs_run }
       else
         format.html { render :new }
         format.json { render json: @ngs_run.errors, status: :unprocessable_entity }
@@ -39,8 +39,8 @@ class NgsRunsController < ApplicationController
   def update
     respond_to do |format|
       if @ngs_run.update(ngs_run_params)
-        format.html { redirect_to @ngs_run, notice: 'NGS Run was successfully updated.' }
-        format.json { render :show, status: :ok, location: @ngs_run }
+        format.html { redirect_to ngs_runs_path, notice: 'NGS Run was successfully updated.' }
+        format.json { render :index, status: :ok }
       else
         format.html { render :edit }
         format.json { render json: @ngs_run.errors, status: :unprocessable_entity }
@@ -56,6 +56,21 @@ class NgsRunsController < ApplicationController
     end
   end
 
+  def import
+    if @ngs_run.check_fastq && @ngs_run.check_tag_primer_map
+      isolates_not_in_db = @ngs_run.samples_exist
+      if isolates_not_in_db.blank?
+        @ngs_run.import(params[:tag_primer_map], params[:fastq])
+        redirect_to ngs_runs_path, notice: 'NGS Run data imported.'
+      else
+        redirect_back(fallback_location: ngs_runs_path,
+                      alert: "Please create database entries for the following sample IDs before starting the import: #{isolates_not_in_db.join(', ')}")
+      end
+    else
+      redirect_back(fallback_location: ngs_runs_path, alert: 'Please make sure files are uploaded and properly formatted.')
+    end
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_ngs_run
@@ -64,6 +79,6 @@ class NgsRunsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def ngs_run_params
-    params.require(:ngs_run).permit(:name, :primer_mismatches, :quality_threshold, :tag_mismates)
+    params.require(:ngs_run).permit(:name, :primer_mismatches, :quality_threshold, :tag_mismates, :fastq, :tag_primer_map)
   end
 end
