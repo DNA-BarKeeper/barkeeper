@@ -26,7 +26,7 @@ class NgsRunDatatable
     ngs_runs.map do |ngs_run|
 
       [
-        ngs_run.name,
+        link_to(ngs_run.name, edit_ngs_run_path(ngs_run)),
         ngs_run.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
         link_to('Delete', ngs_run, method: :delete, data: { confirm: 'Are you sure?' })
       ]

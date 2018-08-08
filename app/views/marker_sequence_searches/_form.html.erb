@@ -55,12 +55,12 @@
         <%= f.text_field :family, data: { autocomplete_source: filter_families_path }, include_blank: true, class: 'form-control' %>
       </div>
       <div class="field">
-        <%= f.label :order %><br />
-        <%= f.text_field :order, data: { autocomplete_source: Order.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
-      </div>
-      <div class="field">
         <%= f.label :higher_order_taxon %><br />
         <%= f.text_field :higher_order_taxon, data: { autocomplete_source: HigherOrderTaxon.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+      </div>
+      <div class="field">
+        <%= f.label :order %><br />
+        <%= f.text_field :order, data: { autocomplete_source: Order.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
       </div>
       <br>
       <div class="field">
