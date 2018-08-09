@@ -47,12 +47,12 @@
 
             <div class="form-group">
               <%= f.label :tissue_id, 'Tissue type' %>
-              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name, :include_blank => '<no selection>') %>
+              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
             </div>
 
             <div class="form-group">
               <%= f.label :plant_plate_id, 'Plate (Tissue)' %>
-              <%= f.collection_select(:plant_plate_id, PlantPlate.all.order(:name), :id, :name, :include_blank => '<no selection>') %>
+              <%= f.collection_select(:plant_plate_id, PlantPlate.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
             </div>
 
             <div class="form-group">
@@ -75,7 +75,7 @@
 
                 <div class="form-group">
                   <%= f.label 'Lab' %>
-                  <%= f.collection_select(:lab_id_orig, Lab.all, :id, :labcode, :include_blank => '<no selection>') %>
+                  <%= f.collection_select(:lab_id_orig, Lab.all, :id, :labcode, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
                 </div>
 
                 <div  class="form-group">
@@ -83,7 +83,7 @@
                   <% if @isolate.micronic_plate_id_orig %>
                       <%= link_to '', edit_micronic_plate_path(@isolate.micronic_plate_id_orig),:class => 'glyphicon glyphicon-share-alt', :title => "go to micronic plate" %>
                   <% end %>
-                  <%= f.collection_select(:micronic_plate_id_orig, MicronicPlate.all, :id, :micronic_plate_id, :include_blank => '<no selection>') %>
+                  <%= f.collection_select(:micronic_plate_id_orig, MicronicPlate.all, :id, :micronic_plate_id, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
                 </div>
 
                 <% if @isolate.micronic_plate_id_orig %>
@@ -135,7 +135,7 @@
 
                 <div class="form-group">
                   <%= f.label 'Lab' %>
-                  <%= f.collection_select(:lab_id_copy, Lab.all, :id, :labcode, :include_blank => '<no selection>') %>
+                  <%= f.collection_select(:lab_id_copy, Lab.all, :id, :labcode, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
                 </div>
 
                 <div  class="form-group">
@@ -143,7 +143,7 @@
                   <% if @isolate.micronic_plate_id_copy %>
                       <%= link_to '', edit_micronic_plate_path(@isolate.micronic_plate_id_copy),:class => 'glyphicon glyphicon-share-alt', :title => "go to micronic plate" %>
                   <% end %>
-                  <%= f.collection_select(:micronic_plate_id_copy, MicronicPlate.all, :id, :micronic_plate_id, :include_blank => '<no selection>') %>
+                  <%= f.collection_select(:micronic_plate_id_copy, MicronicPlate.all, :id, :micronic_plate_id, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
                 </div>
 
                 <% if @isolate.micronic_plate_id_copy %>
@@ -192,15 +192,15 @@
             </div>
 
             <div class="form-group">
+              <%= f.check_box :negative_control %>
               <%= f.label :negative_control, 'Negative control' %>
-              <%= f.check_box :negative_control  %>
             </div>
 
             <div class="form-group">
-              Isolated by
-              <%= f.collection_select(:user_id, User.all.order(:name), :id, :name, :include_blank => '<no selection>') %>
-              on
-              <%= f.datetime_select(:isolation_date, :include_blank => '<no date selected>') %>
+              <%= f.label :user_id, 'Isolated by' %>
+              <%= f.collection_select(:user_id, User.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
+              <%= f.label :isolation_date, 'on' %><br />
+              <%= f.text_field(:isolation_date, class: 'form-control') %>
             </div>
 
           </div>
