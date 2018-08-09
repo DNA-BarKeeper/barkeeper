@@ -12,7 +12,3 @@ jQuery ->
     ]
     "order": [ 1, 'desc' ]
   });
-
-  $('#ngs_run_higher_order_taxon').autocomplete({
-    source: $('#ngs_run_higher_order_taxon').data('autocomplete-source')
-  });

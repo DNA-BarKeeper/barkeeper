@@ -15,7 +15,7 @@ module ProjectHelper
         html << '<div>'
         html << label(group.downcase.to_sym, group.titleize)
         html << '<br>'
-        html << collection_select(group.downcase.to_sym, :id, @result.where(searchable_type: group), :searchable_id, :content, {}, { multiple: true })
+        html << collection_select(group.downcase.to_sym, :id, @result.where(searchable_type: group), :searchable_id, :content, {}, { multiple: true, class: 'form-control' })
         html << '</div>'
         html << '<br>'
       end
