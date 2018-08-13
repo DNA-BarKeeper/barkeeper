@@ -38,7 +38,11 @@ GBOLapp::Application.routes.draw do
     post :export_taxon_file
   end
 
-  resources :ngs_runs
+  resources :ngs_runs do
+    member do
+      post :import
+    end
+  end
 
   resources :individual_searches
 

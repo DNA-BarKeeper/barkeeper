@@ -1,5 +1,9 @@
 <%= render 'form' %>
 
+<% if user_signed_in? %>
+  <%= link_to 'Import NGS run data', import_ngs_run_path, method: :post %>
+<% end %>
+
 <table width="100%">
   <tr>
     <td>
