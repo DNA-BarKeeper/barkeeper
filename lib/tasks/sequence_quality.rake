@@ -81,22 +81,23 @@ namespace :data do
 
   desc 'Get the average number of specimen per species'
   task :specimen_per_species => :environment do
-    species = Species.joins(:individuals).distinct
-
-    cnt = species.group(:id).count(:individuals)
     species_cnt = Species.all.size
+    specimen_cnt = Individual.all.size
+
+    species = Species.joins(:individuals).distinct # Species with at least one specimen
 
     puts "Number of species in DB: #{species_cnt}"
     puts "Number of species in DB with at least one specimen: #{species.size}"
-    puts "Number of specimen in DB: #{Individual.all.size}"
+    puts "Number of specimen in DB: #{specimen_cnt}"
 
-    average = cnt.values.sum / species_cnt.to_f
+    average = specimen_cnt / species_cnt.to_f
 
     puts "Average number of specimen per species: #{average}"
 
-    max = cnt.max_by { |_, v| v }[1]
+    cnt = species.group(:id).count(:individuals)
+    max = cnt.max_by { |_, v| v }
 
-    puts "Highest number of specimen per species in DB: #{max}"
+    puts "Highest number of specimen per species in DB: #{max[1]}(#{Species.find(max[0]).composed_name})"
 
     singleton_cnt = cnt.values.count(1)
 
