@@ -37,6 +37,9 @@ class NgsRunsController < ApplicationController
   end
 
   def update
+    params[:ngs_run].delete(:fastq) if params[:ngs_run][:fastq].blank?
+    params[:ngs_run].delete(:tag_primer_map) if params[:ngs_run][:tag_primer_map].blank?
+
     respond_to do |format|
       if @ngs_run.update(ngs_run_params)
         format.html { redirect_to ngs_runs_path, notice: 'NGS Run was successfully updated.' }
@@ -60,14 +63,14 @@ class NgsRunsController < ApplicationController
     if @ngs_run.check_fastq && @ngs_run.check_tag_primer_map
       isolates_not_in_db = @ngs_run.samples_exist
       if isolates_not_in_db.blank?
-        @ngs_run.import(params[:tag_primer_map], params[:fastq])
+        @ngs_run.import
         redirect_to ngs_runs_path, notice: 'NGS Run data imported.'
       else
         redirect_back(fallback_location: ngs_runs_path,
                       alert: "Please create database entries for the following sample IDs before starting the import: #{isolates_not_in_db.join(', ')}")
       end
     else
-      redirect_back(fallback_location: ngs_runs_path, alert: 'Please make sure files are uploaded and properly formatted.')
+      redirect_back(fallback_location: ngs_runs_path, alert: 'Please make you uploaded a properly formatted tag primer map and FastQ.')
     end
   end
 
@@ -79,6 +82,6 @@ class NgsRunsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def ngs_run_params
-    params.require(:ngs_run).permit(:name, :primer_mismatches, :quality_threshold, :tag_mismates, :fastq, :tag_primer_map)
+    params.require(:ngs_run).permit(:name, :primer_mismatches, :quality_threshold, :tag_mismates, :fastq, :tag_primer_map, :higher_order_taxon_id)
   end
 end

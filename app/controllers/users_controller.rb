@@ -27,9 +27,6 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    puts "ATTENTION"
-    puts params[:id], current_user.id
-
     if @user.admin? && !current_user.admin?
       redirect_to users_path, alert: 'Permission denied.'
     else

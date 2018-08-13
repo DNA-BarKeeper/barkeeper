@@ -5,3 +5,4 @@
 
 Mime::Type.register "application/xls", :xls
 Mime::Type.register "application/xml ", :abc
+Mime::Type.register 'chemical/seq-na-fastq', :fastq

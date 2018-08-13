@@ -29,17 +29,17 @@
 
       <div class="form-group">
         <%= f.label :higher_order_taxon, 'Higher Order Taxon' %>
-        <%= f.collection_select(:higher_order_taxon_id, HigherOrderTaxon.all, :id, :name, class: 'form-control') %>
+        <%= f.collection_select(:higher_order_taxon_id, HigherOrderTaxon.all, :id, :name, {}, { class: 'form-control' }) %>
       </div>
 
       <div class="form-group">
-        <%= f.label :fastq %>
+        <%= f.label :fastq, 'FASTQ (*.fastq, *.fq)' %>
         <br><%= "Current file: #{@ngs_run.fastq_file_name}" %>
         <%= f.file_field :fastq, class: 'form-control' %>
       </div>
 
       <div class="form-group">
-        <%= f.label :tag_primer_map %>
+        <%= f.label :tag_primer_map, 'Tag Primer Map (*.txt, *.csv)' %>
         <br><%= "Current file: #{@ngs_run.tag_primer_map_file_name}" %>
         <%= f.file_field :tag_primer_map, class: 'form-control' %>
       </div>
