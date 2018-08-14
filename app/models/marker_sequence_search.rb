@@ -15,7 +15,7 @@ class MarkerSequenceSearch < ApplicationRecord
       sequence = Bio::Sequence::NA.new(marker_sequence.sequence)
 
       name = marker_sequence.name.delete(' ')
-      name << "_#{marker_sequence.isolate&.individual&.species&.composed_name&.gsub(' ', '_')}"
+      name << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}"
 
       fasta += sequence.to_fasta(name, 80)
     end
@@ -27,13 +27,13 @@ class MarkerSequenceSearch < ApplicationRecord
     taxa = ''
 
     marker_sequences.includes(isolate: [individual: [species: [family: [order: :higher_order_taxon]]]]).each do |marker_sequence|
-      species = marker_sequence.isolate&.individual&.species&.composed_name
+      species = marker_sequence.isolate&.individual&.species&.get_species_component
       family = marker_sequence.isolate&.individual&.species&.family&.name
       order = marker_sequence.isolate&.individual&.species&.family&.order&.name
       hot = marker_sequence.isolate&.individual&.species&.family&.order&.higher_order_taxon&.name
 
       taxa << marker_sequence.name.delete(' ')
-      taxa << "_#{marker_sequence.isolate&.individual&.species&.composed_name&.gsub(' ', '_')}"
+      taxa << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}"
       taxa << "\t"
       taxa << "Eukaryota;Embryophyta;#{hot};#{order};#{family};#{species}\n"
     end
