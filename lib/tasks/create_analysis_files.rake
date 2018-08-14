@@ -1,6 +1,6 @@
 namespace :data do
   desc 'Create fasta and taxon file from marker sequence search for further analyses.'
-  task create_analysis_files: [:environment, :title] do
+  task :create_analysis_files, [:title] => [:environment] do |_, args|
     length_minima = {
         'ITS' => 485,
         'rpl16' => 580,
