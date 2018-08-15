@@ -74,7 +74,7 @@ namespace :data do
     end
 
     File.open(tax_file, 'w+') do |f|
-      f.write(search.taxon_file)
+      f.write(search.taxon_file(true))
     end
 
     puts "#{current_time}: Establishing SSH connection to Xylocalyx..."

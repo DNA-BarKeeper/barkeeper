@@ -13,21 +13,17 @@ class MarkerSequenceSearch < ApplicationRecord
   end
 
   def analysis_fasta(include_singletons)
-    sequences = marker_sequences
-
-    unless include_singletons
-      # Remove singletons
-      cnt = sequences.joins(isolate: [individual: :species]).distinct.reorder('species.species_component').group('species.species_component').count
-      sequences = sequences.where(species: { species_component: cnt.select { |_, v| v > 1 }.keys })
-    end
+    sequences = include_singletons ? marker_sequences : remove_singletons(marker_sequences)
 
     create_fasta(sequences, false)
   end
 
-  def taxon_file
+  def taxon_file(include_singletons)
+    sequences = include_singletons ? marker_sequences : remove_singletons(marker_sequences)
+
     taxa = ''
 
-    marker_sequences.includes(isolate: [individual: [species: [family: [order: :higher_order_taxon]]]]).each do |marker_sequence|
+    sequences.includes(isolate: [individual: [species: [family: [order: :higher_order_taxon]]]]).each do |marker_sequence|
       species = marker_sequence.isolate&.individual&.species&.get_species_component
       family = marker_sequence.isolate&.individual&.species&.family&.name
       order = marker_sequence.isolate&.individual&.species&.family&.order&.name
@@ -99,5 +95,10 @@ class MarkerSequenceSearch < ApplicationRecord
     end
 
     fasta
+  end
+
+  def remove_singletons(sequences)
+    cnt = sequences.joins(isolate: [individual: :species]).distinct.reorder('species.species_component').group('species.species_component').count
+    sequences.where(species: { species_component: cnt.select { |_, v| v > 1 }.keys })
   end
 end
