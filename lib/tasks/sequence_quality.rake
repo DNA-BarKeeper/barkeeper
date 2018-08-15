@@ -102,6 +102,9 @@ namespace :data do
     singleton_cnt = cnt.values.count(1)
 
     puts "Number of species with less than two specimen: #{(species_cnt - cnt.size) + singleton_cnt}"
+
+    # Number of marker sequences per species
+    # MarkerSequence.joins(isolate: [individual: :species]).distinct.order('species.species_component').group('species.species_component').count
   end
 
   task :get_high_quality_sequences => :environment do

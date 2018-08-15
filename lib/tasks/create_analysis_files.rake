@@ -8,10 +8,11 @@ namespace :data do
         'trnK-matK' => 1188
     }
 
-    title = args[:title].split('_')
+    title = args[:title]
 
-    taxon = title[0]
-    marker = title[1]
+    title_split = title.split('_')
+    taxon = title_split[0]
+    marker = title_split[1]
 
     search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker, min_length: length_minima[marker], project_id: 5)
     search.update(higher_order_taxon: taxon) if HigherOrderTaxon.find_by_name(taxon)
@@ -22,7 +23,7 @@ namespace :data do
     tax_file = "#{Rails.root}/#{title}.tax"
 
     File.open(sequences, 'w+') do |f|
-      f.write(search.as_fasta)
+      f.write(search.analysis_fasta(false))
     end
 
     File.open(tax_file, 'w+') do |f|

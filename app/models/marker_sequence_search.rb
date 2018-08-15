@@ -9,18 +9,19 @@ class MarkerSequenceSearch < ApplicationRecord
   end
 
   def as_fasta
-    fasta = ''
+    create_fasta(marker_sequences, true)
+  end
 
-    marker_sequences.each do |marker_sequence|
-      sequence = Bio::Sequence::NA.new(marker_sequence.sequence)
+  def analysis_fasta(include_singletons)
+    sequences = marker_sequences
 
-      name = marker_sequence.name.delete(' ')
-      name << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}"
-
-      fasta += sequence.to_fasta(name, 80)
+    unless include_singletons
+      # Remove singletons
+      cnt = sequences.joins(isolate: [individual: :species]).distinct.reorder('species.species_component').group('species.species_component').count
+      sequences = sequences.where(species: { species_component: cnt.select { |_, v| v > 1 }.keys })
     end
 
-    fasta
+    create_fasta(sequences, false)
   end
 
   def taxon_file
@@ -75,5 +76,28 @@ class MarkerSequenceSearch < ApplicationRecord
     marker_sequences = marker_sequences.where("length(marker_sequences.sequence) <= ?", max_length) if max_length.present?
 
     marker_sequences
+  end
+
+  def create_fasta(sequences, meta_data)
+    fasta = ''
+
+    sequences.each do |marker_sequence|
+      sequence = Bio::Sequence::NA.new(marker_sequence.sequence)
+
+      name = marker_sequence.name.delete(' ')
+
+      if meta_data
+        name << "|#{marker_sequence.isolate&.lab_nr}" # Isolate
+        name << "|#{marker_sequence.isolate&.individual&.specimen_id}" # Specimen
+        name << "|#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}" # Species
+        name << "|#{marker_sequence.isolate&.individual&.species&.family&.name}" # Family
+      else
+        name << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}" # Species
+      end
+
+      fasta += sequence.to_fasta(name, 80)
+    end
+
+    fasta
   end
 end
