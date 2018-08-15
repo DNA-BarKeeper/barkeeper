@@ -27,7 +27,7 @@ namespace :data do
     end
 
     File.open(tax_file, 'w+') do |f|
-      f.write(search.taxon_file)
+      f.write(search.taxon_file(false))
     end
   end
 end
