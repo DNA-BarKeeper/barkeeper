@@ -77,6 +77,34 @@ namespace :data do
 
     # Number of isolates per marker with more than one sequence:
     # Isolate.joins(:marker_sequences).where(marker_sequences: { marker: 5 }).group(:id).having('count(marker_sequences) > ?', 1).length
+    end
+
+  desc 'Get the average number of specimen per species'
+  task :specimen_per_species => :environment do
+    species_cnt = Species.all.size
+    specimen_cnt = Individual.all.size
+
+    species = Species.joins(:individuals).distinct # Species with at least one specimen
+
+    puts "Number of species in DB: #{species_cnt}"
+    puts "Number of species in DB with at least one specimen: #{species.size}"
+    puts "Number of specimen in DB: #{specimen_cnt}"
+
+    average = specimen_cnt / species_cnt.to_f
+
+    puts "Average number of specimen per species: #{average}"
+
+    cnt = species.group(:id).count(:individuals)
+    max = cnt.max_by { |_, v| v }
+
+    puts "Highest number of specimen per species in DB: #{max[1]}(#{Species.find(max[0]).composed_name})"
+
+    singleton_cnt = cnt.values.count(1)
+
+    puts "Number of species with less than two specimen: #{(species_cnt - cnt.size) + singleton_cnt}"
+
+    # Number of marker sequences per species
+    # MarkerSequence.joins(isolate: [individual: :species]).distinct.order('species.species_component').group('species.species_component').count
   end
 
   task :get_high_quality_sequences => :environment do

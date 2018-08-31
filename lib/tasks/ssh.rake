@@ -70,11 +70,11 @@ namespace :data do
 
     puts "#{current_time}: Creating FASTA and taxon file..."
     File.open(sequences, 'w+') do |f|
-      f.write(search.as_fasta)
+      f.write(search.analysis_fasta(true))
     end
 
     File.open(tax_file, 'w+') do |f|
-      f.write(search.taxon_file)
+      f.write(search.taxon_file(true))
     end
 
     puts "#{current_time}: Establishing SSH connection to Xylocalyx..."

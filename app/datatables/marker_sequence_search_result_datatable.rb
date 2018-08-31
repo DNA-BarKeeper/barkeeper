@@ -63,7 +63,7 @@ class MarkerSequenceSearchResultDatatable
   end
 
   def sort_column
-    columns = %w[marker_sequences.name species_id marker_sequences.updated_at]
+    columns = %w[marker_sequences.name species.composed_name marker_sequences.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
