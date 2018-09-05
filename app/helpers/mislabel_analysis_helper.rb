@@ -12,31 +12,33 @@ module MislabelAnalysisHelper
   def mislabels(sequence)
     html = ''
 
-    sequence.mislabels.includes(:mislabel_analysis).order(:solved).each do |mislabel|
-      solved = ''
+    if sequence
+      sequence.mislabels.includes(:mislabel_analysis).order(:solved).each do |mislabel|
+        solved = ''
 
-      if mislabel.solved
-        begin
-          user = User.find(mislabel.solved_by).name
-        rescue
-          user = 'unknown user'
+        if mislabel.solved
+          begin
+            user = User.find(mislabel.solved_by).name
+          rescue
+            user = 'unknown user'
+          end
+          solved_by = "Solved by #{user} on #{mislabel.solved_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")}"
+        else
+          solved = "<span class='glyphicon glyphicon-exclamation-sign' style='color: red'></span>".html_safe
+          solved_by = link_to('Mark issue as solved', solve_mislabel_path(mislabel))
         end
-        solved_by = "Solved by #{user} on #{mislabel.solved_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")}"
-      else
-        solved = "<span class='glyphicon glyphicon-exclamation-sign' style='color: red'></span>".html_safe
-        solved_by = link_to('Mark issue as solved', solve_mislabel_path(mislabel))
-      end
 
-      html << '<tr>'
-      html << content_tag(:td, solved, style: 'text-align: center')
-      html << content_tag(:td, mislabel.level)
-      html << content_tag(:td, mislabel.proposed_label)
-      html << content_tag(:td, mislabel.confidence)
-      html << content_tag(:td, mislabel.proposed_path)
-      html << content_tag(:td, mislabel.path_confidence)
-      html << content_tag(:td, (link_to mislabel.mislabel_analysis.title, mislabel_analysis_path(mislabel.mislabel_analysis)))
-      html << content_tag(:td, solved_by)
-      html << '</tr>'
+        html << '<tr>'
+        html << content_tag(:td, solved, style: 'text-align: center')
+        html << content_tag(:td, mislabel.level)
+        html << content_tag(:td, mislabel.proposed_label)
+        html << content_tag(:td, mislabel.confidence)
+        html << content_tag(:td, mislabel.proposed_path)
+        html << content_tag(:td, mislabel.path_confidence)
+        html << content_tag(:td, (link_to mislabel.mislabel_analysis.title, mislabel_analysis_path(mislabel.mislabel_analysis)))
+        html << content_tag(:td, solved_by)
+        html << '</tr>'
+      end
     end
 
     html.html_safe
@@ -45,9 +47,11 @@ module MislabelAnalysisHelper
   def warnings_present(marker_sequences)
     has_warnings = false
 
-    marker_sequences.each do |ms|
-      has_warnings = ms&.has_unsolved_mislabels
-      break if has_warnings
+    if marker_sequences.size.positive?
+      marker_sequences.each do |ms|
+        has_warnings = ms&.has_unsolved_mislabels
+        break if has_warnings
+      end
     end
 
     has_warnings
