@@ -32,8 +32,11 @@ class Isolate < ApplicationRecord
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
       # Update existing isolate or create new, case-insensitive!
-      isolate = Isolate.where("lab_nr ILIKE ?", row['GBoL Isolation No.']).first
-      isolate ||= Isolate.new(:lab_nr => row['GBoL Isolation No.'])
+      lab_nr = row['GBoL Isolation No.']
+      lab_nr ||= row['DNA Bank No']
+
+      isolate = Isolate.where("lab_nr ILIKE ?", lab_nr).first
+      isolate ||= Isolate.new(:lab_nr => lab_nr)
 
       plant_plate = PlantPlate.find_or_create_by(:name => row['GBoL5 Tissue Plate No.'].to_i.to_s)
       isolate.plant_plate = plant_plate
@@ -50,45 +53,47 @@ class Isolate < ApplicationRecord
 
       isolate.save!
 
-      # Assign to existing or new individual:
-      individual = Individual.find_or_create_by(specimen_id: row['Voucher ID'])
+      individual = row['Voucher ID']
+      if individual
+        individual = Individual.find_or_create_by(specimen_id: individual) # Assign to existing or new individual
 
-      individual.collector = row['Collector']
-      individual.herbarium = row['Herbarium']
-      individual.country = row['Country']
-      individual.state_province = row['State/Province']
-      individual.locality = row['Locality']
-      individual.latitude = row['Latitude']
-      individual.longitude = row['Longitude']
-      individual.latitude_original = row['Latitude (original)']
-      individual.longitude_original = row['Longitude (original)']
-      individual.elevation = row['Elevation']
-      individual.exposition = row['Exposition']
-      individual.habitat = row['Habitat']
-      individual.substrate = row['Substrate']
-      individual.life_form = row['Life form']
-      individual.collection_nr = row['Collection number']
-      individual.collection_date = row['Date']
-      individual.determination = row['Determination']
-      individual.revision = row['Revision']
-      individual.confirmation = row['Confirmation']
-      individual.comments = row['Comments']
+        individual.collector = row['Collector']
+        individual.herbarium = row['Herbarium']
+        individual.country = row['Country']
+        individual.state_province = row['State/Province']
+        individual.locality = row['Locality']
+        individual.latitude = row['Latitude']
+        individual.longitude = row['Longitude']
+        individual.latitude_original = row['Latitude (original)']
+        individual.longitude_original = row['Longitude (original)']
+        individual.elevation = row['Elevation']
+        individual.exposition = row['Exposition']
+        individual.habitat = row['Habitat']
+        individual.substrate = row['Substrate']
+        individual.life_form = row['Life form']
+        individual.collection_nr = row['Collection number']
+        individual.collection_date = row['Date']
+        individual.determination = row['Determination']
+        individual.revision = row['Revision']
+        individual.confirmation = row['Confirmation']
+        individual.comments = row['Comments']
 
-      individual.add_project(project_id)
+        individual.add_project(project_id)
 
-      individual.save!
+        individual.save!
 
-      isolate.update(individual_id: individual.id)
-
-      species_id = row['GBoL5_TaxID'].to_i
-      begin
-        species = Species.find(species_id)
-        species.add_project_and_save(project_id)
-        individual.update(species_id: species.id)
-      rescue ActiveRecord::RecordNotFound
-        issue = Issue.new(title: "No matching spp found for #{species_id}")
-        issue.add_project_and_save(project_id)
+        isolate.update(individual_id: individual.id)
       end
+
+      # species_id = row['GBoL5_TaxID'].to_i
+      # begin
+      #   species = Species.find(species_id)
+      #   species.add_project_and_save(project_id)
+      #   individual.update(species_id: species.id)
+      # rescue ActiveRecord::RecordNotFound
+      #   issue = Issue.new(title: "No matching spp found for #{species_id}")
+      #   issue.add_project_and_save(project_id)
+      # end
     end
   end
 
