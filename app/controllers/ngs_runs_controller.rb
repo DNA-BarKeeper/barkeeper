@@ -42,7 +42,7 @@ class NgsRunsController < ApplicationController
 
     respond_to do |format|
       if @ngs_run.update(ngs_run_params)
-        format.html { redirect_to ngs_runs_path, notice: 'NGS Run was successfully updated.' }
+        format.html { redirect_to edit_ngs_run_path(@ngs_run), notice: 'NGS Run was successfully updated.' }
         format.json { render :index, status: :ok }
       else
         format.html { render :edit }
@@ -60,17 +60,21 @@ class NgsRunsController < ApplicationController
   end
 
   def import
-    if @ngs_run.check_fastq && @ngs_run.check_tag_primer_map
-      isolates_not_in_db = @ngs_run.samples_exist
-      if isolates_not_in_db.blank?
-        @ngs_run.import
-        redirect_to ngs_runs_path, notice: 'NGS Run data imported.'
+    if @ngs_run.check_fastq
+      if @ngs_run.check_tag_primer_map
+        isolates_not_in_db = @ngs_run.samples_exist
+        if isolates_not_in_db.blank?
+          @ngs_run.import
+          redirect_to ngs_runs_path, notice: 'NGS Run data imported.'
+        else
+          redirect_back(fallback_location: ngs_runs_path,
+                        alert: "Please create database entries for the following sample IDs before starting the import: #{isolates_not_in_db.join(', ')}")
+        end
       else
-        redirect_back(fallback_location: ngs_runs_path,
-                      alert: "Please create database entries for the following sample IDs before starting the import: #{isolates_not_in_db.join(', ')}")
+        redirect_back(fallback_location: ngs_runs_path, alert: 'Please make sure you uploaded a properly formatted tag primer map.')
       end
     else
-      redirect_back(fallback_location: ngs_runs_path, alert: 'Please make you uploaded a properly formatted tag primer map and FastQ.')
+      redirect_back(fallback_location: ngs_runs_path, alert: 'Please make sure you uploaded a properly formatted FastQ.')
     end
   end
 
@@ -82,6 +86,6 @@ class NgsRunsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def ngs_run_params
-    params.require(:ngs_run).permit(:name, :primer_mismatches, :quality_threshold, :tag_mismates, :fastq, :tag_primer_map, :higher_order_taxon_id)
+    params.require(:ngs_run).permit(:name, :primer_mismatches, :quality_threshold, :tag_mismates, :fastq, :tag_primer_map, :higher_order_taxon_id, :delete_fastq, :delete_tag_primer_map)
   end
 end
