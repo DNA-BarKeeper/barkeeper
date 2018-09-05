@@ -298,12 +298,13 @@ class Contig < ApplicationRecord
       single_read.save
       pc.primer_reads << single_read
       self.partial_cons << pc
-      ms=MarkerSequence.find_or_create_by(:name => self.name, :sequence => single_read.trimmed_and_cleaned_seq)
+      ms = MarkerSequence.find_or_create_by(:name => self.name, :sequence => single_read.trimmed_and_cleaned_seq)
       ms.contigs << self
       ms.marker = self.marker
       ms.isolate = self.isolate
+      ms.projects = self.projects
       ms.save
-      self.marker_sequence=ms
+      self.marker_sequence = ms
       return
 
     elsif remaining_reads.size == 0
@@ -384,17 +385,17 @@ class Contig < ApplicationRecord
     if current_largest_partial_contig >= self.marker.expected_reads
       self.update(:assembled => true)
 
-      ms=MarkerSequence.find_or_create_by(:name => self.name, :sequence => current_largest_partial_contig_seq.gsub('-',''))
+      ms = MarkerSequence.find_or_create_by(:name => self.name, :sequence => current_largest_partial_contig_seq.gsub('-',''))
       ms.contigs << self
       ms.marker = self.marker
       ms.isolate = self.isolate
+      ms.projects = self.projects
       ms.save
-
     end
 
     if msg
       Issue.create(:title => msg, :contig_id => self.id)
-      self.assembled=false
+      self.assembled = false
     end
 
   end

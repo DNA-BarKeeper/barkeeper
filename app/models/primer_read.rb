@@ -262,7 +262,7 @@ class PrimerRead < ApplicationRecord
           else
             # Create new contig, auto assign to primer, copy, auto-name
             contig = Contig.new(:marker_id => marker.id, :isolate_id => isolate.id, :assembled => false)
-
+            contig.projects = self.projects
             contig.generate_name
             contig.save
 
