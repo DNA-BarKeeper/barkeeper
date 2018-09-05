@@ -96,7 +96,7 @@ class ContigsController < ApplicationController
   def destroy
     @contig.destroy
     respond_to do |format|
-      format.html { redirect_back(fallback_location: contigs_url) }
+      format.html { redirect_to contigs_path, notice: 'Contig was successfully deleted.' }
       format.json { head :no_content }
     end
   end
