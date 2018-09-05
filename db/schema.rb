@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180808143956) do
+ActiveRecord::Schema.define(version: 20180905094655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,16 @@ ActiveRecord::Schema.define(version: 20180808143956) do
     t.string   "URL",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "centroid_sequences", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "clusters", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "contig_pde_uploaders", force: :cascade do |t|
@@ -420,17 +430,13 @@ ActiveRecord::Schema.define(version: 20180808143956) do
     t.integer  "quality_threshold"
     t.integer  "tag_mismates"
     t.integer  "primer_mismatches"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
     t.string   "name"
     t.string   "fastq_file_name"
     t.string   "fastq_content_type"
     t.integer  "fastq_file_size"
     t.datetime "fastq_updated_at"
-    t.string   "tag_primer_map_file_name"
-    t.string   "tag_primer_map_content_type"
-    t.integer  "tag_primer_map_file_size"
-    t.datetime "tag_primer_map_updated_at"
     t.integer  "higher_order_taxon_id"
     t.index ["higher_order_taxon_id"], name: "index_ngs_runs_on_higher_order_taxon_id", using: :btree
   end
@@ -654,6 +660,17 @@ ActiveRecord::Schema.define(version: 20180808143956) do
     t.datetime "updated_at",  null: false
     t.integer  "position"
     t.string   "german_name"
+  end
+
+  create_table "tag_primer_maps", force: :cascade do |t|
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.integer  "ngs_run_id"
+    t.string   "tag_primer_map_file_name"
+    t.string   "tag_primer_map_content_type"
+    t.integer  "tag_primer_map_file_size"
+    t.datetime "tag_primer_map_updated_at"
+    t.index ["ngs_run_id"], name: "index_tag_primer_maps_on_ngs_run_id", using: :btree
   end
 
   create_table "taxonomic_classes", force: :cascade do |t|

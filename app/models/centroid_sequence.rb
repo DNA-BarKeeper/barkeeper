@@ -1,0 +1,2 @@
+class CentroidSequence < ApplicationRecord
+end
