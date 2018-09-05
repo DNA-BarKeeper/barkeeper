@@ -78,7 +78,7 @@ module Import
       end
 
       if collector
-        puts "Collector: #{collector}"
+        puts "Collector: #{collector.strip}"
         individual.update(:collector => collector.strip)
       end
 
