@@ -133,7 +133,7 @@
                             </div>
                         <% end %>
 
-                        <span class="glyphicon glyphicon-resize-small"></span><%= link_to ' Trim sequence based on quality scores', trim_primer_read_path %>
+                        <span class="glyphicon glyphicon-resize-small"></span><%= link_to ' Trim sequence based on quality scores', trim_primer_read_path(read) %>
                         <div >
                           Min. qual.:
                           <%= f.text_field :min_quality_score, :class => "sequence_position_right", :id => "sequence_position_right_#{read.id}" %>

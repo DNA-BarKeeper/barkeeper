@@ -34,30 +34,44 @@
       </div>
 
       <div class="form-group">
-        <%= f.label :multiple_sets, 'FastQ contains multiple sample sets' %>
-        <%= f.check_box :multiple_sets %>
-      </div>
+        <%= f.label :set_tag_map, 'Packages (*.fasta)' %>
+        <%= f.file_field :set_tag_map, class: 'form-control' %>
 
-      <div id="multiple_sets">
-<!--        <div class="form-group">-->
-          <%#= f.label :tag_primer_map, 'Tag Primer Map (*.txt, *.csv)' %>
-          <%#= f.file_field :tag_primer_map, class: 'form-control' %>
-<!--        </div>-->
-
-        <div class="form-group">
-          <%= f.label :tag_primer_map, 'Tag Primer Map (*.txt, *.csv)' %>
-          <%= f.file_field :tag_primer_map, class: 'form-control' %>
-
-          <%# if @ngs_run.tag_primer_map.path %>
-            <%#= f.check_box(:delete_tag_primer_map) %>
-            <%#= "Remove current file ('#{@ngs_run.tag_primer_map_file_name}')" %>
-          <%# end %>
-        </div>
+        <% if @ngs_run.set_tag_map.path %>
+          <%= f.check_box(:delete_set_tag_map) %>
+          <%= "Remove current file ('#{@ngs_run.set_tag_map_file_name}')" %>
+        <% end %>
       </div>
 
       <div class="form-group">
+        <%= f.label :tag_primer_map, 'Tag Primer Map (*.txt, *.csv)' %>
+        <%= '(Only one can be added unless a packages file is provided!)' %>
+        <%= f.file_field :tag_primer_map, class: 'form-control', multiple: true %>
+
+        <% if @ngs_run.tag_primer_maps.size.positive? %>
+          <% @ngs_run.tag_primer_maps.each do |tpm| %>
+            <% if tpm.tag_primer_map.path %>
+              <%= check_box 'delete_tag_primer_maps', tpm.id, {}, tpm.id %>
+              <%= "Remove current file ('#{tpm.tag_primer_map_file_name}')" %>
+              <br>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <div id='fastq_upload' class="form-group">
         <%= f.label :fastq, 'FASTQ (*.fastq, *.fq)' %>
         <%= f.file_field :fastq, class: 'form-control' %>
+
+        <% # jquery upload template # %>
+        <script id="template-upload" type="text/x-tmpl">
+          <div class="upload">
+            {%=o.name%}
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" style="width: 0%;"></div>
+            </div>
+          </div>
+        </script>
 
         <% if @ngs_run.fastq.path %>
           <%= f.check_box(:delete_fastq) %>

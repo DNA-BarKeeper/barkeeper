@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180905094655) do
+ActiveRecord::Schema.define(version: 20180906141117) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -430,14 +430,18 @@ ActiveRecord::Schema.define(version: 20180905094655) do
     t.integer  "quality_threshold"
     t.integer  "tag_mismates"
     t.integer  "primer_mismatches"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.string   "name"
     t.string   "fastq_file_name"
     t.string   "fastq_content_type"
     t.integer  "fastq_file_size"
     t.datetime "fastq_updated_at"
     t.integer  "higher_order_taxon_id"
+    t.string   "set_tag_map_file_name"
+    t.string   "set_tag_map_content_type"
+    t.integer  "set_tag_map_file_size"
+    t.datetime "set_tag_map_updated_at"
     t.index ["higher_order_taxon_id"], name: "index_ngs_runs_on_higher_order_taxon_id", using: :btree
   end
 
@@ -596,6 +600,12 @@ ActiveRecord::Schema.define(version: 20180905094655) do
     t.integer "species_id"
   end
 
+  create_table "projects_tag_primer_maps", id: false, force: :cascade do |t|
+    t.integer "project_id",        null: false
+    t.integer "tag_primer_map_id", null: false
+    t.index ["project_id", "tag_primer_map_id"], name: "index_projects_tag_primer_maps", using: :btree
+  end
+
   create_table "projects_users", id: false, force: :cascade do |t|
     t.integer "project_id"
     t.integer "user_id"
@@ -670,6 +680,8 @@ ActiveRecord::Schema.define(version: 20180905094655) do
     t.string   "tag_primer_map_content_type"
     t.integer  "tag_primer_map_file_size"
     t.datetime "tag_primer_map_updated_at"
+    t.string   "name"
+    t.string   "tag"
     t.index ["ngs_run_id"], name: "index_tag_primer_maps_on_ngs_run_id", using: :btree
   end
 
