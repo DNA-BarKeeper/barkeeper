@@ -4,13 +4,14 @@ class TagPrimerMap < ApplicationRecord
   belongs_to :ngs_run
 
   has_attached_file :tag_primer_map
-
   validates_attachment_content_type :tag_primer_map, content_type: 'text/plain' # Using type text/csv leads to weird errors depending on file content
-
   validates_attachment_file_name :tag_primer_map, :matches => [/txt\Z/, /csv\Z/]
 
-  attr_accessor :delete_tag_primer_map
-  before_validation { tag_primer_map.clear if delete_tag_primer_map == '1' }
+  after_save :set_name
+
+  def set_name
+    self.update_column(:name, tag_primer_map_file_name.split('_').last.split('.').first) if tag_primer_map_file_name
+  end
 
   def check_tag_primer_map
     tp_map = CSV.read(tag_primer_map.path, { col_sep: "\t", headers: true }) if tag_primer_map.path
@@ -26,5 +27,18 @@ class TagPrimerMap < ApplicationRecord
     valid &&= tp_map.size.positive?
 
     valid
+  end
+
+  def add_description
+    tp_map = CSV.read(tag_primer_map.path, { col_sep: "\t", headers: true })
+
+    tp_map.each do |row|
+      sample_id = row['#SampleID']
+      species = Isolate.joins(individual: :species).find_by_lab_nr(sample_id).individual.species.composed_name.gsub(' ', '_')
+
+      row['Description'] = [sample_id, species, row['TagID'], row['Region']].join('_')
+    end
+
+    tp_map
   end
 end

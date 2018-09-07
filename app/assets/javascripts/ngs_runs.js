@@ -9,22 +9,42 @@ jQuery(function() {
         }],
         "order": [1, 'desc']
     });
-});
 
-$(document).ready(function(){
-    if($('#multiple_sets').val() != "In Progress"){
-        $("#multiple_sets").attr('disabled','disabled');
+    $('#fastq_upload').fileupload(
+        {
+            dataType: "script",
+            add: function(e, data) {
+                data.context = $(tmpl("template-upload", data.files[0]));
+                $('#fastq_upload').append(data.context);
+                return data.submit();
+            },
+            progress: function(e, data) {
+                var progress;
+                if (data.context) {
+                    progress = parseInt(data.loaded / data.total * 100, 10);
+                    return data.context.find('.progress-bar').css('width', progress + '%');
+                }
+            }
+        }
+    );
+
+    var set_tag_map = $('#ngs_run_set_tag_map');
+    var tag_primer_map = $("#ngs_run_tag_primer_map");
+
+    if(set_tag_map.val() || $('#ngs_run_delete_set_tag_map').length) { // Package Map is selected or was uploaded before
+        tag_primer_map.attr('multiple','multiple')
     }
-    else{
-        $("#multiple_sets").removeAttr('disabled');
+    else {
+        tag_primer_map.removeAttr('multiple')
     }
 
-    $('#multiple_sets').change(function(){
-        if($(this).val() != "In Progress"){
-            $("#project_capital_cost").attr('disabled','disabled');
+    set_tag_map.change(function() {
+        if($(this).val()) {
+            tag_primer_map.attr('multiple','multiple')
         }
-        else{
-            $("#project_capital_cost").removeAttr('disabled');
+        else {
+            tag_primer_map.removeAttr('multiple');
+            tag_primer_map.val("");
         }
-    })
+    });
 });
