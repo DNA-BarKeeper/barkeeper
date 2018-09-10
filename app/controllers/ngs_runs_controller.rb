@@ -25,8 +25,10 @@ class NgsRunsController < ApplicationController
     @ngs_run = NgsRun.new(ngs_run_params)
     @ngs_run.add_project(current_project_id)
 
-    params[:ngs_run][:tag_primer_map].each do |tpm|
-      @ngs_run.tag_primer_maps.build(tag_primer_map: tpm)
+    unless params[:ngs_run][:tag_primer_map].blank?
+      params[:ngs_run][:tag_primer_map].each do |tpm|
+        @ngs_run.tag_primer_maps.build(tag_primer_map: tpm)
+      end
     end
 
     respond_to do |format|

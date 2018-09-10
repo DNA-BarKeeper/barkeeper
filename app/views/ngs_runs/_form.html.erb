@@ -63,23 +63,13 @@
         <%= f.label :fastq, 'FASTQ (*.fastq, *.fq)' %>
         <%= f.file_field :fastq, class: 'form-control' %>
 
-        <% # jquery upload template # %>
-        <script id="template-upload" type="text/x-tmpl">
-          <div class="upload">
-            {%=o.name%}
-            <div class="progress">
-              <div class="progress-bar" role="progressbar" style="width: 0%;"></div>
-            </div>
-          </div>
-        </script>
-
         <% if @ngs_run.fastq.path %>
           <%= f.check_box(:delete_fastq) %>
           <%= "Remove current file ('#{@ngs_run.fastq_file_name}')" %>
         <% end %>
       </div>
 
-      <%= f.submit 'Update', :class => 'btn btn-default' %>
+      <%= f.submit 'Update', data: { disable_with: 'Uploading...' }, :class => 'btn btn-default' %>
     <% end %>
   </div>
 </div>
