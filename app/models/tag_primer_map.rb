@@ -20,11 +20,17 @@ class TagPrimerMap < ApplicationRecord
     valid = tp_map.instance_of?(CSV::Table)
 
     # Check if tag primer map has correct headers
-    expected_headers = ["#SampleID", "BarcodeSequence", "ForwardPrimerSequence", "ReversePrimer", "TagID", "Region", "Description"]
-    valid &&= (tp_map.headers == expected_headers)
+    expected_headers = ["#SampleID", "BarcodeSequence", "LinkerPrimerSequence", "ReversePrimer", "TagID", "Region"]
+    valid &&= (expected_headers - tp_map.headers).empty? # Allows optional columns
 
     # Check if at least one row with data exists
     valid &&= tp_map.size.positive?
+
+    # Check if only valid characters occur in data
+    valid &&= tp_map['#SampleID'].find { |s| /[^A-Za-z0-9]+/ =~ s }.blank? # Only letters and numbers are allowed
+    valid &&= tp_map['BarcodeSequence'].find { |s| /[^A-Za-z]+/ =~ s }.blank? # Only letters are allowed
+    valid &&= tp_map['LinkerPrimerSequence'].find { |s| /[^A-Za-z]+/ =~ s }.blank?
+    valid &&= tp_map['ReversePrimer'].find { |s| /[^A-Za-z]+/ =~ s }.blank?
 
     valid
   end
