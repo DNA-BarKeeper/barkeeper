@@ -45,7 +45,9 @@
 
       <div class="form-group">
         <%= f.label :tag_primer_map, 'Tag Primer Map (*.txt, *.csv)' %>
-        <%= '(Only one can be added unless a packages file is provided!)' %>
+        <%= link_to '(Show template file)', 'https://s3-eu-west-1.amazonaws.com/gbol5/tagPrimerMap_template.txt' %>
+        <br>
+        <%= 'Only one can be added unless a packages file is provided!' %>
         <%= f.file_field :tag_primer_map, class: 'form-control', multiple: true %>
 
         <% if @ngs_run.tag_primer_maps.size.positive? %>
