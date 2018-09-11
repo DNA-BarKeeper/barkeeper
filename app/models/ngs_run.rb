@@ -65,10 +65,13 @@ class NgsRun < ApplicationRecord
   end
 
   def check_tag_primer_maps
-    package_cnt = Bio::FastaFormat.open(set_tag_map.path).entries.size if set_tag_map.path
-
     # Check if the correct number of TPMs was uploaded
-    valid = (package_cnt == tag_primer_maps.size) && package_cnt.positive?
+    if set_tag_map.path
+      package_cnt = Bio::FastaFormat.open(set_tag_map.path).entries.size
+      valid = (package_cnt == tag_primer_maps.size) && package_cnt.positive?
+    else
+      valid = (tag_primer_maps.size == 1)
+    end
 
     # Check if each Tag Primer Map is valid
     tag_primer_maps.each { |tpm| valid &&= tpm.check_tag_primer_map }
