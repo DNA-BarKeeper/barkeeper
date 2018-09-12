@@ -1,30 +1,22 @@
+# frozen_string_literal: true
+
 class AlignmentsController < ApplicationController
   load_and_authorize_resource
 
-  before_action :set_alignment, only: [:show, :edit, :update, :destroy]
+  before_action :set_alignment, only: %i[show edit update destroy]
 
-  # GET /alignments
-  # GET /alignments.json
   def index
     @alignments = Alignment.all
   end
 
-  # GET /alignments/1
-  # GET /alignments/1.json
-  def show
-  end
+  def show; end
 
-  # GET /alignments/new
   def new
     @alignment = Alignment.new
   end
 
-  # GET /alignments/1/edit
-  def edit
-  end
+  def edit; end
 
-  # POST /alignments
-  # POST /alignments.json
   def create
     @alignment = Alignment.new(alignment_params)
 
@@ -39,8 +31,6 @@ class AlignmentsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /alignments/1
-  # PATCH/PUT /alignments/1.json
   def update
     respond_to do |format|
       if @alignment.update(alignment_params)
@@ -53,8 +43,6 @@ class AlignmentsController < ApplicationController
     end
   end
 
-  # DELETE /alignments/1
-  # DELETE /alignments/1.json
   def destroy
     @alignment.destroy
     respond_to do |format|
@@ -64,13 +52,14 @@ class AlignmentsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_alignment
-      @alignment = Alignment.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def alignment_params
-      params.require(:alignment).permit(:name, :URL)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_alignment
+    @alignment = Alignment.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def alignment_params
+    params.require(:alignment).permit(:name, :URL)
+  end
 end

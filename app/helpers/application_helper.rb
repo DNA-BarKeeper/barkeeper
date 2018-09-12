@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApplicationHelper
   require 'net/http'
   require 'nokogiri'
@@ -11,20 +13,21 @@ module ApplicationHelper
   end
 
   def project_list(record)
-    if user_signed_in?
-      projects = record.projects.select(:id, :name) & current_user.projects.select(:id, :name)
-    else
-      projects = record.projects.select(:id, :name) & Project.where(name: 'GBOL5').select(:id, :name)
+    projects = if user_signed_in?
+                 record.projects.select(:id, :name) & current_user.projects.select(:id, :name)
+               else
+                 record.projects.select(:id, :name) & Project.where(name: 'GBOL5').select(:id, :name)
+               end
+
+    html = +'<ul>'
+
+    projects.each do |project|
+      html << content_tag(:li, project.name)
     end
 
-      html = '<ul>'
+    html << '</ul>'
 
-      projects.each do |project|
-        html << content_tag(:li, project.name)
-      end
-
-      html << '</ul>'
-      html.html_safe
+    html.html_safe
   end
 
   # Returns the full title on a per-page basis.
@@ -52,12 +55,13 @@ module ApplicationHelper
         #{compiled_message}
       </div>
       HTML
+
       html.html_safe
     end
   end
 
   def display_base_errors(resource)
-    return '' if resource.errors.empty? or resource.errors[:base].empty?
+    return '' if resource.errors.empty? || resource.errors[:base].empty?
     messages = resource.errors[:base].map { |msg| content_tag(:p, msg) }.join
     html = <<-HTML
     <div class="alert alert-error alert-block">
@@ -65,6 +69,7 @@ module ApplicationHelper
       #{messages}
     </div>
     HTML
+
     html.html_safe
   end
 end

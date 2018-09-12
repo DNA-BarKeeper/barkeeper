@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PrimerReadsHelper
   def render_primer_read_list(all_reads)
     all_reads.map do |primer_read|

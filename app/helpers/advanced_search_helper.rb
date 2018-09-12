@@ -1,24 +1,26 @@
+# frozen_string_literal: true
+
 module AdvancedSearchHelper
   def title(search)
     "'#{search.title}'" unless search.title.blank?
   end
 
   def project(search)
-    search.project.name if search.project
+    search.project&.name
   end
 
   def attributes(search)
     exclude = %w[id title project_id user_id created_at updated_at]
     output_text = {
-        all_issue: 'Has issues: both',
-        issues: 'Has issues: yes',
-        no_issues: 'Has issues: no',
-        all_species: 'Has species info: both',
-        species: 'Has species info: yes',
-        no_species: 'Has species info: no',
-        all_location: 'Location data status: both',
-        bad_location: 'Location data status: problematic',
-        location_okay: 'Location data status: okay'
+      all_issue: 'Has issues: both',
+      issues: 'Has issues: yes',
+      no_issues: 'Has issues: no',
+      all_species: 'Has species info: both',
+      species: 'Has species info: yes',
+      no_species: 'Has species info: no',
+      all_location: 'Location data status: both',
+      bad_location: 'Location data status: problematic',
+      location_okay: 'Location data status: okay'
     }
 
     attributes = search.attributes.sort.select { |k, v| !v.blank? && !exclude.include?(k) }
