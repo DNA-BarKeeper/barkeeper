@@ -35,16 +35,43 @@ class TagPrimerMap < ApplicationRecord
     valid
   end
 
-  def add_description
+  def revised_tag_primer_map
     tp_map = CSV.read(tag_primer_map.path, { col_sep: "\t", headers: true })
+
+    primer_pairs = find_region_indices(tp_map)
 
     tp_map.each do |row|
       sample_id = row['#SampleID']
-      species = Isolate.joins(individual: :species).find_by_lab_nr(sample_id).individual.species.composed_name.gsub(' ', '_')
+      region = row['Region']
 
+      species = Isolate.joins(individual: :species).find_by_lab_nr(sample_id).individual.species.composed_name.gsub(' ', '_')
       row['Description'] = [sample_id, species, row['TagID'], row['Region']].join('_')
+
+      next if primer_pairs[region].size < 2
+      primer_pair = [row['LinkerPrimerSequence'], row['ReversePrimer']]
+      row['Region'] = region + '_' + (primer_pairs[region].index(primer_pair) + 1).to_s
     end
 
     tp_map
+  end
+
+  def find_region_indices(tp_map)
+    primer_pairs = {}
+
+    tp_map['LinkerPrimerSequence'].each_with_index do |linker_primer, index|
+      region = tp_map['Region'][index]
+      primer_pair = [linker_primer, tp_map['ReversePrimer'][index]]
+      existing_pairs = primer_pairs[region]
+
+      if existing_pairs
+        next if existing_pairs.include? primer_pair
+
+        primer_pairs[region] << primer_pair
+      else
+        primer_pairs[region] = [primer_pair]
+      end
+    end
+
+    primer_pairs
   end
 end
