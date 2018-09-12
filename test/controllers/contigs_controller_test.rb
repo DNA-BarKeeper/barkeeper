@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class ContigsControllerTest < ActionController::TestCase
@@ -6,27 +8,27 @@ class ContigsControllerTest < ActionController::TestCase
     user_log_in
   end
 
-  test "should get index" do
+  test 'should get index' do
     get :index
     assert_response :success
   end
 
-  test "should show contig" do
+  test 'should show contig' do
     get :show, params: { id: @contig }
     assert_response :success
   end
 
-  test "should get edit" do
+  test 'should get edit' do
     get :edit, params: { id: @contig }
     assert_response :success
   end
 
-  test "should update contig" do
+  test 'should update contig' do
     patch :update, params: { id: @contig, contig: { name: 'gbol5127_rpl16' } }
     assert_redirected_to edit_contig_path(@contig)
   end
 
-  test "should destroy contig" do
+  test 'should destroy contig' do
     assert_difference('Contig.count', -1) do
       delete :destroy, params: { id: @contig }
     end

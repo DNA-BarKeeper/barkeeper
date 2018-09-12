@@ -1,7 +1,8 @@
-require "test_helper"
+# frozen_string_literal: true
+
+require 'test_helper'
 
 class TaxonomicClassTest < ActiveSupport::TestCase
-
   def taxonomic_class
     @taxonomic_class ||= TaxonomicClass.new
   end
@@ -9,5 +10,4 @@ class TaxonomicClassTest < ActiveSupport::TestCase
   def test_valid
     assert taxonomic_class.valid?
   end
-
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class PlantPlatesControllerTest < ActionController::TestCase
@@ -6,27 +8,27 @@ class PlantPlatesControllerTest < ActionController::TestCase
     user_log_in
   end
 
-  test "should get index" do
+  test 'should get index' do
     get :index
     assert_response :success
   end
 
-  test "should show plant plate" do
+  test 'should show plant plate' do
     get :show, params: { id: @plant_plate }
     assert_response :success
   end
 
-  test "should get new" do
+  test 'should get new' do
     get :new
     assert_response :success
   end
 
-  test "should get edit" do
+  test 'should get edit' do
     get :edit, params: { id: @plant_plate }
     assert_response :success
   end
 
-  test "should create plant plate" do
+  test 'should create plant plate' do
     assert_difference('PlantPlate.count') do
       post :create, params: { plant_plate: { name: '67' } }
     end
@@ -34,12 +36,12 @@ class PlantPlatesControllerTest < ActionController::TestCase
     assert_redirected_to plant_plates_path
   end
 
-  test "should update plant plate" do
+  test 'should update plant plate' do
     patch :update, params: { id: @plant_plate, plant_plate: { name: '98' } }
     assert_redirected_to plant_plates_path
   end
 
-  test "should destroy plant plate" do
+  test 'should destroy plant plate' do
     assert_difference('PlantPlate.count', -1) do
       delete :destroy, params: { id: @plant_plate }
     end

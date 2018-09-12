@@ -1,20 +1,21 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class ProjectTest < ActiveSupport::TestCase
-
   setup do
     @project = projects(:gbol5)
     @user = users(:default)
   end
 
   test 'should not save project without title' do
-    project=Project.new
+    project = Project.new
     assert_not project.save, 'Saved the project without a title'
   end
 
-  # todo change this to assert difference
+  # TODO: change this to assert difference
   test 'assign a user to project' do
-    assert_difference ->{ @project.users.count }, 1, 'User could not be assigned to project' do
+    assert_difference -> { @project.users.count }, 1, 'User could not be assigned to project' do
       @project.users << @user
     end
   end

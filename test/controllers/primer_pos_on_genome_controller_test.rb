@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class PrimerPosOnGenomesControllerTest < ActionController::TestCase
@@ -6,12 +8,12 @@ class PrimerPosOnGenomesControllerTest < ActionController::TestCase
     user_log_in
   end
 
-  test "should get index" do
+  test 'should get index' do
     get :index
     assert_response :success
   end
 
-  test "should show primer position on genome" do
+  test 'should show primer position on genome' do
     get :show, params: { id: @primer_pos_on_genome }
     assert_response :success
   end
@@ -34,12 +36,12 @@ class PrimerPosOnGenomesControllerTest < ActionController::TestCase
   #   assert_redirected_to edit_primer_pos_on_genome_path
   # end
 
-  test "should update primer position on genome" do
+  test 'should update primer position on genome' do
     patch :update, params: { id: @primer_pos_on_genome, primer_pos_on_genome: { position: '334' } }
     assert_redirected_to primer_pos_on_genome_path
   end
 
-  test "should destroy primer position on genome" do
+  test 'should destroy primer position on genome' do
     assert_difference('PrimerPosOnGenome.count', -1) do
       delete :destroy, params: { id: @primer_pos_on_genome }
     end

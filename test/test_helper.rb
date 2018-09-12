@@ -1,5 +1,7 @@
-ENV["RAILS_ENV"] = "test"
-require File.expand_path('../../config/environment', __FILE__)
+# frozen_string_literal: true
+
+ENV['RAILS_ENV'] = 'test'
+require File.expand_path('../config/environment', __dir__)
 require 'rails/test_help'
 require 'minitest/rails'
 require 'minitest/rails/capybara'
@@ -9,7 +11,7 @@ require 'minitest/reporters'
 MiniTest::Reporters.use!
 
 class ActiveSupport::TestCase
-  #Note: declare fixtures explicitly in integration tests
+  # Note: declare fixtures explicitly in integration tests
   # -- they do not yet inherit this setting
   ActiveRecord::Migration.check_pending!
   fixtures :all
@@ -22,7 +24,7 @@ module FixtureFileHelpers
 end
 
 ActiveRecord::FixtureSet.context_class.send :include, FixtureFileHelpers
-#ActiveRecord::FixtureSet.context_class.include FixtureFileHelpers
+# ActiveRecord::FixtureSet.context_class.include FixtureFileHelpers
 
 def user_log_in
   @user = users(:default)
@@ -30,6 +32,6 @@ def user_log_in
 end
 
 class ActionController::TestCase
-  #include Devise::TestHelpers
+  # include Devise::TestHelpers
   include Devise::Test::ControllerHelpers
 end

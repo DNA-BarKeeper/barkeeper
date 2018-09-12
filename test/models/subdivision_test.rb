@@ -1,7 +1,8 @@
-require "test_helper"
+# frozen_string_literal: true
+
+require 'test_helper'
 
 class SubdivisionTest < ActiveSupport::TestCase
-
   def subdivision
     @subdivision ||= Subdivision.new
   end
@@ -9,5 +10,4 @@ class SubdivisionTest < ActiveSupport::TestCase
   def test_valid
     assert subdivision.valid?
   end
-
 end
