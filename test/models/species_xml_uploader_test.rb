@@ -1,7 +1,8 @@
-require "test_helper"
+# frozen_string_literal: true
+
+require 'test_helper'
 
 class SpeciesXmlUploaderTest < ActiveSupport::TestCase
-
   def species_xml_uploader
     @species_xml_uploader ||= SpeciesXmlUploader.new
   end
@@ -9,5 +10,4 @@ class SpeciesXmlUploaderTest < ActiveSupport::TestCase
   def test_valid
     assert species_xml_uploader.valid?
   end
-
 end

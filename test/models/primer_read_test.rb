@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class PrimerReadTest < ActiveSupport::TestCase
-  test "must have chromatogram attachment" do
-    pr=PrimerRead.new
+  test 'must have chromatogram attachment' do
+    pr = PrimerRead.new
     assert pr.invalid?
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class PartialConsControllerTest < ActionController::TestCase
@@ -7,5 +9,5 @@ class PartialConsControllerTest < ActionController::TestCase
     user_log_in
   end
 
-  #todo: do real tests
+  # TODO: do real tests
 end

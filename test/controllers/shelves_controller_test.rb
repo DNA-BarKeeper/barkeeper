@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class ShelvesControllerTest < ActionController::TestCase
@@ -6,27 +8,27 @@ class ShelvesControllerTest < ActionController::TestCase
     user_log_in
   end
 
-  test "should get index" do
+  test 'should get index' do
     get :index
     assert_response :success
   end
 
-  test "should show shelf" do
+  test 'should show shelf' do
     get :show, params: { id: @shelf }
     assert_response :success
   end
 
-  test "should get new" do
+  test 'should get new' do
     get :new
     assert_response :success
   end
 
-  test "should get edit" do
+  test 'should get edit' do
     get :edit, params: { id: @shelf }
     assert_response :success
   end
 
-  test "should create shelf" do
+  test 'should create shelf' do
     assert_difference('Shelf.count') do
       post :create, params: { shelf: { name: 'shelf2' } }
     end
@@ -34,12 +36,12 @@ class ShelvesControllerTest < ActionController::TestCase
     assert_redirected_to shelf_path(assigns(:shelf))
   end
 
-  test "should update shelf" do
+  test 'should update shelf' do
     patch :update, params: { id: @shelf, shelf: { name: 'shelf3' } }
     assert_redirected_to shelf_path(@shelf)
   end
 
-  test "should destroy shelf" do
+  test 'should destroy shelf' do
     assert_difference('Shelf.count', -1) do
       delete :destroy, params: { id: @shelf }
     end
