@@ -54,7 +54,7 @@ GBOLapp::Application.routes.draw do
       get 'pde_all'
       get 'duplicates'
       post :change_via_script
-      post :compare_contigs
+      post :compare_contigs # TODO: Marked for removal
       post :as_fasq
       get 'externally_verified'
     end
