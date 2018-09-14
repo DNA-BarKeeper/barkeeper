@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MislabelAnalysisResultDatatable
   include Rails.application.routes.url_helpers
 
@@ -9,12 +11,12 @@ class MislabelAnalysisResultDatatable
     @analysis_id = analysis_id
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     {
-        :sEcho => params[:sEcho].to_i,
-        :iTotalRecords => MarkerSequence.count,
-        :iTotalDisplayRecords => analysis_data.total_entries,
-        :aaData => data
+      sEcho: params[:sEcho].to_i,
+      iTotalRecords: MarkerSequence.count,
+      iTotalDisplayRecords: analysis_data.total_entries,
+      aaData: data
     }
   end
 
@@ -35,13 +37,13 @@ class MislabelAnalysisResultDatatable
       end
 
       [
-          link_to(mislabel.marker_sequence.name, edit_marker_sequence_path(mislabel.marker_sequence)),
-          link_to(species_name, edit_species_path(species_id)),
-          mislabel_level,
-          mislabel_confidence,
-          proposed_label,
-          mislabel.marker_sequence.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', mislabel.marker_sequence, method: :delete, data: { confirm: 'Are you sure?' })
+        link_to(mislabel.marker_sequence.name, edit_marker_sequence_path(mislabel.marker_sequence)),
+        link_to(species_name, edit_species_path(species_id)),
+        mislabel_level,
+        mislabel_confidence,
+        proposed_label,
+        mislabel.marker_sequence.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
+        link_to('Delete', mislabel.marker_sequence, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end
@@ -52,7 +54,7 @@ class MislabelAnalysisResultDatatable
     @analysis = @analysis.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      @analysis = @analysis.where("marker_sequences.name ILIKE :search", search: "%#{params[:sSearch]}%")
+      @analysis = @analysis.where('marker_sequences.name ILIKE :search', search: "%#{params[:sSearch]}%")
     end
 
     @analysis
@@ -72,6 +74,6 @@ class MislabelAnalysisResultDatatable
   end
 
   def sort_direction
-    params[:sSortDir_0] == "desc" ? "desc" : "asc"
+    params[:sSortDir_0] == 'desc' ? 'desc' : 'asc'
   end
 end

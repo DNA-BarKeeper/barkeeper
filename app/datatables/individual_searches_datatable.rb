@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IndividualSearchesDatatable
   include Rails.application.routes.url_helpers
 
@@ -9,12 +11,12 @@ class IndividualSearchesDatatable
     @current_user_id = current_user_id
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     {
-        sEcho: params[:sEcho].to_i,
-        iTotalRecords: IndividualSearch.where.not(:title => '').count,
-        iTotalDisplayRecords: searches.total_entries,
-        aaData: data
+      sEcho: params[:sEcho].to_i,
+      iTotalRecords: IndividualSearch.where.not(title: '').count,
+      iTotalDisplayRecords: searches.total_entries,
+      aaData: data
     }
   end
 
@@ -23,27 +25,27 @@ class IndividualSearchesDatatable
   def data
     searches.map do |search|
       [
-          link_to(search.title, individual_search_path(search)),
-          search.project&.name,
-          search.created_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', search, method: :delete, data: { confirm: 'Are you sure?' })
+        link_to(search.title, individual_search_path(search)),
+        search.project&.name,
+        search.created_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
+        link_to('Delete', search, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end
 
   def searches
-    @searches = IndividualSearch.where.not(title: '').where(:user_id => @current_user_id).order("#{sort_column} #{sort_direction}")
+    @searches = IndividualSearch.where.not(title: '').where(user_id: @current_user_id).order("#{sort_column} #{sort_direction}")
     @searches = @searches.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      @searches = @searches.where("individual_searches.title ILIKE :search", search: "%#{params[:sSearch]}%")
+      @searches = @searches.where('individual_searches.title ILIKE :search', search: "%#{params[:sSearch]}%")
     end
 
     @searches
   end
 
   def page
-    params[:iDisplayStart].to_i/per_page + 1
+    params[:iDisplayStart].to_i / per_page + 1
   end
 
   def per_page
@@ -56,6 +58,6 @@ class IndividualSearchesDatatable
   end
 
   def sort_direction
-    params[:sSortDir_0] == "desc" ? "desc" : "asc"
+    params[:sSortDir_0] == 'desc' ? 'desc' : 'asc'
   end
 end
