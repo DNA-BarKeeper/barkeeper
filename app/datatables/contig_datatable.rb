@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContigDatatable
   include Rails.application.routes.url_helpers
 
@@ -10,7 +12,7 @@ class ContigDatatable
     @current_default_project = current_default_project
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
       iTotalRecords: Contig.count,
@@ -41,7 +43,7 @@ class ContigDatatable
         link_to(species_name, edit_species_path(species_id)),
         link_to(individual_name, edit_individual_path(individual_id)),
         assembled,
-        contig.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        contig.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
         link_to('Delete', contig, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
@@ -54,7 +56,7 @@ class ContigDatatable
   def fetch_contigs
     case @contigs_to_show
     when 'duplicates'
-      names_with_multiple = Contig.group(:name).having("count(name) > 1").count.keys
+      names_with_multiple = Contig.group(:name).having('count(name) > 1').count.keys
       contigs = Contig.includes(isolate: [individual: :species]).where(name: names_with_multiple).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     when 'imported'
       contigs = Contig.includes(isolate: [individual: :species]).externally_edited.order("#{sort_column} #{sort_direction}")
@@ -65,7 +67,7 @@ class ContigDatatable
     contigs = contigs.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      contigs = contigs.where("contigs.name ILIKE :search", search: "%#{params[:sSearch]}%")
+      contigs = contigs.where('contigs.name ILIKE :search', search: "%#{params[:sSearch]}%")
     end
 
     contigs

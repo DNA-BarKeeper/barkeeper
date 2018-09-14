@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PrimerReadDatatable
   include Rails.application.routes.url_helpers
 
@@ -10,7 +12,7 @@ class PrimerReadDatatable
     @current_default_project = current_default_project
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
       iTotalRecords: PrimerRead.count,
@@ -32,7 +34,7 @@ class PrimerReadDatatable
         read_name,
         assembled,
         contig_link,
-        pr.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        pr.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
         delete
       ]
     end
@@ -46,10 +48,10 @@ class PrimerReadDatatable
     # TODO: Maybe add find_each (batches!) later - if possible, probably conflicts with sorting
     case @reads_to_show
     when 'duplicates'
-      files_with_multiple = PrimerRead.select(:chromatogram_fingerprint).group(:chromatogram_fingerprint).having("count(primer_reads.chromatogram_fingerprint) > 1").count.keys
+      files_with_multiple = PrimerRead.select(:chromatogram_fingerprint).group(:chromatogram_fingerprint).having('count(primer_reads.chromatogram_fingerprint) > 1').count.keys
       primer_reads = PrimerRead.includes(:contig).in_project(@current_default_project).where(chromatogram_fingerprint: files_with_multiple).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).order("#{sort_column} #{sort_direction}")
     when 'no_contig'
-      primer_reads = PrimerRead.includes(:contig).where(:contig => nil).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      primer_reads = PrimerRead.includes(:contig).where(contig: nil).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     else
       primer_reads = PrimerRead.includes(:contig).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
@@ -57,7 +59,7 @@ class PrimerReadDatatable
     primer_reads = primer_reads.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      primer_reads = primer_reads.where("primer_reads.name ILIKE :search", search: "%#{params[:sSearch]}%")
+      primer_reads = primer_reads.where('primer_reads.name ILIKE :search', search: "%#{params[:sSearch]}%")
     end
 
     primer_reads

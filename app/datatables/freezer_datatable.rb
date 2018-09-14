@@ -1,22 +1,22 @@
-class FreezerDatatable
+# frozen_string_literal: true
 
+class FreezerDatatable
   include Rails.application.routes.url_helpers
   delegate :url_helpers, to: 'Rails.application.routes'
 
   delegate :params, :link_to, :h, to: :@view
-
 
   def initialize(view, current_default_project)
     @view = view
     @current_default_project = current_default_project
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     {
-        sEcho: params[:sEcho].to_i,
-        iTotalRecords: Freezer.count,
-        iTotalDisplayRecords: freezers.total_entries,
-        aaData: data
+      sEcho: params[:sEcho].to_i,
+      iTotalRecords: Freezer.count,
+      iTotalDisplayRecords: freezers.total_entries,
+      aaData: data
     }
   end
 
@@ -24,27 +24,24 @@ class FreezerDatatable
 
   def data
     freezers.map do |freezer|
-
-      freezercode=''
+      freezercode = ''
 
       if freezer.freezercode
         freezercode = link_to freezer.freezercode, edit_freezer_path(freezer)
       end
 
-      lab=''
+      lab = ''
       if freezer.lab
         lab = link_to freezer.lab.labcode, edit_lab_path(freezer.lab)
       end
 
       [
-          freezercode,
-          lab,
-          freezer.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', freezer, method: :delete, data: { confirm: 'Are you sure?' })
+        freezercode,
+        lab,
+        freezer.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
+        link_to('Delete', freezer, method: :delete, data: { confirm: 'Are you sure?' })
       ]
-
     end
-
   end
 
   def freezers
@@ -52,20 +49,19 @@ class FreezerDatatable
   end
 
   def fetch_freezers
-
     freezers = Freezer.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     freezers = freezers.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      freezers = freezers.where("freezercode ILIKE :search", search: "%#{params[:sSearch]}%")
+      freezers = freezers.where('freezercode ILIKE :search', search: "%#{params[:sSearch]}%")
     end
 
     freezers
   end
 
   def page
-    params[:iDisplayStart].to_i/per_page + 1
+    params[:iDisplayStart].to_i / per_page + 1
   end
 
   def per_page
@@ -78,7 +74,6 @@ class FreezerDatatable
   end
 
   def sort_direction
-    params[:sSortDir_0] == "desc" ? "desc" : "asc"
+    params[:sSortDir_0] == 'desc' ? 'desc' : 'asc'
   end
-
 end
