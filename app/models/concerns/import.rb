@@ -1,6 +1,7 @@
 module Import
   extend ActiveSupport::Concern
 
+  # Opens +file+ as a spreadsheet depending on its file ending
   def open_spreadsheet(file)
     case File.extname(file.original_filename)
     when '.csv' then Roo::CSV.new(file.path)
