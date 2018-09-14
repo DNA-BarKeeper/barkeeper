@@ -13,5 +13,8 @@ jQuery ->
     ],
     "order": [ 3, 'desc' ]
   } );
-  $('#species_family_name').autocomplete source: $('#species_family_name').data('autocomplete-source')
+
+  $('#species_family_name').autocomplete
+    source: $('#species_family_name').data('autocomplete-source')
+
   $('#wiki').width($(document).width()).height($(document).height())
