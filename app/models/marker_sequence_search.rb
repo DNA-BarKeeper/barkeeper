@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MarkerSequenceSearch < ApplicationRecord
   belongs_to :user
   belongs_to :project
@@ -6,6 +8,10 @@ class MarkerSequenceSearch < ApplicationRecord
 
   def marker_sequences
     @marker_sequences ||= find_marker_sequences
+  end
+
+  def as_pde
+
   end
 
   def as_fasta

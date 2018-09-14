@@ -1,5 +1,6 @@
 # noinspection RubyStringKeysInHashInspection
 class Contig < ApplicationRecord
+  include Export
   include ProjectRecord
 
   belongs_to :marker_sequence
