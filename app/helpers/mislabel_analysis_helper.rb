@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MislabelAnalysisHelper
   def percentage_mislabels(mislabel_analysis)
     percentage = mislabel_analysis.percentage_of_mislabels
@@ -10,23 +12,23 @@ module MislabelAnalysisHelper
   end
 
   def mislabels(sequence)
-    html = ''
+    html = +''
 
     if sequence
       sequence.mislabels.includes(:mislabel_analysis).order(:solved).each do |mislabel|
-        solved = ''
-
         if mislabel.solved
           begin
             user = User.find(mislabel.solved_by).name
-          rescue
+          rescue ActiveRecord::RecordNotFound
             user = 'unknown user'
           end
-          solved_by = "Solved by #{user} on #{mislabel.solved_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")}"
+          solved_by = "Solved by #{user} on #{mislabel.solved_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S')}"
         else
           solved = "<span class='glyphicon glyphicon-exclamation-sign' style='color: red'></span>".html_safe
           solved_by = link_to('Mark issue as solved', solve_mislabel_path(mislabel))
         end
+
+        solved ||= ''
 
         html << '<tr>'
         html << content_tag(:td, solved, style: 'text-align: center')
@@ -65,16 +67,16 @@ module MislabelAnalysisHelper
     "color: #{individual.has_issue ? 'red' : 'grey'}"
   end
 
-  def contigs_with_warnings(contigs)
+  def contig_issues(contigs)
     list_elements = []
 
-    if contigs.any?{ |c| !c.nil? }
+    if contigs.any? { |c| !c.nil? }
       contigs.each do |c|
         list_elements << content_tag(:li, link_to(c.name, edit_contig_path(c))) if c.marker_sequence&.has_unsolved_mislabels
       end
     end
 
-    html = ''
+    html = +''
     if list_elements.blank?
       html << '<p>There are no SATIVA warnings associated with this record.</p>'
     else
@@ -88,7 +90,7 @@ module MislabelAnalysisHelper
     html.html_safe
   end
 
-  def contigs_with_warnings_individual(individual)
+  def contig_issues_individual(individual)
     contigs = Contig.joins(isolate: :individual).distinct.with_warnings.where('individuals.id = ?', individual.id)
 
     list_elements = []
@@ -96,7 +98,7 @@ module MislabelAnalysisHelper
       list_elements << content_tag(:li, link_to(c.name, edit_contig_path(c))) if c.marker_sequence&.has_unsolved_mislabels
     end
 
-    html = ''
+    html = +''
     if list_elements.blank?
       html << '<p>No issues are present for this record.</p>'
     else
