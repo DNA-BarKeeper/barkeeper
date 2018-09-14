@@ -153,6 +153,7 @@ class ContigsController < ApplicationController
 
   end
 
+  # TODO: Marked for removal
   def compare_contigs
     contig_names=params[:contig_names]
 
