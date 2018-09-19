@@ -397,7 +397,7 @@ class ContigsController < ApplicationController
   end
 
   def pde
-    str = @contig.as_pde
+    str = @contig.pde([@contig], true)
     send_data(str, :filename => "#{@contig.name}.pde", :type => "application/txt")
   end
 
