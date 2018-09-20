@@ -12,7 +12,7 @@ module Export
 
   module ClassMethods
     def pde(contigs, add_reads)
-      @pde_header = '<header><entries>32 "GBOL5 URL" STRING</entries>'
+      @pde_header = "<header><entries>32 \"Species\" STRING\n33 \"GBOL5 URL\" STRING</entries>"
 
       pde_matrix = +''
       @height = 0 # Number of lines (needed for pde dimensions)
@@ -20,24 +20,27 @@ module Export
       @block_seqs = [] # Collect sequences for block, later fill with '?' up to max_width
 
       contigs.each do |contig|
+        species = contig.try(:isolate).try(:individual).try(:species)&.composed_name
+        contig_name = species.blank? ? contig.name : [contig.name, species.gsub(' ', '_')].join('_')
+
         contig.partial_cons.each do |partial_con|
           aligned_sequence = partial_con.aligned_sequence.nil? ? '' : partial_con.aligned_sequence
 
-          partial_con.primer_reads.each { |read| add_primer_read_to_pde(read) } if add_reads
+          partial_con.primer_reads.each { |read| add_primer_read_to_pde(read, true) } if add_reads
 
-          add_sequence_to_pde(contig.name, routes.edit_contig_url(contig, url_options), aligned_sequence, true)
+          add_sequence_to_pde(contig_name, species, routes.edit_contig_url(contig, url_options), aligned_sequence, true)
         end
 
         next unless add_reads
 
-        # Add all reads that are not part of any partial con:
-        contig.primer_reads.not_assembled.each { |read| add_primer_read_to_pde(read) } if (contig.primer_reads.not_assembled.count > 0)
+        # Add unassembled reads:
+        contig.primer_reads.not_assembled.each { |read| add_primer_read_to_pde(read, false) } if (contig.primer_reads.not_assembled.count > 0)
 
-        contig.primer_reads.not_used_for_assembly.each { |read| add_primer_read_to_pde(read) } if (contig.primer_reads.not_used_for_assembly.count > 0)
+        contig.primer_reads.not_used_for_assembly.each { |read| add_primer_read_to_pde(read, false) } if (contig.primer_reads.not_used_for_assembly.count > 0)
 
-        contig.primer_reads.not_trimmed.each { |read| add_primer_read_to_pde(read) } if (contig.primer_reads.not_trimmed.count > 0)
+        contig.primer_reads.not_trimmed.each { |read| add_primer_read_to_pde(read, false) } if (contig.primer_reads.not_trimmed.count > 0)
 
-        contig.primer_reads.unprocessed.each { |read| add_primer_read_to_pde(read) } if (contig.primer_reads.unprocessed.count > 0)
+        contig.primer_reads.unprocessed.each { |read| add_primer_read_to_pde(read, false) } if (contig.primer_reads.unprocessed.count > 0)
       end
 
       @pde_header += "</header>\n"
@@ -54,6 +57,35 @@ module Export
       PDE_BEGINNING + pde_dimensions + @pde_header + '<matrix>' + pde_matrix_dimensions + pde_matrix + PDE_CLOSURE
     end
 
+    # TODO: Unfinished feature (contigs)
+    # def zip_archive
+    #   # Only create new archive if no recent one exists
+    #   if !search_result_archive.present? || search_result_archive_updated_at < (Time.now - 24.hours).utc
+    #     archive_name = title.empty? ? "contig_search_#{created_at}" : title
+    #     archive_file = "#{archive_name}.zip"
+    #
+    #     # Create archive file
+    #     Zip::File.open(archive_file, Zip::File::CREATE) do |archive|
+    #       contigs.includes(:primer_reads, partial_cons: :primer_reads).each do |contig|
+    #         # Write contig PDE to a file and add this to the zip file
+    #         pde_file_name = "#{contig.name}.pde"
+    #         archive.get_output_stream(pde_file_name) { |file| file.write(contig.as_pde) }
+    #
+    #         # Write chromatogram to a file and add this to the zip file
+    #         contig.primer_reads.each do |read|
+    #           archive.get_output_stream(read.file_name_id) { |file| file.write(URI.parse("http:#{read.chromatogram.url}").read) }
+    #         end
+    #       end
+    #     end
+    #
+    #     # Upload created archive
+    #     file = File.open(archive_file)
+    #     self.search_result_archive = file
+    #     file.close
+    #     save!
+    #   end
+    # end
+
     private
 
     def routes
@@ -64,14 +96,18 @@ module Export
       ActionMailer::Base.default_url_options
     end
 
-    def add_sequence_to_pde(name, url, sequence, is_contig)
+    def add_sequence_to_pde(name, species, url, sequence, is_contig)
+      sequence = sequence ? sequence : ''
+
       @pde_header += "<seq idx=\"#{@height}\">"\
                    "<e id=\"1\">#{name}</e>"
 
       @pde_header += "<e id=\"2\">#{name}</e>" unless is_contig
 
-      @pde_header += "<e id=\"32\">#{url}</e>"\
-                   "</seq>\n"
+      @pde_header += "<e id=\"32\">#{species}</e>" if is_contig
+
+      @pde_header += "<e id=\"33\">#{url}</e>"\
+                     "</seq>\n"
 
       @block_seqs << sequence
       @height += 1
@@ -79,8 +115,9 @@ module Export
       @max_width = sequence.length if sequence.length > @max_width
     end
 
-    def add_primer_read_to_pde(primer_read)
-      add_sequence_to_pde(primer_read.file_name_id, routes.edit_primer_read_url(primer_read, url_options), primer_read.aligned_seq, false)
+    def add_primer_read_to_pde(primer_read, assembled)
+      sequence = assembled ? primer_read.aligned_seq : primer_read.sequence
+      add_sequence_to_pde(primer_read.file_name_id, '', routes.edit_primer_read_url(primer_read, url_options), sequence, false)
     end
   end
 

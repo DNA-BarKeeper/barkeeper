@@ -38,17 +38,24 @@ class ContigSearchesController < ApplicationController
     end
   end
 
-  def export_results_as_zip
+  def export_as_pde
     @contig_search = ContigSearch.find(params[:contig_search_id])
-
-    ContigSearchResultExport.perform_async(@contig_search)
-    redirect_to @contig_search, notice: "Writing zip file to S3 in background. May take a minute or so. Download with 'Download results' button."
+    file_name = @contig_search.title.empty? ? "contig_search_#{@contig_search.created_at}" : @contig_search.title
+    send_data(ContigSearch.pde(@contig_search.contigs.includes(:partial_cons, isolate: [individual: :species]), false), :filename => "#{file_name}.pde", :type => "application/txt")
   end
 
-  def download_results
-    @contig_search = ContigSearch.find(params[:contig_search_id])
-    send_data(File.read(@contig_search.search_result_archive.url), :filename => @contig_search.search_result_archive_file_name, :type => "application/zip")
-  end
+  # TODO: Unfinished feature
+  # def export_results_as_zip
+  #   @contig_search = ContigSearch.find(params[:contig_search_id])
+  #
+  #   ContigSearchResultExport.perform_async(@contig_search)
+  #   redirect_to @contig_search, notice: "Writing zip file to S3 in background. May take a minute or so. Download with 'Download results' button."
+  # end
+  #
+  # def download_results
+  #   @contig_search = ContigSearch.find(params[:contig_search_id])
+  #   send_data(File.read(@contig_search.search_result_archive.url), :filename => @contig_search.search_result_archive_file_name, :type => "application/zip")
+  # end
 
   private
   # Never trust parameters from the scary internet, only allow the white list through.

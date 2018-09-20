@@ -10,10 +10,6 @@ class MarkerSequenceSearch < ApplicationRecord
     @marker_sequences ||= find_marker_sequences
   end
 
-  def as_pde
-
-  end
-
   def as_fasta
     create_fasta(marker_sequences, true)
   end

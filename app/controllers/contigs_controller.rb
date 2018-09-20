@@ -120,9 +120,9 @@ class ContigsController < ApplicationController
       contig_name += "_#{marker}"
 
       # mk case insensitiv
-      contig=Contig.in_project(current_project_id).where("name ILIKE ?", contig_name).first
+      contig = Contig.in_project(current_project_id).where("name ILIKE ?", contig_name).first
 
-      #ignore if not verified
+      # ignore if not verified
 
       if contig
 
@@ -154,7 +154,7 @@ class ContigsController < ApplicationController
   end
 
   def compare_contigs
-    contig_names=params[:contig_names]
+    contig_names = params[:contig_names]
 
     CompareContigs.perform_async(contig_names)
 
@@ -330,9 +330,11 @@ class ContigsController < ApplicationController
 
   def assemble_all
     contigs = Contig.in_project(current_project_id).not_assembled
+
     contigs.each do |c|
       ContigAssembly.perform_async(c.id)
     end
+
     redirect_to contigs_path, notice: "Assembly for #{contigs.size} contigs started in background."
   end
 
@@ -358,7 +360,6 @@ class ContigsController < ApplicationController
   end
 
   def verify_next
-
     @contig.update(:verified_by => current_user.id, :verified_at => Time.now, :assembled => true, :verified => true)
 
     # generate / update markersequence
@@ -375,7 +376,6 @@ class ContigsController < ApplicationController
     @next_contig = Contig.in_project(current_project_id).need_verification.first
 
     redirect_to edit_contig_path(@next_contig), notice: "Verified & linked marker sequence updated for #{@contig.name}. Showing #{@next_contig.name}."
-
   end
 
   def overlap
@@ -397,7 +397,7 @@ class ContigsController < ApplicationController
   end
 
   def pde
-    str = @contig.pde([@contig], true)
+    str = Contig.pde([@contig], true)
     send_data(str, :filename => "#{@contig.name}.pde", :type => "application/txt")
   end
 
