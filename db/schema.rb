@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180718141806) do
+ActiveRecord::Schema.define(version: 20180921081203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,16 @@ ActiveRecord::Schema.define(version: 20180718141806) do
     t.string   "URL",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "centroid_sequences", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "clusters", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "contig_pde_uploaders", force: :cascade do |t|
@@ -325,6 +335,10 @@ ActiveRecord::Schema.define(version: 20180718141806) do
     t.boolean  "has_species"
     t.string   "higher_order_taxon"
     t.integer  "has_warnings"
+    t.date     "min_age"
+    t.date     "max_age"
+    t.date     "min_update"
+    t.date     "max_update"
     t.index ["project_id"], name: "index_marker_sequence_searches_on_project_id", using: :btree
   end
 
@@ -414,6 +428,31 @@ ActiveRecord::Schema.define(version: 20180718141806) do
     t.datetime "published"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "ngs_runs", force: :cascade do |t|
+    t.integer  "quality_threshold"
+    t.integer  "tag_mismates"
+    t.integer  "primer_mismatches"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.string   "name"
+    t.string   "fastq_file_name"
+    t.string   "fastq_content_type"
+    t.integer  "fastq_file_size"
+    t.datetime "fastq_updated_at"
+    t.integer  "higher_order_taxon_id"
+    t.string   "set_tag_map_file_name"
+    t.string   "set_tag_map_content_type"
+    t.integer  "set_tag_map_file_size"
+    t.datetime "set_tag_map_updated_at"
+    t.index ["higher_order_taxon_id"], name: "index_ngs_runs_on_higher_order_taxon_id", using: :btree
+  end
+
+  create_table "ngs_runs_projects", id: false, force: :cascade do |t|
+    t.integer "ngs_run_id", null: false
+    t.integer "project_id", null: false
+    t.index ["ngs_run_id", "project_id"], name: "index_ngs_runs_projects_on_ngs_run_id_and_project_id", using: :btree
   end
 
   create_table "oders", force: :cascade do |t|
@@ -565,6 +604,12 @@ ActiveRecord::Schema.define(version: 20180718141806) do
     t.integer "species_id"
   end
 
+  create_table "projects_tag_primer_maps", id: false, force: :cascade do |t|
+    t.integer "project_id",        null: false
+    t.integer "tag_primer_map_id", null: false
+    t.index ["project_id", "tag_primer_map_id"], name: "index_projects_tag_primer_maps", using: :btree
+  end
+
   create_table "projects_users", id: false, force: :cascade do |t|
     t.integer "project_id"
     t.integer "user_id"
@@ -631,6 +676,19 @@ ActiveRecord::Schema.define(version: 20180718141806) do
     t.string   "german_name"
   end
 
+  create_table "tag_primer_maps", force: :cascade do |t|
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.integer  "ngs_run_id"
+    t.string   "tag_primer_map_file_name"
+    t.string   "tag_primer_map_content_type"
+    t.integer  "tag_primer_map_file_size"
+    t.datetime "tag_primer_map_updated_at"
+    t.string   "name"
+    t.string   "tag"
+    t.index ["ngs_run_id"], name: "index_tag_primer_maps_on_ngs_run_id", using: :btree
+  end
+
   create_table "taxonomic_classes", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at",     null: false
@@ -690,6 +748,7 @@ ActiveRecord::Schema.define(version: 20180718141806) do
   add_foreign_key "marker_sequence_searches", "projects"
   add_foreign_key "mislabel_analyses", "markers"
   add_foreign_key "mislabels", "marker_sequences"
+  add_foreign_key "ngs_runs", "higher_order_taxa"
   add_foreign_key "plant_plates", "lab_racks"
   add_foreign_key "shelves", "freezers"
 end

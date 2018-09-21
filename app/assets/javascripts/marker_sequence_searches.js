@@ -21,6 +21,22 @@ jQuery(function() {
         "order": [ 0, 'asc' ]
     });
 
+    $('#marker_sequence_search_min_age').datepicker({
+        dateFormat: 'yy-mm-dd'
+    });
+
+    $('#marker_sequence_search_max_age').datepicker({
+        dateFormat: 'yy-mm-dd'
+    });
+
+    $('#marker_sequence_search_min_update').datepicker({
+        dateFormat: 'yy-mm-dd'
+    });
+
+    $('#marker_sequence_search_max_update').datepicker({
+        dateFormat: 'yy-mm-dd'
+    });
+
     $('#marker_sequence_search_name').autocomplete({
         source: $('#marker_sequence_search_name').data('autocomplete-source'),
         minLength: 2
