@@ -73,6 +73,66 @@ class Contig < ApplicationRecord
     self.consensus.gsub('-', '')
   end
 
+  def as_fasq(mira)
+    use_mira = false
+
+    if mira == "1" or mira == 1
+      use_mira = true
+    end
+
+    # restrict to cases with partial_cons count == 1
+    if self.partial_cons.count > 1 or self.partial_cons.count < 1
+      puts "Must have 1 partial_cons."
+      return
+    end
+
+    pc = self.partial_cons.first
+
+    # compute coverage
+    used_nucleotides_count = 0
+
+    pc.primer_reads.each do |r|
+      used_nucleotides_count += (r.aligned_seq.length - r.aligned_seq.count('-'))
+    end
+
+    coverage = (used_nucleotides_count.to_f / pc.aligned_sequence.length)
+
+    # header
+    fasq_str = "@#{self.name} | #{sprintf '%.2f', coverage}"
+
+    # seq
+    raw_cons = pc.aligned_sequence
+
+    # seq_no_gaps = raw_cons.gsub(/-/, '') #-> does not work like this, quality score array may contain > 0 values where cons. has gap
+
+    cons_seq = ''
+    qual_str = ''
+
+    ctr = 0
+
+    if use_mira
+      qualities_to_use = pc.aligned_qualities
+    else
+      qualities_to_use = pc.mira_consensus_qualities
+    end
+
+    qualities_to_use.each do |q|
+      if q > 0
+        cons_seq += raw_cons[ctr]
+        qual_str += (q + 33).chr
+        ctr += 1
+      end
+    end
+
+    #check that seq + qual have same length -> for externally verified this needs not be true
+    unless cons_seq.length == qual_str.length
+      puts "Error: seq (#{seq_no_gaps.length}) + qual (#{ctr}) do not have same length"
+      return
+    end
+
+    "#{fasq_str}\n#{cons_seq}\n+\n#{qual_str}\n"
+  end
+  
   def auto_overlap
 
     self.partial_cons.destroy_all
@@ -90,14 +150,14 @@ class Contig < ApplicationRecord
       msg = 'Currently no more than 10 reads allowed for assembly.'
       return
 
-    elsif remaining_reads.size== 1
+    elsif remaining_reads.size == 1
 
       single_read = self.primer_reads.use_for_assembly.first
       single_read.get_aligned_peak_indices
-      pc=PartialCon.create(:aligned_sequence => single_read.trimmed_and_cleaned_seq, :aligned_qualities => single_read.trimmed_quals, :contig_id => self.id)
-      single_read.aligned_qualities=single_read.trimmed_quals
-      single_read.aligned_seq=single_read.trimmed_and_cleaned_seq
-      single_read.assembled=true
+      pc = PartialCon.create(:aligned_sequence => single_read.trimmed_and_cleaned_seq, :aligned_qualities => single_read.trimmed_quals, :contig_id => self.id)
+      single_read.aligned_qualities = single_read.trimmed_quals
+      single_read.aligned_seq = single_read.trimmed_and_cleaned_seq
+      single_read.assembled = true
       single_read.save
       pc.primer_reads << single_read
       self.partial_cons << pc
@@ -119,7 +179,7 @@ class Contig < ApplicationRecord
 
     starting_read = remaining_reads.delete_at(0) #Deletes the element at the specified index, returning that element, or nil if the index is out of range.
 
-    assembled_reads =  [starting_read] # successfully overlapped reads
+    assembled_reads = [starting_read] # successfully overlapped reads
     growing_consensus = {:reads => [{:read => starting_read,
                                      :aligned_seq => starting_read.trimmed_and_cleaned_seq,
                                      :aligned_qualities => starting_read.trimmed_quals}],
@@ -135,40 +195,40 @@ class Contig < ApplicationRecord
 
     # -----> ASSEMBLY <------
 
-    current_largest_partial_contig=0
-    current_largest_partial_contig_seq=nil
+    current_largest_partial_contig = 0
+    current_largest_partial_contig_seq = nil
 
     #clean previously stored partial_cons:
     self.partial_cons.destroy_all
 
-    height=0 #count needed lines for pde dimensions
-    max_width=0
+    height = 0 #count needed lines for pde dimensions
+    max_width = 0
 
-    block_seqs=[] #collect sequences for block, later fill with '?' up to max_width
+    block_seqs = [] #collect sequences for block, later fill with '?' up to max_width
 
     partial_contigs.each do |partial_contig|
 
       #single partial_contig: ({:reads => assembled_reads, :consensus => growing_consensus})
 
-      if partial_contig[:reads].size >1 # something where 2 or more primers overlapped:
+      if partial_contig[:reads].size > 1 # something where 2 or more primers overlapped:
 
         #growing_consensus = {:reads => [{:read => starting_read, :aligned_seq => starting_read.trimmed_and_cleaned_seq}],
         # :consensus => starting_read.trimmed_and_cleaned_seq }
 
         if partial_contig[:reads].size > current_largest_partial_contig
           current_largest_partial_contig = partial_contig[:reads].size
-          current_largest_partial_contig_seq=partial_contig[:consensus][:consensus]
+          current_largest_partial_contig_seq = partial_contig[:consensus][:consensus]
         end
 
-        growing_consensus=partial_contig[:consensus]
+        growing_consensus = partial_contig[:consensus]
 
-        pc=PartialCon.create(:aligned_sequence => growing_consensus[:consensus], :aligned_qualities => growing_consensus[:consensus_qualities])
+        pc = PartialCon.create(:aligned_sequence => growing_consensus[:consensus], :aligned_qualities => growing_consensus[:consensus_qualities])
 
         growing_consensus[:reads].each do |aligned_read|
 
           #get original primer_read from db:
-          pr=PrimerRead.find(aligned_read[:read].id)
-          pr.update(:aligned_seq=>aligned_read[:aligned_seq], :assembled => true, :aligned_qualities => aligned_read[:aligned_qualities])
+          pr = PrimerRead.find(aligned_read[:read].id)
+          pr.update(:aligned_seq => aligned_read[:aligned_seq], :assembled => true, :aligned_qualities => aligned_read[:aligned_qualities])
 
           pr.get_aligned_peak_indices # <-- uses aligned_qualities to populate aligned_peak_indices array. Needed in new variant of d3.js contig slize
 
@@ -205,10 +265,8 @@ class Contig < ApplicationRecord
 
   # Recursive assembly function
   def assemble(growing_consensus, assembled_reads, partial_contigs, remaining_reads)
-
     # Try overlap all remaining_reads with growing_consensus
-
-    none_overlapped=true
+    none_overlapped = true
 
     remaining_reads.each do |read|
 
@@ -216,7 +274,7 @@ class Contig < ApplicationRecord
 
       if aligned_seqs # if one overlaps
 
-        none_overlapped=false
+        none_overlapped = false
 
         # only in case overlap worked copy the adjusted_aligned sequences that are returned from "overlap" over to growing_consensus:
         (0...aligned_seqs[:adjusted_prev_aligned_reads].size).each { |i|
@@ -233,13 +291,13 @@ class Contig < ApplicationRecord
         overlapped_read = remaining_reads.delete(read)
         assembled_reads.push(overlapped_read)
 
-        r=compute_consensus(aligned_seqs[:growing_cons_seq],
+        r = compute_consensus(aligned_seqs[:growing_cons_seq],
                             aligned_seqs[:growing_consensus_qualities],
                             aligned_seqs[:read_seq],
                             aligned_seqs[:read_qal])
 
-        growing_consensus[:consensus]=r.first
-        growing_consensus[:consensus_qualities]=r.last
+        growing_consensus[:consensus] = r.first
+        growing_consensus[:consensus_qualities] = r.last
 
         # break loop through remaining_reads
         break
@@ -346,9 +404,9 @@ class Contig < ApplicationRecord
 
     (1...rows).each { |i|
       (1...cols).each { |j|
-        choice1 = a[i-1][j-1] + s[(read[i-1] + growing_consensus[j-1]).upcase] #match
-        choice2 = a[i-1][j] + gap #insert
-        choice3 = a[i][j-1] + gap #delete
+        choice1 = a[i - 1][j - 1] + s[(read[i - 1] + growing_consensus[j - 1]).upcase] #match
+        choice2 = a[i - 1][j] + gap #insert
+        choice3 = a[i][j - 1] + gap #delete
         a[i][j] = [choice1, choice2, choice3].max
       }
     }
@@ -363,7 +421,7 @@ class Contig < ApplicationRecord
     adjusted_prev_aligned_qualities = Array.new
 
     (0...previously_aligned_reads.size).each { |_|
-      new_seq=''
+      new_seq = ''
       adjusted_prev_aligned_reads.push(new_seq)
       adjusted_prev_aligned_qualities.push([])
     }
@@ -413,8 +471,8 @@ class Contig < ApplicationRecord
 
     #add 5' extending gaps...
     while i > bestscore_i
-      aligned_read_seq = read[i-1].chr + aligned_read_seq
-      aligned_read_qual.unshift(qualities[i-1])
+      aligned_read_seq = read[i - 1].chr + aligned_read_seq
+      aligned_read_qual.unshift(qualities[i - 1])
 
       aligned_cons_seq = aligned_cons_seq + '-'
       aligned_cons_qual.push(-1) # -1 ~ '-'
@@ -432,12 +490,12 @@ class Contig < ApplicationRecord
     while j > bestscore_j
       aligned_read_seq = aligned_read_seq + '-'
       aligned_read_qual.push(-1)
-      aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
-      aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
+      aligned_cons_seq = growing_consensus[j - 1].chr + aligned_cons_seq
+      aligned_cons_qual.unshift(growing_consensus_qualities[j - 1])
 
       for k in 0...adjusted_prev_aligned_reads.size do
-      adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
-      adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
+      adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j - 1].chr + adjusted_prev_aligned_reads[k]
+      adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j - 1])
       end
 
       j -= 1
@@ -450,25 +508,25 @@ class Contig < ApplicationRecord
 
     while i > 0 and j > 0
       score = a[i][j]
-      score_diag = a[i-1][j-1]
-      score_up = a[i][j-1]
-      score_left = a[i-1][j]
-      if score == score_diag + s[read[i-1].chr + growing_consensus[j-1].chr] #match
-      aligned_read_seq = read[i-1].chr + aligned_read_seq
-      aligned_read_qual.unshift(qualities[i-1])
-      aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
-      aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
+      score_diag = a[i - 1][j - 1]
+      score_up = a[i][j - 1]
+      score_left = a[i - 1][j]
+      if score == score_diag + s[read[i - 1].chr + growing_consensus[j - 1].chr] #match
+      aligned_read_seq = read[i - 1].chr + aligned_read_seq
+      aligned_read_qual.unshift(qualities[i - 1])
+      aligned_cons_seq = growing_consensus[j - 1].chr + aligned_cons_seq
+      aligned_cons_qual.unshift(growing_consensus_qualities[j - 1])
 
       for k in 0...adjusted_prev_aligned_reads.size do
-        adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
-        adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
+        adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j - 1].chr + adjusted_prev_aligned_reads[k]
+        adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j - 1])
       end
 
       i -= 1
       j -= 1
       elsif score == score_left + gap #insert
-      aligned_read_seq = read[i-1].chr + aligned_read_seq
-      aligned_read_qual.unshift(qualities[i-1])
+      aligned_read_seq = read[i - 1].chr + aligned_read_seq
+      aligned_read_qual.unshift(qualities[i - 1])
       aligned_cons_seq = '-' + aligned_cons_seq
       aligned_cons_qual.unshift(-1)
 
@@ -481,12 +539,12 @@ class Contig < ApplicationRecord
       elsif score == score_up + gap #delete
       aligned_read_seq = '-' + aligned_read_seq
       aligned_read_qual.unshift(-1)
-      aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
-      aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
+      aligned_cons_seq = growing_consensus[j - 1].chr + aligned_cons_seq
+      aligned_cons_qual.unshift(growing_consensus_qualities[j - 1])
 
       for k in 0...adjusted_prev_aligned_reads.size do
-        adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
-        adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
+        adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j - 1].chr + adjusted_prev_aligned_reads[k]
+        adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j - 1])
       end
 
       j -= 1
@@ -495,8 +553,8 @@ class Contig < ApplicationRecord
 
     #add 3' extending gaps...
     while i > 0
-      aligned_read_seq = read[i-1].chr + aligned_read_seq
-      aligned_read_qual.unshift(qualities[i-1])
+      aligned_read_seq = read[i - 1].chr + aligned_read_seq
+      aligned_read_qual.unshift(qualities[i - 1])
       aligned_cons_seq = '-' + aligned_cons_seq
       aligned_cons_qual.unshift(-1)
 
@@ -512,13 +570,13 @@ class Contig < ApplicationRecord
     while j > 0
       aligned_read_seq = '-' + aligned_read_seq
       aligned_read_qual.unshift(-1)
-      aligned_cons_seq = growing_consensus[j-1].chr + aligned_cons_seq
-      aligned_cons_qual.unshift(growing_consensus_qualities[j-1])
+      aligned_cons_seq = growing_consensus[j - 1].chr + aligned_cons_seq
+      aligned_cons_qual.unshift(growing_consensus_qualities[j - 1])
 
       # mirror everything that's done to aligned_cons_seq in all previously aligned_seqs:
       for k in 0...adjusted_prev_aligned_reads.size do
-      adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j-1].chr + adjusted_prev_aligned_reads[k]
-      adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j-1])
+      adjusted_prev_aligned_reads[k] = previously_aligned_reads[k][j - 1].chr + adjusted_prev_aligned_reads[k]
+      adjusted_prev_aligned_qualities[k].unshift(previously_aligned_qualities[k][j - 1])
       end
 
       j -= 1
@@ -547,28 +605,28 @@ class Contig < ApplicationRecord
 
     # check if overlap worked or crappy alignment resulted:
 
-    diffs=0
-    valids=0
+    diffs = 0
+    valids = 0
 
-    conflicting_positions= Array.new
+    conflicting_positions = Array.new
 
     (0...aligned_seqs[:growing_cons_seq].length).each { |m|
 
-      if aligned_seqs[:growing_cons_seq][m]=='-' or aligned_seqs[:read_seq][m]=='-'
+      if aligned_seqs[:growing_cons_seq][m] == '-' or aligned_seqs[:read_seq][m] == '-'
       next
       else
-      valids+=1
+      valids += 1
       end
 
       if aligned_seqs[:growing_cons_seq][m] != aligned_seqs[:read_seq][m]
-      diffs+=1
+      diffs += 1
       conflicting_positions << m
       end
     }
 
-    perc = (diffs.to_f/valids)
+    perc = (diffs.to_f / valids)
 
-    if perc <= self.allowed_mismatch_percent/100.0
+    if perc <= self.allowed_mismatch_percent / 100.0
 
       # wenn zu wenig overlap:
       if valids < self.overlap_length
@@ -576,7 +634,7 @@ class Contig < ApplicationRecord
       nil
       else
       #return alignment:
-      aligned_seqs[:message]=perc
+      aligned_seqs[:message] = perc
       aligned_seqs
       end
 
@@ -592,12 +650,12 @@ class Contig < ApplicationRecord
   end
 
   def compute_consensus(seq1, qual1, seq2, qual2)
-    consensus_seq=''
-    consensus_qal=[]
+    consensus_seq = ''
+    consensus_qal = []
 
     for i in 0...seq1.length
 
-      unless qual1[i]==-1 or qual2[i]==-1
+      unless qual1[i] == -1 or qual2[i] == -1
 
         if qual1[i] > qual2[i]
           consensus_qal.push(qual1[i])
@@ -609,21 +667,21 @@ class Contig < ApplicationRecord
 
       else
 
-        if qual1[i]==-1 and qual2[i]==-1
+        if qual1[i] == -1 and qual2[i] == -1
           consensus_qal.push(-1)
           consensus_seq += '-'
         else
-          if qual1[i]==-1
+          if qual1[i] == -1
 
             #if further gap adjacent, it's most likely end of trimmed_seq --> qual2/seq2 win
             trimmed_end = false
-            if i>0
-              if qual1[i-1] == -1 or qual1[i+1] == -1
-                trimmed_end=true
+            if i > 0
+              if qual1[i - 1] == -1 or qual1[i + 1] == -1
+                trimmed_end = true
               end
             else
-              if qual1[i+1] == -1
-                trimmed_end=true
+              if qual1[i + 1] == -1
+                trimmed_end = true
               end
             end
 
@@ -636,10 +694,10 @@ class Contig < ApplicationRecord
 
               #get surrounding base qualities
 
-              if i>0
-                neighboring_qual1=qual1[i-1]
+              if i > 0
+                neighboring_qual1 = qual1[i - 1]
               else
-                neighboring_qual1=qual1[i+1]
+                neighboring_qual1 = qual1[i + 1]
               end
 
               if neighboring_qual1 > qual2[i]
@@ -651,17 +709,17 @@ class Contig < ApplicationRecord
               end
             end
 
-          elsif qual2[i]==-1
+          elsif qual2[i] == -1
 
             #if further gap adjacent, it's most likely end of trimmed_seq --> qual1/seq1 win
             trimmed_end = false
-            if i>0
-              if qual2[i-1] == -1 or qual2[i+1] == -1
-                trimmed_end=true
+            if i > 0
+              if qual2[i - 1] == -1 or qual2[i + 1] == -1
+                trimmed_end = true
               end
             else
-              if qual2[i+1] == -1
-                trimmed_end=true
+              if qual2[i + 1] == -1
+                trimmed_end = true
               end
             end
 
@@ -673,10 +731,10 @@ class Contig < ApplicationRecord
             else
 
               #get surrounding base qualities
-              if i>0
-                neighboring_qual2 = qual2[i-1]
+              if i > 0
+                neighboring_qual2 = qual2[i - 1]
               else
-                neighboring_qual2 = qual2[i+1]
+                neighboring_qual2 = qual2[i + 1]
               end
 
               if neighboring_qual2 > qual1[i]

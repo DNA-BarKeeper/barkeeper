@@ -41,7 +41,7 @@ class ContigSearchesController < ApplicationController
   def export_as_pde
     @contig_search = ContigSearch.find(params[:contig_search_id])
     file_name = @contig_search.title.empty? ? "contig_search_#{@contig_search.created_at}" : @contig_search.title
-    send_data(ContigSearch.pde(@contig_search.contigs.includes(:partial_cons, isolate: [individual: :species]), false), :filename => "#{file_name}.pde", :type => "application/txt")
+    send_data(ContigSearch.pde(@contig_search.contigs.includes(:partial_cons, isolate: [individual: :species]), add_reads: false), :filename => "#{file_name}.pde", :type => "application/txt")
   end
 
   # TODO: Unfinished feature
