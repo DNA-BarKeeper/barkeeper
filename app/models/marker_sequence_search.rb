@@ -71,6 +71,12 @@ class MarkerSequenceSearch < ApplicationRecord
     marker_sequences = marker_sequences.where("length(marker_sequences.sequence) >= ?", min_length) if min_length.present?
     marker_sequences = marker_sequences.where("length(marker_sequences.sequence) <= ?", max_length) if max_length.present?
 
+    marker_sequences = marker_sequences.where("marker_sequences.created_at >= ?", min_age.midnight) if min_age.present?
+    marker_sequences = marker_sequences.where("marker_sequences.created_at <= ?", max_age.end_of_day) if max_age.present?
+
+    marker_sequences = marker_sequences.where("marker_sequences.updated_at >= ?", min_update.midnight) if min_update.present?
+    marker_sequences = marker_sequences.where("marker_sequences.updated_at <= ?", max_update.end_of_day) if max_update.present?
+
     marker_sequences
   end
 

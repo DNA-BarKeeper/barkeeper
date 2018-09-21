@@ -68,6 +68,15 @@
         <%= f.number_field :min_length, class: 'form-control' %> and <%= f.number_field :max_length, class: 'form-control' %>
       </div>
       <br>
+      <div class="field">
+        <%= f.label :age, "Created between" %><br />
+        <%= f.text_field :min_age, class: 'form-control' %> and <%= f.text_field :max_age, class: 'form-control' %>
+      </div>
+      <div class="field">
+        <%= f.label :update, "Updated between" %><br />
+        <%= f.text_field :min_update, class: 'form-control' %> and <%= f.text_field :max_update, class: 'form-control' %>
+      </div>
+      <br>
       <div class="actions"><%= f.submit "Search", class: 'btn btn-default'%></div>
     <% end %>
   </div>
