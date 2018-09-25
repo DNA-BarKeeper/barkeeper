@@ -39,15 +39,14 @@ namespace :data do
         end
       end
 
-      if exists
-        results = File.new("#{Rails.root}/#{title}.mis")
-        search = MarkerSequenceSearch.where(has_species: true, has_warnings: 'both', marker: marker.name, project_id: 5, created_at: Time.now.beginning_of_day..Time.now.end_of_day).first
+      next unless exists
+      results = File.new("#{Rails.root}/#{title}.mis")
+      search = MarkerSequenceSearch.where(has_species: true, has_warnings: 'both', marker: marker.name, project_id: 5, created_at: Time.now.beginning_of_day..Time.now.end_of_day).first
 
-        puts "#{current_time}: Importing analysis results..."
-        MislabelAnalysis.import(results, title, search.marker_sequences.size, marker.id, true)
+      puts "#{current_time}: Importing analysis results..."
+      MislabelAnalysis.import(results, title, search.marker_sequences.size, marker.id, true)
 
-        FileUtils.rm(results)
-      end
+      FileUtils.rm(results)
     end
 
     puts "#{current_time}: Done.\n"
