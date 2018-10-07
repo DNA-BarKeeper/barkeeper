@@ -77,7 +77,24 @@ namespace :data do
 
     # Number of isolates per marker with more than one sequence:
     # Isolate.joins(:marker_sequences).where(marker_sequences: { marker: 5 }).group(:id).having('count(marker_sequences) > ?', 1).length
-    end
+  end
+
+  desc 'Get the number of species with only a single sequence per marker'
+  task :singletons_per_marker => :environment do
+    species = Species.joins(individuals: [isolates: :marker_sequences]).distinct
+    species_cnt = species.size
+
+    trnlf = species_count_with_exact_ms_count(species, 4, 1)
+    its = species_count_with_exact_ms_count(species, 5, 1)
+    rpl16 = species_count_with_exact_ms_count(species, 6, 1)
+    trnk_matk = species_count_with_exact_ms_count(species, 7, 1)
+
+    puts "Fraction of species with only a single barcode sequence (total of #{species_cnt} species):"
+    p "trnLF: #{((trnlf.to_f / species_cnt) * 100).round(2)}%"
+    p "ITS: #{((its.to_f / species_cnt) * 100).round(2)}%"
+    p "rpl16: #{((rpl16.to_f / species_cnt) * 100).round(2)}%"
+    p "trnK-matK: #{((trnk_matk.to_f / species_cnt) * 100).round(2)}%"
+  end
 
   desc 'Get the average number of specimen per species'
   task :specimen_per_species => :environment do
@@ -150,6 +167,12 @@ namespace :data do
            .having('count(marker_sequences) > ?', ms_count).length
   end
 
+  def species_count_with_exact_ms_count(species, marker_id, ms_count)
+    species.where(individuals: { isolates: { marker_sequences: { marker: marker_id } } })
+        .group(:id)
+        .having('count(marker_sequences) = ?', ms_count).length
+  end
+
   def get_information(marker_sequences, contigs)
     sequence_count = {}
     sequence_length_avg = {}
@@ -173,7 +196,7 @@ namespace :data do
       if contigs_marker.size.positive?
         primer_read_counts = contigs_marker.group(:id).count('primer_reads.id') #  TODO: only count assembled reads
 
-        reads_per_contig_avg[marker.name] = (primer_read_counts.values.sum/primer_read_counts.values.size.to_f).round(2)
+        reads_per_contig_avg[marker.name] = (primer_read_counts.values.sum / primer_read_counts.values.size.to_f).round(2)
         reads_per_contig_min[marker.name] = primer_read_counts.values.min
         reads_per_contig_max[marker.name] = primer_read_counts.values.max
       end
