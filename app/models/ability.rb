@@ -74,7 +74,7 @@ class Ability
         cannot [:create, :update, :destroy], User, role: 'admin' if user.supervisor?
       end
 
-      can :manage, User, id: user.id # User can edit own profile
+      can [:home, :show, :edit, :update, :destroy], User, id: user.id # User can see and edit own profile
 
       cannot :manage, ContigSearch
       can :create, ContigSearch
