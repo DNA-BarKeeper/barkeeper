@@ -42,6 +42,14 @@
   <%= link_to 'Go to contigs index', contigs_path, class: 'btn btn-default' %>
 </p>
 
+<p>
+  <%= link_to 'Delete all found contigs', contig_search_delete_all_path(@contig_search),
+              method: 'get',
+              title: 'This will permanently delete all found contigs and their associated reads and marker sequences!',
+              class: 'btn btn-danger',
+              :data => { :confirm => 'Are you sure?' }%>
+</p>
+
 <!--<p>-->
   <%#= link_to 'Create result archive file on server', contig_search_export_results_as_zip_path(@contig_search), class: 'btn btn-default' %>
   <%#= link_to 'Download results', contig_search_download_results_path(@contig_search), method: 'post', class: 'btn btn-default' %>

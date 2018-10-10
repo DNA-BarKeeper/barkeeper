@@ -38,6 +38,16 @@ class ContigSearchesController < ApplicationController
     end
   end
 
+  def delete_all
+    @contig_search = ContigSearch.find(params[:contig_search_id])
+    @contig_search.contigs.destroy_all
+
+    respond_to do |format|
+      format.html { redirect_to contig_search_path(@contig_search), notice: 'All contigs and associated records were successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
   def export_as_pde
     @contig_search = ContigSearch.find(params[:contig_search_id])
     file_name = @contig_search.title.empty? ? "contig_search_#{@contig_search.created_at}" : @contig_search.title

@@ -4,7 +4,7 @@ class PrimerRead < ApplicationRecord
   belongs_to :contig
   belongs_to :partial_con
   belongs_to :primer
-  has_many :issues
+  has_many :issues, dependent: :destroy
 
   has_attached_file :chromatogram,
                     :default_url => '/chromatograms/primer_read.scf'

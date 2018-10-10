@@ -95,8 +95,9 @@ class ContigsController < ApplicationController
   # DELETE /contigs/1.json
   def destroy
     @contig.destroy
+
     respond_to do |format|
-      format.html { redirect_to contigs_path, notice: 'Contig was successfully deleted.' }
+      format.html { redirect_to contigs_path, notice: 'Contig and associated reads and marker sequence were successfully deleted.' }
       format.json { head :no_content }
     end
   end
