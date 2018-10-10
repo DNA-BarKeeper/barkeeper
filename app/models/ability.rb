@@ -41,7 +41,6 @@ class Ability
     can :manage, PartialCon
     can [:edit, :index], PrimerRead
     can [:edit, :index, :filter, :show_individuals, :xls], Species
-    # can :manage, SpeciesEpithet
     can :manage, TxtUploader
     can :manage, :overview_diagram
 
@@ -85,13 +84,10 @@ class Ability
       can :create, MarkerSequenceSearch
       can :manage, MarkerSequenceSearch, user_id: user.id # Users can only edit their own searches
 
-      # Restrictions for users in project "lab"
-      if user.projects.exists?(:name => "lab")
+      if user.responsibilities.exists?(:name => "lab") # Restrictions for users in project "lab"
         cannot [:create, :update, :destroy], [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
         can :edit, [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
-
-        # Restrictions for users in project "taxonomy"
-      elsif user.projects.exists?(:name => 'taxonomy')
+      elsif user.responsibilities.exists?(:name => 'taxonomy') # Restrictions for users in project "taxonomy"
         cannot [:create, :update, :destroy], [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker,
                                               MarkerSequence, MicronicPlate, PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
         can :edit, [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker, MarkerSequence, MicronicPlate,
@@ -100,6 +96,8 @@ class Ability
         cannot :manage, ContigSearch
         cannot :manage, MarkerSequenceSearch
       end
+
+      cannot :delete_all, ContigSearch unless user.responsibilities.exists?(name: 'delete_contigs') || user.admin? || user.supervisor?
     end
   end
 end
