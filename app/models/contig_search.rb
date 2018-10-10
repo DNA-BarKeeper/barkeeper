@@ -43,13 +43,15 @@ class ContigSearch < ApplicationRecord
 
     contigs = contigs.joins(:marker).where("markers.name ilike ?", "%#{marker}%") if marker.present?
 
-    contigs = contigs.joins(isolate: { individual: {species: {family: :order}}}).where("orders.name ilike ?", "%#{order}%") if order.present?
+    contigs = contigs.joins(isolate: { individual: { species: { family: :order } } }).where("orders.name ilike ?", "%#{order}%") if order.present?
 
-    contigs = contigs.joins(isolate: { individual: {species: :family}}).where("families.name ilike ?", "%#{family}%") if family.present?
+    contigs = contigs.joins(isolate: { individual: { species: :family } }).where("families.name ilike ?", "%#{family}%") if family.present?
 
     contigs = contigs.joins(isolate: { individual: :species }).where("species.composed_name ilike ?", "%#{species}%") if species.present?
 
     contigs = contigs.joins(isolate: :individual).where("individuals.specimen_id ilike ?", "%#{specimen}%") if specimen.present?
+
+    contigs = contigs.where("contigs.verified_by = ?", User.find_by_name(verified_by)&.id) if verified_by.present?
 
     contigs = contigs.where("contigs.created_at >= ?", min_age.midnight) if min_age.present?
     contigs = contigs.where("contigs.created_at <= ?", max_age.end_of_day) if max_age.present?
