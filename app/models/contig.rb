@@ -6,9 +6,13 @@ class Contig < ApplicationRecord
   belongs_to :marker_sequence
   belongs_to :marker
   belongs_to :isolate
-  has_many :primer_reads
-  has_many :issues
-  has_many :partial_cons
+  has_many :primer_reads, dependent: :destroy
+  has_many :issues, dependent: :destroy
+  has_many :partial_cons, dependent: :destroy
+
+  before_destroy do
+    marker_sequence&.destroy
+  end
 
   validates_presence_of :name
 
