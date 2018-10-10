@@ -68,6 +68,8 @@ class MarkerSequenceSearch < ApplicationRecord
 
     marker_sequences = marker_sequences.joins(isolate: :individual).where("individuals.specimen_id ilike ?", "%#{specimen}%") if specimen.present?
 
+    marker_sequences = marker_sequences.joins(:contigs).where("contigs.verified_by = ?", User.find_by_name(verified_by)&.id) if verified_by.present?
+
     marker_sequences = marker_sequences.where("length(marker_sequences.sequence) >= ?", min_length) if min_length.present?
     marker_sequences = marker_sequences.where("length(marker_sequences.sequence) <= ?", max_length) if max_length.present?
 

@@ -30,6 +30,10 @@
           <%= f.radio_button :verified, "both", :checked => true %>
           <%= f.label :both_verify, "Both" %>
         </div>
+        <div class="field">
+          <%= f.label :verified_by %><br />
+          <%= f.text_field :verified_by, data: { autocomplete_source: User.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+        </div>
         <br/>
         <div>
           <%= f.label :has_warnings, 'Search for contigs that have marker sequences with unsolved SATIVA warnings:' %><br>
@@ -60,10 +64,6 @@
         <div class="field">
           <%= f.label :order %><br />
           <%= f.text_field :order, data: { autocomplete_source: Order.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
-        </div>
-        <div class="field">
-          <%= f.label :verified_by %><br />
-          <%= f.text_field :verified_by, data: { autocomplete_source: User.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
         </div>
         <div class="field">
           <%= f.label :age, "Created between" %><br />

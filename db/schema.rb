@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181010123611) do
+ActiveRecord::Schema.define(version: 20181010124944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -340,6 +340,7 @@ ActiveRecord::Schema.define(version: 20181010123611) do
     t.date     "max_age"
     t.date     "min_update"
     t.date     "max_update"
+    t.string   "verified_by"
     t.index ["project_id"], name: "index_marker_sequence_searches_on_project_id", using: :btree
   end
 
