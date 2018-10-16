@@ -10,19 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181010124944) do
+ActiveRecord::Schema.define(version: 20181016135130) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
-
-  create_table "alignments", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.string   "URL",        limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "centroid_sequences", force: :cascade do |t|
     t.datetime "created_at", null: false

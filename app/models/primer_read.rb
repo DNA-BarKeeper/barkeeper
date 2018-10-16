@@ -224,6 +224,9 @@ class PrimerRead < ApplicationRecord
       primer = Primer.where("primers.name ILIKE ?", "#{primer_name}").first
       primer ||= Primer.where("primers.alt_name ILIKE ?", "#{primer_name}").first
 
+      puts primer.name
+      puts "STOP"
+
       if primer
         self.update(:primer_id => primer.id, :reverse => primer.reverse)
 
@@ -235,7 +238,7 @@ class PrimerRead < ApplicationRecord
           isolate_component = name_components[1] # GBoL number
 
           # BGBM cases:
-          regex_db_number = /^.*(DB)[\s_]?([0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # match group 1: DNABank number, 2: stuff, 3: primer name, 4: file extension
+          regex_db_number = /^.*(DB)[\s_]?([0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # match group 1+2: DNABank number, 3: stuff, 4: primer name, 5: file extension
           db_number_name_components = self.name.match(regex_db_number)
 
           if db_number_name_components
