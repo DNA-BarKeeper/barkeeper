@@ -90,14 +90,14 @@ namespace :data do
       FileUtils.rm(tax_file)
 
       puts "#{current_time}: Creating alignment with MAFFT..."
-      output = session.exec!("mafft --thread 50 --maxiterate 1000 #{analysis_dir}/#{title}.fasta > #{alignment}")
+      output = session.exec!("mafft --thread 10 --maxiterate 1000 #{analysis_dir}/#{title}.fasta > #{alignment}")
       puts output
     end
 
     # Start new connection in case task took too long and SSH connection timed out
     Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
       puts "#{current_time}: Running SATIVA analysis..."
-      output = session.exec!("cd #{analysis_dir} && python /home/kai/sativa-master/sativa.py -s '#{alignment}' -t '#{title}.tax' -x BOT -T 50")
+      output = session.exec!("cd #{analysis_dir} && python /home/kai/sativa-master/sativa.py -s '#{alignment}' -t '#{title}.tax' -x BOT -T 10")
       puts output
     end
 
