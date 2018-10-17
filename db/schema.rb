@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181016154851) do
+ActiveRecord::Schema.define(version: 20181017085059) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -647,13 +647,22 @@ ActiveRecord::Schema.define(version: 20181016154851) do
     t.string   "species_component"
   end
 
-  create_table "species_xml_uploaders", force: :cascade do |t|
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.string   "uploaded_file_file_name"
-    t.string   "uploaded_file_content_type"
-    t.integer  "uploaded_file_file_size"
-    t.datetime "uploaded_file_updated_at"
+  create_table "species_exporters", force: :cascade do |t|
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.string   "species_export_file_name"
+    t.string   "species_export_content_type"
+    t.integer  "species_export_file_size"
+    t.datetime "species_export_updated_at"
+  end
+
+  create_table "specimen_exporters", force: :cascade do |t|
+    t.string   "specimen_export_file_name"
+    t.string   "specimen_export_content_type"
+    t.integer  "specimen_export_file_size"
+    t.datetime "specimen_export_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "subdivisions", force: :cascade do |t|
@@ -719,15 +728,6 @@ ActiveRecord::Schema.define(version: 20181016154851) do
     t.integer  "default_project_id"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-  end
-
-  create_table "xml_uploaders", force: :cascade do |t|
-    t.string   "uploaded_file_file_name"
-    t.string   "uploaded_file_content_type"
-    t.integer  "uploaded_file_file_size"
-    t.datetime "uploaded_file_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   add_foreign_key "contig_searches", "projects"

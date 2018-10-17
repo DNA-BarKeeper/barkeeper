@@ -4,6 +4,6 @@ class SpeciesExport
   sidekiq_options retry: false
 
   def perform(project_id)
-    SpeciesXmlUploader.new.create_uploaded_file(project_id)
+    SpeciesExporter.new.create_species_export(project_id)
   end
 end

@@ -20,6 +20,7 @@ GBOLapp::Application.routes.draw do
   get 'specimens_create_xls', action: :create_xls, controller: 'individuals'
   get 'species_xls', action: :xls, controller: 'species'
   get 'species_create_xls', action: :create_xls, controller: 'species'
+
   get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'
 

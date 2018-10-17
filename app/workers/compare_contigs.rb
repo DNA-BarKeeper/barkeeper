@@ -1,5 +1,4 @@
 class CompareContigs
-
   include Sidekiq::Worker
 
   # def perform(contig_names)
