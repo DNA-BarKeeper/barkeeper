@@ -312,23 +312,16 @@ class PrimerRead < ApplicationRecord
     pp
   end
 
-  def copy_to_db
-
-  end
-
   def auto_trim(write_to_db)
-
     msg=nil
     create_issue = false
 
-    #get local copy from s3
-
+    # Get local copy from s3
     dest = Tempfile.new(self.chromatogram_file_name)
     dest.binmode
     self.chromatogram.copy_to_local_file(:original, dest.path)
 
     begin
-
       chromatogram_ff1 = nil
       p = /\.ab1$/
 
