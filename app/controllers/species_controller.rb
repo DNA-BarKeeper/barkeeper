@@ -12,7 +12,7 @@ class SpeciesController < ApplicationController
   end
 
   def xls
-    data = Rails.env.development? ? open(Rails.root.to_s + SpeciesXmlUploader.last.uploaded_file.path) : open("http:#{SpeciesXmlUploader.last.uploaded_file.url}")
+    data = Rails.env.development? ? open(Rails.root.to_s + SpeciesExporter.last.species_export.path) : open("http:#{SpeciesExporter.last.species_export.url}")
     send_data data.read, filename: 'species.xls', type: 'application/vnd.ms-excel', disposition: 'attachment', stream: 'true', buffer_size: '4096'
   end
 
