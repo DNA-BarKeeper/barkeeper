@@ -4,7 +4,7 @@ class PrimerRead < ApplicationRecord
   belongs_to :contig
   belongs_to :partial_con
   belongs_to :primer
-  has_many :issues
+  has_many :issues, dependent: :destroy
 
   has_attached_file :chromatogram,
                     :default_url => '/chromatograms/primer_read.scf'
@@ -19,18 +19,18 @@ class PrimerRead < ApplicationRecord
 
   before_create :default_name
 
-  scope :assembled, -> {use_for_assembly.where(:assembled => true)}
-  scope :not_assembled, -> {use_for_assembly.where(:assembled => false)}
+  scope :assembled, -> { use_for_assembly.where(:assembled => true) }
+  scope :not_assembled, -> { use_for_assembly.where(:assembled => false) }
 
-  scope :use_for_assembly, ->  { trimmed.where(:used_for_con => true)}
-  scope :not_used_for_assembly, ->  { trimmed.where(:used_for_con => false)}
+  scope :use_for_assembly, ->  { trimmed.where(:used_for_con => true) }
+  scope :not_used_for_assembly, ->  { trimmed.where(:used_for_con => false) }
 
-  scope :trimmed, -> { where.not(:trimmedReadStart => nil)}
-  scope :not_trimmed, -> { where(:trimmedReadStart => nil)}
+  scope :trimmed, -> { where.not(:trimmedReadStart => nil) }
+  scope :not_trimmed, -> { where(:trimmedReadStart => nil) }
 
-  scope :processed, -> {where(:processed => true)}
-  scope :unprocessed, -> {where(:processed => false)}
-  scope :contig_not_verified, -> {joins(:contig).where(:contigs => {:verified => false, :verified_by => nil})}
+  scope :processed, -> { where(:processed => true) }
+  scope :unprocessed, -> { where(:processed => false) }
+  scope :contig_not_verified, -> { joins(:contig).where(:contigs => {:verified => false, :verified_by => nil}) }
 
   validates_attachment_presence :chromatogram
 
@@ -224,6 +224,9 @@ class PrimerRead < ApplicationRecord
       primer = Primer.where("primers.name ILIKE ?", "#{primer_name}").first
       primer ||= Primer.where("primers.alt_name ILIKE ?", "#{primer_name}").first
 
+      puts primer.name
+      puts "STOP"
+
       if primer
         self.update(:primer_id => primer.id, :reverse => primer.reverse)
 
@@ -235,7 +238,7 @@ class PrimerRead < ApplicationRecord
           isolate_component = name_components[1] # GBoL number
 
           # BGBM cases:
-          regex_db_number = /^.*(DB)[\s_]?([0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # match group 1: DNABank number, 2: stuff, 3: primer name, 4: file extension
+          regex_db_number = /^.*(DB)[\s_]?([0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # match group 1+2: DNABank number, 3: stuff, 4: primer name, 5: file extension
           db_number_name_components = self.name.match(regex_db_number)
 
           if db_number_name_components
@@ -309,23 +312,16 @@ class PrimerRead < ApplicationRecord
     pp
   end
 
-  def copy_to_db
-
-  end
-
   def auto_trim(write_to_db)
-
     msg=nil
     create_issue = false
 
-    #get local copy from s3
-
+    # Get local copy from s3
     dest = Tempfile.new(self.chromatogram_file_name)
     dest.binmode
     self.chromatogram.copy_to_local_file(:original, dest.path)
 
     begin
-
       chromatogram_ff1 = nil
       p = /\.ab1$/
 

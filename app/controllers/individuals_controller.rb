@@ -18,8 +18,8 @@ class IndividualsController < ApplicationController
   end
 
   def xls
-    data = Rails.env.development? ? open(Rails.root.to_s + XmlUploader.last.uploaded_file.path) : open("http:#{XmlUploader.last.uploaded_file.url}")
-    send_data data.read, filename: 'specimens.xls', type: 'application/vnd.ms-excel', disposition: 'attachment', stream: 'true', buffer_size: '4096'
+    data = Rails.env.development? ? open(Rails.root.to_s + SpecimenExporter.last.specimen_export.path) : open("http:#{SpecimenExporter.last.specimen_export.url}")
+    send_data data.read, filename: 'specimens_export.xls', type: 'application/vnd.ms-excel', disposition: 'attachment', stream: 'true', buffer_size: '4096'
   end
 
   def problematic_specimens

@@ -31,9 +31,23 @@
 </div>
 
 <p>
+  <%= link_to 'Download results as PDE', contig_search_export_as_pde_path(@contig_search), method: 'post', class: 'btn btn-default' %>
+</p>
+
+<p>
   <%= link_to 'Start a new contig search', new_contig_search_path, class: 'btn btn-default' %>
+
   <%= link_to 'Go to your contig searches index', contig_searches_path, class: 'btn btn-default' %>
+
   <%= link_to 'Go to contigs index', contigs_path, class: 'btn btn-default' %>
+</p>
+
+<p>
+  <%= link_to 'Delete all found contigs', contig_search_delete_all_path(@contig_search),
+              method: 'get',
+              title: 'This will permanently delete all found contigs and their associated reads and marker sequences!',
+              class: 'btn btn-danger',
+              :data => { :confirm => 'Are you sure?' }%>
 </p>
 
 <!--<p>-->

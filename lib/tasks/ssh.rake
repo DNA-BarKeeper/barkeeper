@@ -39,15 +39,14 @@ namespace :data do
         end
       end
 
-      if exists
-        results = File.new("#{Rails.root}/#{title}.mis")
-        search = MarkerSequenceSearch.where(has_species: true, has_warnings: 'both', marker: marker.name, project_id: 5, created_at: Time.now.beginning_of_day..Time.now.end_of_day).first
+      next unless exists
+      results = File.new("#{Rails.root}/#{title}.mis")
+      search = MarkerSequenceSearch.where(has_species: true, has_warnings: 'both', marker: marker.name, project_id: 5, created_at: Time.now.beginning_of_day..Time.now.end_of_day).first
 
-        puts "#{current_time}: Importing analysis results..."
-        MislabelAnalysis.import(results, title, search.marker_sequences.size, marker.id, true)
+      puts "#{current_time}: Importing analysis results..."
+      MislabelAnalysis.import(results, title, search.marker_sequences.size, marker.id, true)
 
-        FileUtils.rm(results)
-      end
+      FileUtils.rm(results)
     end
 
     puts "#{current_time}: Done.\n"
@@ -91,14 +90,14 @@ namespace :data do
       FileUtils.rm(tax_file)
 
       puts "#{current_time}: Creating alignment with MAFFT..."
-      output = session.exec!("mafft --thread 50 --maxiterate 1000 #{analysis_dir}/#{title}.fasta > #{alignment}")
+      output = session.exec!("mafft --thread 10 --maxiterate 1000 #{analysis_dir}/#{title}.fasta > #{alignment}")
       puts output
     end
 
     # Start new connection in case task took too long and SSH connection timed out
     Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
       puts "#{current_time}: Running SATIVA analysis..."
-      output = session.exec!("cd #{analysis_dir} && python /home/kai/sativa-master/sativa.py -s '#{alignment}' -t '#{title}.tax' -x BOT -T 50")
+      output = session.exec!("cd #{analysis_dir} && python /home/kai/sativa-master/sativa.py -s '#{alignment}' -t '#{title}.tax' -x BOT -T 10")
       puts output
     end
 
