@@ -429,8 +429,14 @@ class ContigsController < ApplicationController
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
+  #TODO mira and marker only used by fastq export
+  #TODO contig_names is only used by contig compare feature
+  #TODO filename and fastastring are only used by change via script action
+  #TODO: isolate_name used in form for contig, but cant that be done via id?
   def contig_params
-    params.require(:contig).permit(:mira, :marker, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names, :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id, :isolate_id, :marker_sequence_id, :chromatograms, :term,
-                                   :isolate_name, :verified, project_ids: [])
+    params.require(:contig).permit(:mira, :marker, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names,
+                                   :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id,
+                                   :isolate_id, :marker_sequence_id, :term, :isolate_name, :verified,
+                                   project_ids: [])
   end
 end

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: Marked for removal
 class CompareContigs
   include Sidekiq::Worker
 
