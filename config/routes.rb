@@ -20,6 +20,7 @@ GBOLapp::Application.routes.draw do
   get 'specimens_create_xls', action: :create_xls, controller: 'individuals'
   get 'species_xls', action: :xls, controller: 'species'
   get 'species_create_xls', action: :create_xls, controller: 'species'
+
   get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'
 
@@ -29,12 +30,15 @@ GBOLapp::Application.routes.draw do
   get 'primer_reads/:id/edit/:pos', action: :go_to_pos, controller: 'primer_reads'
 
   resources :contig_searches do
-    get :export_results_as_zip
-    post :download_results
+    post :export_as_pde
+    get :delete_all
+    # get :export_results_as_zip
+    # post :download_results
   end
 
   resources :marker_sequence_searches do
     post :export_as_fasta
+    post :export_as_pde
   end
 
   resources :individual_searches
