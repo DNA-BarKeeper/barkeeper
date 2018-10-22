@@ -23,8 +23,8 @@ class SpecimenExporter < ApplicationRecord
     markers = Marker.gbol_marker
 
     @states = %w[Baden-WÃ¼rttemberg Bayern Berlin Brandenburg Bremen Hamburg
-                 Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen 
-                 Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein 
+                 Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen
+                 Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein
                  ThÃ¼ringen]
 
     @header_cells = ['GBOL5 specimen ID',
@@ -86,300 +86,275 @@ class SpecimenExporter < ApplicationRecord
 
             end
 
-            ActiveRecord::Base.uncached do
             # Individuals in current project
-              Individual.includes(isolates: [contigs: [:marker_sequence, :marker, :isolate]], species: :family).in_project(project_id).find_each do |individual|
-                xml.Row do
-                  # GBOL5 specimen ID
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.id)
-                    end
+            Individual.includes(species: :family).in_project(project_id).find_each do |individual|
+              xml.Row do
+                # GBOL5 specimen ID
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.id)
                   end
+                end
 
-                  # Feldnummer
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      if individual.collection_nr
-                        if individual.collection_nr.include?('s.n.') || individual.collection_nr.include?('s. n.')
-                          xml.text('')
-                        else
-                          xml.text(individual.collection_nr)
-                        end
-                      end
-                    end
-                  end
-
-                  # Institut
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.herbarium)
-                    end
-                  end
-
-                  # Sammlungsnummer
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      if individual.specimen_id == '<no info available in DNA Bank>'
+                # Feldnummer
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    if individual.collection_nr
+                      if individual.collection_nr.include?('s.n.') || individual.collection_nr.include?('s. n.')
                         xml.text('')
                       else
-                        xml.text(individual.specimen_id)
+                        xml.text(individual.collection_nr)
                       end
                     end
                   end
+                end
 
-                  # Familie
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.try(:species).try(:family).try(:name))
-                    end
+                # Institut
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.herbarium)
                   end
+                end
 
-                  # Taxonname
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.try(:species).try(:name_for_display))
-                    end
-                  end
-
-                  # Erstbeschreiber Jahr
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.try(:species).try(:author))
-                    end
-                  end
-
-                  # evtl. Bemerkung Taxonomie
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
+                # Sammlungsnummer
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    if individual.specimen_id == '<no info available in DNA Bank>'
                       xml.text('')
+                    else
+                      xml.text(individual.specimen_id)
                     end
                   end
+                end
 
-                  # Name
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.determination)
-                    end
+                # Familie
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.try(:species).try(:family).try(:name))
                   end
+                end
 
-                  # Datum
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text('')
-                    end
+                # Taxonname
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.try(:species).try(:name_for_display))
                   end
+                end
 
-                  # Gewebetyp und Menge
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text('Blattmaterial')
-                    end
+                # Erstbeschreiber Jahr
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.try(:species).try(:author))
                   end
+                end
 
-                  # Anzahl Individuen
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text('')
-                    end
+                # evtl. Bemerkung Taxonomie
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text('')
                   end
+                end
 
-                  # Fixierungsmethode
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text('Silica gel')
-                    end
+                # Name
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.determination)
                   end
+                end
 
-                  # Entwicklungsstadium
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text('')
-                    end
+                # Datum
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text('')
                   end
+                end
 
-                  # Sex
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text('')
-                    end
+                # Gewebetyp und Menge
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text('Blattmaterial')
                   end
+                end
 
-                  # evtl. Bemerkungen zur Probe
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text("gbol5.de/individuals/#{individual.id}/edit")
-                    end
+                # Anzahl Individuen
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text('')
                   end
+                end
 
-                  # Fundortbeschreibung
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.locality)
-                    end
+                # Fixierungsmethode
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text('Silica gel')
                   end
+                end
 
-                  # Region
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text('')
-                    end
+                # Entwicklungsstadium
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text('')
                   end
+                end
 
-                  # Bundesland
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
+                # Sex
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text('')
+                  end
+                end
 
-                      if individual.country == 'Germany' or individual.country == 'Deutschland'
-                        # tests first if is a Bundesland; outputs nothing if other crap was entered in this field:
+                # evtl. Bemerkungen zur Probe
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text("gbol5.de/individuals/#{individual.id}/edit")
+                  end
+                end
 
-                        if @states.include? individual.state_province
-                          xml.text(individual.state_province)
-                        else
-                          xml.text('')
-                        end
+                # Fundortbeschreibung
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.locality)
+                  end
+                end
 
-                        # stuff from Schweiz etc
+                # Region
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text('')
+                  end
+                end
+
+                # Bundesland
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+
+                    if individual.country == 'Germany' or individual.country == 'Deutschland'
+                      # tests first if is a Bundesland; outputs nothing if other crap was entered in this field:
+
+                      if @states.include? individual.state_province
+                        xml.text(individual.state_province)
                       else
-                        xml.text('Europa')
-                      end
-                    end
-                  end
-
-                  # Land
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.country)
-                    end
-                  end
-
-                  # Datum
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.collection_date)
-                    end
-                  end
-
-                  # Sammelmethode
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text('')
-                    end
-                  end
-
-                  # Breitengrad
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(number_with_precision(individual.latitude, precision:5))
-                    end
-                  end
-
-                  # Längengrad
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(number_with_precision(individual.longitude, precision:5))
-                    end
-                  end
-
-                  # Benutzte Methode
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text('')
-                    end
-                  end
-
-                  # Ungenauigkeitsangabe
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text('')
-                    end
-                  end
-
-                  # Höhe/Tiefe [m]
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.elevation)
-                    end
-                  end
-
-                  # Habitat
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.habitat)
-                    end
-                  end
-
-                  # Sammler
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.collector)
-                    end
-                  end
-
-                  # Nummer
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text(individual.collection_nr)
-                    end
-                  end
-
-                  # Behörde
-                  xml.Cell do
-                    xml.Data('ss:Type' => 'String') do
-                      xml.text('')
-                    end
-                  end
-
-                  # Find longest marker sequence per GBoL marker for each individual
-                  longest_sequences = {}
-
-                  individual.try(:isolates).each do |iso|
-                    markers.each do |current_marker|
-
-                      current_contig = iso.try(:contigs).includes(marker_sequence: :contigs).where(marker_id: current_marker.id).first
-                      current_marker_sequence = current_contig&.marker_sequence
-                      current_ms_sequence = current_marker_sequence&.sequence
-
-                      if current_ms_sequence
-                        longest_sequences[current_marker.id] ||= current_marker_sequence
-                        if current_ms_sequence.length > longest_sequences[current_marker.id].sequence.length
-                          longest_sequences[current_marker.id] = current_marker_sequence
-                        end
+                        xml.text('')
                       end
 
+                      # stuff from Schweiz etc
+                    else
+                      xml.text('Europa')
+                    end
+                  end
+                end
+
+                # Land
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.country)
+                  end
+                end
+
+                # Datum
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.collection_date)
+                  end
+                end
+
+                # Sammelmethode
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text('')
+                  end
+                end
+
+                # Breitengrad
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(number_with_precision(individual.latitude, precision:5))
+                  end
+                end
+
+                # Längengrad
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(number_with_precision(individual.longitude, precision:5))
+                  end
+                end
+
+                # Benutzte Methode
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text('')
+                  end
+                end
+
+                # Ungenauigkeitsangabe
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text('')
+                  end
+                end
+
+                # Höhe/Tiefe [m]
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.elevation)
+                  end
+                end
+
+                # Habitat
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.habitat)
+                  end
+                end
+
+                # Sammler
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.collector)
+                  end
+                end
+
+                # Nummer
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text(individual.collection_nr)
+                  end
+                end
+
+                # Behörde
+                xml.Cell do
+                  xml.Data('ss:Type' => 'String') do
+                    xml.text('')
+                  end
+                end
+
+                markers.each do |marker|
+                  # Find longest marker sequence per GBoL marker
+                  longest_sequence = MarkerSequence.joins(isolate: :individual).includes(:contigs)
+                                         .where('individuals.id = ?', individual.id)
+                                         .where('marker_id = ?', marker.id).limit(1)
+                                         .group(:id).order("MAX(CHAR_LENGTH(sequence)) desc").first
+
+                  # URL zum contig in GBoL5 WebApp
+                  xml.Cell do
+                    xml.Data('ss:Type' => 'String') do
+                      contig_id = longest_sequence&.contigs&.first&.id
+                      xml.text("gbol5.de/contigs/#{contig_id}/edit") if contig_id
                     end
                   end
 
-                  markers.each do |marker|
-                    current_sequence = longest_sequences[marker.id]
-                    current_ms = current_sequence&.sequence
-
-                    # URL zum contig in GBoL5 WebApp
-                    xml.Cell do
-                      xml.Data('ss:Type' => 'String') do
-                        current_contig_id = current_sequence&.contigs&.first&.id
-                        if current_contig_id
-                          xml.text("gbol5.de/contigs/#{current_contig_id}/edit") #edit_contig_path(current_sequence.contigs.first)
-                        end
-                      end
+                  # Markersequenz
+                  xml.Cell do
+                    xml.Data('ss:Type' => 'String') do
+                      xml.text(longest_sequence.sequence) if longest_sequence&.sequence
                     end
+                  end
 
-                    # Markersequenz
-                    xml.Cell do
-                      xml.Data('ss:Type' => 'String') do
-                        if current_ms
-                          xml.text(current_ms)
-                        end
-                      end
-                    end
-
-                    # Genbank ID
-                    xml.Cell do
-                      xml.Data('ss:Type' => 'String') do
-                        if current_ms && current_sequence&.genbank
-                          xml.text(current_sequence.genbank)
-                        end
-                      end
+                  # Genbank ID
+                  xml.Cell do
+                    xml.Data('ss:Type' => 'String') do
+                      xml.text(longest_sequence.genbank) if longest_sequence&.genbank
                     end
                   end
                 end
