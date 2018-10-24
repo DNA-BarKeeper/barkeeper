@@ -969,6 +969,7 @@ DEPENDENCIES
   bio
   bootstrap-multiselect_rails
   bootstrap-sass
+  builder
   bullet
   cancancan
   capistrano
