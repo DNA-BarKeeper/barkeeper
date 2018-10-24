@@ -42,6 +42,7 @@ gem 'bootstrap-multiselect_rails' # multi select boxes using bootstrap
 gem 'bcrypt', '~> 3.1.7', platforms: :ruby
 gem 'bio' # BioRuby
 gem 'bootstrap-sass'
+gem 'builder'
 gem 'jbuilder', '~> 2.5' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'mime-types'
 gem 'net-scp',         require: false
