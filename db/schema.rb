@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181017085059) do
+ActiveRecord::Schema.define(version: 20181026101745) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,11 +72,7 @@ ActiveRecord::Schema.define(version: 20181017085059) do
     t.integer  "isolate_id"
     t.integer  "marker_id"
     t.boolean  "assembled"
-    t.integer  "overlaps"
-    t.text     "partial_cons1"
-    t.text     "partial_cons2"
     t.boolean  "assembly_tried"
-    t.string   "aligned_cons",             limit: 255
     t.text     "fas"
     t.boolean  "verified",                             default: false
     t.integer  "verified_by"
@@ -364,7 +360,7 @@ ActiveRecord::Schema.define(version: 20181017085059) do
     t.string   "name",           limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "expected_reads"
+    t.integer  "expected_reads",             default: 1
     t.boolean  "is_gbol"
     t.string   "alt_name"
   end
