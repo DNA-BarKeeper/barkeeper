@@ -178,7 +178,7 @@ class PrimerRead < ApplicationRecord
     create_issue = false
 
     # Try to find matching primer
-    regex_read_name = /^([A-Za-z0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # match group 1: GBoL number, 2: stuff, 3: primer name, 4: file extension
+    regex_read_name = /^([A-Za-z0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # Match group 1: GBOL number, 2: stuff, 3: primer name, 4: file extension
     name_components = self.name.match(regex_read_name)
 
     if name_components
@@ -186,7 +186,7 @@ class PrimerRead < ApplicationRecord
       name_variants_t7 = %w[T7promoter T7 T7-1] # T7 is always forward
       name_variants_m13 = %w[M13R-pUC M13-RP M13-RP-1] #M13R-pU
 
-      #logic if T7promoter or M13R-pUC.scf:
+      # Logic if T7promoter or M13R-pUC.scf, otherwise leave name as it is
       if name_variants_t7.include? primer_name
         rgx = /^_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/
         matches = name_components[2].match(rgx) # --> uv2
@@ -215,17 +215,12 @@ class PrimerRead < ApplicationRecord
           output_message = "Cannot find primer with name #{primer_name}."
           create_issue = true
         end
-      else
-        # Leave primer_name as is
       end
 
       # Find & assign primer
 
       primer = Primer.where("primers.name ILIKE ?", "#{primer_name}").first
       primer ||= Primer.where("primers.alt_name ILIKE ?", "#{primer_name}").first
-
-      puts primer.name
-      puts "STOP"
 
       if primer
         self.update(:primer_id => primer.id, :reverse => primer.reverse)

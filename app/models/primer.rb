@@ -18,7 +18,7 @@ class Primer < ApplicationRecord
       valid_keys = ['alt_name', 'sequence', 'author', 'name', 'tm', 'target_group'] # Only direct attributes; associations are extra:
 
       # Update existing spp or create new
-      primer = find_or_create_by(name: row['name'])
+      primer = find_or_create_by(name: row['name'].strip)
 
       # Add marker or assign to existing:
       marker = Marker.find_or_create_by(:name => row['marker'])
