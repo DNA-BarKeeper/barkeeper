@@ -61,38 +61,38 @@ class PrimerRead < ApplicationRecord
   def slice_to_json(start_pos, end_pos)
     # get trace position corresponding to first / last aligned_peaks index that exists and is not -1:
 
-    start_pos_trace=start_pos
-    end_pos_trace=end_pos
+    start_pos_trace = start_pos
+    end_pos_trace = end_pos
 
-    xstart=self.aligned_peak_indices[start_pos_trace]
+    xstart = aligned_peak_indices[start_pos_trace]
 
     while xstart == -1
-      start_pos_trace+=1
-      xstart=self.aligned_peak_indices[start_pos_trace]
+      start_pos_trace += 1
+      xstart = aligned_peak_indices[start_pos_trace]
     end
 
-    # does aligned_peaks index  exist?
-    if self.aligned_peak_indices[end_pos_trace]
-      xend=self.aligned_peak_indices[end_pos_trace]
+    # does aligned_peaks index exist?
+    if aligned_peak_indices[end_pos_trace]
+      xend = aligned_peak_indices[end_pos_trace]
       #else use last:
     else
-      end_pos_trace=self.aligned_peak_indices.count-1
-      xend=self.aligned_peak_indices[end_pos_trace]
+      end_pos_trace = aligned_peak_indices.count - 1
+      xend = aligned_peak_indices[end_pos_trace]
     end
 
     # find first that isnt -1:
     while xend == -1 and end_pos_trace > 0
-      end_pos_trace-=1
-      xend=self.aligned_peak_indices[end_pos_trace]
+      end_pos_trace -= 1
+      xend = aligned_peak_indices[end_pos_trace]
     end
 
     # create hash with x-pos as key, ya, yc, … as value
-    traces=Hash.new
+    traces = Hash.new
 
     if xstart and xend #account for situations where nothing from this read is seen in respective contig slice/page:
 
-      xstart-=10
-      xend+=10
+      xstart -= 10
+      xend += 10
 
       (xstart..xend).each do |x|
         traces[x] = {
@@ -123,9 +123,9 @@ class PrimerRead < ApplicationRecord
   end
 
   def original_positions
-    original_positions=Array.new
+    original_positions = Array.new
 
-    i=self.trimmedReadStart
+    i = self.trimmedReadStart
 
     self.aligned_qualities.each do |aq|
 
@@ -133,7 +133,7 @@ class PrimerRead < ApplicationRecord
         original_positions << -1
       else
         original_positions << i
-        i+=1
+        i += 1
       end
 
     end
@@ -158,7 +158,7 @@ class PrimerRead < ApplicationRecord
   end
 
   def trimmed_seq_for_display
-    "#{self.sequence[self.trimmedReadStart..self.trimmedReadStart+30]...self.sequence[self.trimmedReadEnd-30..self.trimmedReadEnd]}" if self.sequence.present?
+    "#{self.sequence[self.trimmedReadStart..self.trimmedReadStart + 30]...self.sequence[self.trimmedReadEnd - 30..self.trimmedReadEnd]}" if self.sequence.present?
   end
 
   def name_for_display
@@ -294,13 +294,13 @@ class PrimerRead < ApplicationRecord
   def get_position_in_marker(p)
     # get position in marker
 
-    pp=nil
+    pp = nil
 
     if self.trimmed_seq
       if self.reverse
-        pp= p.position-self.trimmed_seq.length
+        pp = p.position - self.trimmed_seq.length
       else
-        pp= p.position
+        pp = p.position
       end
     end
 
@@ -308,7 +308,7 @@ class PrimerRead < ApplicationRecord
   end
 
   def auto_trim(write_to_db)
-    msg=nil
+    msg = nil
     create_issue = false
 
     # Get local copy from s3
@@ -357,38 +357,38 @@ class PrimerRead < ApplicationRecord
       #se = self.trim_seq_inverse(chromatogram1.qualities)
 
       if se
-        if se[0]>=se[1] # trimming has not found any stretch of bases > min_score
-          msg='Quality too low - no stretch of readable bases found.'
-          create_issue=true
+        if se[0] >= se[1] # trimming has not found any stretch of bases > min_score
+          msg = 'Quality too low - no stretch of readable bases found.'
+          create_issue = true
           self.update(:used_for_con => false)
         elsif se[2] > 0.6
 
-          msg="Quality too low - #{(se[2]*100).round}% low-quality base calls in trimmed sequence."
-          create_issue=true
+          msg = "Quality too low - #{(se[2] * 100).round}% low-quality base calls in trimmed sequence."
+          create_issue = true
 
           self.update(:used_for_con => false)
         else
 
           # everything works:
 
-          self.update(:trimmedReadStart => se[0]+1, :trimmedReadEnd => se[1]+1, :used_for_con => true)
+          self.update(:trimmedReadStart => se[0] + 1, :trimmedReadEnd => se[1] + 1, :used_for_con => true)
           #:position => self.get_position_in_marker(self.primer)
-          msg='Sequence trimmed.'
+          msg = 'Sequence trimmed.'
         end
       else
-        msg='Quality too low - no stretch of readable bases found.'
-        create_issue=true
+        msg = 'Quality too low - no stretch of readable bases found.'
+        create_issue = true
         self.update(:used_for_con => false)
       end
     rescue
-      msg='Sequence could not be trimmed - no scf/ab1 file or no quality scores?'
+      msg = 'Sequence could not be trimmed - no scf/ab1 file or no quality scores?'
       create_issue = true
       self.update(:used_for_con => false)
     end
 
     if create_issue
-      i=Issue.create(:title => msg, :primer_read_id => self.id)
-      self.update(:used_for_con=>false)
+      i = Issue.create(:title => msg, :primer_read_id => self.id)
+      self.update(:used_for_con => false)
     end
 
     {:msg => msg, :create_issue => create_issue}
@@ -400,7 +400,7 @@ class PrimerRead < ApplicationRecord
       nil
     else
       if trimmedReadEnd > trimmedReadStart
-        self.sequence[(self.trimmedReadStart-1)..(self.trimmedReadEnd-1)] if self.sequence.present?
+        self.sequence[(self.trimmedReadStart - 1)..(self.trimmedReadEnd - 1)] if self.sequence.present?
         #cleaned_sequence = raw_sequence.gsub('-', '') # in case basecalls in pherogram have already '-' - as in some crappy seq. I got from BN
       else
         nil
@@ -413,7 +413,7 @@ class PrimerRead < ApplicationRecord
       nil
     else
       if trimmedReadEnd > trimmedReadStart
-        self.qualities[(self.trimmedReadStart-1)..(self.trimmedReadEnd-1)] if self.qualities.present?
+        self.qualities[(self.trimmedReadStart - 1)..(self.trimmedReadEnd - 1)] if self.qualities.present?
       else
         nil
       end
@@ -425,190 +425,24 @@ class PrimerRead < ApplicationRecord
   end
 
   def get_aligned_peak_indices
-
     if self.trimmedReadStart
-
       aligned_peak_indices = Array.new
-
-      pi=self.trimmedReadStart-2
+      pi = self.trimmedReadStart - 2
 
       if self.aligned_qualities
-
         self.aligned_qualities.each do |aq|
-          if aq==-1
+          if aq == -1
             aligned_peak_indices << -1
           else
             aligned_peak_indices << self.peak_indices[pi]
-            pi+=1
+            pi += 1
           end
         end
 
         self.update_columns(aligned_peak_indices: aligned_peak_indices)
-
       end
     end
-
   end
-
-
-  #deactivated cause even worse than original
-  # def trim_seq_inverse(qualities)
-  #
-  #   #settings
-  #   min_quality_score = 20
-  #   c=16
-  #   t=20
-  #
-  #   #final coordinates:
-  #
-  #   trimmed_read_start = 0
-  #   trimmed_read_end = qualities.length
-  #
-  #   #intermediate coordinates:
-  #
-  #   trimmed_read_start1 = 0
-  #   trimmed_read_end1 = qualities.length
-  #
-  #   trimmed_read_start2 = qualities.length
-  #   trimmed_read_end2 = 0
-  #
-  #   # --- find readstart:
-  #
-  #   for i in 0..qualities.length-t
-  #     #extract window of size t
-  #
-  #     count=0
-  #
-  #     for k in i...i+t
-  #       if qualities[k]>=min_quality_score
-  #         count += 1
-  #       end
-  #     end
-  #
-  #     if count>=c
-  #       trimmed_read_start1 = i
-  #       break
-  #     end
-  #
-  #   end
-  #
-  #   # stop when already at seq end
-  #   if i >= qualities.length-t
-  #     return nil
-  #   end
-  #
-  #   # -- find read-end1, BUT THIS TIME COMING FROM SAME DIRECTION:
-  #   #asking: When does quality stop to obey the above quality condition?
-  #
-  #   for i in trimmed_read_start1..qualities.length-t
-  #     #extract window of size t
-  #
-  #     count=0
-  #
-  #     for k in i...i+t
-  #       if qualities[k]>=min_quality_score
-  #         count += 1
-  #       end
-  #     end
-  #
-  #     if count<c
-  #       trimmed_read_end1 = i
-  #       break
-  #     end
-  #
-  #   end
-  #
-  #   #### same from other dir:
-  #
-  #   # --- find readend2:
-  #
-  #   i =qualities.length
-  #
-  #   while i > 0
-  #     #extract window of size t
-  #
-  #     # k=i
-  #     count=0
-  #
-  #     for k in i-t...i
-  #       if qualities[k]>=min_quality_score
-  #         count += 1
-  #       end
-  #     end
-  #
-  #     if count>=c
-  #       trimmed_read_end2 = i
-  #       break
-  #     end
-  #
-  #     i-=1
-  #
-  #   end
-  #
-  #   # -- find read_start2, BUT THIS TIME COMING FROM SAME DIRECTION:
-  #   #asking: When does quality stop to obey the above quality condition?
-  #
-  #   i =trimmed_read_end2
-  #
-  #   while i > 0
-  #     #extract window of size t
-  #
-  #     # k=i
-  #     count=0
-  #
-  #     for k in i-t...i
-  #       if qualities[k]>=min_quality_score
-  #         count += 1
-  #       end
-  #     end
-  #
-  #     if count<c
-  #       trimmed_read_start2 = i
-  #       break
-  #     end
-  #
-  #     i-=1
-  #
-  #   end
-  #
-  #
-  #   # choose longer fragment
-  #
-  #   puts trimmed_read_start1
-  #   puts trimmed_read_end1
-  #
-  #   puts trimmed_read_start2
-  #   puts trimmed_read_end2
-  #
-  #
-  #
-  #   if (trimmed_read_end2-trimmed_read_start2) > (trimmed_read_end1-trimmed_read_start1)
-  #     trimmed_read_end=trimmed_read_end2
-  #     trimmed_read_start=trimmed_read_start2
-  #   else
-  #     trimmed_read_end=trimmed_read_end1
-  #     trimmed_read_start=trimmed_read_start1
-  #   end
-  #
-  #   #check if xy% < min_score:
-  #   ctr_bad=0
-  #   ctr_total=0
-  #   for j in trimmed_read_start...trimmed_read_end
-  #     if qualities[j]<min_quality_score
-  #       ctr_bad+=1
-  #     end
-  #     ctr_total+=1
-  #   end
-  #
-  #   [trimmed_read_start, trimmed_read_end, ctr_bad.to_f/ctr_total.to_f]
-  #
-  #
-  #
-  #
-  # end
-
-
-  # old version
 
   def trim_seq(qualities, min_quality_score, t, c)
 
@@ -617,18 +451,18 @@ class PrimerRead < ApplicationRecord
 
     # --- find readstart:
 
-    for i in 0..qualities.length-t
+    for i in 0..qualities.length - t
       #extract window of size t
 
-      count=0
+      count = 0
 
-      for k in i...i+t
-        if qualities[k]>=min_quality_score
+      for k in i...i + t
+        if qualities[k] >= min_quality_score
           count += 1
         end
       end
 
-      if count>=c
+      if count >= c
         trimmed_read_start = i
         break
       end
@@ -637,10 +471,10 @@ class PrimerRead < ApplicationRecord
 
     #fine-tune:  if bad bases are at beginning of last window, cut further until current base's score >= min_qual:
 
-    ctr=trimmed_read_start
+    ctr = trimmed_read_start
 
-    for a in ctr..ctr+t
-      if qualities[a]>=min_quality_score
+    for a in ctr..ctr + t
+      if qualities[a] >= min_quality_score
         trimmed_read_start = a
         break
       end
@@ -649,49 +483,49 @@ class PrimerRead < ApplicationRecord
 
     # --- find readend:
 
-    i =qualities.length
+    i = qualities.length
     while i > 0
       #extract window of size t
 
       # k=i
-      count=0
+      count = 0
 
-      for k in i-t...i
-        if qualities[k]>=min_quality_score
+      for k in i - t...i
+        if qualities[k] >= min_quality_score
           count += 1
         end
       end
 
-      if count>=c
+      if count >= c
         trimmed_read_end = i
         break
       end
 
-      i-=1
+      i -= 1
 
     end
 
     #fine-tune:  if bad bases are at beginning of last window, go back until current base's score >= min_qual:
 
-    while i > trimmed_read_end-t
-      if qualities[i]>=min_quality_score
+    while i > trimmed_read_end - t
+      if qualities[i] >= min_quality_score
         break
       end
-      i-=1
+      i -= 1
     end
     trimmed_read_end = i
 
     #check if xy% < min_score:
-    ctr_bad=0
-    ctr_total=0
+    ctr_bad = 0
+    ctr_total = 0
     for j in trimmed_read_start...trimmed_read_end
-      if qualities[j]<min_quality_score
-        ctr_bad+=1
+      if qualities[j] < min_quality_score
+        ctr_bad += 1
       end
-      ctr_total+=1
+      ctr_total += 1
     end
 
-    [trimmed_read_start, trimmed_read_end, ctr_bad.to_f/ctr_total.to_f]
+    [trimmed_read_start, trimmed_read_end, ctr_bad.to_f / ctr_total.to_f]
 
   end
 
