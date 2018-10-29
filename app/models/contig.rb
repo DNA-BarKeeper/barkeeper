@@ -10,9 +10,8 @@ class Contig < ApplicationRecord
   has_many :issues, dependent: :destroy
   has_many :partial_cons, dependent: :destroy
 
-  before_destroy do
-    marker_sequence&.destroy
-  end
+  before_destroy { marker_sequence&.destroy }
+  after_save { marker_sequence&.destroy unless assembled? }
 
   validates_presence_of :name
 
