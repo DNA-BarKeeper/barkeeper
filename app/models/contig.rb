@@ -138,7 +138,6 @@ class Contig < ApplicationRecord
   end
   
   def auto_overlap
-
     self.partial_cons.destroy_all
 
     msg = nil
@@ -147,15 +146,12 @@ class Contig < ApplicationRecord
 
     remaining_reads = Array.new(self.primer_reads.use_for_assembly) #creates local Array to mess around without affecting db
 
-    #test how many
+    # Test how many
     if remaining_reads.size > 10
-
-      # todo: arbitrary, change.
+      # TODO: Arbitrary, change
       msg = 'Currently no more than 10 reads allowed for assembly.'
       return
-
     elsif remaining_reads.size == 1
-
       single_read = self.primer_reads.use_for_assembly.first
       single_read.get_aligned_peak_indices
       pc = PartialCon.create(:aligned_sequence => single_read.trimmed_and_cleaned_seq, :aligned_qualities => single_read.trimmed_quals, :contig_id => self.id)
@@ -165,7 +161,7 @@ class Contig < ApplicationRecord
       single_read.save
       pc.primer_reads << single_read
       self.partial_cons << pc
-      ms = MarkerSequence.find_or_create_by(:name => self.name, :sequence => single_read.trimmed_and_cleaned_seq)
+      ms = MarkerSequence.find_or_create_by(:name => self.name)
       ms.contigs << self
       ms.marker = self.marker
       ms.isolate = self.isolate
@@ -173,7 +169,6 @@ class Contig < ApplicationRecord
       ms.save
       self.marker_sequence = ms
       return
-
     elsif remaining_reads.size == 0
       msg = 'Need at least 1 read for creating consensus sequence.'
       return
@@ -251,8 +246,7 @@ class Contig < ApplicationRecord
     # set to "assembled" & create MarkerSequence if applicable
     if current_largest_partial_contig >= self.marker.expected_reads
       self.update(:assembled => true)
-
-      ms = MarkerSequence.find_or_create_by(:name => self.name, :sequence => current_largest_partial_contig_seq.gsub('-',''))
+      ms = MarkerSequence.find_or_create_by(:name => self.name)
       ms.contigs << self
       ms.marker = self.marker
       ms.isolate = self.isolate
