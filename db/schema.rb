@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_181_018_094_614) do
+ActiveRecord::Schema.define(version: 20_181_026_101_745) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
   enable_extension 'pg_stat_statements'
@@ -361,7 +361,7 @@ ActiveRecord::Schema.define(version: 20_181_018_094_614) do
     t.string   'name',           limit: 255
     t.datetime 'created_at'
     t.datetime 'updated_at'
-    t.integer  'expected_reads'
+    t.integer  'expected_reads', default: 1
     t.boolean  'is_gbol'
     t.string   'alt_name'
   end

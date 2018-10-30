@@ -44,6 +44,7 @@ gem 'select2-rails' # Integrate Select2 Javascript library
 gem 'bcrypt', '~> 3.1.7', platforms: :ruby
 gem 'bio' # BioRuby
 gem 'bootstrap-sass'
+gem 'builder'
 gem 'jbuilder', '~> 2.5' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'mime-types'
 gem 'net-scp',         require: false
@@ -61,6 +62,9 @@ gem 'will_paginate-bootstrap' # TODO: Really needed?
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+
+# Debug memory bloat
+gem 'scout_apm'
 
 group :development do
   gem 'capistrano',         require: false

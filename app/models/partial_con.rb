@@ -16,9 +16,7 @@ class PartialCon < ApplicationRecord
       primer_reads.each do |r|
         break if ctr > 1
 
-        if r.aligned_seq[i] == aligned_sequence[i]
-          group_prob += r.aligned_qualities[i]
-        end
+        group_prob += r.aligned_qualities[i] if r.aligned_seq[i] == aligned_sequence[i]
 
         ctr += 1
       end

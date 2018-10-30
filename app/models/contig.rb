@@ -12,9 +12,8 @@ class Contig < ApplicationRecord
   has_many :issues, dependent: :destroy
   has_many :partial_cons, dependent: :destroy
 
-  before_destroy do
-    marker_sequence&.destroy
-  end
+  before_destroy { marker_sequence&.destroy }
+  after_save { marker_sequence&.destroy unless assembled? }
 
   validates_presence_of :name
 
@@ -136,48 +135,57 @@ class Contig < ApplicationRecord
     "#{fasq_str}\n#{cons_seq}\n+\n#{qual_str}\n"
   end
 
-  def auto_overlap
-    partial_cons.destroy_all
-
-    msg = nil
-
-    primer_reads.use_for_assembly.update_all(assembled: false)
-
-    remaining_reads = Array.new(primer_reads.use_for_assembly) # creates local Array to mess around without affecting db
-
-    # test how many
-    if remaining_reads.size > 10
-
-      # TODO: arbitrary, change.
-      msg = 'Currently no more than 10 reads allowed for assembly.'
-      return
-
-    elsif remaining_reads.size == 1
-
-      single_read = primer_reads.use_for_assembly.first
-      single_read.get_aligned_peak_indices
-      pc = PartialCon.create(aligned_sequence: single_read.trimmed_and_cleaned_seq, aligned_qualities: single_read.trimmed_quals, contig_id: id)
-      single_read.aligned_qualities = single_read.trimmed_quals
-      single_read.aligned_seq = single_read.trimmed_and_cleaned_seq
-      single_read.assembled = true
-      single_read.save
-      pc.primer_reads << single_read
-      partial_cons << pc
-      ms = MarkerSequence.find_or_create_by(name: name, sequence: single_read.trimmed_and_cleaned_seq)
+  def post_assembly(assembled_reads, msg)
+    # Set to "assembled" & create MarkerSequence if applicable
+    if assembled_reads >= marker.expected_reads
+      update(assembled: true)
+      ms = MarkerSequence.find_or_create_by(name: name)
       ms.contigs << self
       ms.marker = marker
       ms.isolate = isolate
       ms.projects = projects
       ms.save
-      self.marker_sequence = ms
-      return
+    end
 
+    if msg
+      Issue.create(title: msg, contig_id: id)
+      self.assembled = false
+    end
+  end
+
+  def auto_overlap
+    partial_cons.destroy_all
+    primer_reads.use_for_assembly.update_all(assembled: false)
+
+    remaining_reads = Array.new(primer_reads.use_for_assembly) # Creates local Array to mess around without affecting database
+    msg = nil
+
+    # Test how many
+    if remaining_reads.size > 10
+      # TODO: Arbitrary, change
+      msg = 'Currently no more than 10 reads allowed for assembly.'
+      post_assembly(0, msg)
+      return
+    elsif remaining_reads.size == 1
+      single_read = primer_reads.use_for_assembly.first
+      pc = PartialCon.create(aligned_sequence: single_read.trimmed_and_cleaned_seq, aligned_qualities: single_read.trimmed_quals, contig_id: id)
+      single_read.aligned_qualities = single_read.trimmed_quals
+      single_read.aligned_seq = single_read.trimmed_and_cleaned_seq
+      single_read.assembled = true
+      single_read.get_aligned_peak_indices
+      single_read.save
+      pc.primer_reads << single_read
+      partial_cons << pc
+
+      post_assembly(1, msg)
+      return
     elsif remaining_reads.empty?
       msg = 'Need at least 1 read for creating consensus sequence.'
+      post_assembly(0, msg)
       return
     end
 
-    # test if trimmed_Seq
+    # Test if trimmed_Seq
 
     starting_read = remaining_reads.delete_at(0) # Deletes the element at the specified index, returning that element, or nil if the index is out of range.
 
@@ -225,7 +233,7 @@ class Contig < ApplicationRecord
         pc = PartialCon.create(aligned_sequence: growing_consensus[:consensus], aligned_qualities: growing_consensus[:consensus_qualities])
 
         growing_consensus[:reads].each do |aligned_read|
-          # get original primer_read from db:
+          # Get original primer_read from db:
           pr = PrimerRead.find(aligned_read[:read].id)
           pr.update(aligned_seq: aligned_read[:aligned_seq], assembled: true, aligned_qualities: aligned_read[:aligned_qualities])
 
@@ -235,28 +243,11 @@ class Contig < ApplicationRecord
         end
 
         partial_cons << pc
-
       else # singleton
-
       end
     end
 
-    # set to "assembled" & create MarkerSequence if applicable
-    if current_largest_partial_contig >= marker.expected_reads
-      update(assembled: true)
-
-      ms = MarkerSequence.find_or_create_by(name: name, sequence: current_largest_partial_contig_seq.delete('-'))
-      ms.contigs << self
-      ms.marker = marker
-      ms.isolate = isolate
-      ms.projects = projects
-      ms.save
-    end
-
-    if msg
-      Issue.create(title: msg, contig_id: id)
-      self.assembled = false
-    end
+    post_assembly(current_largest_partial_contig, msg)
   end
 
   # Recursive assembly function

@@ -125,9 +125,7 @@ namespace :data do
 
           first_dup.update(marker: curr_dup.marker) if curr_dup.marker
 
-          if curr_dup.marker_sequence
-            first_dup.update(marker_sequence: curr_dup.marker_sequence)
-          end
+          first_dup.update(marker_sequence: curr_dup.marker_sequence) if curr_dup.marker_sequence
 
           if curr_dup.partial_cons.count > 0
             curr_dup.partial_cons.each do |m|
