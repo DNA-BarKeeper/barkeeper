@@ -186,7 +186,7 @@ class Contig < ApplicationRecord
       return
     end
 
-    #test if trimmed_Seq
+    # Test if trimmed_Seq
 
     starting_read = remaining_reads.delete_at(0) #Deletes the element at the specified index, returning that element, or nil if the index is out of range.
 
