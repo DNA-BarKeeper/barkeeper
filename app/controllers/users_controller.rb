@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   load_and_authorize_resource
 
@@ -27,7 +29,7 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    puts "ATTENTION"
+    puts 'ATTENTION'
     puts params[:id], current_user.id
 
     if @user.admin? && !current_user.admin?
@@ -65,7 +67,8 @@ class UsersController < ApplicationController
   end
 
   private
+
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :role, :lab_id, :default_project_id, :project_ids => [], :responsibility_ids => [])
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :role, :lab_id, :default_project_id, project_ids: [], responsibility_ids: [])
   end
 end

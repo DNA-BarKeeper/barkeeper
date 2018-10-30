@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddAttachmentUploadedFileToSpeciesXmlUploaders < ActiveRecord::Migration
   def self.up
     change_table :species_xml_uploaders do |t|

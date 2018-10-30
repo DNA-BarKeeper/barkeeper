@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Primer < ApplicationRecord
   extend Import
   include ProjectRecord
@@ -15,13 +17,13 @@ class Primer < ApplicationRecord
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
-      valid_keys = ['alt_name', 'sequence', 'author', 'name', 'tm', 'target_group'] # Only direct attributes; associations are extra:
+      valid_keys = %w[alt_name sequence author name tm target_group] # Only direct attributes; associations are extra:
 
       # Update existing spp or create new
       primer = find_or_create_by(name: row['name'])
 
       # Add marker or assign to existing:
-      marker = Marker.find_or_create_by(:name => row['marker'])
+      marker = Marker.find_or_create_by(name: row['marker'])
       marker.add_project_and_save(project_id)
 
       primer.marker_id = marker.id

@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class FamiliesController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_family, only: [:show, :edit, :update, :destroy]
+  before_action :set_family, only: %i[show edit update destroy]
 
   # GET /families
   # GET /families.json
@@ -14,7 +16,7 @@ class FamiliesController < ApplicationController
   end
 
   def filter
-    @families = Family.in_project(current_project_id).order(:name).where("families.name ilike ?", "%#{params[:term]}%")
+    @families = Family.in_project(current_project_id).order(:name).where('families.name ilike ?', "%#{params[:term]}%")
     render json: @families.map(&:name)
   end
 
@@ -27,8 +29,7 @@ class FamiliesController < ApplicationController
 
   # GET /families/1
   # GET /families/1.json
-  def show
-  end
+  def show; end
 
   # GET /families/new
   def new
@@ -36,8 +37,7 @@ class FamiliesController < ApplicationController
   end
 
   # GET /families/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /families
   # POST /families.json
@@ -89,6 +89,6 @@ class FamiliesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def family_params
-    params.require(:family).permit(:name, :author, :order_id, :term, :project_ids => [])
+    params.require(:family).permit(:name, :author, :order_id, :term, project_ids: [])
   end
 end

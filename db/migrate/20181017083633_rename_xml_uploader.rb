@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameXmlUploader < ActiveRecord::Migration[5.0]
   def self.up
     rename_table :xml_uploaders, :specimen_exporters

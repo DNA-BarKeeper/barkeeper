@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddVerifiedByToContigs < ActiveRecord::Migration
   def change
     add_column :contigs, :verified_by, :integer

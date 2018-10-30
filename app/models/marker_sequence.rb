@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MarkerSequence < ApplicationRecord
   include ProjectRecord
 
@@ -13,17 +15,17 @@ class MarkerSequence < ApplicationRecord
   scope :with_warnings, -> { joins(:mislabels).where(mislabels: { solved: false }) }
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-    ms = MarkerSequence.select("species_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    ms_s = MarkerSequence.select("species_component").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    ms_i = MarkerSequence.select("individual_id").includes(:isolate => :individual).joins(:isolate => {:individual => {:species => {:family => {:order => :higher_order_taxon}}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    ms = MarkerSequence.select('species_id').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
+    ms_s = MarkerSequence.select('species_component').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
+    ms_i = MarkerSequence.select('individual_id').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
     [ms.count, ms_s.distinct.count, ms.distinct.count, ms_i.distinct.count]
   end
 
   def generate_name
-    if self.marker.present? and self.isolate.present?
-      self.update(:name => "#{self.isolate.lab_nr}_#{self.marker.name}")
+    if marker.present? && isolate.present?
+      update(name: "#{isolate.lab_nr}_#{marker.name}")
     else
-      self.update(:name=>'<unnamed>')
+      update(name: '<unnamed>')
     end
   end
 
@@ -35,11 +37,11 @@ class MarkerSequence < ApplicationRecord
     if lab_nr == ''
       self.isolate = nil
     else
-      self.isolate = Isolate.find_or_create_by(:lab_nr => lab_nr) if lab_nr.present?
+      self.isolate = Isolate.find_or_create_by(lab_nr: lab_nr) if lab_nr.present?
     end
   end
 
   def has_unsolved_mislabels
-    !mislabels.where(:solved => false).blank?
+    !mislabels.where(solved: false).blank?
   end
 end

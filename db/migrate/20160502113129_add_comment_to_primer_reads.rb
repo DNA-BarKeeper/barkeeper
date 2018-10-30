@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddCommentToPrimerReads < ActiveRecord::Migration
   def change
     add_column :primer_reads, :comment, :string

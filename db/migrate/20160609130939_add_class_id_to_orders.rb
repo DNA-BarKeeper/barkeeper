@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddClassIdToOrders < ActiveRecord::Migration
   def change
     add_column :orders, :taxonomic_class_id, :integer

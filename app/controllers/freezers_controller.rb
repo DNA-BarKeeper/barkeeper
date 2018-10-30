@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class FreezersController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_freezer, only: [:show, :edit, :update, :destroy]
+  before_action :set_freezer, only: %i[show edit update destroy]
 
   # GET /freezers
   # GET /freezers.json
@@ -16,8 +18,7 @@ class FreezersController < ApplicationController
 
   # GET /freezers/1
   # GET /freezers/1.json
-  def show
-  end
+  def show; end
 
   # GET /freezers/new
   def new
@@ -25,8 +26,7 @@ class FreezersController < ApplicationController
   end
 
   # GET /freezers/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /freezers
   # POST /freezers.json
@@ -78,6 +78,6 @@ class FreezersController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def freezer_params
-    params.require(:freezer).permit(:freezercode, :lab_id, :project_ids => [])
+    params.require(:freezer).permit(:freezercode, :lab_id, project_ids: [])
   end
 end

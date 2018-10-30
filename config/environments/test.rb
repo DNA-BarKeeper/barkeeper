@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   # for devise
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
@@ -50,5 +52,4 @@ Rails.application.configure do
   Rails.application.configure do
     config.active_support.test_order = :sorted
   end
-
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Tissue < ApplicationRecord
   has_many :isolates
 

@@ -1,11 +1,11 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'nokogiri'
 
-
 namespace :data do
-
   desc 'Update Specimen Location Data'
-  task :update_location_data => :environment do
+  task update_location_data: :environment do
     spreadsheet = Roo::Excelx.new('/home/sarah/apps/gbol5/current/GBOL_2015_Koordinaten_Korrektur.xlsx')
     header = spreadsheet.row(1)
     no_specimen = []
@@ -19,18 +19,18 @@ namespace :data do
       isolate_lab_nr = row['GBoL Isolation No.']
       latitude = row['Latitude (calc.)']&.to_d
       longitude = row['Longitude (calc.)']&.to_d
-      specimen = Individual.find_by_id(Isolate.where(:lab_nr => isolate_lab_nr).first&.individual_id)
+      specimen = Individual.find_by_id(Isolate.where(lab_nr: isolate_lab_nr).first&.individual_id)
 
       if specimen
         if latitude&.nonzero? && specimen.latitude != latitude
-          specimen.update(:latitude => latitude)
-          specimen.update(:latitude_original => row['Latitude (calc.)'])
+          specimen.update(latitude: latitude)
+          specimen.update(latitude_original: row['Latitude (calc.)'])
           lat_cnt += 1
         end
 
         if longitude&.nonzero? && specimen.longitude != longitude
-          specimen.update(:longitude => longitude)
-          specimen.update(:longitude_original => row['Longitude (calc.)'])
+          specimen.update(longitude: longitude)
+          specimen.update(longitude_original: row['Longitude (calc.)'])
           long_cnt += 1
         end
 

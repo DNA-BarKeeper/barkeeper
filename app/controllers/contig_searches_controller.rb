@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContigSearchesController < ApplicationController
   load_and_authorize_resource
 
@@ -15,8 +17,8 @@ class ContigSearchesController < ApplicationController
   def create
     @contig_search = ContigSearch.create!(contig_search_params)
 
-    @contig_search.update(:user_id => current_user.id)
-    @contig_search.update(:project_id => current_user.default_project_id)
+    @contig_search.update(user_id: current_user.id)
+    @contig_search.update(project_id: current_user.default_project_id)
 
     redirect_to @contig_search
   end
@@ -51,7 +53,7 @@ class ContigSearchesController < ApplicationController
   def export_as_pde
     @contig_search = ContigSearch.find(params[:contig_search_id])
     file_name = @contig_search.title.empty? ? "contig_search_#{@contig_search.created_at}" : @contig_search.title
-    send_data(ContigSearch.pde(@contig_search.contigs.includes(:partial_cons, isolate: [individual: :species]), add_reads: false), :filename => "#{file_name}.pde", :type => "application/txt")
+    send_data(ContigSearch.pde(@contig_search.contigs.includes(:partial_cons, isolate: [individual: :species]), add_reads: false), filename: "#{file_name}.pde", type: 'application/txt')
   end
 
   # TODO: Unfinished feature
@@ -68,6 +70,7 @@ class ContigSearchesController < ApplicationController
   # end
 
   private
+
   # Never trust parameters from the scary internet, only allow the white list through.
   def contig_search_params
     params.require(:contig_search).permit(:title, :assembled, :has_warnings, :family, :marker, :max_age, :max_update, :min_age, :min_update, :name, :order, :species, :specimen, :verified, :verified_by, :project_id, :search_result_archive)

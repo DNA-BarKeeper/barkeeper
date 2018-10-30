@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Import
   extend ActiveSupport::Concern
 
@@ -59,7 +61,7 @@ module Import
       latitude = unit.at_xpath('//abcd21:LatitudeDecimal').content
       higher_taxon_rank = unit.at_xpath('//abcd21:HigherTaxonRank').content
       higher_taxon_name = unit.at_xpath('//abcd21:HigherTaxonName').content
-    rescue
+    rescue StandardError
       puts 'Could not read ABCD.'
     end
 
@@ -71,36 +73,36 @@ module Import
       puts "ID: #{individual.id}"
 
       puts "Specimen ID: #{specimen_unit_id}"
-      individual.update(:specimen_id => specimen_unit_id)
+      individual.update(specimen_id: specimen_unit_id)
 
       if unit_id
         puts "DNABank number: #{unit_id}"
-        individual.update(:DNA_bank_id => unit_id)
+        individual.update(DNA_bank_id: unit_id)
       end
 
       if collector
         puts "Collector: #{collector.strip}"
-        individual.update(:collector => collector.strip)
+        individual.update(collector: collector.strip)
       end
 
       if locality
         puts "Locality: #{locality}"
-        individual.update(:locality => locality)
+        individual.update(locality: locality)
       end
 
       if longitude
         puts "Longitude: #{longitude}"
-        individual.update(:longitude => longitude)
+        individual.update(longitude: longitude)
       end
 
       if latitude
         puts "Latitude: #{latitude}"
-        individual.update(:latitude => latitude)
+        individual.update(latitude: latitude)
       end
 
       if herbarium
         puts "Herbarium: #{herbarium}"
-        individual.update(:herbarium => herbarium)
+        individual.update(herbarium: herbarium)
       end
 
       if full_name
@@ -117,29 +119,29 @@ module Import
           species = individual.species
 
           if species.nil?
-            species = Species.find_or_create_by(:species_component => species_component)
-            species.update(:genus_name => genus)
-            species.update(:species_epithet => species_epithet)
-            species.update(:composed_name => species.full_name)
+            species = Species.find_or_create_by(species_component: species_component)
+            species.update(genus_name: genus)
+            species.update(species_epithet: species_epithet)
+            species.update(composed_name: species.full_name)
 
             if higher_taxon_rank == 'familia'
-              if higher_taxon_name.capitalize  == 'Labiatae'
+              if higher_taxon_name.capitalize == 'Labiatae'
                 higher_taxon_name = 'Lamiaceae'
               end
-              family = Family.find_or_create_by(:name => higher_taxon_name.capitalize)
+              family = Family.find_or_create_by(name: higher_taxon_name.capitalize)
 
               puts "Family: #{higher_taxon_name}"
-              species.update(:family => family)
+              species.update(family: family)
             end
 
-            individual.update(:species => species)
+            individual.update(species: species)
           end
         end
 
       end
 
-      isolate = Isolate.where(:lab_nr => id_string).first
-      isolate&.update(:individual => individual)
+      isolate = Isolate.where(lab_nr: id_string).first
+      isolate&.update(individual: individual)
     end
 
     puts 'Done.'

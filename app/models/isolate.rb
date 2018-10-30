@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Isolate < ApplicationRecord
   extend Import
   include ProjectRecord
@@ -14,12 +16,12 @@ class Isolate < ApplicationRecord
   before_create :assign_specimen
 
   scope :recent, -> { where('isolates.updated_at > ?', 1.hours.ago) }
-  scope :no_controls, -> { where(:negative_control => false) }
+  scope :no_controls, -> { where(negative_control: false) }
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-    isolates = Isolate.select(:species_id).includes(:individual).joins(:individual => {:species => {:family => {:order => :higher_order_taxon}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    isolates_s = Isolate.select(:species_component).includes(:individual).joins(:individual => {:species => {:family => {:order => :higher_order_taxon}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
-    isolates_i = Isolate.select(:individual_id).joins(:individual => {:species => {:family => {:order => :higher_order_taxon}}}).where(orders: {higher_order_taxon_id: higher_order_taxon_id})
+    isolates = Isolate.select(:species_id).includes(:individual).joins(individual: { species: { family: { order: :higher_order_taxon } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
+    isolates_s = Isolate.select(:species_component).includes(:individual).joins(individual: { species: { family: { order: :higher_order_taxon } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
+    isolates_i = Isolate.select(:individual_id).joins(individual: { species: { family: { order: :higher_order_taxon } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
 
     [isolates.size, isolates_s.distinct.count, isolates.distinct.count, isolates_i.distinct.count]
   end
@@ -35,10 +37,10 @@ class Isolate < ApplicationRecord
       lab_nr = row['GBoL Isolation No.']
       lab_nr ||= row['DNA Bank No']
 
-      isolate = Isolate.where("lab_nr ILIKE ?", lab_nr).first
-      isolate ||= Isolate.new(:lab_nr => lab_nr)
+      isolate = Isolate.where('lab_nr ILIKE ?', lab_nr).first
+      isolate ||= Isolate.new(lab_nr: lab_nr)
 
-      plant_plate = PlantPlate.find_or_create_by(:name => row['GBoL5 Tissue Plate No.'].to_i.to_s)
+      plant_plate = PlantPlate.find_or_create_by(name: row['GBoL5 Tissue Plate No.'].to_i.to_s)
       isolate.plant_plate = plant_plate
 
       isolate.well_pos_plant_plate = row['G5o Well']
@@ -54,36 +56,35 @@ class Isolate < ApplicationRecord
       isolate.save!
 
       individual = row['Voucher ID']
-      if individual
-        individual = Individual.find_or_create_by(specimen_id: individual) # Assign to existing or new individual
+      next unless individual
+      individual = Individual.find_or_create_by(specimen_id: individual) # Assign to existing or new individual
 
-        individual.collector = row['Collector']
-        individual.herbarium = row['Herbarium']
-        individual.country = row['Country']
-        individual.state_province = row['State/Province']
-        individual.locality = row['Locality']
-        individual.latitude = row['Latitude']
-        individual.longitude = row['Longitude']
-        individual.latitude_original = row['Latitude (original)']
-        individual.longitude_original = row['Longitude (original)']
-        individual.elevation = row['Elevation']
-        individual.exposition = row['Exposition']
-        individual.habitat = row['Habitat']
-        individual.substrate = row['Substrate']
-        individual.life_form = row['Life form']
-        individual.collection_nr = row['Collection number']
-        individual.collection_date = row['Date']
-        individual.determination = row['Determination']
-        individual.revision = row['Revision']
-        individual.confirmation = row['Confirmation']
-        individual.comments = row['Comments']
+      individual.collector = row['Collector']
+      individual.herbarium = row['Herbarium']
+      individual.country = row['Country']
+      individual.state_province = row['State/Province']
+      individual.locality = row['Locality']
+      individual.latitude = row['Latitude']
+      individual.longitude = row['Longitude']
+      individual.latitude_original = row['Latitude (original)']
+      individual.longitude_original = row['Longitude (original)']
+      individual.elevation = row['Elevation']
+      individual.exposition = row['Exposition']
+      individual.habitat = row['Habitat']
+      individual.substrate = row['Substrate']
+      individual.life_form = row['Life form']
+      individual.collection_nr = row['Collection number']
+      individual.collection_date = row['Date']
+      individual.determination = row['Determination']
+      individual.revision = row['Revision']
+      individual.confirmation = row['Confirmation']
+      individual.comments = row['Comments']
 
-        individual.add_project(project_id)
+      individual.add_project(project_id)
 
-        individual.save!
+      individual.save!
 
-        isolate.update(individual_id: individual.id)
-      end
+      isolate.update(individual_id: individual.id)
 
       # species_id = row['GBoL5_TaxID'].to_i
       # begin
@@ -109,7 +110,7 @@ class Isolate < ApplicationRecord
     if name == ''
       self.individual = nil
     else
-      self.individual = Individual.find_or_create_by(:specimen_id => name) if name.present?
+      self.individual = Individual.find_or_create_by(specimen_id: name) if name.present?
     end
   end
 end

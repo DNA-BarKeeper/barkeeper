@@ -1,5 +1,5 @@
-class AddColumn < ActiveRecord::Migration
-  def change
+# frozen_string_literal: true
 
-  end
+class AddColumn < ActiveRecord::Migration
+  def change; end
 end

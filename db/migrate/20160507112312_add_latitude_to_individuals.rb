@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddLatitudeToIndividuals < ActiveRecord::Migration
   def change
     add_column :individuals, :latitude, :decimal

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddSettings < ActiveRecord::Migration
   def change
     add_column :primer_reads, :window_size, :integer

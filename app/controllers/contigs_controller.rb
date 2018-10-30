@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContigsController < ApplicationController
   include ProjectConcern
 
@@ -5,8 +7,8 @@ class ContigsController < ApplicationController
 
   skip_before_action :verify_authenticity_token
 
-  before_action :set_contig, only: [:verify_next, :verify, :pde, :fasta, :fasta_trimmed, :fasta_raw, :overlap, :overlap_background, :show, :edit,\
-   :update, :destroy]
+  before_action :set_contig, only: %i[verify_next verify pde fasta fasta_trimmed fasta_raw overlap overlap_background show edit
+                                      update destroy]
 
   # GET /contigs
   # GET /contigs.json
@@ -32,8 +34,8 @@ class ContigsController < ApplicationController
   end
 
   def filter
-    @contigs = Contig.in_project(current_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").limit(100)
-    size = Contig.in_project(current_project_id).order(:name).where("name ilike ?", "%#{params[:term]}%").size
+    @contigs = Contig.in_project(current_project_id).order(:name).where('name ilike ?', "%#{params[:term]}%").limit(100)
+    size = Contig.in_project(current_project_id).order(:name).where('name ilike ?', "%#{params[:term]}%").size
 
     if size > 100
       message = "and #{size} more..."
@@ -45,8 +47,7 @@ class ContigsController < ApplicationController
 
   # GET /contigs/1
   # GET /contigs/1.json
-  def show
-  end
+  def show; end
 
   # GET /contigs/new
   def new
@@ -54,8 +55,7 @@ class ContigsController < ApplicationController
   end
 
   # GET /contigs/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /contigs
   # POST /contigs.json
@@ -79,10 +79,10 @@ class ContigsController < ApplicationController
   def update
     respond_to do |format|
       if @contig.update(contig_params)
-        format.html {
+        format.html do
           Issue.create(title: "Contig updated by #{current_user.name}", contig_id: @contig.id)
           redirect_back(fallback_location: edit_contig_path(@contig), notice: 'Contig was successfully updated.')
-        }
+        end
         format.json { render :show, status: :ok, location: @contig }
       else
         format.html { render :edit }
@@ -107,7 +107,7 @@ class ContigsController < ApplicationController
 
     CompareContigs.perform_async(contig_names)
 
-    send_data("Comparison started as background process, may take a minute or so. View results under http://gbol5.de/analysis_output\n", filename: "msg.txt", type: "application/txt")
+    send_data("Comparison started as background process, may take a minute or so. View results under http://gbol5.de/analysis_output\n", filename: 'msg.txt', type: 'application/txt')
   end
 
   def analysis_output
@@ -116,7 +116,6 @@ class ContigsController < ApplicationController
 
   # for overwriting with externally edited / verified contigs in fas format (via .pde)
   def change_via_script
-
     filename = params[:filename]
     fastastring = params[:fastastring]
 
@@ -134,23 +133,20 @@ class ContigsController < ApplicationController
 
       contig.assembled = true
       contig.verified = true
-      contig.verified_by = 8 #User.first.id #unclear who did external verification, but won't be displayed anyway if imported
+      contig.verified_by = 8 # User.first.id #unclear who did external verification, but won't be displayed anyway if imported
       contig.verified_at = Time.zone.now
 
       # destroy all current partial_cons
       contig.partial_cons.destroy_all
 
-      #create a single new partial_con to be overwritten by imported stuff
+      # create a single new partial_con to be overwritten by imported stuff
       new_partial_con = contig.partial_cons.create
-
 
       # get aligned read sequences
 
-      fas_seqs = fastastring.split(">")
-
+      fas_seqs = fastastring.split('>')
 
       fas_seqs[1..-1].each do |fs|
-
         pair = fs.split("\n")
 
         # overwrite single reads (aligned - / manually corrected version (?) ) (> that do match general read pattern; use the exactly matching read or generate new)
@@ -167,7 +163,7 @@ class ContigsController < ApplicationController
 
           primer_read.aligned_seq = pair[1]
 
-          #cannot use aligned qualities since not existing when imported from external alignment:
+          # cannot use aligned qualities since not existing when imported from external alignment:
           primer_read.aligned_qualities = primer_read.qualities
           primer_read.overwritten = true
 
@@ -175,7 +171,7 @@ class ContigsController < ApplicationController
           primer_read.used_for_con = true
           primer_read.assembled = true
 
-          # todo: adjust trimmedReadStart etc. based on ???? in aligned_seq (though this is not technically correct due to alignemnt of ??? with gappy stretches in other reads)
+          # TODO: adjust trimmedReadStart etc. based on ???? in aligned_seq (though this is not technically correct due to alignemnt of ??? with gappy stretches in other reads)
 
           if primer_read.trimmedReadStart.nil?
             primer_read.trimmedReadStart = 1
@@ -197,15 +193,14 @@ class ContigsController < ApplicationController
 
           # generate marker sequence
           ms = MarkerSequence.find_or_create_by(name: contig.name)
-          ms.sequence = pair[1].gsub('-','')
-          ms.sequence = ms.sequence.gsub('?','')
+          ms.sequence = pair[1].delete('-')
+          ms.sequence = ms.sequence.delete('?')
           ms.contigs << contig
           ms.marker = contig.marker
           ms.isolate = contig.isolate
           ms.save
 
         end
-
       end
 
       new_partial_con.save
@@ -216,17 +211,16 @@ class ContigsController < ApplicationController
       output = "No match found.\n"
     end
 
-    send_data(output, filename: "#{filename}.txt", type: "application/txt")
-
+    send_data(output, filename: "#{filename}.txt", type: 'application/txt')
   end
 
   def identify_primer_read(read_name)
-    primer_read = PrimerRead.where("name ILIKE ?", "#{read_name}.scf").first
+    primer_read = PrimerRead.where('name ILIKE ?', "#{read_name}.scf").first
 
     if primer_read
       return primer_read
     else
-      primer_read = PrimerRead.where("name ILIKE ?", "#{read_name}.ab1").first
+      primer_read = PrimerRead.where('name ILIKE ?', "#{read_name}.ab1").first
       if primer_read
         return primer_read
       else
@@ -234,14 +228,14 @@ class ContigsController < ApplicationController
       end
     end
 
-    return nil
+    nil
   end
 
   def identify_contig(c)
     contig_name = c[0...-4]
 
-    #match found?
-    contig = Contig.in_project(current_project_id).where("name ILIKE ?", contig_name).first
+    # match found?
+    contig = Contig.in_project(current_project_id).where('name ILIKE ?', contig_name).first
 
     if contig
       return contig if contig
@@ -256,22 +250,19 @@ class ContigsController < ApplicationController
         isolate_name = m[1]
         begin
           primer_names = m[2]
-          primer_name = primer_names.split("_").last
-          primer = Primer.where("name ILIKE ?", primer_name).first
+          primer_name = primer_names.split('_').last
+          primer = Primer.where('name ILIKE ?', primer_name).first
           if primer
             marker = primer.marker
             if marker
               true_marker_name = marker.name
               true_contig_name = isolate_name + "_#{true_marker_name}"
-              contig = Contig.in_project(current_project_id).where("name ILIKE ?", true_contig_name).first
-              if contig
-                return contig
-              end
+              contig = Contig.in_project(current_project_id).where('name ILIKE ?', true_contig_name).first
+              return contig if contig
             end
           end
-        rescue
+        rescue StandardError
         end
-      else
       end
     end
   end
@@ -287,23 +278,23 @@ class ContigsController < ApplicationController
   end
 
   def verify
-    if @contig.verified_by or @contig.verified
+    if @contig.verified_by || @contig.verified
       @contig.update(verified_by: nil, verified_at: nil, verified: false)
-      redirect_to edit_contig_path, notice: "Set to non-verified."
+      redirect_to edit_contig_path, notice: 'Set to non-verified.'
     else
       @contig.update(verified_by: current_user.id, verified_at: Time.now, assembled: true, verified: true)
 
       # generate / update marker sequence
       ms = MarkerSequence.find_or_create_by(name: @contig.name)
       partial_cons = @contig.partial_cons.first
-      ms.sequence = partial_cons.aligned_sequence.gsub('-','')
-      ms.sequence = ms.sequence.gsub('?','')
+      ms.sequence = partial_cons.aligned_sequence.delete('-')
+      ms.sequence = ms.sequence.delete('?')
       ms.contigs << @contig
       ms.marker = @contig.marker
       ms.isolate = @contig.isolate
       ms.save
 
-      redirect_to edit_contig_path, notice: "Verified & linked marker sequence updated."
+      redirect_to edit_contig_path, notice: 'Verified & linked marker sequence updated.'
     end
   end
 
@@ -314,8 +305,8 @@ class ContigsController < ApplicationController
     # generate marker sequence
     ms = MarkerSequence.find_or_create_by(name: @contig.name)
     partial_cons = @contig.partial_cons.first
-    ms.sequence = partial_cons.aligned_sequence.gsub('-','')
-    ms.sequence = ms.sequence.gsub('?','')
+    ms.sequence = partial_cons.aligned_sequence.delete('-')
+    ms.sequence = ms.sequence.delete('?')
     ms.contigs << @contig
     ms.marker = @contig.marker
     ms.isolate = @contig.isolate
@@ -346,22 +337,22 @@ class ContigsController < ApplicationController
 
   def pde
     pde = Contig.pde([@contig], add_reads: true)
-    send_data(pde, filename: "#{@contig.name}.pde", type: "application/txt")
+    send_data(pde, filename: "#{@contig.name}.pde", type: 'application/txt')
   end
 
   def fasta
     fasta = Contig.fasta([@contig], mode: 'assembled')
-    send_data(fasta, filename: "#{@contig.name}.fas", type: "application/txt")
+    send_data(fasta, filename: "#{@contig.name}.fas", type: 'application/txt')
   end
 
   def fasta_trimmed
     fasta = Contig.fasta([@contig], mode: 'trimmed')
-    send_data(fasta, filename: "#{@contig.name}_trimmed.fas", type: "application/txt")
+    send_data(fasta, filename: "#{@contig.name}_trimmed.fas", type: 'application/txt')
   end
 
   def fasta_raw
     fasta = Contig.fasta([@contig], mode: 'raw')
-    send_data(fasta, filename: "#{@contig.name}_raw.fas", type: "application/txt")
+    send_data(fasta, filename: "#{@contig.name}_raw.fas", type: 'application/txt')
   end
 
   # TODO: Not used anywhere yet, talk to Susi about her needs for this export
@@ -373,7 +364,7 @@ class ContigsController < ApplicationController
 
     fastq = Contig.fastq(contigs.where(verified: true, imported: false), use_mira)
 
-    send_data(fastq, filename: "contigs.fastq", type: "application/txt")
+    send_data(fastq, filename: 'contigs.fastq', type: 'application/txt')
   end
 
   # Is used by API endpoint to compare sequences to PacBio data
@@ -386,16 +377,15 @@ class ContigsController < ApplicationController
 
     contig_names_array = contig_names.split
 
-    fasq_str = +""
+    fasq_str = +''
 
     not_included_str = +"\n\n\n--------------------------------------------------------------------\n\n\n"
 
     contig_names_array.map do |contig_name|
-
       contig_name += "_#{marker}"
 
       # mk case insensitive
-      contig = Contig.in_project(current_project_id).where("name ILIKE ?", contig_name).first
+      contig = Contig.in_project(current_project_id).where('name ILIKE ?', contig_name).first
 
       # ignore if not verified
       if contig
@@ -406,7 +396,7 @@ class ContigsController < ApplicationController
             begin
               fasq = contig.as_fasq(mira)
               fasq_str += fasq
-            rescue
+            rescue StandardError
               not_included_str += "#{contig_name}: Unknown issue.\n"
             end
           end
@@ -418,7 +408,7 @@ class ContigsController < ApplicationController
       end
     end
 
-    send_data(fasq_str + not_included_str, :filename => "fasq.txt", :type => "application/txt")
+    send_data(fasq_str + not_included_str, filename: 'fasq.txt', type: 'application/txt')
   end
 
   private
@@ -429,10 +419,10 @@ class ContigsController < ApplicationController
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
-  #TODO mira and marker only used by fastq export
-  #TODO contig_names is only used by contig compare feature
-  #TODO filename and fastastring are only used by change via script action
-  #TODO: isolate_name used in form for contig, but cant that be done via id?
+  # TODO mira and marker only used by fastq export
+  # TODO contig_names is only used by contig compare feature
+  # TODO filename and fastastring are only used by change via script action
+  # TODO: isolate_name used in form for contig, but cant that be done via id?
   def contig_params
     params.require(:contig).permit(:mira, :marker, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names,
                                    :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id,

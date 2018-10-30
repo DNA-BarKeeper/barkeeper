@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MislabelAnalysis < ApplicationRecord
   belongs_to :marker
   has_many :mislabels, dependent: :destroy

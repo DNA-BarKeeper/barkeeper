@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateMicronicPlates < ActiveRecord::Migration
   def change
     create_table :micronic_plates do |t|

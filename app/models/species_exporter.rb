@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Write SPECIMENS & STATUS to Excel-XML (xls) for use by ZFMK for their "Portal / db : bolgermany.de "
 class SpeciesExporter < ApplicationRecord
   has_attached_file :species_export,
@@ -15,7 +17,7 @@ class SpeciesExporter < ApplicationRecord
     file_to_upload.close
 
     self.species_export = File.open('species_export.xls')
-    self.save!
+    save!
   end
 
   def xml_string(project_id)

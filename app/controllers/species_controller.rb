@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 # noinspection RubyArgCount
 class SpeciesController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_species, only: [:show, :edit, :update, :destroy]
+  before_action :set_species, only: %i[show edit update destroy]
 
   def create_xls
     SpeciesExport.perform_async(current_project_id)
@@ -28,8 +30,8 @@ class SpeciesController < ApplicationController
   end
 
   def filter
-    @species = Species.where("composed_name ILIKE ?", "%#{params[:term]}%").in_project(current_project_id).order(:composed_name).limit(100)
-    size = Species.where("composed_name ILIKE ?", "%#{params[:term]}%").in_project(current_project_id).order(:composed_name).size
+    @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:composed_name).limit(100)
+    size = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:composed_name).size
 
     if size > 100
       render json: @species.map(&:composed_name).push("and #{size} more...")
@@ -81,18 +83,16 @@ class SpeciesController < ApplicationController
   def collect_and_send_species(ht)
     str = ''
 
-    @species = Species.joins(:family => { :order => :higher_order_taxon }).where(orders: { higher_order_taxon_id: ht.id }).in_project(current_project_id).each do |s|
+    @species = Species.joins(family: { order: :higher_order_taxon }).where(orders: { higher_order_taxon_id: ht.id }).in_project(current_project_id).each do |s|
       str += s.id.to_s + "\t" + s.name_for_display + "\n"
     end
 
-    send_data(str, :filename => "#{ht.name}.txt", :type => "application/txt")
+    send_data(str, filename: "#{ht.name}.txt", type: 'application/txt')
   end
-
 
   # GET /species/1
   # GET /species/1.json
-  def show
-  end
+  def show; end
 
   # GET /species/new
   def new
@@ -100,8 +100,7 @@ class SpeciesController < ApplicationController
   end
 
   # GET /species/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /species
   # POST /species.json
@@ -111,8 +110,8 @@ class SpeciesController < ApplicationController
 
     respond_to do |format|
       if @species.save
-        @species.update(:species_component => @species.get_species_component)
-        @species.update(:composed_name => @species.full_name)
+        @species.update(species_component: @species.get_species_component)
+        @species.update(composed_name: @species.full_name)
         format.html { redirect_to species_index_path, notice: 'Species was successfully created.' }
         format.json { render :show, status: :created, location: @species }
       else
@@ -127,12 +126,12 @@ class SpeciesController < ApplicationController
   def update
     respond_to do |format|
       if @species.update(species_params)
-        @species.update(:species_component => @species.get_species_component)
-        @species.update(:composed_name=>@species.full_name)
-        format.html {
-          Issue.create(:title => "#{@species.name_for_display} updated by #{current_user.name}")
+        @species.update(species_component: @species.get_species_component)
+        @species.update(composed_name: @species.full_name)
+        format.html do
+          Issue.create(title: "#{@species.name_for_display} updated by #{current_user.name}")
           redirect_to species_index_path, notice: 'Species was successfully updated.'
-        }
+        end
         format.json { render :show, status: :ok, location: @species }
       else
         format.html { render :edit }
@@ -161,6 +160,6 @@ class SpeciesController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def species_params
     params.require(:species).permit(:term, :originalFileName, :file, :infraspecific, :comment, :author_infra, :family_name, :family_id,
-                                    :author, :genus_name, :species_epithet, :composed_name, :project_ids => [])
+                                    :author, :genus_name, :species_epithet, :composed_name, project_ids: [])
   end
 end
