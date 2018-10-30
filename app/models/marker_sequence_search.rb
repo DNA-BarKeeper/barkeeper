@@ -52,8 +52,8 @@ class MarkerSequenceSearch < ApplicationRecord
     marker_sequences = marker_sequences.has_species if has_species.present?
 
     if has_warnings != 'both'
-      marker_sequences = marker_sequences.with_warnings if has_warnings == 'yes'
-      marker_sequences = marker_sequences.where.not(id: MarkerSequence.with_warnings.pluck(:id)) if has_warnings == 'no'
+      marker_sequences = marker_sequences.unsolved_warnings if has_warnings == 'yes'
+      marker_sequences = marker_sequences.where.not(id: MarkerSequence.unsolved_warnings.pluck(:id)) if has_warnings == 'no'
     end
 
     marker_sequences = marker_sequences.joins(:marker).where('markers.name ilike ?', "%#{marker}%") if marker.present?

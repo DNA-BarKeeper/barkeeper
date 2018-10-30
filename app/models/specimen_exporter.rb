@@ -14,14 +14,14 @@ class SpecimenExporter < ApplicationRecord
 
   def create_specimen_export(project_id)
     file_to_upload = File.open('specimens_export.xls', 'w')
-    xml_string(file_to_upload, project_id)
+    xml_file(file_to_upload, project_id)
     file_to_upload.close
 
     self.specimen_export = File.open('specimens_export.xls')
     save!
   end
 
-  def xml_string(file, project_id)
+  def xml_file(file, project_id)
     markers = Marker.gbol_marker
 
     @states = %w[Baden-Württemberg Bayern Berlin Brandenburg Bremen Hamburg

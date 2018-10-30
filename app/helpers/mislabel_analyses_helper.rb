@@ -91,7 +91,7 @@ module MislabelAnalysesHelper
   end
 
   def contig_issues_individual(individual)
-    contigs = Contig.joins(isolate: :individual).distinct.with_warnings.where('individuals.id = ?', individual.id)
+    contigs = Contig.joins(isolate: :individual).distinct.unsolved_warnings.where('individuals.id = ?', individual.id)
 
     list_elements = []
     contigs.includes(:marker_sequence).each do |c|

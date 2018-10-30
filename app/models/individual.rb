@@ -43,28 +43,4 @@ class Individual < ApplicationRecord
       self.species = Species.find_or_create_by(composed_name: name) if name.present? # TODO is it used? Add project if so
     end
   end
-
-  def habitat_for_display
-    if habitat.present? && (habitat.length > 60)
-      (habitat[0..30]...habitat[-30..-1]).to_s
-    else
-      habitat
-    end
-  end
-
-  def locality_for_display
-    if locality.present? && (locality.length > 60)
-      (locality[0..30]...locality[-30..-1]).to_s
-    else
-      locality
-    end
-  end
-
-  def comments_for_display
-    if comments.present? && (comments.length > 60)
-      (comments[0..30]...comments[-30..-1]).to_s
-    else
-      comments
-    end
-  end
 end
