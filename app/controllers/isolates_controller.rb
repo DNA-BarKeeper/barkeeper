@@ -10,16 +10,21 @@ class IsolatesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: IsolateDatatable.new(view_context, false, current_project_id) }
+      format.json { render json: IsolateDatatable.new(view_context, nil, current_project_id) }
     end
   end
 
-  def duplicates; end
+  def duplicates
+    respond_to do |format|
+      format.html
+      format.json { render json: IsolateDatatable.new(view_context, 'duplicates', current_project_id) }
+    end
+  end
 
   def no_specimen
     respond_to do |format|
       format.html
-      format.json { render json: IsolateDatatable.new(view_context, true, current_project_id) }
+      format.json { render json: IsolateDatatable.new(view_context, 'no_specimen', current_project_id) }
     end
   end
 

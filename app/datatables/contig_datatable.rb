@@ -57,7 +57,8 @@ class ContigDatatable
     case @contigs_to_show
     when 'duplicates'
       names_with_multiple = Contig.group(:name).having('count(name) > 1').count.keys
-      contigs = Contig.includes(isolate: [individual: :species]).where(name: names_with_multiple).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      contigs = Contig.includes(isolate: [individual: :species]).where(name: names_with_multiple)
+                      .in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     when 'imported'
       contigs = Contig.includes(isolate: [individual: :species]).externally_edited.order("#{sort_column} #{sort_direction}")
     else
