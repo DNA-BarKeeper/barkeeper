@@ -152,22 +152,6 @@ class PrimerRead < ApplicationRecord
     end
   end
 
-  def seq_for_display
-    (sequence[0..30]...sequence[-30..-1]).to_s if sequence.present?
-  end
-
-  def trimmed_seq_for_display
-    (sequence[trimmedReadStart..trimmedReadStart + 30]...sequence[trimmedReadEnd - 30..trimmedReadEnd]).to_s if sequence.present?
-  end
-
-  def name_for_display
-    if name.length > 25
-      (name[0..11]...name[-11..-5]).to_s
-    else
-      name[0..-5].to_s
-    end
-  end
-
   def default_name
     self.name ||= chromatogram.original_filename
   end

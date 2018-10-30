@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module MislabelAnalysisHelper
+module MislabelAnalysesHelper
   def percentage_mislabels(mislabel_analysis)
     percentage = mislabel_analysis.percentage_of_mislabels
 
