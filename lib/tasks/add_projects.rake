@@ -42,7 +42,7 @@ namespace :data do
     add_to_join_table(project, MicronicPlate.joins(:lab_rack).merge(LabRack.in_project(project.id)).select(:id))
     add_to_join_table(project, PlantPlate.all.select(:id))
     add_to_join_table(project, User.joins(:lab).merge(Lab.in_project(project.id)).select(:id))
-    add_to_join_table(project, Marker.where(is_gbol: true).select(:id))
+    # add_to_join_table(project, Marker.where(is_gbol: true).select(:id)) # Column is_gbol does not exist anymore
     add_to_join_table(project, Primer.joins(:marker).merge(Marker.in_project(project.id)).select(:id))
     add_to_join_table(project, Isolate.where('lab_nr ilike ?', 'gbol%').or(Isolate.where('lab_nr ilike ?', 'db%')).select(:id).find_each)
     add_to_join_table(project, Contig.where('name ilike ?', 'gbol%').or(Contig.where('name ilike ?', 'db%')).select(:id).find_each)

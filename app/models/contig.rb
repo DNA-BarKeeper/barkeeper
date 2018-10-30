@@ -27,7 +27,7 @@ class Contig < ApplicationRecord
   scope :externally_verified, -> { externally_edited.verified }
   scope :internally_verified, -> { internally_edited.verified }
 
-  scope :with_warnings, -> { joins(marker_sequence: :mislabels).where(marker_sequence: { mislabels: { solved: false } }) }
+  scope :unsolved_warnings, -> { joins(marker_sequence: :mislabels).where(marker_sequence: { mislabels: { solved: false } }) }
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
     # TODO: (how to) includes spp. etc (on top of individual)
