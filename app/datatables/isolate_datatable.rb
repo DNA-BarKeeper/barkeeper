@@ -6,9 +6,9 @@ class IsolateDatatable
 
   delegate :params, :link_to, :h, to: :@view
 
-  def initialize(view, no_specimen, current_default_project)
+  def initialize(view, isolates_to_show, current_default_project)
     @view = view
-    @no_specimen = no_specimen
+    @isolates_to_show = isolates_to_show
     @current_default_project = current_default_project
   end
 
@@ -51,10 +51,14 @@ class IsolateDatatable
   end
 
   def fetch_isolates
-    if @no_specimen
+    case @isolates_to_show
+    when 'no_specimen'
       isolates = Isolate.includes(individual: :species).where(individual: nil).where(negative_control: false).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+    when 'duplicates'
+      names_with_multiple = Isolate.group(:lab_nr).having('count(lab_nr) > 1').count.keys
+      isolates = Isolate.includes(individual: :species).where(name: names_with_multiple)
+                        .in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     else
-      # for standard index view
       isolates = Isolate.includes(individual: :species).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
@@ -76,7 +80,7 @@ class IsolateDatatable
   end
 
   def sort_column
-    columns = %w[lab_nr individual_id individual_id updated_at]
+    columns = %w[lab_nr species.composed_name individuals.specimen_id updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
