@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddPositionToSubdivisions < ActiveRecord::Migration
   def change
     add_column :subdivisions, :position, :integer

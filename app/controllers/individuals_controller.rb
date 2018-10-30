@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class IndividualsController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_individual, :only => [:show, :edit, :update, :destroy]
+  before_action :set_individual, only: %i[show edit update destroy]
 
   def index
     respond_to do |format|
@@ -24,20 +26,19 @@ class IndividualsController < ApplicationController
 
   def problematic_specimens
     # Liste aller Bundesländer to check 'state_province' against:
-    @states = %w(Baden-Württemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein Thüringen)
+    @states = %w[Baden-Württemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein Thüringen]
     @individuals = []
 
     Individual.in_project(current_project_id).each do |i|
-      if i.country == "Germany"
+      if i.country == 'Germany'
         @individuals.push(i) unless @states.include? i.state_province
       end
     end
-
   end
 
   def filter
-    @individuals = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").in_project(current_project_id).limit(100)
-    size = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").in_project(current_project_id).size
+    @individuals = Individual.where('individuals.specimen_id ilike ?', "%#{params[:term]}%").in_project(current_project_id).limit(100)
+    size = Individual.where('individuals.specimen_id ilike ?', "%#{params[:term]}%").in_project(current_project_id).size
 
     if size > 100
       message = "and #{size} more..."
@@ -49,8 +50,7 @@ class IndividualsController < ApplicationController
 
   # GET /individuals/1
   # GET /individuals/1.json
-  def show
-  end
+  def show; end
 
   # GET /individuals/new
   def new
@@ -58,8 +58,7 @@ class IndividualsController < ApplicationController
   end
 
   # GET /individuals/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /individuals
   # POST /individuals.json
@@ -137,6 +136,6 @@ class IndividualsController < ApplicationController
                                        :comments,
                                        :species_id,
                                        :species_name,
-                                       :project_ids => [])
+                                       project_ids: [])
   end
 end

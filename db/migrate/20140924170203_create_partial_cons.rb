@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreatePartialCons < ActiveRecord::Migration
   def change
     create_table :partial_cons do |t|

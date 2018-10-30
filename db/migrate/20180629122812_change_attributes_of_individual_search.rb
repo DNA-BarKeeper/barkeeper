@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeAttributesOfIndividualSearch < ActiveRecord::Migration[5.0]
   def change
     add_reference :individual_searches, :project, foreign_key: true

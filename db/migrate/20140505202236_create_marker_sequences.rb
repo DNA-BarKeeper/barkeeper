@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateMarkerSequences < ActiveRecord::Migration
   def change
     create_table :marker_sequences do |t|

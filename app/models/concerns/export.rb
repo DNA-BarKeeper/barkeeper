@@ -96,7 +96,7 @@ module Export
     def pde_contigs(contigs, add_reads)
       contigs.each do |contig|
         species = contig.try(:isolate).try(:individual).try(:species)&.composed_name
-        contig_name = species.blank? ? contig.name : [contig.name, species.gsub(' ', '_')].join('_')
+        contig_name = species.blank? ? contig.name : [contig.name, species.tr(' ', '_')].join('_')
 
         contig.partial_cons.each do |partial_con|
           aligned_sequence = partial_con.aligned_sequence.nil? ? '' : partial_con.aligned_sequence
@@ -109,20 +109,20 @@ module Export
         next unless add_reads
 
         # Add unassembled reads:
-        contig.primer_reads.not_assembled.each { |read| add_primer_read_to_pde(read, false) } if (contig.primer_reads.not_assembled.count > 0)
+        contig.primer_reads.not_assembled.each { |read| add_primer_read_to_pde(read, false) } if contig.primer_reads.not_assembled.count > 0
 
-        contig.primer_reads.not_used_for_assembly.each { |read| add_primer_read_to_pde(read, false) } if (contig.primer_reads.not_used_for_assembly.count > 0)
+        contig.primer_reads.not_used_for_assembly.each { |read| add_primer_read_to_pde(read, false) } if contig.primer_reads.not_used_for_assembly.count > 0
 
-        contig.primer_reads.not_trimmed.each { |read| add_primer_read_to_pde(read, false) } if (contig.primer_reads.not_trimmed.count > 0)
+        contig.primer_reads.not_trimmed.each { |read| add_primer_read_to_pde(read, false) } if contig.primer_reads.not_trimmed.count > 0
 
-        contig.primer_reads.unprocessed.each { |read| add_primer_read_to_pde(read, false) } if (contig.primer_reads.unprocessed.count > 0)
+        contig.primer_reads.unprocessed.each { |read| add_primer_read_to_pde(read, false) } if contig.primer_reads.unprocessed.count > 0
       end
     end
 
     def pde_marker_sequences(marker_sequences)
       marker_sequences.each do |marker_sequence|
         species = marker_sequence.try(:isolate).try(:individual).try(:species)&.composed_name
-        name = species.blank? ? marker_sequence.name : [marker_sequence.name, species.gsub(' ', '_')].join('_')
+        name = species.blank? ? marker_sequence.name : [marker_sequence.name, species.tr(' ', '_')].join('_')
 
         add_sequence_to_pde(name, species, routes.edit_marker_sequence_url(marker_sequence, url_options), marker_sequence.sequence, false)
       end
@@ -144,12 +144,12 @@ module Export
             add_sequence_to_fasta(name, partial_con.aligned_sequence)
           end
         when 'trimmed'
-          used_reads = contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, true).order('position')
+          used_reads = contig.primer_reads.where('used_for_con = ? AND assembled = ?', true, true).order('position')
           used_reads.each do |read|
             add_sequence_to_fasta(read.name, read.trimmed_seq)
           end
         when 'raw'
-          used_reads = contig.primer_reads.where("used_for_con = ? AND assembled = ?", true, true).order('position')
+          used_reads = contig.primer_reads.where('used_for_con = ? AND assembled = ?', true, true).order('position')
           used_reads.each do |read|
             add_sequence_to_fasta(read.name, read.sequence)
           end
@@ -185,7 +185,7 @@ module Export
     end
 
     def add_sequence_to_pde(name, species, url, sequence, is_primer_read)
-      sequence = sequence ? sequence : ''
+      sequence ||= ''
 
       @pde_header += "<seq idx=\"#{@height}\">"\
                    "<e id=\"1\">#{name}</e>"
@@ -234,11 +234,10 @@ module Export
       qualities_to_use = use_mira ? partial_con.mira_consensus_qualities : partial_con.aligned_qualities
 
       qualities_to_use.each do |q|
-        if q > 0
-          consensus += raw_cons[count]
-          qualities += (q + 33).chr
-          count += 1
-        end
+        next unless q > 0
+        consensus += raw_cons[count]
+        qualities += (q + 33).chr
+        count += 1
       end
 
       # Return empty string in case that sequence and qualities do not have the same length

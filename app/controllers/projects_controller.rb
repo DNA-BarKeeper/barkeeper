@@ -1,22 +1,23 @@
+# frozen_string_literal: true
+
 class ProjectsController < ApplicationController
   load_and_authorize_resource
 
-  before_action :set_project, only: [:show, :edit, :update, :destroy]
+  before_action :set_project, only: %i[show edit update destroy]
 
   # GET /projects
   # GET /projects.json
   def index
-    if user_signed_in?
-      @projects = current_user.admin? ? Project.all : current_user.projects
-    else
-      @projects = []
-    end
+    @projects = if user_signed_in?
+                  current_user.admin? ? Project.all : current_user.projects
+                else
+                  []
+                end
   end
 
   # GET /projects/1
   # GET /projects/1.json
-  def show
-  end
+  def show; end
 
   # GET /projects/new
   def new
@@ -24,8 +25,7 @@ class ProjectsController < ApplicationController
   end
 
   # GET /projects/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /projects
   # POST /projects.json
@@ -87,6 +87,7 @@ class ProjectsController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_project
     @project = Project.find(params[:id])
@@ -94,6 +95,6 @@ class ProjectsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def project_params
-    params.require(:project).permit(:name, :description, :start, :due, :user_ids => [])
+    params.require(:project).permit(:name, :description, :start, :due, user_ids: [])
   end
 end

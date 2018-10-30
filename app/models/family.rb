@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class Family < ApplicationRecord
   include ProjectRecord
   include PgSearch
 
-  multisearchable :against => :name
+  multisearchable against: :name
 
   has_many :species
   belongs_to :order

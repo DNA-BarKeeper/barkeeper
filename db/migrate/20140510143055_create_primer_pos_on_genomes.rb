@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreatePrimerPosOnGenomes < ActiveRecord::Migration
   def change
     create_table :primer_pos_on_genomes do |t|

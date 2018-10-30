@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateMarkers < ActiveRecord::Migration
   def change
     create_table :markers do |t|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameExporterUploadedFile < ActiveRecord::Migration[5.0]
   def self.rename_attachment(table, old, new)
     attachment_columns = [['file_name', :string], ['content_type', :string], ['file_size', :integer], ['updated_at', :datetime]]

@@ -6,7 +6,7 @@ class MarkerSequenceSearch < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
-  enum has_warnings: [:both, :yes, :no]
+  enum has_warnings: %i[both yes no]
 
   def marker_sequences
     @marker_sequences ||= find_marker_sequences
@@ -42,42 +42,42 @@ class MarkerSequenceSearch < ApplicationRecord
 
   def find_marker_sequences
     marker_sequences = MarkerSequence.in_project(project_id).order(:name)
-    marker_sequences = marker_sequences.where("marker_sequences.name ilike ?", "%#{name}%") if name.present?
+    marker_sequences = marker_sequences.where('marker_sequences.name ilike ?', "%#{name}%") if name.present?
 
     if verified != 'both'
-      marker_sequences = marker_sequences.verified if (verified == 'verified')
-      marker_sequences = marker_sequences.not_verified if (verified == 'unverified')
+      marker_sequences = marker_sequences.verified if verified == 'verified'
+      marker_sequences = marker_sequences.not_verified if verified == 'unverified'
     end
 
     marker_sequences = marker_sequences.has_species if has_species.present?
 
     if has_warnings != 'both'
-      marker_sequences = marker_sequences.with_warnings if (has_warnings == 'yes')
-      marker_sequences = marker_sequences.where.not(id: MarkerSequence.with_warnings.pluck(:id)) if (has_warnings == 'no')
+      marker_sequences = marker_sequences.with_warnings if has_warnings == 'yes'
+      marker_sequences = marker_sequences.where.not(id: MarkerSequence.with_warnings.pluck(:id)) if has_warnings == 'no'
     end
 
-    marker_sequences = marker_sequences.joins(:marker).where("markers.name ilike ?", "%#{marker}%") if marker.present?
+    marker_sequences = marker_sequences.joins(:marker).where('markers.name ilike ?', "%#{marker}%") if marker.present?
 
-    marker_sequences = marker_sequences.joins(isolate: {individual: {species: {family: {order: :higher_order_taxon}}}}).where("higher_order_taxa.name ilike ?", "%#{higher_order_taxon}%") if higher_order_taxon.present?
+    marker_sequences = marker_sequences.joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where('higher_order_taxa.name ilike ?', "%#{higher_order_taxon}%") if higher_order_taxon.present?
 
-    marker_sequences = marker_sequences.joins(isolate: {individual: {species: {family: :order}}}).where("orders.name ilike ?", "%#{order}%") if order.present?
+    marker_sequences = marker_sequences.joins(isolate: { individual: { species: { family: :order } } }).where('orders.name ilike ?', "%#{order}%") if order.present?
 
-    marker_sequences = marker_sequences.joins(isolate: {individual: {species: :family}}).where("families.name ilike ?", "%#{family}%") if family.present?
+    marker_sequences = marker_sequences.joins(isolate: { individual: { species: :family } }).where('families.name ilike ?', "%#{family}%") if family.present?
 
-    marker_sequences = marker_sequences.joins(isolate: {individual: :species }).where("species.composed_name ilike ?", "%#{species}%") if species.present?
+    marker_sequences = marker_sequences.joins(isolate: { individual: :species }).where('species.composed_name ilike ?', "%#{species}%") if species.present?
 
-    marker_sequences = marker_sequences.joins(isolate: :individual).where("individuals.specimen_id ilike ?", "%#{specimen}%") if specimen.present?
+    marker_sequences = marker_sequences.joins(isolate: :individual).where('individuals.specimen_id ilike ?', "%#{specimen}%") if specimen.present?
 
-    marker_sequences = marker_sequences.joins(:contigs).where("contigs.verified_by = ?", User.find_by_name(verified_by)&.id) if verified_by.present?
+    marker_sequences = marker_sequences.joins(:contigs).where('contigs.verified_by = ?', User.find_by_name(verified_by)&.id) if verified_by.present?
 
-    marker_sequences = marker_sequences.where("length(marker_sequences.sequence) >= ?", min_length) if min_length.present?
-    marker_sequences = marker_sequences.where("length(marker_sequences.sequence) <= ?", max_length) if max_length.present?
+    marker_sequences = marker_sequences.where('length(marker_sequences.sequence) >= ?', min_length) if min_length.present?
+    marker_sequences = marker_sequences.where('length(marker_sequences.sequence) <= ?', max_length) if max_length.present?
 
-    marker_sequences = marker_sequences.where("marker_sequences.created_at >= ?", min_age.midnight) if min_age.present?
-    marker_sequences = marker_sequences.where("marker_sequences.created_at <= ?", max_age.end_of_day) if max_age.present?
+    marker_sequences = marker_sequences.where('marker_sequences.created_at >= ?', min_age.midnight) if min_age.present?
+    marker_sequences = marker_sequences.where('marker_sequences.created_at <= ?', max_age.end_of_day) if max_age.present?
 
-    marker_sequences = marker_sequences.where("marker_sequences.updated_at >= ?", min_update.midnight) if min_update.present?
-    marker_sequences = marker_sequences.where("marker_sequences.updated_at <= ?", max_update.end_of_day) if max_update.present?
+    marker_sequences = marker_sequences.where('marker_sequences.updated_at >= ?', min_update.midnight) if min_update.present?
+    marker_sequences = marker_sequences.where('marker_sequences.updated_at <= ?', max_update.end_of_day) if max_update.present?
 
     marker_sequences
   end

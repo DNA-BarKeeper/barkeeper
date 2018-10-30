@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class IsolatesController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_isolate, only: [:show, :edit, :update, :destroy]
+  before_action :set_isolate, only: %i[show edit update destroy]
 
   def index
     respond_to do |format|
@@ -12,8 +14,7 @@ class IsolatesController < ApplicationController
     end
   end
 
-  def duplicates
-  end
+  def duplicates; end
 
   def no_specimen
     respond_to do |format|
@@ -33,15 +34,13 @@ class IsolatesController < ApplicationController
     redirect_to isolates_path, notice: 'Imported.'
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @isolate = Isolate.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @isolate = Isolate.new(isolate_params)
@@ -87,11 +86,11 @@ class IsolatesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def isolate_params
-    params.require(:isolate).permit(:comment_orig, :comment_copy, :micronic_tube_id_copy, :micronic_tube_id_orig, :concentration_copy, :concentration_orig, :well_pos_micronic_plate_copy, :well_pos_micronic_plate_orig, :micronic_plate_id_copy,:micronic_plate_id_orig, :isolation_date, :lab_id_copy, :lab_id_orig, :user_id, :well_pos_plant_plate, :lab_nr, :micronic_tube_id, :well_pos_micronic_plate, :concentration,
+    params.require(:isolate).permit(:comment_orig, :comment_copy, :micronic_tube_id_copy, :micronic_tube_id_orig, :concentration_copy, :concentration_orig, :well_pos_micronic_plate_copy, :well_pos_micronic_plate_orig, :micronic_plate_id_copy, :micronic_plate_id_orig, :isolation_date, :lab_id_copy, :lab_id_orig, :user_id, :well_pos_plant_plate, :lab_nr, :micronic_tube_id, :well_pos_micronic_plate, :concentration,
                                     :tissue_id, :micronic_plate_id, :plant_plate_id, :term,
                                     :file,
                                     :individual_name,
                                     :query,
-                                    :project_ids => [])
+                                    project_ids: [])
   end
 end

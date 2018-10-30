@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User < ApplicationRecord
   include ProjectRecord
 
@@ -17,7 +19,7 @@ class User < ApplicationRecord
 
   before_save :default_project
 
-  enum role: [:guest, :user, :supervisor, :admin]
+  enum role: %i[guest user supervisor admin]
 
   def default_project
     self.default_project_id ||= projects&.first&.id

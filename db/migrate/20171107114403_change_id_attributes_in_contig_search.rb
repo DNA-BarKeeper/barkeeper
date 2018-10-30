@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeIdAttributesInContigSearch < ActiveRecord::Migration[5.0]
   def up
     rename_column :contig_searches, :order_id, :order

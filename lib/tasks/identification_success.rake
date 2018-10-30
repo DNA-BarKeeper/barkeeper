@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 namespace :data do
   desc 'Calculate identification success of marker'
 
-  task :identification_success, [:marker] => [:environment] do |t, args|
+  task :identification_success, [:marker] => [:environment] do |_t, args|
     marker = Marker.find_by_name(args[:marker])
 
     sequences = MarkerSequence.joins(isolate: [individual: :species])

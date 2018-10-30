@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class TissuesController < ApplicationController
   load_and_authorize_resource
-  before_action :set_tissue, only: [:show, :edit, :update, :destroy]
+  before_action :set_tissue, only: %i[show edit update destroy]
 
   # GET /tissues
   # GET /tissues.json
@@ -10,8 +12,7 @@ class TissuesController < ApplicationController
 
   # GET /tissues/1
   # GET /tissues/1.json
-  def show
-  end
+  def show; end
 
   # GET /tissues/new
   def new
@@ -19,8 +20,7 @@ class TissuesController < ApplicationController
   end
 
   # GET /tissues/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /tissues
   # POST /tissues.json
@@ -63,13 +63,14 @@ class TissuesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_tissue
-      @tissue = Tissue.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def tissue_params
-      params.require(:tissue).permit(:name)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_tissue
+    @tissue = Tissue.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def tissue_params
+    params.require(:tissue).permit(:name)
+  end
 end

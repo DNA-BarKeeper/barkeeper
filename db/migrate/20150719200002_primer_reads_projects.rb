@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PrimerReadsProjects < ActiveRecord::Migration
   def change
     create_table :primer_reads_projects, id: false do |t|

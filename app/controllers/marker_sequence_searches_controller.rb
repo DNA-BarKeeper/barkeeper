@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class MarkerSequenceSearchesController < ApplicationController
   load_and_authorize_resource
 
-  before_action :set_marker_sequence_search, only: [:export_as_fasta, :export_as_pde]
+  before_action :set_marker_sequence_search, only: %i[export_as_fasta export_as_pde]
 
   def index
     respond_to do |format|
@@ -18,8 +20,8 @@ class MarkerSequenceSearchesController < ApplicationController
     @marker_sequence_search = MarkerSequenceSearch.create!(marker_sequence_search_params)
 
     if user_signed_in?
-      @marker_sequence_search.update(:user_id => current_user.id)
-      @marker_sequence_search.update(:project_id => current_user.default_project_id)
+      @marker_sequence_search.update(user_id: current_user.id)
+      @marker_sequence_search.update(project_id: current_user.default_project_id)
     end
 
     redirect_to @marker_sequence_search
@@ -45,12 +47,12 @@ class MarkerSequenceSearchesController < ApplicationController
 
   def export_as_fasta
     file_name = @marker_sequence_search.title.empty? ? "marker_sequence_search_#{@marker_sequence_search.created_at}" : @marker_sequence_search.title
-    send_data(MarkerSequenceSearch.fasta(@marker_sequence_search.marker_sequences, metadata: true), :filename => "#{file_name}.fasta", :type => "application/txt")
+    send_data(MarkerSequenceSearch.fasta(@marker_sequence_search.marker_sequences, metadata: true), filename: "#{file_name}.fasta", type: 'application/txt')
   end
 
   def export_as_pde
     file_name = @marker_sequence_search.title.empty? ? "marker_sequence_search_#{@marker_sequence_search.created_at}" : @marker_sequence_search.title
-    send_data(MarkerSequenceSearch.pde(@marker_sequence_search.marker_sequences, {}), :filename => "#{file_name}.pde", :type => "application/txt")
+    send_data(MarkerSequenceSearch.pde(@marker_sequence_search.marker_sequences, {}), filename: "#{file_name}.pde", type: 'application/txt')
   end
 
   private

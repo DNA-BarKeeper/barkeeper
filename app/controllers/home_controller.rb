@@ -1,5 +1,6 @@
-class HomeController < ApplicationController
+# frozen_string_literal: true
 
+class HomeController < ApplicationController
   def overview
     authorize! :overview, :home
   end
@@ -19,12 +20,7 @@ class HomeController < ApplicationController
     authorize! :privacy_policy, :home
   end
 
-  def help
+  def help; end
 
-  end
-
-  def contact
-
-  end
-
+  def contact; end
 end

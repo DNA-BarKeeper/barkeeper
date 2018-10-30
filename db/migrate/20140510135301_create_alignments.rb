@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateAlignments < ActiveRecord::Migration
   def change
     create_table :alignments do |t|
