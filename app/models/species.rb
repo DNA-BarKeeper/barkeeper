@@ -17,16 +17,6 @@ class Species < ApplicationRecord
     [spp.distinct.count, subspp.count]
   end
 
-  def self.to_csv(options = {})
-    CSV.generate(options) do |csv|
-      csv << column_names
-      all.each do |sp|
-        csv << sp.attributes.values_at(*column_names)
-        # TODO: associations are missing this way.
-      end
-    end
-  end
-
   def self.import_species(file, valid_keys, project_id)
     spreadsheet = Species.open_spreadsheet(file)
     header = spreadsheet.row(1)

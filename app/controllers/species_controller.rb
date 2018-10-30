@@ -24,8 +24,6 @@ class SpeciesController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: SpeciesDatatable.new(view_context, nil, nil, current_project_id) }
-      format.csv { send_data @species.to_csv }
-      format.xls
     end
   end
 

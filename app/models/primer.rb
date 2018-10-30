@@ -10,6 +10,7 @@ class Primer < ApplicationRecord
 
   validates_presence_of :name
 
+  # Import primer data from Excel file
   def self.import(file, project_id)
     spreadsheet = Primer.open_spreadsheet(file)
 
@@ -17,23 +18,17 @@ class Primer < ApplicationRecord
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
-      valid_keys = %w[alt_name sequence author name tm target_group] # Only direct attributes; associations are extra:
+      valid_keys = %w[alt_name sequence author name tm target_group] # Only direct attributes
 
-      # Update existing spp or create new
       primer = Primer.find_or_create_by(name: row['name'].strip)
+      primer.add_project(project_id)
 
-      # Add marker or assign to existing:
       marker = Marker.find_or_create_by(name: row['marker'])
       marker.add_project_and_save(project_id)
 
       primer.marker_id = marker.id
-
-      # Add orientation
       primer.reverse = (row['reverse'] == 'R')
-
       primer.attributes = row.to_hash.slice(*valid_keys)
-
-      primer.add_project(project_id)
 
       primer.save!
     end

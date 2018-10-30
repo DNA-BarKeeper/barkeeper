@@ -9,6 +9,7 @@ class MislabelAnalysis < ApplicationRecord
     ((mislabels.size / total_seq_number.to_f) * 100).round(2) if total_seq_number&.positive?
   end
 
+  # Import SATIVA result table (*.mis)
   def self.import(file, title, total_seq_number = 0, marker_id = nil, automatic = false)
     column_names = %w[SeqID MislabeledLevel OriginalLabel ProposedLabel
                       Confidence OriginalTaxonomyPath ProposedTaxonomyPath
@@ -16,7 +17,6 @@ class MislabelAnalysis < ApplicationRecord
 
     mislabel_analysis = MislabelAnalysis.create(title: title, marker_id: marker_id, automatic: automatic, total_seq_number: total_seq_number)
 
-    # Parse file
     File.open(file, 'r').each do |row|
       next if row.start_with?(';')
 
@@ -44,7 +44,6 @@ class MislabelAnalysis < ApplicationRecord
       mislabel_analysis.marker_sequences << marker_sequence
     end
 
-    # Return new analysis object
     mislabel_analysis
   end
 end
