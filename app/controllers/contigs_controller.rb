@@ -80,7 +80,9 @@ class ContigsController < ApplicationController
     respond_to do |format|
       if @contig.update(contig_params)
         format.html do
-          Issue.create(title: "Contig updated by #{current_user.name}", contig_id: @contig.id)
+          issue = Issue.create(title: "Contig updated by #{current_user.name}", contig_id: @contig.id)
+          issue.add_projects(@contig.projects.pluck(:id))
+          issue.save
           redirect_back(fallback_location: edit_contig_path(@contig), notice: 'Contig was successfully updated.')
         end
         format.json { render :show, status: :ok, location: @contig }
@@ -192,7 +194,7 @@ class ContigsController < ApplicationController
           new_partial_con.save
 
           # generate marker sequence
-          ms = MarkerSequence.find_or_create_by(name: contig.name)
+          ms = MarkerSequence.find_or_create_by(name: contig.name) # TODO is it used? Add project if so
           ms.sequence = pair[1].delete('-')
           ms.sequence = ms.sequence.delete('?')
           ms.contigs << contig
@@ -292,6 +294,7 @@ class ContigsController < ApplicationController
       ms.contigs << @contig
       ms.marker = @contig.marker
       ms.isolate = @contig.isolate
+      ms.add_projects(@contig.projects.pluck(:id))
       ms.save
 
       redirect_to edit_contig_path, notice: 'Verified & linked marker sequence updated.'
@@ -309,6 +312,7 @@ class ContigsController < ApplicationController
     ms.contigs << @contig
     ms.marker = @contig.marker
     ms.isolate = @contig.isolate
+    ms.add_projects(@contig.projects.pluck(:id))
     ms.save
 
     @next_contig = Contig.in_project(current_project_id).need_verification.first

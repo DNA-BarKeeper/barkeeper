@@ -129,7 +129,9 @@ class SpeciesController < ApplicationController
         @species.update(species_component: @species.get_species_component)
         @species.update(composed_name: @species.full_name)
         format.html do
-          Issue.create(title: "#{@species.name_for_display} updated by #{current_user.name}")
+          issue = Issue.create(title: "#{@species.name_for_display} updated by #{current_user.name}")
+          issue.add_projects(@species.projects.pluck(:id))
+          issue.save
           redirect_to species_index_path, notice: 'Species was successfully updated.'
         end
         format.json { render :show, status: :ok, location: @species }

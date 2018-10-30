@@ -148,7 +148,7 @@ class PrimerRead < ApplicationRecord
     if name == ''
       self.contig = nil
     else
-      self.contig = Contig.find_or_create_by(name: name) if name.present?
+      self.contig = Contig.find_or_create_by(name: name) if name.present? # TODO is it used? Add project if so
     end
   end
 
@@ -228,6 +228,7 @@ class PrimerRead < ApplicationRecord
           isolate ||= Isolate.create(lab_nr: isolate_component)
 
           isolate.update(dna_bank_id: isolate_component) if db_number_name_components
+          isolate.add_projects(projects.pluck(:id))
 
           update(isolate_id: isolate.id)
 
@@ -241,7 +242,7 @@ class PrimerRead < ApplicationRecord
           else
             # Create new contig, auto assign to primer, copy, auto-name
             contig = Contig.new(marker_id: marker.id, isolate_id: isolate.id, assembled: false)
-            contig.projects = projects
+            contig.add_projects(projects.pluck(:id))
             contig.generate_name
             contig.save
 
@@ -265,6 +266,8 @@ class PrimerRead < ApplicationRecord
 
     if create_issue
       i = Issue.create(title: output_message, primer_read_id: id)
+      i.add_projects(projects.pluck(:id))
+      i.save
     else # Everything worked
       self.contig.update(assembled: false, assembly_tried: false)
     end
@@ -365,6 +368,8 @@ class PrimerRead < ApplicationRecord
 
     if create_issue
       i = Issue.create(title: msg, primer_read_id: id)
+      i.add_projects(projects.pluck(:id))
+      i.save
       update(used_for_con: false)
     end
 
