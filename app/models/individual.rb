@@ -40,7 +40,7 @@ class Individual < ApplicationRecord
     if name == ''
       self.species = nil
     else
-      self.species = Species.find_or_create_by(composed_name: name) if name.present?
+      self.species = Species.find_or_create_by(composed_name: name) if name.present? # TODO is it used? Add project if so
     end
   end
 

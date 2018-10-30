@@ -105,7 +105,7 @@ class Isolate < ApplicationRecord
     if name == ''
       self.individual = nil
     else
-      self.individual = Individual.find_or_create_by(specimen_id: name) if name.present?
+      self.individual = Individual.find_or_create_by(specimen_id: name) if name.present? # TODO is it used? Add project if so
     end
   end
 

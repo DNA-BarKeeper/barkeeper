@@ -37,7 +37,7 @@ class MarkerSequence < ApplicationRecord
     if lab_nr == ''
       self.isolate = nil
     else
-      self.isolate = Isolate.find_or_create_by(lab_nr: lab_nr) if lab_nr.present?
+      self.isolate = Isolate.find_or_create_by(lab_nr: lab_nr) if lab_nr.present? # TODO is it used? Add project if so
     end
   end
 

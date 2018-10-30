@@ -46,7 +46,7 @@ class Contig < ApplicationRecord
     if name == ''
       self.isolate = nil
     else
-      self.isolate = Isolate.find_or_create_by(lab_nr: name) if name.present?
+      self.isolate = Isolate.find_or_create_by(lab_nr: name) if name.present? # TODO is it used? Add project if so
     end
   end
 
@@ -58,7 +58,7 @@ class Contig < ApplicationRecord
     if name == ''
       self.marker_sequence = nil
     else
-      self.marker_sequence = MarkerSequence.find_or_create_by(name: name) if name.present?
+      self.marker_sequence = MarkerSequence.find_or_create_by(name: name) if name.present? # TODO is it used? Add project if so
     end
   end
 
@@ -143,12 +143,14 @@ class Contig < ApplicationRecord
       ms.contigs << self
       ms.marker = marker
       ms.isolate = isolate
-      ms.projects = projects
+      ms.add_projects(projects.pluck(:id))
       ms.save
     end
 
     if msg
-      Issue.create(title: msg, contig_id: id)
+      issue = Issue.create(title: msg, contig_id: id)
+      issue.add_projects(projects.pluck(:id))
+      issue.save
       self.assembled = false
     end
   end
