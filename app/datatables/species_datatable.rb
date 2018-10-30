@@ -27,9 +27,7 @@ class SpeciesDatatable
   def data
     species.map do |single_species|
       family = ''
-      if single_species.family
-        family = link_to(single_species.family.name, edit_family_path(single_species.family))
-      end
+      family = link_to(single_species.family.name, edit_family_path(single_species.family)) if single_species.family
       [
         link_to(single_species.name_for_display, edit_species_path(single_species)),
         single_species.author,
@@ -54,9 +52,7 @@ class SpeciesDatatable
     end
     species = species.page(page).per_page(per_page)
 
-    if params[:sSearch].present?
-      species = species.where('composed_name ILIKE :search', search: "%#{params[:sSearch]}%")
-    end
+    species = species.where('composed_name ILIKE :search', search: "%#{params[:sSearch]}%") if params[:sSearch].present?
 
     species
   end

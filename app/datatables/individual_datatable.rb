@@ -29,9 +29,7 @@ class IndividualDatatable
     individuals.map do |individual|
       species = ''
 
-      if individual.species
-        species = link_to individual.species.name_for_display, edit_species_path(individual.species)
-      end
+      species = link_to individual.species.name_for_display, edit_species_path(individual.species) if individual.species
 
       [
         link_to(individual.specimen_id, edit_individual_path(individual)),

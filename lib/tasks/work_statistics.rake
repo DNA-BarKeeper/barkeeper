@@ -86,4 +86,14 @@ namespace :data do
     # isolates_one = Isolate.joins(:marker_sequences).group('isolates.id').having('count(marker_sequences) = 1')
     # isolates_zero = Isolate.joins(:marker_sequences).group('isolates.id').having('count(marker_sequences) = 0').where(:marker_sequences.first.marker.gbol_marker)
   end
+
+  task :primer_usage, [:marker_name] => [:environment] do |_t, args|
+    marker = Marker.find_by_name(args[:marker_name])
+
+    primers = PrimerRead.group(:primer_id).count
+    primers_marker = primers.select { |k, _v| Primer.find_by_id(k)&.marker_id == marker.id unless k.nil? }
+    primers_marker.keys.each { |k| primers_marker[Primer.find(k).name] = primers_marker[k]; primers_marker.delete(k) }
+
+    puts Hash[primers_marker.sort_by { |_k, v| v }.reverse]
+  end
 end

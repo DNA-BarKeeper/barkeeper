@@ -40,7 +40,8 @@ namespace :data do
     gbol_sequences = MarkerSequence.gbol
     ms_with_contig = gbol_sequences.joins(:contigs).distinct
 
-    duplicate_names = gbol_sequences.group('marker_sequences.name').having('count(marker_sequences.name) > 2').count.keys
+    duplicate_names = Hash[gbol_sequences.group('marker_sequences.name').count.select { |_k, v| v >= 2 }].keys
+    # duplicate_names = gbol_sequences.group('marker_sequences.name').having('count(marker_sequences.name) >= 2').count.keys
     duplicate_ms = gbol_sequences.where(marker_sequences: { name: duplicate_names })
     duplicate_ms_contig = ms_with_contig.where(marker_sequences: { name: duplicate_names })
 

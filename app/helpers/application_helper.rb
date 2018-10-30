@@ -13,11 +13,11 @@ module ApplicationHelper
   end
 
   def project_list(record)
-    if user_signed_in?
-      projects = record.projects.select(:id, :name) & current_user.projects.select(:id, :name)
-    else
-      projects = record.projects.select(:id, :name) & Project.where(name: 'GBOL5').select(:id, :name)
-    end
+    projects = if user_signed_in?
+                 record.projects.select(:id, :name) & current_user.projects.select(:id, :name)
+               else
+                 record.projects.select(:id, :name) & Project.where(name: 'GBOL5').select(:id, :name)
+               end
 
     html = +'<ul>'
 

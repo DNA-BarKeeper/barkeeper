@@ -56,9 +56,7 @@ class UsersController < ApplicationController
     else
       @user = User.find(params[:id])
 
-      if @user.destroy
-        redirect_to users_path, notice: 'User was successfully destroyed.'
-      end
+      redirect_to users_path, notice: 'User was successfully destroyed.' if @user.destroy
     end
   end
 

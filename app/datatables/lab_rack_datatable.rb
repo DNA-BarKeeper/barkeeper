@@ -26,9 +26,7 @@ class LabRackDatatable
     lab_racks.map do |lab_rack|
       rackcode = ''
 
-      if lab_rack.rackcode
-        rackcode = link_to lab_rack.rackcode, edit_lab_rack_path(lab_rack)
-      end
+      rackcode = link_to lab_rack.rackcode, edit_lab_rack_path(lab_rack) if lab_rack.rackcode
 
       shelf = ''
       shelf = lab_rack.shelf if lab_rack.shelf
@@ -38,9 +36,7 @@ class LabRackDatatable
 
       if lab_rack.freezer
         freezer = link_to lab_rack.freezer.freezercode, edit_freezer_path(lab_rack.freezer)
-        if lab_rack.freezer.lab
-          lab = link_to lab_rack.freezer.lab.labcode, edit_lab_path(lab_rack.freezer.lab)
-        end
+        lab = link_to lab_rack.freezer.lab.labcode, edit_lab_path(lab_rack.freezer.lab) if lab_rack.freezer.lab
       end
 
       [
@@ -63,9 +59,7 @@ class LabRackDatatable
 
     lab_racks = lab_racks.page(page).per_page(per_page)
 
-    if params[:sSearch].present?
-      lab_racks = lab_racks.where('rackcode ILIKE :search', search: "%#{params[:sSearch]}%")
-    end
+    lab_racks = lab_racks.where('rackcode ILIKE :search', search: "%#{params[:sSearch]}%") if params[:sSearch].present?
 
     lab_racks
   end

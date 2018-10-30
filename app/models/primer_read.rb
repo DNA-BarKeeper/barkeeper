@@ -73,7 +73,7 @@ class PrimerRead < ApplicationRecord
       xstart = aligned_peak_indices[start_pos_trace]
     end
 
-    # does aligned_peaks index  exist?
+    # does aligned_peaks index exist?
     if aligned_peak_indices[end_pos_trace]
       xend = aligned_peak_indices[end_pos_trace]
       # else use last:
@@ -177,7 +177,7 @@ class PrimerRead < ApplicationRecord
     create_issue = false
 
     # Try to find matching primer
-    regex_read_name = /^([A-Za-z0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # match group 1: GBoL number, 2: stuff, 3: primer name, 4: file extension
+    regex_read_name = /^([A-Za-z0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # Match group 1: GBOL number, 2: stuff, 3: primer name, 4: file extension
     name_components = self.name.match(regex_read_name)
 
     if name_components
@@ -185,7 +185,7 @@ class PrimerRead < ApplicationRecord
       name_variants_t7 = %w[T7promoter T7 T7-1] # T7 is always forward
       name_variants_m13 = %w[M13R-pUC M13-RP M13-RP-1] # M13R-pU
 
-      # logic if T7promoter or M13R-pUC.scf:
+      # Logic if T7promoter or M13R-pUC.scf, otherwise leave name as it is
       if name_variants_t7.include? primer_name
         rgx = /^_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/
         matches = name_components[2].match(rgx) # --> uv2
@@ -221,9 +221,6 @@ class PrimerRead < ApplicationRecord
       primer = Primer.where('primers.name ILIKE ?', primer_name.to_s).first
       primer ||= Primer.where('primers.alt_name ILIKE ?', primer_name.to_s).first
 
-      puts primer.name
-      puts 'STOP'
-
       if primer
         update(primer_id: primer.id, reverse: primer.reverse)
 
@@ -246,9 +243,7 @@ class PrimerRead < ApplicationRecord
           isolate ||= Isolate.where('isolates.dna_bank_id ILIKE ?', isolate_component.to_s).first
           isolate ||= Isolate.create(lab_nr: isolate_component)
 
-          if db_number_name_components
-            isolate.update(dna_bank_id: isolate_component)
-          end
+          isolate.update(dna_bank_id: isolate_component) if db_number_name_components
 
           update(isolate_id: isolate.id)
 
@@ -339,9 +334,7 @@ class PrimerRead < ApplicationRecord
         update(sequence: sequence)
         update(base_count: sequence.length)
       end
-      if qualities.nil? || write_to_db
-        update(qualities: chromatogram1.qualities)
-      end
+      update(qualities: chromatogram1.qualities) if qualities.nil? || write_to_db
       if atrace.nil? || write_to_db
         update(atrace: chromatogram1.atrace)
         update(ctrace: chromatogram1.ctrace)
@@ -421,13 +414,10 @@ class PrimerRead < ApplicationRecord
 
   def get_aligned_peak_indices
     if trimmedReadStart
-
       aligned_peak_indices = []
-
       pi = trimmedReadStart - 2
 
       if aligned_qualities
-
         aligned_qualities.each do |aq|
           if aq == -1
             aligned_peak_indices << -1
@@ -438,168 +428,9 @@ class PrimerRead < ApplicationRecord
         end
 
         update_columns(aligned_peak_indices: aligned_peak_indices)
-
       end
     end
   end
-
-  # deactivated cause even worse than original
-  # def trim_seq_inverse(qualities)
-  #
-  #   #settings
-  #   min_quality_score = 20
-  #   c=16
-  #   t=20
-  #
-  #   #final coordinates:
-  #
-  #   trimmed_read_start = 0
-  #   trimmed_read_end = qualities.length
-  #
-  #   #intermediate coordinates:
-  #
-  #   trimmed_read_start1 = 0
-  #   trimmed_read_end1 = qualities.length
-  #
-  #   trimmed_read_start2 = qualities.length
-  #   trimmed_read_end2 = 0
-  #
-  #   # --- find readstart:
-  #
-  #   for i in 0..qualities.length-t
-  #     #extract window of size t
-  #
-  #     count=0
-  #
-  #     for k in i...i+t
-  #       if qualities[k]>=min_quality_score
-  #         count += 1
-  #       end
-  #     end
-  #
-  #     if count>=c
-  #       trimmed_read_start1 = i
-  #       break
-  #     end
-  #
-  #   end
-  #
-  #   # stop when already at seq end
-  #   if i >= qualities.length-t
-  #     return nil
-  #   end
-  #
-  #   # -- find read-end1, BUT THIS TIME COMING FROM SAME DIRECTION:
-  #   #asking: When does quality stop to obey the above quality condition?
-  #
-  #   for i in trimmed_read_start1..qualities.length-t
-  #     #extract window of size t
-  #
-  #     count=0
-  #
-  #     for k in i...i+t
-  #       if qualities[k]>=min_quality_score
-  #         count += 1
-  #       end
-  #     end
-  #
-  #     if count<c
-  #       trimmed_read_end1 = i
-  #       break
-  #     end
-  #
-  #   end
-  #
-  #   #### same from other dir:
-  #
-  #   # --- find readend2:
-  #
-  #   i =qualities.length
-  #
-  #   while i > 0
-  #     #extract window of size t
-  #
-  #     # k=i
-  #     count=0
-  #
-  #     for k in i-t...i
-  #       if qualities[k]>=min_quality_score
-  #         count += 1
-  #       end
-  #     end
-  #
-  #     if count>=c
-  #       trimmed_read_end2 = i
-  #       break
-  #     end
-  #
-  #     i-=1
-  #
-  #   end
-  #
-  #   # -- find read_start2, BUT THIS TIME COMING FROM SAME DIRECTION:
-  #   #asking: When does quality stop to obey the above quality condition?
-  #
-  #   i =trimmed_read_end2
-  #
-  #   while i > 0
-  #     #extract window of size t
-  #
-  #     # k=i
-  #     count=0
-  #
-  #     for k in i-t...i
-  #       if qualities[k]>=min_quality_score
-  #         count += 1
-  #       end
-  #     end
-  #
-  #     if count<c
-  #       trimmed_read_start2 = i
-  #       break
-  #     end
-  #
-  #     i-=1
-  #
-  #   end
-  #
-  #
-  #   # choose longer fragment
-  #
-  #   puts trimmed_read_start1
-  #   puts trimmed_read_end1
-  #
-  #   puts trimmed_read_start2
-  #   puts trimmed_read_end2
-  #
-  #
-  #
-  #   if (trimmed_read_end2-trimmed_read_start2) > (trimmed_read_end1-trimmed_read_start1)
-  #     trimmed_read_end=trimmed_read_end2
-  #     trimmed_read_start=trimmed_read_start2
-  #   else
-  #     trimmed_read_end=trimmed_read_end1
-  #     trimmed_read_start=trimmed_read_start1
-  #   end
-  #
-  #   #check if xy% < min_score:
-  #   ctr_bad=0
-  #   ctr_total=0
-  #   for j in trimmed_read_start...trimmed_read_end
-  #     if qualities[j]<min_quality_score
-  #       ctr_bad+=1
-  #     end
-  #     ctr_total+=1
-  #   end
-  #
-  #   [trimmed_read_start, trimmed_read_end, ctr_bad.to_f/ctr_total.to_f]
-  #
-  #
-  #
-  #
-  # end
-
-  # old version
 
   def trim_seq(qualities, min_quality_score, t, c)
     trimmed_read_start = 0

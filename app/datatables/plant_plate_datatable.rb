@@ -25,9 +25,7 @@ class PlantPlateDatatable
   def data
     plant_plates.map do |plant_plate|
       name = ''
-      if plant_plate.name
-        name = link_to plant_plate.name, edit_plant_plate_path(plant_plate)
-      end
+      name = link_to plant_plate.name, edit_plant_plate_path(plant_plate) if plant_plate.name
 
       [
         name,

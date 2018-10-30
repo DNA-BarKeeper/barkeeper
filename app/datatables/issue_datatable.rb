@@ -27,14 +27,10 @@ class IssueDatatable
   def data
     issues.map do |issue|
       primer_read_link = ' '
-      if issue.primer_read
-        primer_read_link = link_to(issue.primer_read.name, edit_primer_read_path(issue.primer_read))
-      end
+      primer_read_link = link_to(issue.primer_read.name, edit_primer_read_path(issue.primer_read)) if issue.primer_read
 
       contig_link = ' '
-      if issue.contig
-        contig_link = link_to issue.contig.name, edit_contig_path(issue.contig)
-      end
+      contig_link = link_to issue.contig.name, edit_contig_path(issue.contig) if issue.contig
 
       [
         link_to(issue.title, edit_issue_path(issue)),

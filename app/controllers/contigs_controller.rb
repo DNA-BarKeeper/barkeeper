@@ -301,8 +301,7 @@ class ContigsController < ApplicationController
   def verify_next
     @contig.update(verified_by: current_user.id, verified_at: Time.now, assembled: true, verified: true)
 
-    # generate / update markersequence
-    # generate marker sequence
+    # Generate or update MarkerSequence
     ms = MarkerSequence.find_or_create_by(name: @contig.name)
     partial_cons = @contig.partial_cons.first
     ms.sequence = partial_cons.aligned_sequence.delete('-')

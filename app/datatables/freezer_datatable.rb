@@ -26,14 +26,10 @@ class FreezerDatatable
     freezers.map do |freezer|
       freezercode = ''
 
-      if freezer.freezercode
-        freezercode = link_to freezer.freezercode, edit_freezer_path(freezer)
-      end
+      freezercode = link_to freezer.freezercode, edit_freezer_path(freezer) if freezer.freezercode
 
       lab = ''
-      if freezer.lab
-        lab = link_to freezer.lab.labcode, edit_lab_path(freezer.lab)
-      end
+      lab = link_to freezer.lab.labcode, edit_lab_path(freezer.lab) if freezer.lab
 
       [
         freezercode,
@@ -53,9 +49,7 @@ class FreezerDatatable
 
     freezers = freezers.page(page).per_page(per_page)
 
-    if params[:sSearch].present?
-      freezers = freezers.where('freezercode ILIKE :search', search: "%#{params[:sSearch]}%")
-    end
+    freezers = freezers.where('freezercode ILIKE :search', search: "%#{params[:sSearch]}%") if params[:sSearch].present?
 
     freezers
   end
