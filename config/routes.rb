@@ -33,8 +33,8 @@ GBOLapp::Application.routes.draw do
   resources :contig_searches do
     post :export_as_pde
     get :delete_all
-    # get :export_results_as_zip
-    # post :download_results
+    get :export_results_as_zip
+    post :download_results
   end
 
   resources :marker_sequence_searches do

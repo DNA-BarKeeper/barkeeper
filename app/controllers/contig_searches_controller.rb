@@ -56,18 +56,17 @@ class ContigSearchesController < ApplicationController
     send_data(ContigSearch.pde(@contig_search.contigs.includes(:partial_cons, isolate: [individual: :species]), add_reads: false), filename: "#{file_name}.pde", type: 'application/txt')
   end
 
-  # TODO: Unfinished feature
-  # def export_results_as_zip
-  #   @contig_search = ContigSearch.find(params[:contig_search_id])
-  #
-  #   ContigSearchResultExport.perform_async(@contig_search)
-  #   redirect_to @contig_search, notice: "Writing zip file to S3 in background. May take a minute or so. Download with 'Download results' button."
-  # end
-  #
-  # def download_results
-  #   @contig_search = ContigSearch.find(params[:contig_search_id])
-  #   send_data(File.read(@contig_search.search_result_archive.url), :filename => @contig_search.search_result_archive_file_name, :type => "application/zip")
-  # end
+  def export_results_as_zip
+    @contig_search = ContigSearch.find(params[:contig_search_id])
+
+    ContigSearchResultExport.perform_async(@contig_search)
+    redirect_to @contig_search, notice: "Writing zip file to S3 in background. May take a minute or so. Download with 'Download results' button."
+  end
+
+  def download_results
+    @contig_search = ContigSearch.find(params[:contig_search_id])
+    send_data(File.read(@contig_search.search_result_archive.url), :filename => @contig_search.search_result_archive_file_name, :type => "application/zip")
+  end
 
   private
 

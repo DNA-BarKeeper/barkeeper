@@ -24,16 +24,13 @@ class Species < ApplicationRecord
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
-      # Add family or assign to existing:
       family = Family.find_or_create_by(name: row['family'])
       family.add_project_and_save(project_id)
 
-      # Add order or assign to existing
       order = Order.find_or_create_by(name: row['order'])
       order.add_project_and_save(project_id)
       family.update(order_id: order.id)
 
-      # Add higher-order taxon or assign to existing if info is available
       higher_order_taxon = HigherOrderTaxon.find_or_create_by(name: row['higher_order_taxon'])
       higher_order_taxon.add_project_and_save(project_id)
       order.update(higher_order_taxon_id: higher_order_taxon.id)
