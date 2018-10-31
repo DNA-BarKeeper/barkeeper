@@ -68,11 +68,15 @@ class ContigSearchesController < ApplicationController
     @contig_search = ContigSearch.find(params[:contig_search_id])
 
     begin
-      send_data(File.read(@contig_search.search_result_archive.url),
-                filename: @contig_search.search_result_archive_file_name,
-                type: 'application/zip')
+      archive = if Rails.env.development?
+                  File.read(@contig_search.search_result_archive.path)
+                else
+                  File.read(@contig_search.search_result_archive.url)
+                end
+
+      send_data(archive, filename: @contig_search.search_result_archive_file_name, type: 'application/zip')
     rescue Errno::ENOENT
-      redirect_to @contig_search, notice: 'Please wait while the result archive is written to the server.'
+      redirect_to @contig_search, notice: 'Please wait while the result archive is being written to the server.'
     end
   end
 
