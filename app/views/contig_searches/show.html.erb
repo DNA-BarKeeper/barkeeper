@@ -32,6 +32,10 @@
 
 <p>
   <%= link_to 'Download results as PDE', contig_search_export_as_pde_path(@contig_search), method: 'post', class: 'btn btn-default' %>
+
+  <%= link_to 'Create result archive file on server', contig_search_export_results_as_zip_path(@contig_search), class: 'btn btn-default' %>
+
+  <%= link_to 'Download result archive including pherograms (*.zip)', contig_search_download_results_path(@contig_search), method: 'post', class: 'btn btn-default' %>
 </p>
 
 <p>
@@ -49,8 +53,3 @@
               class: 'btn btn-danger',
               :data => { :confirm => 'Are you sure?' }%>
 </p>
-
-<!--<p>-->
-  <%#= link_to 'Create result archive file on server', contig_search_export_results_as_zip_path(@contig_search), class: 'btn btn-default' %>
-  <%#= link_to 'Download results', contig_search_download_results_path(@contig_search), method: 'post', class: 'btn btn-default' %>
-<!--</p>-->
