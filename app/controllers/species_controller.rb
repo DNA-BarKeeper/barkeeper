@@ -14,20 +14,17 @@ class SpeciesController < ApplicationController
   end
 
   def xls
-    begin
-      data = if Rails.env.development?
-               File.read(SpeciesExporter.last.species_export.path)
-             else
-               File.read(SpeciesExporter.last.species_export.url)
-             end
+    export = SpeciesExporter.last.species_export
+    file_path = data = Rails.env.development? ? export.path : export.url
 
+    if File.exists? file_path
       send_data(data, filename: 'species_export.xls',
                       type: 'application/vnd.ms-excel',
                       disposition: 'attachment',
                       stream: 'true',
                       buffer_size: '4096')
-    rescue Errno::ENOENT
-      redirect_to @contig_search, notice: 'Please wait while the file is being written to the server.'
+    else
+      redirect_to species_index_path, flash: { warning: 'Please wait while the file is being written to the server.' }
     end
   end
 

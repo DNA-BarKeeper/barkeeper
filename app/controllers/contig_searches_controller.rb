@@ -75,8 +75,8 @@ class ContigSearchesController < ApplicationController
                 end
 
       send_data(archive, filename: @contig_search.search_result_archive_file_name, type: 'application/zip')
-    rescue Errno::ENOENT
-      redirect_to @contig_search, :flash => { :warning => 'Please wait while the result archive is being written to the server.' }
+    rescue SystemCallError
+      redirect_to @contig_search, flash: { warning: 'Please wait while the result archive is being written to the server.' }
     end
   end
 
