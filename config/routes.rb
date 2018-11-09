@@ -17,9 +17,9 @@ GBOLapp::Application.routes.draw do
   get 'overview_diagram/finished_species_rpl16', defaults: { format: 'json' }
   get 'overview_diagram/finished_species_trnk_matk', defaults: { format: 'json' }
 
-  get 'specimens_xls', action: :xls, controller: 'individuals'
+  post 'specimens_xls', action: :xls, controller: 'individuals'
   get 'specimens_create_xls', action: :create_xls, controller: 'individuals'
-  get 'species_xls', action: :xls, controller: 'species'
+  post 'species_xls', action: :xls, controller: 'species'
   get 'species_create_xls', action: :create_xls, controller: 'species'
 
   get 'analysis_output', action: :analysis_output, controller: 'contigs'

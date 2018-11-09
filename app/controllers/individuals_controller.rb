@@ -21,7 +21,7 @@ class IndividualsController < ApplicationController
 
   def xls
     export = SpecimenExporter.last.specimen_export
-    file_path = data = Rails.env.development? ? export.path : export.url
+    file_path = Rails.env.development? ? export.path : export.url
 
     if File.exists? file_path
       send_data(File.read(file_path), filename: 'specimens_export.xls',
