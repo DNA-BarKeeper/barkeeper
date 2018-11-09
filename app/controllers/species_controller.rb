@@ -18,8 +18,8 @@ class SpeciesController < ApplicationController
     export = SpeciesExporter.last.species_export
 
     if export.present?
-      file_path = Rails.env.development? ? File.join(Rails.root, export.path) : export.url
-      send_file(file_path, filename: 'species_export.xls',
+      data = Rails.env.development? ? File.open(File.join(Rails.root, export.path)) : open("http:#{export.url}")
+      send_data(data.read, filename: 'species_export.xls',
                            type: 'application/vnd.ms-excel',
                            disposition: 'attachment',
                            stream: 'true',

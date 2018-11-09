@@ -23,8 +23,8 @@ class IndividualsController < ApplicationController
     export = SpecimenExporter.last.specimen_export
 
     if export.present?
-      file_path = Rails.env.development? ? File.join(Rails.root, export.path) : export.url
-      send_file(file_path, filename: 'specimens_export.xls',
+      data = Rails.env.development? ? File.open(File.join(Rails.root, export.path)) : open("http:#{export.url}")
+      send_data(data.read, filename: 'specimens_export.xls',
                            type: 'application/vnd.ms-excel',
                            disposition: 'attachment',
                            stream: 'true',
