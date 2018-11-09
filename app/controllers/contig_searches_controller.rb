@@ -69,8 +69,8 @@ class ContigSearchesController < ApplicationController
     archive = @contig_search.search_result_archive
 
     if archive.present?
-      file_path = Rails.env.development? ? File.join(Rails.root, archive.path) : archive.url
-      send_file(file_path,
+      data = Rails.env.development? ? File.open(File.join(Rails.root, archive.path)) : open("http:#{archive.url}")
+      send_data(data.read,
                 filename: @contig_search.search_result_archive_file_name,
                 type: 'application/zip')
     else
