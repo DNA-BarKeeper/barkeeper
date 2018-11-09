@@ -17,11 +17,6 @@ GBOLapp::Application.routes.draw do
   get 'overview_diagram/finished_species_rpl16', defaults: { format: 'json' }
   get 'overview_diagram/finished_species_trnk_matk', defaults: { format: 'json' }
 
-  post 'specimens_xls', action: :xls, controller: 'individuals'
-  get 'specimens_create_xls', action: :create_xls, controller: 'individuals'
-  post 'species_xls', action: :xls, controller: 'species'
-  get 'species_create_xls', action: :create_xls, controller: 'species'
-
   get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'
 
@@ -31,10 +26,10 @@ GBOLapp::Application.routes.draw do
   get 'primer_reads/:id/edit/:pos', action: :go_to_pos, controller: 'primer_reads'
 
   resources :contig_searches do
-    post :export_as_pde
     get :delete_all
     get :export_results_as_zip
     post :download_results
+    post :export_as_pde
   end
 
   resources :marker_sequence_searches do
@@ -55,7 +50,6 @@ GBOLapp::Application.routes.draw do
       get 'festuca_verified'
       get 'filter'
       get 'assemble_all'
-      get 'pde_all'
       get 'duplicates'
       post :change_via_script
       post :compare_contigs # TODO: Marked for removal
@@ -79,6 +73,8 @@ GBOLapp::Application.routes.draw do
     collection do
       get :filter
       get :problematic_specimens
+      get :create_xls
+      post :xls
     end
   end
 
@@ -115,14 +111,17 @@ GBOLapp::Application.routes.draw do
 
   resources :species do
     collection do
-      post :import_stuttgart
-      post :import_berlin
-      post :import_gbolii
       get :filter
       get :get_mar
       get :get_bry
       get :get_ant
+      get :create_xls
+      post :xls
+      post :import_stuttgart
+      post :import_berlin
+      post :import_gbolii
     end
+
     member do
       get 'show_individuals'
     end
