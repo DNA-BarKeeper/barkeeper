@@ -21,16 +21,16 @@ class IndividualsController < ApplicationController
 
   def xls
     export = SpecimenExporter.last.specimen_export
-    file_path = Rails.env.development? ? export.path : export.url
 
-    if File.exists? file_path
-      send_data(File.read(file_path), filename: 'specimens_export.xls',
-                      type: 'application/vnd.ms-excel',
-                      disposition: 'attachment',
-                      stream: 'true',
-                      buffer_size: '4096')
+    if export.present?
+      file_path = Rails.env.development? ? File.join(Rails.root, export.path) : export.url
+      send_file(file_path, filename: 'specimens_export.xls',
+                           type: 'application/vnd.ms-excel',
+                           disposition: 'attachment',
+                           stream: 'true',
+                           buffer_size: '4096')
     else
-      redirect_to individuals_path, flash: { warning: 'Please wait while the file is being written to the server.' }
+      redirect_to individuals_path, notice: 'Please wait while the file is being written to the server.'
     end
   end
 
