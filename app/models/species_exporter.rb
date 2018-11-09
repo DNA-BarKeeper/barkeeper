@@ -6,7 +6,10 @@ class SpeciesExporter < ApplicationRecord
                     path: '/species_export.xls'
 
   # Validate content type
-  validates_attachment_content_type :species_export, content_type: /\Aapplication\/xml/
+  validates_attachment_content_type :species_export, content_type: %w[text/xml
+                                                                      application/excel
+                                                                      application/vnd.ms-excel
+                                                                      application/xml]
   # Validate filename
   validates_attachment_file_name :species_export, matches: /xls\Z/
 

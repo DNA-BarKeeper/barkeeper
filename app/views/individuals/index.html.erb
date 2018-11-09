@@ -32,7 +32,7 @@
 <p>
   <% if user_signed_in? %>
       <%= link_to 'Export specimens to xls…', create_xls_individuals_path, :class => 'btn btn-default' %>
-      <%= link_to 'Download last specimens export', xls_individuals_path, method: :post, :class => 'btn btn-default' %>
+      <%= link_to 'Download last specimens export', xls_individuals_path, :class => 'btn btn-default' %>
   <%end %>
 </p>
 <%= link_to 'New Individual', new_individual_path %>

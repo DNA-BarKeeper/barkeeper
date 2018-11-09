@@ -42,7 +42,7 @@
 <p>
   <% if user_signed_in? %>
     <%= link_to 'Export species to xls…', create_xls_species_index_path, :class => 'btn btn-default' %>
-    <%= link_to 'Download last species export', xls_species_index_path, method: :post, :class => 'btn btn-default' %>
+    <%= link_to 'Download last species export', xls_species_index_path, :class => 'btn btn-default' %>
   <%end %>
 </p>
 <%= link_to ' New Species', new_species_path %>

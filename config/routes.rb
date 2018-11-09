@@ -28,13 +28,13 @@ GBOLapp::Application.routes.draw do
   resources :contig_searches do
     get :delete_all
     get :export_results_as_zip
-    post :download_results
-    post :export_as_pde
+    get :download_results
+    get :export_as_pde
   end
 
   resources :marker_sequence_searches do
-    post :export_as_fasta
-    post :export_as_pde
+    get :export_as_fasta
+    get :export_as_pde
   end
 
   resources :individual_searches
@@ -74,7 +74,7 @@ GBOLapp::Application.routes.draw do
       get :filter
       get :problematic_specimens
       get :create_xls
-      post :xls
+      get :xls
     end
   end
 
@@ -116,7 +116,7 @@ GBOLapp::Application.routes.draw do
       get :get_bry
       get :get_ant
       get :create_xls
-      post :xls
+      get :xls
       post :import_stuttgart
       post :import_berlin
       post :import_gbolii
