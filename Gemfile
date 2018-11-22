@@ -52,7 +52,6 @@ gem 'net-sftp',        require: false
 gem 'net-ssh',         require: false
 gem 'roo-xls' # Handle excel files
 gem 'rubyzip' # Handle zip files
-gem 'scout_apm'
 gem 'simple_form'
 gem 'slim' # TODO: Used anywhere?
 gem 'sprockets-rails', require: 'sprockets/railtie'
