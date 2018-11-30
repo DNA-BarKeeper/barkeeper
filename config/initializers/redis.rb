@@ -1,4 +1,3 @@
 # frozen_string_literal: true
 
-# uri = URI.parse(ENV["REDISTOGO_URL"])
-# REDIS = Redis.new(:url => ENV['REDISTOGO_URL'])
+REDIS = Redis.new(url: ENV['REDIS_URL'] || '127.0.0.0') # TODO fix url in non-docker env
