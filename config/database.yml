@@ -1,18 +1,25 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  host: postgres
-  username: postgres
-  password:
-  pool: 5
+
+production:
+  <<: *default
+  database: gbol5_production
+  url: <%= ENV['DATABASE_URL'] %>
 
 development:
   <<: *default
   database: gbol5_development
+  url: <%= ENV["DATABASE_URL"] %>
 
 test:
   <<: *default
   database: gbol5_test
+  pool: 5
+  host: localhost
+  timeout: 5000
+  username: postgres
+  password: passwordpsql
 
 #development:
 #  adapter: postgresql
