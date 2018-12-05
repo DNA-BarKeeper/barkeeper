@@ -2,53 +2,14 @@ default: &default
   adapter: postgresql
   encoding: unicode
 
-production:
-  <<: *default
-  database: gbol5_production
-  url: <%= ENV['DATABASE_URL'] %>
-
 development:
   <<: *default
-  database: gbol5_development
-  url: <%= ENV["DATABASE_URL"] %>
+  url: <%= ENV['DATABASE_URL'].gsub('?', '_development?') %>
 
 test:
   <<: *default
-  database: gbol5_test
-  pool: 5
-  host: localhost
-  timeout: 5000
-  username: postgres
-  password: passwordpsql
+  url: <%= ENV['DATABASE_URL'].gsub('?', '_test?') %>
 
-#development:
-#  adapter: postgresql
-#  encoding: unicode
-#  database: gbol5
-#  pool: 5
-#  host: localhost
-#  timeout: 5000
-#  username: postgres
-#  password: passwordpsql
-#
-## Warning: The database defined as "test" will be erased and
-## re-generated from your development database when you run "rake".
-## Do not set this db to the same as development or production.
-#test: &test
-#  adapter: postgresql
-#  encoding: unicode
-#  database: gbol_test
-#  pool: 5
-#  host: localhost
-#  timeout: 5000
-#  username: postgres
-#  password: passwordpsql
-#
-#production:
-#  host: localhost
-#  adapter: postgresql
-#  encoding: unicode
-#  database: gbol_production
-#  pool: 5
-#  username: <%= ENV["GBOL5_DATABASE_USER"] %>
-#  password: <%= ENV["GBOL5_DATABASE_PASSWORD"] %>
+production:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'].gsub('?', '_production?') %>
