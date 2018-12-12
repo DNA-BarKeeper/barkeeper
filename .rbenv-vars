@@ -1,6 +1,6 @@
 DATABASE_URL=postgresql://postgres:passwordpsql@localhost/gbol5?encoding=unicode&pool=5&timeout=5000
 SECRET_TOKEN=04853b04b1c281298a411cb0f79d3fbe81b9c645439772c84512b6fd90cadad9581593e1e1b7f740a3e16c7b53935e2d4408dcdb4e32a7763e7548d432e590dd
-REDIS_URL=localhost
+REDIS_HOST=localhost
 
 S3_BUCKET_NAME=gbol5
 AWS_ACCESS_KEY_ID=AKIAINH5TDSKSWQ6J62A
