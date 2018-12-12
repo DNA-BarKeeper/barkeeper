@@ -37,22 +37,24 @@ module Import
     res = Net::HTTP.start(url.host, url.port) { |http| http.request(req) }
     doc = Nokogiri::XML(res.body)
 
+    search_hits = doc.at_xpath('//biocase:content').attributes['totalSearchHits'].value.to_i
+
     results = {}
 
-    begin
-      results[:unit] = doc.at_xpath('//abcd21:Unit')
-      results[:unit_id] = query_field == 'UnitID' ? id : doc.at_xpath('//abcd21:Unit/abcd21:UnitID').content
-      results[:specimen_unit_id] = unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content
-      results[:full_name] = unit.at_xpath('//abcd21:FullScientificNameString').content
-      results[:herbarium] = unit.at_xpath('//abcd21:SourceInstitutionCode').content
-      results[:collector] = unit.at_xpath('//abcd21:GatheringAgent').content
-      results[:locality] = unit.at_xpath('//abcd21:LocalityText').content
-      results[:longitude] = unit.at_xpath('//abcd21:LongitudeDecimal').content
-      results[:latitude] = unit.at_xpath('//abcd21:LatitudeDecimal').content
-      results[:higher_taxon_rank] = unit.at_xpath('//abcd21:HigherTaxonRank').content
-      results[:higher_taxon_name] = unit.at_xpath('//abcd21:HigherTaxonName').content
-    rescue StandardError
-      puts "Unable to read ABCD for #{id}."
+    if search_hits > 0
+      unit = doc.at_xpath('//abcd21:Unit')
+      results[:unit_id] = query_field == 'UnitID' ? id : doc.at_xpath('//abcd21:Unit/abcd21:UnitID').content.strip
+      results[:specimen_unit_id] = unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content.strip
+      results[:full_name] = unit.at_xpath('//abcd21:FullScientificNameString').content.strip
+      results[:herbarium] = unit.at_xpath('//abcd21:SourceInstitutionCode').content.strip
+      results[:collector] = unit.at_xpath('//abcd21:GatheringAgent').content.strip
+      results[:locality] = unit.at_xpath('//abcd21:LocalityText').content.strip
+      results[:longitude] = unit.at_xpath('//abcd21:LongitudeDecimal').content.strip
+      results[:latitude] = unit.at_xpath('//abcd21:LatitudeDecimal').content.strip
+      results[:higher_taxon_rank] = unit.at_xpath('//abcd21:HigherTaxonRank').content.strip
+      results[:higher_taxon_name] = unit.at_xpath('//abcd21:HigherTaxonName').content.strip
+    else
+      puts "No entries could be found for #{query_field} #{id}."
     end
 
     results
