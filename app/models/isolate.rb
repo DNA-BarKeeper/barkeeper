@@ -26,6 +26,7 @@ class Isolate < ApplicationRecord
     [isolates.size, isolates_s.distinct.count, isolates.distinct.count, isolates_i.distinct.count]
   end
 
+  # TODO auf ABCD umstellen
   def self.import(file, project_id)
     spreadsheet = Isolate.open_spreadsheet(file)
     header = spreadsheet.row(1)
@@ -94,7 +95,7 @@ class Isolate < ApplicationRecord
   end
 
   def assign_specimen
-    search_dna_bank(lab_nr)
+    assign_specimen_info(Isolate.read_abcd(lab_nr))
   end
 
   def individual_name
@@ -111,71 +112,24 @@ class Isolate < ApplicationRecord
 
   private
 
-  def search_dna_bank(id_string, individual = nil)
+  def assign_specimen_info(abcd_results, individual = nil)
     individual ||= individual
-    is_gbol_number = false
-    message = ''
-    service_url = ''
 
-    if id_string.downcase.include? 'db'
-      id_parts = id_string.match(/^([A-Za-z]+)[\s_]?([0-9]+)$/)
-      dna_bank_id = id_parts ? "#{id_parts[1]} #{id_parts[2]}" : id_string # Ensure a space between 'DB' and the ID number
-
-      message = "Query for DNABank ID '#{dna_bank_id}'...\n"
-      service_url = "http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/UnitID'>#{dna_bank_id}</like></filter><count>false</count></search></request>"
-    elsif id_string.downcase.include? 'gbol'
-      is_gbol_number = true
-
-      message = "Query for GBoL number '#{id_string}'...\n"
-      service_url = "http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/SpecimenUnit/Preparations/preparation/sampleDesignations/sampleDesignation'>#{id_string}</like></filter><count>false</count></search></request>"
-    end
-
-    puts message
-
-    url = URI.parse(service_url)
-    req = Net::HTTP::Get.new(url.to_s)
-    res = Net::HTTP.start(url.host, url.port) { |http| http.request(req) }
-    doc = Nokogiri::XML(res.body)
-
-    specimen_unit_id = nil
-    full_name = nil
-    herbarium = nil
-    collector = nil
-    locality = nil
-    longitude = nil
-    latitude = nil
-
-    begin
-      unit = doc.at_xpath('//abcd21:Unit')
-      unit_id = is_gbol_number ? doc.at_xpath('//abcd21:Unit/abcd21:UnitID').content : id_string # UnitID field contains DNA bank number
-      specimen_unit_id = unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content
-      full_name = unit.at_xpath('//abcd21:FullScientificNameString').content
-      herbarium = unit.at_xpath('//abcd21:SourceInstitutionCode').content
-      collector = unit.at_xpath('//abcd21:GatheringAgent').content
-      locality = unit.at_xpath('//abcd21:LocalityText').content
-      longitude = unit.at_xpath('//abcd21:LongitudeDecimal').content
-      latitude = unit.at_xpath('//abcd21:LatitudeDecimal').content
-      higher_taxon_rank = unit.at_xpath('//abcd21:HigherTaxonRank').content
-      higher_taxon_name = unit.at_xpath('//abcd21:HigherTaxonName').content
-    rescue StandardError
-      puts 'Could not read ABCD.'
-    end
-
-    if specimen_unit_id
-      individual ||= Individual.find_or_create_by(specimen_id: specimen_unit_id)
+    if abcd_results[:specimen_unit_id]
+      individual ||= Individual.find_or_create_by(specimen_id: abcd_results[:specimen_unit_id])
       individual.add_projects(projects.pluck(:id))
 
-      individual.update(specimen_id: specimen_unit_id)
-      individual.update(DNA_bank_id: unit_id) if unit_id
-      individual.update(collector: collector.strip) if collector
-      individual.update(locality: locality) if locality
-      individual.update(longitude: longitude) if longitude
-      individual.update(latitude: latitude) if latitude
-      individual.update(herbarium: herbarium) if herbarium
+      individual.update(specimen_id: abcd_results[:specimen_unit_id])
+      individual.update(DNA_bank_id: abcd_results[:unit_id]) if abcd_results[:unit_id]
+      individual.update(collector: abcd_results[:collector]) if abcd_results[:collector]
+      individual.update(locality: abcd_results[:locality]) if abcd_results[:locality]
+      individual.update(longitude: abcd_results[:longitude]) if abcd_results[:longitude]
+      individual.update(latitude: abcd_results[:latitude]) if abcd_results[:latitude]
+      individual.update(herbarium: abcd_results[:herbarium]) if abcd_results[:herbarium]
 
-      if full_name
+      if abcd_results[:full_name]
         regex = /^(\w+)\s+(\w+)/
-        matches = full_name.match(regex)
+        matches = abcd_results[:full_name].match(regex)
 
         if matches
           genus = matches[1]
@@ -188,8 +142,8 @@ class Isolate < ApplicationRecord
             species.add_projects(projects.pluck(:id))
             species.update(genus_name: genus, species_epithet: species_epithet, composed_name: species.full_name)
 
-            if higher_taxon_rank == 'familia'
-              higher_taxon_name = 'Lamiaceae' if higher_taxon_name.capitalize == 'Labiatae'
+            if abcd_results[:higher_taxon_rank] == 'familia'
+              higher_taxon_name = higher_taxon_name.capitalize == 'Labiatae' ? 'Lamiaceae' : abcd_results[:higher_taxon_name]
 
               family = Family.find_or_create_by(name: higher_taxon_name.capitalize)
               family.add_projects(projects.pluck(:id))
@@ -200,8 +154,6 @@ class Isolate < ApplicationRecord
           end
         end
       end
-
-      puts 'Done.'
 
       update(individual: individual)
     end
