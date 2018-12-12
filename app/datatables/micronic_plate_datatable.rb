@@ -30,7 +30,6 @@ class MicronicPlateDatatable
       end
 
       lab_rack = ''
-      rack_position = ''
       shelf = ''
       freezer = ''
 
