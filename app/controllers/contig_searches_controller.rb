@@ -59,13 +59,24 @@ class ContigSearchesController < ApplicationController
   def export_results_as_zip
     @contig_search = ContigSearch.find(params[:contig_search_id])
 
-    ContigSearchResultExport.perform_async(@contig_search)
-    redirect_to @contig_search, notice: "Writing zip file to S3 in background. May take a minute or so. Download with 'Download results' button."
+    ContigSearchResultExport.perform_async(params[:contig_search_id])
+    redirect_to @contig_search,
+                notice: "The result archive file is being written to the server in the background. May take a minute or so. Download with 'Download result archive' button."
   end
 
   def download_results
     @contig_search = ContigSearch.find(params[:contig_search_id])
-    send_data(File.read(@contig_search.search_result_archive.url), :filename => @contig_search.search_result_archive_file_name, :type => "application/zip")
+    archive = @contig_search.search_result_archive
+
+    if archive.present?
+      data = Rails.env.development? ? File.open(File.join(Rails.root, archive.path)) : open("http:#{archive.url}")
+      send_data(data.read,
+                filename: @contig_search.search_result_archive_file_name,
+                type: 'application/zip')
+    else
+      redirect_to @contig_search,
+                  notice: 'Please wait while the result archive is being written to the server.'
+    end
   end
 
   private
