@@ -10,12 +10,23 @@ class SpeciesController < ApplicationController
 
   def create_xls
     SpeciesExport.perform_async(current_project_id)
-    redirect_to species_index_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Species index page > 'Download last species export'."
+    redirect_to species_index_path,
+                notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Species index page > 'Download last species export'."
   end
 
   def xls
-    data = Rails.env.development? ? open(Rails.root.to_s + SpeciesExporter.last.species_export.path) : open("http:#{SpeciesExporter.last.species_export.url}")
-    send_data data.read, filename: 'species_export.xls', type: 'application/vnd.ms-excel', disposition: 'attachment', stream: 'true', buffer_size: '4096'
+    export = SpeciesExporter.last.species_export
+
+    if export.present?
+      data = Rails.env.development? ? File.open(File.join(Rails.root, export.path)) : open("http:#{export.url}")
+      send_data(data.read, filename: 'species_export.xls',
+                           type: 'application/vnd.ms-excel',
+                           disposition: 'attachment',
+                           stream: 'true',
+                           buffer_size: '4096')
+    else
+      redirect_to species_index_path, notice: 'Please wait while the file is being written to the server.'
+    end
   end
 
   # GET /species

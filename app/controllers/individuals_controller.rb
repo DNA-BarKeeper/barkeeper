@@ -20,8 +20,18 @@ class IndividualsController < ApplicationController
   end
 
   def xls
-    data = Rails.env.development? ? open(Rails.root.to_s + SpecimenExporter.last.specimen_export.path) : open("http:#{SpecimenExporter.last.specimen_export.url}")
-    send_data data.read, filename: 'specimens_export.xls', type: 'application/vnd.ms-excel', disposition: 'attachment', stream: 'true', buffer_size: '4096'
+    export = SpecimenExporter.last.specimen_export
+
+    if export.present?
+      data = Rails.env.development? ? File.open(File.join(Rails.root, export.path)) : open("http:#{export.url}")
+      send_data(data.read, filename: 'specimens_export.xls',
+                           type: 'application/vnd.ms-excel',
+                           disposition: 'attachment',
+                           stream: 'true',
+                           buffer_size: '4096')
+    else
+      redirect_to individuals_path, notice: 'Please wait while the file is being written to the server.'
+    end
   end
 
   def problematic_specimens
