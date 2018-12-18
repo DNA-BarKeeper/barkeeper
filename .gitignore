@@ -3,10 +3,9 @@
 tmp/
 log/
 public/assets/
-database.yml
-secrets.yml
 .env
 .rbenv-vars
+config/application.yml
 .DS_Store
 rails_best_practices_output.html
 specimens.xls

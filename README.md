@@ -16,3 +16,8 @@ GBOL5 Web App is Copyright (c) 2014-2017 Kai Müller.
 This software is provided "as is" and without any express or implied
 warranties, including, without limitation, the implied warranties of
 merchantability and fitness for a particular purpose.
+
+
+### Setup
+
+Change project specific configuration in config/application.yml. Add images to dir assets/project_images.

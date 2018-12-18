@@ -3,11 +3,9 @@
 GBOLapp::Application.routes.draw do
   root to: 'home#about'
 
-  match 'help', to: 'home#help', via: 'get'
   match 'about', to: 'home#about', via: 'get'
   match 'impressum', to: 'home#impressum', via: 'get'
   match 'privacy_policy', to: 'home#privacy_policy', via: 'get'
-  match 'contact', to: 'home#contact', via: 'get'
   match 'overview', to: 'home#overview', via: 'get'
 
   get 'overview_diagram/index'
