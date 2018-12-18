@@ -11,6 +11,11 @@ Bundler.require(*Rails.groups)
 
 module GBOLapp
   class Application < Rails::Application
+    # Load configuration variables
+    CONFIG = YAML.load(File.read(File.expand_path('../application.yml', __FILE__)))
+    CONFIG.merge! CONFIG.fetch(Rails.env, {})
+    CONFIG.symbolize_keys!
+
     config.generators do |g|
       g.test_framework :minitest
     end

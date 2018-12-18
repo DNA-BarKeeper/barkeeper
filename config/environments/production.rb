@@ -32,16 +32,6 @@ Rails.application.configure do
 
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
 
-  # Load environment variables
-  config.before_configuration do
-    env_file = File.join(Rails.root, 'config', 'local_env.yml')
-    if File.exist?(env_file)
-      YAML.safe_load(File.open(env_file)).each do |key, value|
-        ENV[key.to_s] = value
-      end
-    end
-  end
-
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = 'http://assets.example.com'
 
@@ -72,13 +62,13 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "gbo_lapp_#{Rails.env}"
   config.action_mailer.perform_caching = false
 
-  # for devise
-  config.action_mailer.default_url_options = { host: 'gbol5.de' }
+  # For devise
+  config.action_mailer.default_url_options = { host: ENV['PROJECT_DOMAIN'] }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: '127.0.0.1',
     port: 25,
-    domain: 'gbol5.de',
+    domain: ENV['PROJECT_DOMAIN'],
     tls: false,
     enable_starttls_auto: false
   }
@@ -111,7 +101,7 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Look for secret key base in env var
-  config.secret_key_base = '<%= ENV["SECRET_KEY_BASE"] %>'
+  config.secret_key_base = ENV['SECRET_KEY_BASE']
 
   config.paperclip_defaults = {
     storage: :s3,

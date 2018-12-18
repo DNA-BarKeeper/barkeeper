@@ -8,13 +8,13 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # config.secret_key = '44070e0c4542ccbb36e325f7d6902d5f522447f0c6d6f3a0591e30cc49eab9542fe051ece8ebbb47e482a8291478c956bcfce896bce0cb4993515ea9ab59a62e'
 
-  config.secret_key = '422ed9a725773e72abb68813a794ffcc0659a7426fc1687bac085b61b10b1a0ac2a4440799d0e085b1baa622ed3a7d501931b96caaadcc4133021e94cb540c80'
+  config.secret_key = CONFIG[:devise_secret_key]
 
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = 'admin@gbol5.de'
+  config.mailer_sender = CONFIG[:devise_admin_mail]
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
