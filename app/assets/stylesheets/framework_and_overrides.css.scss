@@ -2,7 +2,7 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-//= depend_on_asset 'species_images/IMG_3438.jpg'
+//= depend_on_asset 'project_images/background.jpg'
 
 div.vertical-spacer {
   height: 10px;
@@ -158,7 +158,7 @@ div.about-background {
 }
 
 body.about_page {
-  background: image-url('species_images/IMG_3438.jpg') fixed;
+  background: image-url('project_images/background.jpg') fixed;
   margin-bottom: 15px; /* Margin bottom by footer height */
 }
 

@@ -20,4 +20,5 @@ merchantability and fitness for a particular purpose.
 
 ### Setup
 
-Change project specific configuration in config/application.yml. Add images to dir assets/project_images.
+Change project specific configuration in config/application.yml. Restart container after changes to this file.
+Add images to dir assets/project_images.
