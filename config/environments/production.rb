@@ -63,12 +63,12 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
 
   # For devise
-  config.action_mailer.default_url_options = { host: ENV['PROJECT_DOMAIN'] }
+  config.action_mailer.default_url_options = { host: CONFIG[:project_domain] }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: '127.0.0.1',
     port: 25,
-    domain: ENV['PROJECT_DOMAIN'],
+    domain: CONFIG[:project_domain],
     tls: false,
     enable_starttls_auto: false
   }
@@ -108,10 +108,10 @@ Rails.application.configure do
     url: ':s3_domain_url',
     path: '/:class/:attachment/:id_partition/:style/:filename',
     s3_credentials: {
-      bucket: ENV['S3_BUCKET_NAME'],
-      access_key_id: ENV['AWS_ACCESS_KEY_ID'],
-      secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
-      s3_region: ENV['S3_REGION'],
+      bucket: CONFIG[:s3_bucket_name],
+      access_key_id: CONFIG[:aws_access_key_id],
+      secret_access_key: CONFIG[:aws_secret_access_key],
+      s3_region: CONFIG[:s3_region],
       preserve_files: true
     }
   }
