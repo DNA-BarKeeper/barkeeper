@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateMarkerSequenceSearches < ActiveRecord::Migration[5.0]
   def change
     create_table :marker_sequence_searches do |t|

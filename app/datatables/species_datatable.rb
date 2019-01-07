@@ -1,10 +1,10 @@
-class SpeciesDatatable
+# frozen_string_literal: true
 
+class SpeciesDatatable
   include Rails.application.routes.url_helpers
   delegate :url_helpers, to: 'Rails.application.routes'
 
   delegate :params, :link_to, :h, to: :@view
-
 
   def initialize(view, family_id, higher_order_id, current_default_project)
     @view = view
@@ -13,7 +13,7 @@ class SpeciesDatatable
     @current_default_project = current_default_project
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
       iTotalRecords: Species.count,
@@ -27,15 +27,13 @@ class SpeciesDatatable
   def data
     species.map do |single_species|
       family = ''
-      if single_species.family
-        family = link_to(single_species.family.name, edit_family_path(single_species.family))
-      end
+      family = link_to(single_species.family.name, edit_family_path(single_species.family)) if single_species.family
       [
         link_to(single_species.name_for_display, edit_species_path(single_species)),
         single_species.author,
         family,
-        single_species.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-        link_to('Delete', single_species, method: :delete, data: { confirm: 'Are you sure?' }),
+        single_species.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
+        link_to('Delete', single_species, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end
@@ -46,17 +44,15 @@ class SpeciesDatatable
 
   def fetch_species
     if @higher_order_id
-      species = Species.includes(:family).joins(:family => {:order => :higher_order_taxon}).where(orders: {higher_order_taxon_id: @higher_order_id}).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      species = Species.includes(:family).joins(family: { order: :higher_order_taxon }).where(orders: { higher_order_taxon_id: @higher_order_id }).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     elsif @family_id
-      species = Species.includes(:family).where(:family_id => @family_id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+      species = Species.includes(:family).where(family_id: @family_id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}") # TODO: ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     else
-      species = Species.includes(:family).in_project(@current_default_project).order("#{sort_column} #{sort_direction}") # todo ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+      species = Species.includes(:family).in_project(@current_default_project).order("#{sort_column} #{sort_direction}") # TODO: ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     end
     species = species.page(page).per_page(per_page)
 
-    if params[:sSearch].present?
-      species = species.where("composed_name ILIKE :search", search: "%#{params[:sSearch]}%")
-    end
+    species = species.where('composed_name ILIKE :search', search: "%#{params[:sSearch]}%") if params[:sSearch].present?
 
     species
   end
@@ -75,6 +71,6 @@ class SpeciesDatatable
   end
 
   def sort_direction
-    params[:sSortDir_0] == "desc" ? "desc" : "asc"
+    params[:sSortDir_0] == 'desc' ? 'desc' : 'asc'
   end
 end

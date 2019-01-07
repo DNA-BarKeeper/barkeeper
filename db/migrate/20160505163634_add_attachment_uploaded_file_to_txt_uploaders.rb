@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddAttachmentUploadedFileToTxtUploaders < ActiveRecord::Migration
   def self.up
     change_table :txt_uploaders do |t|

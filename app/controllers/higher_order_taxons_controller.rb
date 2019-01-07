@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class HigherOrderTaxonsController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_higher_order_taxon, only: [:show, :edit, :update, :destroy]
+  before_action :set_higher_order_taxon, only: %i[show edit update destroy]
 
   # GET /higher_order_taxons
   # GET /higher_order_taxons.json
@@ -20,8 +22,7 @@ class HigherOrderTaxonsController < ApplicationController
 
   # GET /higher_order_taxons/1
   # GET /higher_order_taxons/1.json
-  def show
-  end
+  def show; end
 
   # GET /higher_order_taxons/new
   def new
@@ -29,8 +30,7 @@ class HigherOrderTaxonsController < ApplicationController
   end
 
   # GET /higher_order_taxons/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /higher_order_taxons
   # POST /higher_order_taxons.json
@@ -82,6 +82,6 @@ class HigherOrderTaxonsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def higher_order_taxon_params
-    params.require(:higher_order_taxon).permit(:position, :name, :german_name,:marker_ids => [], :project_ids => [])
+    params.require(:higher_order_taxon).permit(:position, :name, :german_name, marker_ids: [], project_ids: [])
   end
 end

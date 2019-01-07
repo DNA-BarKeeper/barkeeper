@@ -1,7 +1,8 @@
-namespace :data do
+# frozen_string_literal: true
 
+namespace :data do
   desc 'Do work statistics for <year> and Lab with <labcode>'
-  task :work_statistics_yearly, [:year, :labcode] => [:environment] do |t, args|
+  task :work_statistics_yearly, %i[year labcode] => [:environment] do |_t, args|
     lab_prefixes = { nees: 'gbol', bgbm: 'db' }
 
     range = Time.new(args[:year].to_i, 1, 1).all_year
@@ -9,17 +10,17 @@ namespace :data do
 
     puts prefix
 
-    isolates = Isolate.where("lab_nr ilike ?", "#{prefix}%")
-                      .where(:created_at => range)
+    isolates = Isolate.where('lab_nr ilike ?', "#{prefix}%")
+                      .where(created_at: range)
                       .select(:id, :lab_nr)
-    contigs = Contig.where("contigs.name ilike ?", "#{prefix}%")
+    contigs = Contig.where('contigs.name ilike ?', "#{prefix}%")
                     .where(verified_at: range)
                     .select(:id, :name)
-    reads = PrimerRead.where("primer_reads.name ilike ?", "#{prefix}%")
-                      .where(:created_at => range)
+    reads = PrimerRead.where('primer_reads.name ilike ?', "#{prefix}%")
+                      .where(created_at: range)
                       .select(:id, :name)
-    marker_sequences = MarkerSequence.where("marker_sequences.name ilike ?", "#{prefix}%")
-                                     .where(:created_at => range)
+    marker_sequences = MarkerSequence.where('marker_sequences.name ilike ?', "#{prefix}%")
+                                     .where(created_at: range)
                                      .select(:id, :sequence, :name)
 
     puts "Calculating activities for #{range.first.year} in lab #{args[:labcode]}...\n"
@@ -57,14 +58,14 @@ namespace :data do
   end
 
   desc 'Do work statistics'
-  task :work_statistics_total => [:environment] do |t, args|
+  task work_statistics_total: [:environment] do |_t, _args|
     gbol_marker = Marker.gbol_marker
 
-    puts "Calculating activities in total..."
+    puts 'Calculating activities in total...'
 
     all_isolates_count = Isolate.all.size
-    isolates_bonn_cnt = Isolate.where("lab_nr ilike ?", "%gbol%").size
-    isolates_berlin_cnt = Isolate.where("lab_nr ilike ?", "%db%").size
+    isolates_bonn_cnt = Isolate.where('lab_nr ilike ?', '%gbol%').size
+    isolates_berlin_cnt = Isolate.where('lab_nr ilike ?', '%db%').size
     other_isolates_count = all_isolates_count - isolates_bonn_cnt - isolates_berlin_cnt
     puts "Number of isolates: #{all_isolates_count} (total), #{isolates_bonn_cnt} (Bonn), #{isolates_berlin_cnt} (Berlin), #{other_isolates_count} (not assigned to a lab)"
 
@@ -73,7 +74,7 @@ namespace :data do
 
     gbol_marker.each do |marker|
       sequence_cnt_per_marker[marker.name] = MarkerSequence.where(marker_id: marker.id).size
-      verified_count_per_marker[marker.name] = Isolate.joins(contigs: :marker).where(contigs: { verified: true , marker_id: marker.id}).count('contigs.id')
+      verified_count_per_marker[marker.name] = Isolate.joins(contigs: :marker).where(contigs: { verified: true, marker_id: marker.id }).count('contigs.id')
     end
 
     puts "Number of barcode sequences per marker: #{sequence_cnt_per_marker}"
@@ -84,5 +85,15 @@ namespace :data do
     # isolates_two = Isolate.joins(:marker_sequences).group('isolates.id').having('count(marker_sequences) = 2')
     # isolates_one = Isolate.joins(:marker_sequences).group('isolates.id').having('count(marker_sequences) = 1')
     # isolates_zero = Isolate.joins(:marker_sequences).group('isolates.id').having('count(marker_sequences) = 0').where(:marker_sequences.first.marker.gbol_marker)
+  end
+
+  task :primer_usage, [:marker_name] => [:environment] do |_t, args|
+    marker = Marker.find_by_name(args[:marker_name])
+
+    primers = PrimerRead.group(:primer_id).count
+    primers_marker = primers.select { |k, _v| Primer.find_by_id(k)&.marker_id == marker.id unless k.nil? }
+    primers_marker.keys.each { |k| primers_marker[Primer.find(k).name] = primers_marker[k]; primers_marker.delete(k) }
+
+    puts Hash[primers_marker.sort_by { |_k, v| v }.reverse]
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeTypesInContigSearch < ActiveRecord::Migration[5.0]
   def self.up
     remove_column :contig_searches, :min_age

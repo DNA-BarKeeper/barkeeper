@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class TxtUploadersController < ApplicationController
-  before_action :set_txt_uploader, only: [:show, :edit, :update, :destroy]
+  before_action :set_txt_uploader, only: %i[show edit update destroy]
 
   # GET /txt_uploaders
   # GET /txt_uploaders.json
@@ -9,8 +11,7 @@ class TxtUploadersController < ApplicationController
 
   # GET /txt_uploaders/1
   # GET /txt_uploaders/1.json
-  def show
-  end
+  def show; end
 
   # GET /txt_uploaders/new
   def new
@@ -18,8 +19,7 @@ class TxtUploadersController < ApplicationController
   end
 
   # GET /txt_uploaders/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /txt_uploaders
   # POST /txt_uploaders.json
@@ -62,13 +62,14 @@ class TxtUploadersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_txt_uploader
-      @txt_uploader = TxtUploader.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def txt_uploader_params
-      params[:txt_uploader]
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_txt_uploader
+    @txt_uploader = TxtUploader.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def txt_uploader_params
+    params[:txt_uploader]
+  end
 end

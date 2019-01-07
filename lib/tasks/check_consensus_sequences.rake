@@ -1,7 +1,8 @@
-namespace :data do
+# frozen_string_literal: true
 
+namespace :data do
   desc 'Compare contig consensus sequences and resulting marker sequences. Alert if different.'
-  task :check_consensus_sequences => :environment do
+  task check_consensus_sequences: :environment do
     puts 'Checking contig consensus sequences...'
 
     contigs = Contig.gbol.includes(:marker_sequence, :partial_cons).where.not(marker_sequence: nil).select(:id, :name, :marker_sequence_id)
@@ -20,11 +21,9 @@ namespace :data do
           no_sequence << contig.name
         else
           # Marker sequences are created from modified aligned_sequence of first partial con after verification
-          partial_sequence = partial_sequence.gsub('?', '').gsub('-', '')
+          partial_sequence = partial_sequence.delete('?').delete('-')
 
-          if marker_sequence != partial_sequence
-            alert << contig.name
-          end
+          alert << contig.name if marker_sequence != partial_sequence
         end
       end
     end

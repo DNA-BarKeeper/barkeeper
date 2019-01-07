@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BiorubyGenerator < Rails::Generator::Base
   def manifest
     record do |m|
@@ -26,4 +28,3 @@ class BiorubyGenerator < Rails::Generator::Base
     end
   end
 end
-

@@ -1,18 +1,19 @@
+# frozen_string_literal: true
+
 class MarkerSequencesController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_marker_sequence, only: [:show, :edit, :update, :destroy]
+  before_action :set_marker_sequence, only: %i[show edit update destroy]
 
   # GET /marker_sequences
   # GET /marker_sequences.json
   def index
     respond_to do |format|
       format.html
-      format.json { render json: MarkerSequenceDatatable.new(view_context, current_project_id)}
+      format.json { render json: MarkerSequenceDatatable.new(view_context, current_project_id) }
     end
-
   end
 
   def filter
@@ -29,8 +30,7 @@ class MarkerSequencesController < ApplicationController
 
   # GET /marker_sequences/1
   # GET /marker_sequences/1.json
-  def show
-  end
+  def show; end
 
   # GET /marker_sequences/new
   def new
@@ -38,8 +38,7 @@ class MarkerSequencesController < ApplicationController
   end
 
   # GET /marker_sequences/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /marker_sequences
   # POST /marker_sequences.json
@@ -65,15 +64,11 @@ class MarkerSequencesController < ApplicationController
   # PATCH/PUT /marker_sequences/1
   # PATCH/PUT /marker_sequences/1.json
   def update
-
     @marker_sequence.update(marker_sequence_params)
 
-    if @marker_sequence.name.empty?
-      @marker_sequence.generate_name
-    end
+    @marker_sequence.generate_name if @marker_sequence.name.empty?
 
     redirect_to edit_marker_sequence_path(@marker_sequence), notice: 'Marker sequence was successfully updated.'
-
   end
 
   # DELETE /marker_sequences/1
@@ -87,13 +82,14 @@ class MarkerSequencesController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_marker_sequence
-    @marker_sequence = MarkerSequence.includes(:isolate => :individual).find(params[:id])
+    @marker_sequence = MarkerSequence.includes(isolate: :individual).find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def marker_sequence_params
-    params.require(:marker_sequence).permit(:genbank, :name, :sequence, :isolate_id, :marker_id, :contig_id, :isolate_lab_nr, :reference, :project_ids => [])
+    params.require(:marker_sequence).permit(:genbank, :name, :sequence, :isolate_id, :marker_id, :contig_id, :isolate_lab_nr, :reference, project_ids: [])
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddCopyAttributesToIsolates < ActiveRecord::Migration
   def change
     add_column :isolates, :lab_id_orig, :integer

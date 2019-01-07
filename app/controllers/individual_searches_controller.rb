@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class IndividualSearchesController < ApplicationController
   load_and_authorize_resource
 
-  before_action :set_individual_search, only: [:show, :edit, :update, :destroy]
+  before_action :set_individual_search, only: %i[show edit update destroy]
 
   def index
     respond_to do |format|
@@ -24,8 +26,8 @@ class IndividualSearchesController < ApplicationController
   def create
     @individual_search = IndividualSearch.new(individual_search_params)
 
-    @individual_search.update(:user_id => current_user.id)
-    @individual_search.update(:project_id => current_user.default_project_id)
+    @individual_search.update(user_id: current_user.id)
+    @individual_search.update(project_id: current_user.default_project_id)
 
     respond_to do |format|
       if @individual_search.save

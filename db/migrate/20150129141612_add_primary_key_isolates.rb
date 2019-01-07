@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class AddPrimaryKeyIsolates < ActiveRecord::Migration
   def change
-    execute "ALTER TABLE isolates ADD PRIMARY KEY (id);"
+    execute 'ALTER TABLE isolates ADD PRIMARY KEY (id);'
   end
 end

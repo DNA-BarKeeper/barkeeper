@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MislabelAnalysesController < ApplicationController
   load_and_authorize_resource
 
@@ -40,7 +42,7 @@ class MislabelAnalysesController < ApplicationController
       redirect_to mislabel_analyses_path, alert: 'Please select a SATIVA output file (*.mis) to import results.'
     else
       results = File.new(params[:file].path)
-      title = File.basename(file.original_filename, ".mis")
+      title = File.basename(file.original_filename, '.mis')
 
       @mislabel_analysis = MislabelAnalysis.import(results, title)
       redirect_to mislabel_analysis_path(@mislabel_analysis), notice: 'Imported analysis output. Possibly mislabeled sequences have been marked.'

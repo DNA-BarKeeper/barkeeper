@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddOverlapLengthToContigs < ActiveRecord::Migration
   def change
     add_column :contigs, :overlap_length, :integer, default: 15

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateIndividualSearches < ActiveRecord::Migration[5.0]
   def change
     create_table :individual_searches do |t|

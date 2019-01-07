@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class OrdersController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_order, only: [:show, :edit, :update, :destroy]
+  before_action :set_order, only: %i[show edit update destroy]
 
   # GET /orders
   # GET /orders.json
@@ -13,8 +15,7 @@ class OrdersController < ApplicationController
 
   # GET /orders/1
   # GET /orders/1.json
-  def show
-  end
+  def show; end
 
   # GET /orders/new
   def new
@@ -22,8 +23,7 @@ class OrdersController < ApplicationController
   end
 
   # GET /orders/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /orders
   # POST /orders.json
@@ -75,6 +75,6 @@ class OrdersController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def order_params
-    params.require(:order).permit(:name, :author, :higher_order_taxon_id, :project_ids => [])
+    params.require(:order).permit(:name, :author, :higher_order_taxon_id, project_ids: [])
   end
 end

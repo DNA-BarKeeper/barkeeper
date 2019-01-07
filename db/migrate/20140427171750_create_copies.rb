@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateCopies < ActiveRecord::Migration
   def change
     create_table :copies do |t|

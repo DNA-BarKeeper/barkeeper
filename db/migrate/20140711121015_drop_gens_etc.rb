@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DropGensEtc < ActiveRecord::Migration
   def change
     drop_table :gens

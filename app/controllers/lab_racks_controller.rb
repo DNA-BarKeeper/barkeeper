@@ -1,23 +1,24 @@
+# frozen_string_literal: true
+
 class LabRacksController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_lab_rack, only: [:show, :edit, :update, :destroy]
+  before_action :set_lab_rack, only: %i[show edit update destroy]
 
   # GET /lab_racks
   # GET /lab_racks.json
   def index
     respond_to do |format|
       format.html
-      format.json { render json: LabRackDatatable.new(view_context, current_project_id)}
+      format.json { render json: LabRackDatatable.new(view_context, current_project_id) }
     end
   end
 
   # GET /lab_racks/1
   # GET /lab_racks/1.json
-  def show
-  end
+  def show; end
 
   # GET /lab_racks/new
   def new
@@ -25,8 +26,7 @@ class LabRacksController < ApplicationController
   end
 
   # GET /lab_racks/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /lab_racks
   # POST /lab_racks.json
@@ -78,6 +78,6 @@ class LabRacksController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def lab_rack_params
-    params.require(:lab_rack).permit(:shelf, :rack_position, :rackcode, :freezer_id, :project_ids => [])
+    params.require(:lab_rack).permit(:shelf, :rack_position, :rackcode, :freezer_id, project_ids: [])
   end
 end

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class PrimerPosOnGenomesController < ApplicationController
   load_and_authorize_resource
 
-  before_action :set_primer_pos_on_genome, only: [:show, :edit, :update, :destroy]
+  before_action :set_primer_pos_on_genome, only: %i[show edit update destroy]
 
   # GET /primer_pos_on_genomes
   # GET /primer_pos_on_genomes.json
@@ -11,8 +13,7 @@ class PrimerPosOnGenomesController < ApplicationController
 
   # GET /primer_pos_on_genomes/1
   # GET /primer_pos_on_genomes/1.json
-  def show
-  end
+  def show; end
 
   # GET /primer_pos_on_genomes/new
   def new
@@ -20,8 +21,7 @@ class PrimerPosOnGenomesController < ApplicationController
   end
 
   # GET /primer_pos_on_genomes/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /primer_pos_on_genomes
   # POST /primer_pos_on_genomes.json
@@ -64,13 +64,14 @@ class PrimerPosOnGenomesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_primer_pos_on_genome
-      @primer_pos_on_genome = PrimerPosOnGenome.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def primer_pos_on_genome_params
-      params.require(:primer_pos_on_genome).permit(:note, :position)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_primer_pos_on_genome
+    @primer_pos_on_genome = PrimerPosOnGenome.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def primer_pos_on_genome_params
+    params.require(:primer_pos_on_genome).permit(:note, :position)
+  end
 end

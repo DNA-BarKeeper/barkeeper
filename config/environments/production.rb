@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -33,9 +35,11 @@ Rails.application.configure do
   # Load environment variables
   config.before_configuration do
     env_file = File.join(Rails.root, 'config', 'local_env.yml')
-    YAML.load(File.open(env_file)).each do |key, value|
-      ENV[key.to_s] = value
-    end if File.exists?(env_file)
+    if File.exist?(env_file)
+      YAML.safe_load(File.open(env_file)).each do |key, value|
+        ENV[key.to_s] = value
+      end
+    end
   end
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
@@ -58,7 +62,7 @@ Rails.application.configure do
   config.log_level = :info
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
@@ -72,11 +76,11 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: 'gbol5.de' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-      :address              => '127.0.0.1',
-      :port                 => 25,
-      :domain               => 'gbol5.de',
-      :tls                  => false,
-      :enable_starttls_auto => false,
+    address: '127.0.0.1',
+    port: 25,
+    domain: 'gbol5.de',
+    tls: false,
+    enable_starttls_auto: false
   }
 
   # Ignore bad email addresses and do not raise email delivery errors.
@@ -110,15 +114,15 @@ Rails.application.configure do
   config.secret_key_base = '<%= ENV["SECRET_KEY_BASE"] %>'
 
   config.paperclip_defaults = {
-      :storage => :s3,
-      :url =>':s3_domain_url',
-      :path => '/:class/:attachment/:id_partition/:style/:filename',
-      :s3_credentials => {
-          :bucket => ENV['S3_BUCKET_NAME'],
-          :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-          :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY'],
-          :s3_region => ENV['S3_REGION'],
-          :preserve_files => true
-      },
+    storage: :s3,
+    url: ':s3_domain_url',
+    path: '/:class/:attachment/:id_partition/:style/:filename',
+    s3_credentials: {
+      bucket: ENV['S3_BUCKET_NAME'],
+      access_key_id: ENV['AWS_ACCESS_KEY_ID'],
+      secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+      s3_region: ENV['S3_REGION'],
+      preserve_files: true
+    }
   }
 end

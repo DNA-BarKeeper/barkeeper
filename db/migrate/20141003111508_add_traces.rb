@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddTraces < ActiveRecord::Migration
   def change
     add_column :primer_reads, :atrace, :integer, array: true
