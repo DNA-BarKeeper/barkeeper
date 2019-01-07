@@ -970,6 +970,7 @@ DEPENDENCIES
   bootstrap-multiselect_rails
   bootstrap-sass
   bootstrap_progressbar
+  builder
   bullet
   cancancan
   capistrano

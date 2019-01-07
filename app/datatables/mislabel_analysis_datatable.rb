@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MislabelAnalysisDatatable
   include Rails.application.routes.url_helpers
 
@@ -8,7 +10,7 @@ class MislabelAnalysisDatatable
     @view = view
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
       iTotalRecords: MislabelAnalysis.count,
@@ -23,7 +25,7 @@ class MislabelAnalysisDatatable
     analyses.map do |analysis|
       [
         link_to(analysis.title, mislabel_analysis_path(analysis)),
-        analysis.created_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        analysis.created_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
         link_to('Delete', analysis, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
@@ -34,7 +36,7 @@ class MislabelAnalysisDatatable
     @analyses = @analyses.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      @analyses = @analyses.where("mislabel_analyses.title ILIKE :search", search: "%#{params[:sSearch]}%")
+      @analyses = @analyses.where('mislabel_analyses.title ILIKE :search', search: "%#{params[:sSearch]}%")
     end
 
     @analyses
@@ -54,6 +56,6 @@ class MislabelAnalysisDatatable
   end
 
   def sort_direction
-    params[:sSortDir_0] == "desc" ? "desc" : "asc"
+    params[:sSortDir_0] == 'desc' ? 'desc' : 'asc'
   end
 end

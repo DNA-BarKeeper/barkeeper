@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 ruby '2.3.3'
@@ -12,9 +14,9 @@ gem 'pg_search'
 gem 'puma', '~> 3.0'
 gem 'redis', '~> 3.0' # Use Redis adapter to run Action Cable in production
 gem 'sidekiq'
-gem 'sidekiq-limit_fetch'
 gem 'sidekiq-client-cli'
-gem 'sinatra', :require => false # Needed to monitor sidekiq jobs
+gem 'sidekiq-limit_fetch'
+gem 'sinatra', require: false # Needed to monitor sidekiq jobs
 
 # Asset pipeline
 gem 'coffee-rails', '~> 4.2' # Use CoffeeScript for .coffee assets and views
@@ -27,22 +29,23 @@ gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 gem 'cancancan'
 gem 'devise'
 
-# File storage
+# External file storage
 gem 'aws-sdk'
 gem 'paperclip'
 
 # Javascript
+gem 'bootstrap-multiselect_rails' # multi select boxes using bootstrap
 gem 'chosen-rails' # Javascript select boxes
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
 gem 'jquery-fileupload-rails'
 gem 'jquery-turbolinks'
 gem 'select2-rails' # Integrate Select2 Javascript library
-gem 'bootstrap-multiselect_rails' # multi select boxes using bootstrap
-gem 'bootstrap_progressbar'
 
 gem 'bcrypt', '~> 3.1.7', platforms: :ruby
 gem 'bio' # BioRuby
 gem 'bootstrap-sass'
+gem 'bootstrap_progressbar'
+gem 'builder'
 gem 'jbuilder', '~> 2.5' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'mime-types'
 gem 'net-scp',         require: false
@@ -52,14 +55,14 @@ gem 'roo-xls' # Handle excel files
 gem 'rubyzip' # Handle zip files
 gem 'simple_form'
 gem 'slim' # TODO: Used anywhere?
-gem 'sprockets-rails', :require => 'sprockets/railtie'
+gem 'sprockets-rails', require: 'sprockets/railtie'
 # gem 'turbolinks' # Turbolinks makes navigating your web application faster TODO: Does not work unless first changes to js code, in particular data-tables (see http://guides.rubyonrails.org/working_with_javascript_in_rails.html#turbolinks)
 gem 'whenever', require: false # Runs scheduled jobs via cron
 gem 'will_paginate', '> 3.0' # TODO: Really needed?
 gem 'will_paginate-bootstrap' # TODO: Really needed?
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 group :development do
   gem 'capistrano',         require: false

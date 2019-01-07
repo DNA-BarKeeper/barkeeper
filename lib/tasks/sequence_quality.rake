@@ -1,7 +1,8 @@
-namespace :data do
+# frozen_string_literal: true
 
+namespace :data do
   desc 'Get information about verified marker sequences (with associated species) and contigs in database'
-  task :sequence_info_verified => [:environment, :general_info] do
+  task sequence_info_verified: %i[environment general_info] do
     marker_sequences = MarkerSequence.gbol.has_species.verified
     contigs = Contig.gbol.verified.joins(:primer_reads)
 
@@ -9,7 +10,7 @@ namespace :data do
   end
 
   desc 'Get information about all gbol5 marker sequences and contigs in database'
-  task :sequence_info_gbol => [:environment, :general_info] do
+  task sequence_info_gbol: %i[environment general_info] do
     marker_sequences = MarkerSequence.gbol
     contigs = Contig.joins(:primer_reads).gbol
 
@@ -17,13 +18,13 @@ namespace :data do
   end
 
   desc 'Get general information about gbol5 marker sequences and contigs in database'
-  task :general_info => :environment do
+  task general_info: :environment do
     marker_sequences = MarkerSequence.gbol
     puts "Number of marker sequences: #{marker_sequences.size}"
     puts "Number of verified marker sequences in database: #{marker_sequences.verified.size}"
     puts "Number of verified marker sequences with associated species in database: #{marker_sequences.has_species.verified.length}"
     puts "Number of marker sequences without associated contigs: #{marker_sequences.includes(:contigs).where(contigs: { id: nil }).size}"
-    puts "Number of marker sequences without associated isolate: #{marker_sequences.includes(:isolate).where( isolate: nil ).size}"
+    puts "Number of marker sequences without associated isolate: #{marker_sequences.includes(:isolate).where(isolate: nil).size}"
     puts ''
 
     contigs = Contig.gbol
@@ -35,11 +36,12 @@ namespace :data do
     puts ''
   end
 
-  task :duplicate_sequences => :environment do
+  task duplicate_sequences: :environment do
     gbol_sequences = MarkerSequence.gbol
     ms_with_contig = gbol_sequences.joins(:contigs).distinct
 
-    duplicate_names = gbol_sequences.group('marker_sequences.name').having('count(marker_sequences.name) > 2').count.keys
+    duplicate_names = Hash[gbol_sequences.group('marker_sequences.name').count.select { |_k, v| v >= 2 }].keys
+    # duplicate_names = gbol_sequences.group('marker_sequences.name').having('count(marker_sequences.name) >= 2').count.keys
     duplicate_ms = gbol_sequences.where(marker_sequences: { name: duplicate_names })
     duplicate_ms_contig = ms_with_contig.where(marker_sequences: { name: duplicate_names })
 
@@ -50,10 +52,10 @@ namespace :data do
   end
 
   desc 'Get the number of species with more than 1, 2, 3, 4 or 5 sequences per marker'
-  task :sequences_per_species => :environment do
+  task sequences_per_species: :environment do
     # TODO: Exclude cases where one individual has multiple isolates or one isolate has multiple sequences per marker
     species = Species.joins(individuals: [isolates: :marker_sequences]).distinct
-    columns = %w(min_one gt_one gt_two gt_three gt_four gt_five)
+    columns = %w[min_one gt_one gt_two gt_three gt_four gt_five]
     its = {}
     rpl16 = {}
     trnk_matk = {}
@@ -77,10 +79,27 @@ namespace :data do
 
     # Number of isolates per marker with more than one sequence:
     # Isolate.joins(:marker_sequences).where(marker_sequences: { marker: 5 }).group(:id).having('count(marker_sequences) > ?', 1).length
-    end
+  end
+
+  desc 'Get the number of species with only a single sequence per marker'
+  task singletons_per_marker: :environment do
+    species = Species.joins(individuals: [isolates: :marker_sequences]).distinct
+    species_cnt = species.size
+
+    trnlf = species_count_with_exact_ms_count(species, 4, 1)
+    its = species_count_with_exact_ms_count(species, 5, 1)
+    rpl16 = species_count_with_exact_ms_count(species, 6, 1)
+    trnk_matk = species_count_with_exact_ms_count(species, 7, 1)
+
+    puts "Fraction of species with only a single barcode sequence (total of #{species_cnt} species):"
+    p "trnLF: #{((trnlf.to_f / species_cnt) * 100).round(2)}%"
+    p "ITS: #{((its.to_f / species_cnt) * 100).round(2)}%"
+    p "rpl16: #{((rpl16.to_f / species_cnt) * 100).round(2)}%"
+    p "trnK-matK: #{((trnk_matk.to_f / species_cnt) * 100).round(2)}%"
+  end
 
   desc 'Get the average number of specimen per species'
-  task :specimen_per_species => :environment do
+  task specimen_per_species: :environment do
     species_cnt = Species.all.size
     specimen_cnt = Individual.all.size
 
@@ -107,7 +126,7 @@ namespace :data do
     # MarkerSequence.joins(isolate: [individual: :species]).distinct.order('species.species_component').group('species.species_component').count
   end
 
-  task :get_high_quality_sequences => :environment do
+  task get_high_quality_sequences: :environment do
     sequences = MarkerSequence.gbol # Only GBOL5 sequences
     # sequences = MarkerSequence.gbol.joins(isolate: {individual: {species: {family: :order}}}).where("orders.name ilike ?", "%Caryophyllales%")
     puts "Number of GBOL5 sequences: #{sequences.size}"
@@ -138,7 +157,7 @@ namespace :data do
     end
 
     # Check sequences for stop codons
-    stop_codons = %w(tag tga taa)
+    stop_codons = %w[tag tga taa]
     # sequence = Bio::Sequence::NA.new(MarkerSequence.gbol.first.sequence)
     # codons = sequence.codon_usage
     # stop_codons.each { |codon| puts codons[codon] }
@@ -148,6 +167,12 @@ namespace :data do
     species.where(individuals: { isolates: { marker_sequences: { marker: marker_id } } })
            .group(:id)
            .having('count(marker_sequences) > ?', ms_count).length
+  end
+
+  def species_count_with_exact_ms_count(species, marker_id, ms_count)
+    species.where(individuals: { isolates: { marker_sequences: { marker: marker_id } } })
+           .group(:id)
+           .having('count(marker_sequences) = ?', ms_count).length
   end
 
   def get_information(marker_sequences, contigs)
@@ -166,17 +191,16 @@ namespace :data do
       if sequences.size.positive?
         sequence_count[marker.name] = sequences.size
         sequence_length_avg[marker.name] = sequences.average('length(sequence)').to_f.round(2)
-        sequence_length_min[marker.name] = sequences.select(:sequence, 'length(sequence)').where.not(:sequence => nil).order('length(sequence) asc').first.sequence.length
-        sequence_length_max[marker.name] = sequences.select(:sequence, 'length(sequence)').where.not(:sequence => nil).order('length(sequence) desc').first.sequence.length
+        sequence_length_min[marker.name] = sequences.select(:sequence, 'length(sequence)').where.not(sequence: nil).order('length(sequence) asc').first.sequence.length
+        sequence_length_max[marker.name] = sequences.select(:sequence, 'length(sequence)').where.not(sequence: nil).order('length(sequence) desc').first.sequence.length
       end
 
-      if contigs_marker.size.positive?
-        primer_read_counts = contigs_marker.group(:id).count('primer_reads.id') #  TODO: only count assembled reads
+      next unless contigs_marker.size.positive?
+      primer_read_counts = contigs_marker.group(:id).count('primer_reads.id') #  TODO: only count assembled reads
 
-        reads_per_contig_avg[marker.name] = (primer_read_counts.values.sum/primer_read_counts.values.size.to_f).round(2)
-        reads_per_contig_min[marker.name] = primer_read_counts.values.min
-        reads_per_contig_max[marker.name] = primer_read_counts.values.max
-      end
+      reads_per_contig_avg[marker.name] = (primer_read_counts.values.sum / primer_read_counts.values.size.to_f).round(2)
+      reads_per_contig_min[marker.name] = primer_read_counts.values.min
+      reads_per_contig_max[marker.name] = primer_read_counts.values.max
     end
 
     puts 'Number of sequences per marker:'
@@ -193,5 +217,22 @@ namespace :data do
     p reads_per_contig_min
     puts 'Maximum reads per contig per marker:'
     p reads_per_contig_max
+  end
+
+  # Returns the number of species in this family for which at least one marker sequence for this marker exists
+  def completed_species_cnt(family, marker_id)
+    count = 0
+
+    family.species.includes(individuals: [isolates: :marker_sequences]).each do |s|
+      has_ms = false
+      s.individuals.each do |i|
+        i.isolates.each do |iso|
+          has_ms = iso.marker_sequences.where(marker_id: marker_id).any? ? true : has_ms
+        end
+      end
+      count += 1 if has_ms
+    end
+
+    count
   end
 end

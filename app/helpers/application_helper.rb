@@ -26,7 +26,6 @@ module ApplicationHelper
     end
 
     html << '</ul>'
-
     html.html_safe
   end
 
@@ -55,7 +54,6 @@ module ApplicationHelper
         #{compiled_message}
       </div>
       HTML
-
       html.html_safe
     end
   end
@@ -69,7 +67,19 @@ module ApplicationHelper
       #{messages}
     </div>
     HTML
-
     html.html_safe
+  end
+
+  def alert_class(name)
+    # name == 'notice' ? 'success' : 'danger'
+
+    case name
+    when 'notice'
+      'success'
+    when 'warning'
+      'warning'
+    else
+      'danger'
+    end
   end
 end

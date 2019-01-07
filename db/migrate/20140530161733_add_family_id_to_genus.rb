@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddFamilyIdToGenus < ActiveRecord::Migration
   def change
     add_column :gens, :family_id, :integer

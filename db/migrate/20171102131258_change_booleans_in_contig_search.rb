@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeBooleansInContigSearch < ActiveRecord::Migration[5.0]
   def up
     change_column :contig_searches, :assembled, :string

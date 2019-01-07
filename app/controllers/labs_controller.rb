@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class LabsController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_lab, only: [:show, :edit, :update, :destroy]
+  before_action :set_lab, only: %i[show edit update destroy]
 
   # GET /labs
   # GET /labs.json
@@ -13,8 +15,7 @@ class LabsController < ApplicationController
 
   # GET /labs/1
   # GET /labs/1.json
-  def show
-  end
+  def show; end
 
   # GET /labs/new
   def new
@@ -22,8 +23,7 @@ class LabsController < ApplicationController
   end
 
   # GET /labs/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /labs
   # POST /labs.json
@@ -75,6 +75,6 @@ class LabsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def lab_params
-    params.require(:lab).permit(:labcode, :project_ids => [])
+    params.require(:lab).permit(:labcode, project_ids: [])
   end
 end

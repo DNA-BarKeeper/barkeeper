@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContigsProjects < ActiveRecord::Migration
   def change
     create_table :contigs_projects, id: false do |t|

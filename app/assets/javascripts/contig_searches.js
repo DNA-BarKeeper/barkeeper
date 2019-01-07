@@ -63,4 +63,8 @@ jQuery(function() {
     $('#contig_search_order').autocomplete({
         source: $('#contig_search_order').data('autocomplete-source')
     });
+
+    $('#contig_search_verified_by').autocomplete({
+        source: $('#contig_search_verified_by').data('autocomplete-source')
+    });
 });

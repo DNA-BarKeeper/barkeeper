@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Marker < ApplicationRecord
   include ProjectRecord
 
@@ -12,18 +14,10 @@ class Marker < ApplicationRecord
   scope :gbol_marker, -> { in_project(Project.find_by_name('GBOL5')) }
 
   def spp_in_higher_order_taxon(higher_order_taxon_id)
-    ms = MarkerSequence.select("species_id").includes(:isolate => :individual).joins(:isolate =>
-                                                                                       { :individual =>
-                                                                                            { :species =>
-                                                                                                 { :family =>
-                                                                                                      { :order => :higher_order_taxon }}}}).
-        where(orders: { higher_order_taxon_id: higher_order_taxon_id }, marker_sequences: { marker_id: self.id })
-    ms_i = MarkerSequence.select("individual_id").includes(:isolate => :individual).joins(:isolate =>
-                                                                                       {:individual =>
-                                                                                            {:species =>
-                                                                                                 {:family =>
-                                                                                                      {:order => :higher_order_taxon}}}}).
-        where(orders: { higher_order_taxon_id: higher_order_taxon_id }, marker_sequences: { marker_id: self.id })
+    ms = MarkerSequence.select('species_id').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } })
+                       .where(orders: { higher_order_taxon_id: higher_order_taxon_id }, marker_sequences: { marker_id: id })
+    ms_i = MarkerSequence.select('individual_id').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } })
+                         .where(orders: { higher_order_taxon_id: higher_order_taxon_id }, marker_sequences: { marker_id: id })
 
     [ms.count, ms.distinct.count, ms_i.distinct.count]
   end

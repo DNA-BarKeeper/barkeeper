@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 namespace :data do
   desc 'Create fasta and taxon file from marker sequence search for further analyses.'
   task :create_analysis_files, [:title] => [:environment] do |_, args|
     length_minima = {
-        'ITS' => 485,
-        'rpl16' => 580,
-        'trnLF' => 516,
-        'trnK-matK' => 1188
+      'ITS' => 485,
+      'rpl16' => 580,
+      'trnLF' => 516,
+      'trnK-matK' => 1188
     }
 
     title = args[:title]

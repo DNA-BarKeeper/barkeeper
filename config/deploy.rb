@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 # Change these
-server '46.101.149.34', port: 1694, roles: [:web, :app, :db], primary: true
+server '46.101.149.34', port: 1694, roles: %i[web app db], primary: true
 
 set :repo_url,        'ssh://Sarah_Wiechers@bitbucket.org/kai42/gbol5.git'
 set :application,     'gbol5'
@@ -8,7 +10,7 @@ set :puma_threads,    [1, 5]
 set :puma_workers,    2
 
 # Always deploy currently checked out branch
-set :branch, $1 if `git branch` =~ /\* (\S+)\s/m
+set :branch, Regexp.last_match(1) if `git branch` =~ /\* (\S+)\s/m
 
 # Rbenv setup
 set :whenever_environment, fetch(:stage)
@@ -35,11 +37,11 @@ set :puma_init_active_record, true # Change to false when not using ActiveRecord
 set :puma_user, fetch(:user)
 
 # Set key location to 'C:/Users/Sarah/.ssh/id_rsa' when deploying from windows
-set :ssh_options, { port: 1694, forward_agent: true, user: fetch(:user), keys: %w(/home/sarah/.ssh/id_rsa) }
+set :ssh_options, port: 1694, forward_agent: true, user: fetch(:user), keys: %w[/home/sarah/.ssh/id_rsa]
 
 # Sidekiq setup
-set :sidekiq_log => File.join(release_path, 'log', 'sidekiq.log')
-set :sidekiq_config => File.join(shared_path, 'config', 'sidekiq.yml')
+set sidekiq_log: File.join(release_path, 'log', 'sidekiq.log')
+set sidekiq_config: File.join(shared_path, 'config', 'sidekiq.yml')
 
 ## Defaults:
 # set :scm,           :git
@@ -65,12 +67,12 @@ namespace :puma do
 end
 
 namespace :deploy do
-  desc "Make sure local git is in sync with remote."
+  desc 'Make sure local git is in sync with remote.'
   task :check_revision do
     on roles(:app) do
       unless `git rev-parse HEAD` == `git rev-parse origin/#{fetch(:branch)}`
-        puts "WARNING: HEAD is not the same as origin/master"
-        puts "Run `git push` to sync changes."
+        puts 'WARNING: HEAD is not the same as origin/master'
+        puts 'Run `git push` to sync changes.'
         exit
       end
     end
@@ -99,14 +101,14 @@ end
 
 before 'deploy:assets:precompile', :symlink_config_files
 
-desc "Link shared files"
+desc 'Link shared files'
 task :symlink_config_files do
   symlinks = {
-      "#{shared_path}/config/database.yml" => "#{release_path}/config/database.yml",
-      "#{shared_path}/config/local_env.yml" => "#{release_path}/config/local_env.yml"
+    "#{shared_path}/config/database.yml" => "#{release_path}/config/database.yml",
+    "#{shared_path}/config/local_env.yml" => "#{release_path}/config/local_env.yml"
   }
 
   on roles(:app) do
-    execute symlinks.map{|from, to| "ln -nfs #{from} #{to}"}.join(" && ")
+    execute symlinks.map { |from, to| "ln -nfs #{from} #{to}" }.join(' && ')
   end
 end

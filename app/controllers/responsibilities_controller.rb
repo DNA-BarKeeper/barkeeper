@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ResponsibilitiesController < ApplicationController
   load_and_authorize_resource
 
@@ -5,15 +7,13 @@ class ResponsibilitiesController < ApplicationController
     @responsibilities = Responsibility.all
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @responsibility = Responsibility.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @responsibility = Responsibility.new(responsibility_params)
@@ -50,6 +50,7 @@ class ResponsibilitiesController < ApplicationController
   end
 
   private
+
   # Never trust parameters from the scary internet, only allow the white list through.
   def responsibility_params
     params.require(:responsibility).permit(:name, :description)

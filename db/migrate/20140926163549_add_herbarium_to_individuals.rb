@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddHerbariumToIndividuals < ActiveRecord::Migration
   def change
     add_column :individuals, :herbarium, :string

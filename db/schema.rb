@@ -10,19 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180906141117) do
+ActiveRecord::Schema.define(version: 20181030150104) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
-
-  create_table "alignments", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.string   "URL",        limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "centroid_sequences", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -66,6 +59,7 @@ ActiveRecord::Schema.define(version: 20180906141117) do
     t.integer  "search_result_archive_file_size"
     t.datetime "search_result_archive_updated_at"
     t.integer  "has_warnings"
+    t.string   "verified_by"
     t.index ["project_id"], name: "index_contig_searches_on_project_id", using: :btree
   end
 
@@ -78,11 +72,7 @@ ActiveRecord::Schema.define(version: 20180906141117) do
     t.integer  "isolate_id"
     t.integer  "marker_id"
     t.boolean  "assembled"
-    t.integer  "overlaps"
-    t.text     "partial_cons1"
-    t.text     "partial_cons2"
     t.boolean  "assembly_tried"
-    t.string   "aligned_cons",             limit: 255
     t.text     "fas"
     t.boolean  "verified",                             default: false
     t.integer  "verified_by"
@@ -335,6 +325,11 @@ ActiveRecord::Schema.define(version: 20180906141117) do
     t.boolean  "has_species"
     t.string   "higher_order_taxon"
     t.integer  "has_warnings"
+    t.date     "min_age"
+    t.date     "max_age"
+    t.date     "min_update"
+    t.date     "max_update"
+    t.string   "verified_by"
     t.index ["project_id"], name: "index_marker_sequence_searches_on_project_id", using: :btree
   end
 
@@ -365,8 +360,7 @@ ActiveRecord::Schema.define(version: 20180906141117) do
     t.string   "name",           limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "expected_reads"
-    t.boolean  "is_gbol"
+    t.integer  "expected_reads",             default: 1
     t.string   "alt_name"
   end
 
@@ -648,20 +642,22 @@ ActiveRecord::Schema.define(version: 20180906141117) do
     t.string   "species_component"
   end
 
-  create_table "species_xml_uploaders", force: :cascade do |t|
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.string   "uploaded_file_file_name"
-    t.string   "uploaded_file_content_type"
-    t.integer  "uploaded_file_file_size"
-    t.datetime "uploaded_file_updated_at"
+  create_table "species_exporters", force: :cascade do |t|
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.string   "species_export_file_name"
+    t.string   "species_export_content_type"
+    t.integer  "species_export_file_size"
+    t.datetime "species_export_updated_at"
   end
 
-  create_table "statuses", force: :cascade do |t|
-    t.string   "name",       limit: 255
+  create_table "specimen_exporters", force: :cascade do |t|
+    t.string   "specimen_export_file_name"
+    t.string   "specimen_export_content_type"
+    t.integer  "specimen_export_file_size"
+    t.datetime "specimen_export_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "contig_id"
   end
 
   create_table "subdivisions", force: :cascade do |t|
@@ -727,15 +723,6 @@ ActiveRecord::Schema.define(version: 20180906141117) do
     t.integer  "default_project_id"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-  end
-
-  create_table "xml_uploaders", force: :cascade do |t|
-    t.string   "uploaded_file_file_name"
-    t.string   "uploaded_file_content_type"
-    t.integer  "uploaded_file_file_size"
-    t.datetime "uploaded_file_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   add_foreign_key "contig_searches", "projects"
