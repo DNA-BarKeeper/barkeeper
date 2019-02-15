@@ -996,6 +996,7 @@ DEPENDENCIES
   net-scp
   net-sftp
   net-ssh
+  nokogiri
   paperclip
   pg (~> 0.21)
   pg_search
