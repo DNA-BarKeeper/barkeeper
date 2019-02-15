@@ -50,6 +50,7 @@ gem 'mime-types'
 gem 'net-scp',         require: false
 gem 'net-sftp',        require: false
 gem 'net-ssh',         require: false
+gem 'nokogiri'
 gem 'roo-xls' # Handle excel files
 gem 'rubyzip' # Handle zip files
 gem 'simple_form'

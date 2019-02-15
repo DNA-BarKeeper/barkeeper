@@ -151,7 +151,8 @@ class ContigsController < ApplicationController
       fas_seqs[1..-1].each do |fs|
         pair = fs.split("\n")
 
-        # overwrite single reads (aligned - / manually corrected version (?) ) (> that do match general read pattern; use the exactly matching read or generate new)
+        # overwrite single reads (aligned - / manually corrected version (?) )
+        # (> that do match general read pattern; use the exactly matching read or generate new)
 
         read_name = pair[0]
 
@@ -173,7 +174,8 @@ class ContigsController < ApplicationController
           primer_read.used_for_con = true
           primer_read.assembled = true
 
-          # TODO: adjust trimmedReadStart etc. based on ???? in aligned_seq (though this is not technically correct due to alignemnt of ??? with gappy stretches in other reads)
+          # TODO: adjust trimmedReadStart etc. based on ???? in aligned_seq
+          # (though this is not technically correct due to alignment of ??? with gappy stretches in other reads)
 
           if primer_read.trimmedReadStart.nil?
             primer_read.trimmedReadStart = 1
@@ -388,7 +390,7 @@ class ContigsController < ApplicationController
       contig_name += "_#{marker}"
 
       # mk case insensitive
-      contig = Contig.in_project(current_project_id).where('name ILIKE ?', contig_name).first
+      contig = Contig.in_project(current_project_id).where('contigs.name ILIKE ?', contig_name).first
 
       # ignore if not verified
       if contig

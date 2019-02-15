@@ -29,6 +29,18 @@ class Contig < ApplicationRecord
 
   scope :unsolved_warnings, -> { joins(marker_sequence: :mislabels).where(marker_sequence: { mislabels: { solved: false } }) }
 
+
+  def self.import(file, project_id)
+    # Read file
+    # For each entry:
+    # Look for existing contigs / create a new one
+    # Set status to imported & assembled
+    # destroy all partial cons
+    # create a single new partial con
+    #
+
+  end
+
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
     # TODO: (how to) includes spp. etc (on top of individual)
     contigs = Contig.select('species_id').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })

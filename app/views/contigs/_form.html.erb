@@ -202,7 +202,7 @@
 
         <hr>
 
-        <% if @contig.primer_reads.assembled.count > 0 %>
+        <% if @contig.primer_reads.assembled.count > 0 || @contig.consensus %>
             <% @contig.partial_cons.includes(:primer_reads).each do |partial_con| %>
                 <!-- draw contig alignment -->
                 <table style="table-layout: fixed; border-collapse: collapse;" width="100%; ">

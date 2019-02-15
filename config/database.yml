@@ -1,7 +1,7 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: gbol5
+  database: gbol5_development
   pool: 5
   host: localhost
   timeout: 5000
@@ -14,7 +14,7 @@ development:
 test: &test
   adapter: postgresql
   encoding: unicode
-  database: gbol_test
+  database: gbol5_test
   pool: 5
   host: localhost
   timeout: 5000
@@ -25,7 +25,7 @@ production:
   host: localhost
   adapter: postgresql
   encoding: unicode
-  database: gbol_production
+  database: gbol5_production
   pool: 5
   username: <%= ENV["GBOL5_DATABASE_USER"] %>
   password: <%= ENV["GBOL5_DATABASE_PASSWORD"] %>

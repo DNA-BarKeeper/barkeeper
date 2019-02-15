@@ -105,7 +105,7 @@ jQuery(function() {
         // get partial_con_id from div.id:
 
         var id = $(this).attr("id");
-        var page=0;
+        var page = 0;
 
         draw_page(id, page);
 
@@ -162,7 +162,7 @@ function draw_page(id, page){
     // get id without "p-..."
     var partial_con_id = id.substr(2);
 
-    var container_name='#'+id;
+    var container_name='#' + id;
 
     var mm_container = $(container_name);
 
