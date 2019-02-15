@@ -388,7 +388,7 @@ class ContigsController < ApplicationController
       contig_name += "_#{marker}"
 
       # mk case insensitive
-      contig = Contig.in_project(current_project_id).where('name ILIKE ?', contig_name).first
+      contig = Contig.in_project(current_project_id).where('contigs.name ILIKE ?', contig_name).first
 
       # ignore if not verified
       if contig
