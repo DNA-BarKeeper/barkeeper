@@ -10,8 +10,6 @@ class ContigsController < ApplicationController
   before_action :set_contig, only: %i[verify_next verify pde fasta fasta_trimmed fasta_raw overlap overlap_background show edit
                                       update destroy]
 
-  # GET /contigs
-  # GET /contigs.json
   def index
     respond_to do |format|
       format.html
@@ -45,20 +43,14 @@ class ContigsController < ApplicationController
     end
   end
 
-  # GET /contigs/1
-  # GET /contigs/1.json
   def show; end
 
-  # GET /contigs/new
   def new
     @contig = Contig.new
   end
 
-  # GET /contigs/1/edit
   def edit; end
 
-  # POST /contigs
-  # POST /contigs.json
   def create
     @contig = Contig.new(contig_params)
     @contig.add_project(current_project_id)
@@ -74,8 +66,6 @@ class ContigsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /contigs/1
-  # PATCH/PUT /contigs/1.json
   def update
     respond_to do |format|
       if @contig.update(contig_params)
@@ -93,8 +83,6 @@ class ContigsController < ApplicationController
     end
   end
 
-  # DELETE /contigs/1
-  # DELETE /contigs/1.json
   def destroy
     @contig.destroy
 
@@ -114,6 +102,12 @@ class ContigsController < ApplicationController
 
   def analysis_output
     redirect_to TxtUploader.last.uploaded_file.url
+  end
+
+  def import
+    file = params[:file]
+    Contig.import(file, consensus, current_project_id)
+    redirect_to contigs_path, notice: 'Imported.'
   end
 
   # for overwriting with externally edited / verified contigs in fas format (via .pde)

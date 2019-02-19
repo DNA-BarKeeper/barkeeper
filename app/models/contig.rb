@@ -30,15 +30,76 @@ class Contig < ApplicationRecord
   scope :unsolved_warnings, -> { joins(marker_sequence: :mislabels).where(marker_sequence: { mislabels: { solved: false } }) }
 
 
-  def self.import(file, project_id)
-    # Read file
-    # For each entry:
-    # Look for existing contigs / create a new one
-    # Set status to imported & assembled
-    # destroy all partial cons
-    # create a single new partial con
-    #
+  def self.import(file, consensus, project_id)
+    pde = File.read(file.original_filename)
 
+    doc = Nokogiri::XML.parse(pde)
+
+    creation_date = Date.parse(doc.xpath("//comment()").text.strip.split("\n")[1])
+
+    sequence_comments = {}
+
+    doc.xpath('//seq').each do |sequence|
+      identifier = ''
+      comment = ''
+
+      sequence.xpath('e').each do |meta_datum|
+        if meta_datum.attr("id") == "1"
+          identifier = meta_datum.text
+        elsif meta_datum.attr("id") == "4"
+          comment = meta_datum.text
+        end
+      end
+
+      sequence_comments[identifier] = comment
+    end
+
+    doc.at_xpath("//block").text.chomp.split("\\FF").each_with_index do |sequence, index|
+      sequence = sequence.delete("\n")
+
+      while sequence.match(/\\FE(\d+):/)
+        unknowns = "".dup
+        sequence.match(/\\FE(\d+):/)[1].reverse.to_i.times  { unknowns << '?' }
+
+        sequence.sub!(/\\FE\d+:/, unknowns)
+      end
+
+      identifier = sequence_comments.keys[index]
+      comment = sequence_comments[identifier]
+
+      identifier_components = identifier.match(/CAR_(DB\d+)_.*_(ITS|trnK-matK|rpl16|trnLF)_*.*/)
+
+      if identifier_components # Only sequences with a DNA Bank ID
+        name = identifier_components[1] + '_' + identifier_components[2]
+
+        contig = Contig.in_project(current_project_id).where('contigs.name ILIKE ?', name).first
+
+        unless contig
+          contig = Contig.create(name: name)
+          contig.add_project(project_id)
+          contig.isolate = Isolate.find_by_dna_bank_id(identifier_components[1])
+          contig.marker = Marker.find_by_name(identifier_components[2])
+        end
+
+        contig.imported = true
+        contig.assembled = true
+
+        # contig.verified = true
+        # contig.verified_by = 8 #TODO: extract from comment or use TB for all contigs?
+        # contig.verified_at = creation_date
+
+        contig.comment = comment
+
+        contig.partial_cons.destroy_all
+        new_partial_con = contig.partial_cons.create
+
+        new_partial_con.aligned_sequence = sequence
+        new_partial_con.aligned_qualities = []
+        new_partial_con.save
+
+        contig.save
+      end
+    end
   end
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
