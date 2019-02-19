@@ -9,13 +9,16 @@ namespace :data do
     fasta_str = +''
 
     contig_names.each do |contig_name|
-      contig = Contig.in_project(current_project_id).where('contigs.name ILIKE ?', contig_name).first
+      contig = Contig.in_project(5).where('contigs.name ILIKE ?', contig_name).first
 
-      if contig
-        fasta_str += Contig.fasta(contig, [])
+      if contig.partial_cons_count == 1
+        fasta_str += ">#{contig.name}\n"
+        fasta_str += "#{contig.partial_cons.first.aligned_sequence.scan(/.{1,80}/).join("\n")}\n"
+      else
+        puts "More or less than one partial con: #{contig.name} (#{contig.partial_cons_count})"
       end
     end
 
-    fasta_str
+    puts fasta_str
   end
 end
