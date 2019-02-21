@@ -26,6 +26,14 @@
   </div>
 </div>
 
+<div class="well">
+  Import Contigs from PDE file:<p></p>
+  <%= form_tag import_contigs_path, multipart: true do %>
+    <%= file_field_tag :file %>
+    <br>
+    <%= submit_tag "Import" %>
+  <% end %>
+</div>
 
 <p>
   Assembly complete for <%= Contig.where(:assembled => true).count %> contigs.

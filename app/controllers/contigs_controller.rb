@@ -105,8 +105,9 @@ class ContigsController < ApplicationController
   end
 
   def import
+    #TODO: Allow import of multiple files, especially when Bonn PDEs should be re-uploaded
     file = params[:file]
-    Contig.import(file, consensus, current_project_id)
+    Contig.import(file, true, current_project_id)
     redirect_to contigs_path, notice: 'Imported.'
   end
 

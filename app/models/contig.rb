@@ -31,11 +31,11 @@ class Contig < ApplicationRecord
 
 
   def self.import(file, consensus, project_id)
-    pde = File.read(file.original_filename)
+    pde = File.read(file.path)
 
     doc = Nokogiri::XML.parse(pde)
 
-    creation_date = Date.parse(doc.xpath("//comment()").text.strip.split("\n")[1])
+    # creation_date = Date.parse(doc.xpath("//comment()").text.strip.split("\n")[1])
 
     sequence_comments = {}
 
@@ -51,8 +51,11 @@ class Contig < ApplicationRecord
         end
       end
 
+      identifier += '_dup' if sequence_comments[identifier]
       sequence_comments[identifier] = comment
     end
+
+    previous_sequence = ''
 
     doc.at_xpath("//block").text.chomp.split("\\FF").each_with_index do |sequence, index|
       sequence = sequence.delete("\n")
@@ -64,16 +67,26 @@ class Contig < ApplicationRecord
         sequence.sub!(/\\FE\d+:/, unknowns)
       end
 
+      # Replace placeholders in sequence string with actual bases
+      unless previous_sequence == ''
+        sequence.each_char.with_index do |c, index|
+          if c == '.'
+            sequence[index] = previous_sequence[index]
+          end
+        end
+      end
+
+      previous_sequence = sequence
+
       identifier = sequence_comments.keys[index]
       comment = sequence_comments[identifier]
 
       identifier_components = identifier.match(/CAR_(DB\d+)_.*_(ITS|trnK-matK|rpl16|trnLF)_*.*/)
 
-      if identifier_components # Only sequences with a DNA Bank ID
+      if identifier_components # Only sequences with a DNA Bank ID and marker info
         name = identifier_components[1] + '_' + identifier_components[2]
 
-        contig = Contig.in_project(current_project_id).where('contigs.name ILIKE ?', name).first
-
+        contig = Contig.in_project(project_id).where('contigs.name ILIKE ?', name).first
         unless contig
           contig = Contig.create(name: name)
           contig.add_project(project_id)
@@ -81,23 +94,26 @@ class Contig < ApplicationRecord
           contig.marker = Marker.find_by_name(identifier_components[2])
         end
 
-        contig.imported = true
-        contig.assembled = true
+        # Do not overwrite existing contigs with reads
+        unless contig.primer_reads.size > 0
+          contig.imported = true
+          contig.assembled = true
 
-        # contig.verified = true
-        # contig.verified_by = 8 #TODO: extract from comment or use TB for all contigs?
-        # contig.verified_at = creation_date
+          # contig.verified = true
+          # contig.verified_by = 8 #TODO: extract from comment or use TB for all contigs?
+          # contig.verified_at = creation_date
 
-        contig.comment = comment
+          contig.comment = comment
 
-        contig.partial_cons.destroy_all
-        new_partial_con = contig.partial_cons.create
+          contig.partial_cons.destroy_all
+          new_partial_con = contig.partial_cons.create
 
-        new_partial_con.aligned_sequence = sequence
-        new_partial_con.aligned_qualities = []
-        new_partial_con.save
+          new_partial_con.aligned_sequence = sequence
+          new_partial_con.aligned_qualities = []
+          new_partial_con.save
 
-        contig.save
+          contig.save
+        end
       end
     end
   end
