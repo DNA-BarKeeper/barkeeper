@@ -31,7 +31,8 @@ class Contig < ApplicationRecord
 
 
   def self.import(file, consensus, project_id)
-    pde = File.read(file.path)
+    # pde = File.read(file.path)
+    pde = File.read("/home/sarah/sciebo/PhD/GBOL/WebApp/Data/test_import_pde.pde")
 
     doc = Nokogiri::XML.parse(pde)
 
@@ -82,6 +83,7 @@ class Contig < ApplicationRecord
       comment = sequence_comments[identifier]
 
       identifier_components = identifier.match(/CAR_(DB\d+)_.*_(ITS|trnK-matK|rpl16|trnLF)_*.*/)
+      #TODO: weitere Schreibweisen: trnK/matK; matK-trnK; keine Markerangabe
 
       if identifier_components # Only sequences with a DNA Bank ID and marker info
         name = identifier_components[1] + '_' + identifier_components[2]
@@ -95,7 +97,7 @@ class Contig < ApplicationRecord
         end
 
         # Do not overwrite existing contigs with reads
-        unless contig.primer_reads.size > 0
+        unless contig.primer_reads.use_for_assembly.size > 0
           contig.imported = true
           contig.assembled = true
 
@@ -108,6 +110,7 @@ class Contig < ApplicationRecord
           contig.partial_cons.destroy_all
           new_partial_con = contig.partial_cons.create
 
+          # TODO: Check if contigs with only a consensus lead to issues somewhere in the app
           new_partial_con.aligned_sequence = sequence
           new_partial_con.aligned_qualities = []
           new_partial_con.save
