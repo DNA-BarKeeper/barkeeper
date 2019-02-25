@@ -172,7 +172,7 @@ module Export
           name << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}" # Species
         end
 
-        add_sequence_to_fasta(name, marker_sequence.sequence)
+        add_sequence_to_fasta(name, marker_sequence.sequence) if marker_sequence.sequence
       end
     end
 
