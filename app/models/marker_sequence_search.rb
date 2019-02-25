@@ -24,15 +24,17 @@ class MarkerSequenceSearch < ApplicationRecord
     taxa = +''
 
     sequences.includes(isolate: [individual: [species: [family: [order: :higher_order_taxon]]]]).each do |marker_sequence|
-      species = marker_sequence.isolate&.individual&.species&.get_species_component
-      family = marker_sequence.isolate&.individual&.species&.family&.name
-      order = marker_sequence.isolate&.individual&.species&.family&.order&.name
-      hot = marker_sequence.isolate&.individual&.species&.family&.order&.higher_order_taxon&.name
+      if marker_sequence.sequence
+        species = marker_sequence.isolate&.individual&.species&.get_species_component
+        family = marker_sequence.isolate&.individual&.species&.family&.name
+        order = marker_sequence.isolate&.individual&.species&.family&.order&.name
+        hot = marker_sequence.isolate&.individual&.species&.family&.order&.higher_order_taxon&.name
 
-      taxa << marker_sequence.name.delete(' ')
-      taxa << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}"
-      taxa << "\t"
-      taxa << "Eukaryota;Embryophyta;#{hot};#{order};#{family};#{species}\n"
+        taxa << marker_sequence.name.delete(' ')
+        taxa << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}"
+        taxa << "\t"
+        taxa << "Eukaryota;Embryophyta;#{hot};#{order};#{family};#{species}\n"
+      end
     end
 
     taxa
