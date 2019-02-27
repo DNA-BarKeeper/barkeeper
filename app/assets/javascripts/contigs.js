@@ -169,7 +169,7 @@ function draw_page(id, page){
     if (mm_container.length > 0) {
 
         var contig_drawing_width = $('#contig-drawing').width();
-        var width_in_bases= Math.floor( contig_drawing_width/10 );
+        var width_in_bases = Math.floor( (contig_drawing_width - 20)/10 ); // Adjust for scroll bar
 
         var url='/partial_cons/'+partial_con_id+'/'+page+'/'+width_in_bases;
 
@@ -239,24 +239,29 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 //        20 for consensus_qualities
 //        20 for coordinates
 
-    var h=partial_contig.primer_reads.length*80+80;
+    var h = partial_contig.primer_reads.length*80+80;
 
     // when single page drawing requested (and, thus, requested drawing width [=viewport width] set to null), compute actually needed width:
-    if (contig_drawing_width===null){
+    if (contig_drawing_width === null) {
         var primer_read = partial_contig.primer_reads[0];
-        if (primer_read.aligned_seq){
-            contig_drawing_width=primer_read.aligned_seq.length*10;
-        } else {
-            contig_drawing_width=100000;
+
+        if (primer_read && primer_read.aligned_seq) {
+            contig_drawing_width = primer_read.aligned_seq.length*10 + 40; // Add 40 to adjust for scroll bar
+        }
+        else if (partial_contig.aligned_sequence) {
+            contig_drawing_width = partial_contig.aligned_sequence.length*10 + 40; // Add 40 to adjust for scroll bar
+        }
+        else {
+            contig_drawing_width = 100000;
         }
     }
 
-    var svg=d3.select(container_name)
+    var svg = d3.select(container_name)
         .append('svg')
-        .attr('width', contig_drawing_width)
+        .attr('width', contig_drawing_width - 20) // Substract 20 pixel to adjust for scroll bar in page mode
         .attr('height', h);
-    var x=0;
-    var y=20;
+    var x = 0;
+    var y = 20;
 
     var color = 'gray';
     var font_family = "sans-serif";
@@ -265,22 +270,21 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
     var used_reads = partial_contig.primer_reads;
 
-
-    //for each read to show in assembly:
-
+    // For each read to show in assembly:
     for (var used_read_index=0; used_read_index < used_reads.length; used_read_index++){
 
-        var used_read= used_reads[used_read_index];
+        var used_read = used_reads[used_read_index];
 
         var seq1 = null;
         if (used_read.aligned_seq){
-            seq1=used_read.aligned_seq;
-        } else if (used_read.trimmed_seq){
-            seq1=used_read.trimmed_seq;
-        } else {
-            seq1=used_read.sequence;
+            seq1 = used_read.aligned_seq;
         }
-
+        else if (used_read.trimmed_seq){
+            seq1 = used_read.trimmed_seq;
+        }
+        else {
+            seq1 = used_read.sequence;
+        }
 
         var aligned_peak_indices = null;
         if (used_read.aligned_peak_indices){
@@ -288,7 +292,6 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         }
 
         x=0;
-
 
         //trace row:
         color = 'gray';

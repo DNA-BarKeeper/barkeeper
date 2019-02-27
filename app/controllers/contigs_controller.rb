@@ -107,7 +107,10 @@ class ContigsController < ApplicationController
   def import
     #TODO: Allow import of multiple files, especially when Bonn PDEs should be re-uploaded
     file = params[:file]
-    Contig.import(file, true, current_project_id)
+    verified_by = params[:contig][:verified_by]
+    marker = params[:contig][:marker_id]
+
+    Contig.import(file, verified_by, marker, current_project_id)
     redirect_to contigs_path, notice: 'Imported.'
   end
 
@@ -424,9 +427,9 @@ class ContigsController < ApplicationController
   # TODO filename and fastastring are only used by change via script action
   # TODO: isolate_name used in form for contig, but cant that be done via id?
   def contig_params
-    params.require(:contig).permit(:mira, :marker, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names,
+    params.require(:contig).permit(:mira, :marker, :marker_id, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names,
                                    :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id,
-                                   :isolate_id, :marker_sequence_id, :term, :isolate_name, :verified,
+                                   :isolate_id, :marker_sequence_id, :term, :isolate_name, :verified, :verified_by,
                                    project_ids: [])
   end
 end
