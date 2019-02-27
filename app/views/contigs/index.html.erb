@@ -31,6 +31,12 @@
   <%= form_tag import_contigs_path, multipart: true do %>
     <%= file_field_tag :file %>
     <br>
+    <%= label_tag 'Verified by'%>
+    <%= collection_select :contig, :verified_by, User.gbol, :id, :name, {} %>
+    <br>
+    <%= label_tag 'Marker'%>
+    <%= collection_select :contig, :marker_id, Marker.gbol, :id, :name, {} %>
+    <br>
     <%= submit_tag "Import" %>
   <% end %>
 </div>

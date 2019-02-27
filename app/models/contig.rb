@@ -30,13 +30,16 @@ class Contig < ApplicationRecord
   scope :unsolved_warnings, -> { joins(marker_sequence: :mislabels).where(marker_sequence: { mislabels: { solved: false } }) }
 
 
-  def self.import(file, consensus, project_id)
-    # pde = File.read(file.path)
-    pde = File.read("/home/sarah/sciebo/PhD/GBOL/WebApp/Data/test_import_pde.pde")
+  def self.import(file, verified_by, marker_id, project_id)
+    # file = "/home/sarah/Downloads/POA_TAlign_Festuca_GBOL_trnK-matK_06-02-19_final.pde"
+    pde = ''.dup
+
+    gz_extract = Zlib::GzipReader.open(file.path)
+    gz_extract.each_line do |extract|
+      pde += extract
+    end
 
     doc = Nokogiri::XML.parse(pde)
-
-    # creation_date = Date.parse(doc.xpath("//comment()").text.strip.split("\n")[1])
 
     sequence_comments = {}
 
@@ -82,18 +85,19 @@ class Contig < ApplicationRecord
       identifier = sequence_comments.keys[index]
       comment = sequence_comments[identifier]
 
-      identifier_components = identifier.match(/CAR_(DB\d+)_.*_(ITS|trnK-matK|rpl16|trnLF)_*.*/)
-      #TODO: weitere Schreibweisen: trnK/matK; matK-trnK; keine Markerangabe
+      identifier_components = identifier.match(/[A-Z]{3}_(DB\d+)_.*/)
 
       if identifier_components # Only sequences with a DNA Bank ID and marker info
-        name = identifier_components[1] + '_' + identifier_components[2]
+        marker = Marker.find(marker_id)
+
+        name = identifier_components[1] + '_' + marker.name
 
         contig = Contig.in_project(project_id).where('contigs.name ILIKE ?', name).first
         unless contig
           contig = Contig.create(name: name)
           contig.add_project(project_id)
           contig.isolate = Isolate.find_by_dna_bank_id(identifier_components[1])
-          contig.marker = Marker.find_by_name(identifier_components[2])
+          contig.marker = marker
         end
 
         # Do not overwrite existing contigs with reads
@@ -101,9 +105,19 @@ class Contig < ApplicationRecord
           contig.imported = true
           contig.assembled = true
 
-          # contig.verified = true
-          # contig.verified_by = 8 #TODO: extract from comment or use TB for all contigs?
-          # contig.verified_at = creation_date
+          date_pattern = /.*\b((3[01]|[12][0-9]|0[1-9]|[1-9])-(1[0-2]|0[1-9]|[1-9])-(\d{2,4}))\b.*/
+          date_match = comment.match(date_pattern)
+
+          if date_match
+            date_format = date_match[4].size == 2 ? "%d-%m-%y" : "%d-%m-%Y"
+            verified_at = Date.strptime(comment.match(date_pattern)[1], date_format)
+          else
+            verified_at = Date.today
+          end
+
+          contig.verified = true
+          contig.verified_by = verified_by
+          contig.verified_at = verified_at
 
           contig.comment = comment
 
