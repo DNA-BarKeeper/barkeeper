@@ -253,8 +253,9 @@ class Contig < ApplicationRecord
       end
     end
 
-    update_ms = current_largest_partial_contig >= marker.expected_reads
-    post_assembly(update_ms, current_largest_partial_contig_seq.delete('-'), msg)
+    update_ms = current_largest_partial_contig >= marker.expected_reads && current_largest_partial_contig_seq
+    sequence = update_ms ? current_largest_partial_contig_seq.delete('-') : ''
+    post_assembly(update_ms, sequence, msg)
   end
 
   # Recursive assembly function
