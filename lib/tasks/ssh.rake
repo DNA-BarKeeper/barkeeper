@@ -53,38 +53,43 @@ namespace :data do
   private
 
   def analyse_on_server(marker)
-    marker_name = marker.name
-    search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker_name, project_id: 5)
-
-    title = "all_taxa_#{marker_name}_#{search.created_at.to_date}"
-
-    sequences = "#{Rails.root}/#{title}.fasta"
-    tax_file = "#{Rails.root}/#{title}.tax"
-
-    analysis_dir = "/data/data1/sarah/SATIVA/#{title}"
-
-    File.open(sequences, 'w+') do |f|
-      f.write(search.analysis_fasta(true))
-    end
-
-    File.open(tax_file, 'w+') do |f|
-      f.write(search.taxon_file(true))
-    end
-
     Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
-      # Create analysis directory
-      session.exec!("mkdir #{analysis_dir}")
+      # Check if SATIVA.sh is already running
+      running = session.exec!("pgrep -x \"SATIVA.sh\"")
 
-      # Upload analysis input files
-      session.scp.upload! tax_file, analysis_dir
-      session.scp.upload! sequences, analysis_dir
+      unless running.empty?
+        marker_name = marker.name
+        search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker_name, project_id: 5)
 
-      # Delete local files
-      FileUtils.rm(sequences)
-      FileUtils.rm(tax_file)
+        title = "all_taxa_#{marker_name}_#{search.created_at.to_date}"
 
-      # Start analysis on server
-      session.exec!("/home/kai/analysis-scripts/SATIVA.sh #{title}")
+        sequences = "#{Rails.root}/#{title}.fasta"
+        tax_file = "#{Rails.root}/#{title}.tax"
+
+        analysis_dir = "/data/data1/sarah/SATIVA/#{title}"
+
+        File.open(sequences, 'w+') do |f|
+          f.write(search.analysis_fasta(true))
+        end
+
+        File.open(tax_file, 'w+') do |f|
+          f.write(search.taxon_file(true))
+        end
+
+        # Create analysis directory
+        session.exec!("mkdir #{analysis_dir}")
+
+        # Upload analysis input files
+        session.scp.upload! tax_file, analysis_dir
+        session.scp.upload! sequences, analysis_dir
+
+        # Delete local files
+        FileUtils.rm(sequences)
+        FileUtils.rm(tax_file)
+
+        # Start analysis on server
+        session.exec!("/home/kai/analysis-scripts/SATIVA.sh #{title}")
+      end
     end
   end
 end
