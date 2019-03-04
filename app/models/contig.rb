@@ -33,6 +33,7 @@ class Contig < ApplicationRecord
   def self.import(file, verified_by, marker_id, project_id)
     # file = "/home/sarah/Downloads/POA_TAlign_Festuca_GBOL_trnK-matK_06-02-19_final.pde"
     pde = ''.dup
+    warning = []
 
     gz_extract = Zlib::GzipReader.open(file.path)
     gz_extract.each_line do |extract|
@@ -96,12 +97,12 @@ class Contig < ApplicationRecord
         unless contig
           contig = Contig.create(name: name)
           contig.add_project(project_id)
-          contig.isolate = Isolate.find_by_dna_bank_id(identifier_components[1])
           contig.marker = marker
         end
 
-        # Do not overwrite existing contigs with reads
-        unless contig.primer_reads.use_for_assembly.size > 0
+        if contig.primer_reads.use_for_assembly.size.positive? # Do not overwrite existing contigs with reads
+          warning << name
+        else
           contig.imported = true
           contig.assembled = true
 
@@ -129,10 +130,24 @@ class Contig < ApplicationRecord
           new_partial_con.aligned_qualities = []
           new_partial_con.save
 
+          isolate = Isolate.find_by_lab_nr(identifier_components[1])
+          isolate ||= Isolate.create(lab_nr: identifier_components[1], dna_bank_id: identifier_components[1])
+          contig.isolate = isolate
+
+          marker_sequence = MarkerSequence.find_or_create_by(name: contig.name)
+          marker_sequence.add_project(project_id)
+          marker_sequence.sequence = sequence.delete('-').delete('?') if sequence
+          marker_sequence.contigs << contig
+          marker_sequence.marker = contig.marker
+          marker_sequence.isolate = contig.isolate
+          marker_sequence.save
+
           contig.save
         end
       end
     end
+
+    warning
   end
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)

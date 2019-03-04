@@ -110,8 +110,13 @@ class ContigsController < ApplicationController
     verified_by = params[:contig][:verified_by]
     marker = params[:contig][:marker_id]
 
-    Contig.import(file, verified_by, marker, current_project_id)
-    redirect_to contigs_path, notice: 'Imported.'
+    warning = Contig.import(file, verified_by, marker, current_project_id)
+    if !warning.empty?
+      redirect_to contigs_path,
+                  notice: "Finished. The following #{warning.size} contigs were not imported, since read data was already present: #{warning.join(', ')}"
+    else
+      redirect_to contigs_path, notice: 'Imported.'
+    end
   end
 
   # for overwriting with externally edited / verified contigs in fas format (via .pde)
@@ -321,7 +326,9 @@ class ContigsController < ApplicationController
   end
 
   def overlap
-    if @contig.primer_reads.where(used_for_con: true).count <= 4
+    if @contig.primer_reads.size < 1
+      msg = 'No reads are available for assembly.'
+    elsif @contig.primer_reads.where(used_for_con: true).count <= 4
       @contig.auto_overlap
       msg = 'Assembly finished.'
     else
