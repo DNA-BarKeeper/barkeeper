@@ -256,16 +256,18 @@ class Contig < ApplicationRecord
     "#{fasq_str}\n#{cons_seq}\n+\n#{qual_str}\n"
   end
 
-  def post_assembly(assembled_reads, msg)
-    # Set to "assembled" & create MarkerSequence if applicable
-    if assembled_reads >= marker.expected_reads
+  def post_assembly(update_ms, sequence, msg)
+    if update_ms
       update(assembled: true)
       ms = MarkerSequence.find_or_create_by(name: name)
+      ms.sequence = sequence
       ms.contigs << self
       ms.marker = marker
       ms.isolate = isolate
       ms.add_projects(projects.pluck(:id))
       ms.save
+
+      self.marker_sequence = ms
     end
 
     if msg
@@ -274,6 +276,8 @@ class Contig < ApplicationRecord
       issue.save
       self.assembled = false
     end
+
+    self.save
   end
 
   def auto_overlap
@@ -287,7 +291,7 @@ class Contig < ApplicationRecord
     if remaining_reads.size > 10
       # TODO: Arbitrary, change
       msg = 'Currently no more than 10 reads allowed for assembly.'
-      post_assembly(0, msg)
+      post_assembly(false, '', msg)
       return
     elsif remaining_reads.size == 1
       single_read = primer_reads.use_for_assembly.first
@@ -300,11 +304,11 @@ class Contig < ApplicationRecord
       pc.primer_reads << single_read
       partial_cons << pc
 
-      post_assembly(1, msg)
+      post_assembly(true, single_read.trimmed_and_cleaned_seq, msg)
       return
     elsif remaining_reads.empty?
       msg = 'Need at least 1 read for creating consensus sequence.'
-      post_assembly(0, msg)
+      post_assembly(false, '', msg)
       return
     end
 
@@ -370,7 +374,9 @@ class Contig < ApplicationRecord
       end
     end
 
-    post_assembly(current_largest_partial_contig, msg)
+    update_ms = current_largest_partial_contig >= marker.expected_reads && current_largest_partial_contig_seq
+    sequence = update_ms ? current_largest_partial_contig_seq.delete('-') : ''
+    post_assembly(update_ms, sequence, msg)
   end
 
   # Recursive assembly function

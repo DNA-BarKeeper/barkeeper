@@ -507,14 +507,20 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                 .style("cursor", "crosshair")
                 .on('click', function () {
                     var coordinates = d3.select(this).attr("id").split("-");
-                    $('#primer_read_' + coordinates[0] + '_view').show(); // Show div with primer read view
-                    window.location = '#read_view_' + coordinates[0]; // Jump to primer read view
+                    var read_id = coordinates[0];
+                    var position = coordinates[1]
+
+                    // Show div with primer read view and jump to it
+                    $('#primer_read_' + read_id + '_view').show();
+                    window.location = '#read_view_' + read_id;
+
+                    scroll_with_highlight(position, read_id);
                 });
         }
 
         y=y+20;
 
-        //end for through used_reads:
+        // End for through used_reads:
     }
 
     // render aligned consensus sequence:
