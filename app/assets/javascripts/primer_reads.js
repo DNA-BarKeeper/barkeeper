@@ -226,7 +226,8 @@ function draw_chromatogram(div_id, chromatogram){
         .attr("y", 15)
         .attr("width", 12)
         .attr("height", 20)
-        .attr("fill", "#fcff00");
+        .attr("fill", "#fcff00")
+        .attr("class", "highlight");
 
 
     //draw traces
