@@ -163,12 +163,9 @@
 
                     <div class="vertical-spacer"></div>
 
-                    <% if read.position %>
-                    <% end %>
-
                     <!--primer read chromatogram view-->
                     <%= content_tag 'div', class: 'alignment', id: "chromatogram_container_#{read.id}", data: {read_id: read.id} do %>
-                        <%= content_tag 'div', class: 'chromatogram', id: "primer_read_#{read.id}", data: {url: read, pos: read.position, read_id: read.id } do %><% end %>
+                        <%= content_tag 'div', class: 'chromatogram', id: "primer_read_#{read.id}", data: { url: read, pos: 1, read_id: read.id } do %><% end %>
                     <% end %>
 
                     <!--buttons -->
