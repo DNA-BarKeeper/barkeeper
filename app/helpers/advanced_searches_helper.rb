@@ -1,4 +1,4 @@
-module AdvancedSearchHelper
+module AdvancedSearchesHelper
   def title(search)
     "'#{search.title}'" unless search.title.blank?
   end
