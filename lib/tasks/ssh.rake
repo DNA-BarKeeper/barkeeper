@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 namespace :data do
-  require 'net/ssh'
-  require 'net/scp'
-  require 'net/sftp'
-
   desc 'Check how many sequences were created or updated since last analysis and redo analysis if necessary'
   task check_new_marker_sequences: :environment do
     # TODO: Do analyses for all existing projects (except all_records)

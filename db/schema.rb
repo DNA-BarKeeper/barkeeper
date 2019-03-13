@@ -10,21 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181030150104) do
+ActiveRecord::Schema.define(version: 20190313161720) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
 
-  create_table "centroid_sequences", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "clusters", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "centroid_sequence"
+    t.integer  "sequence_count"
+    t.string   "fasta"
+    t.boolean  "reverse_complement"
+    t.integer  "isolate_id"
+    t.integer  "ngs_run_id"
+    t.integer  "marker_id"
+    t.index ["isolate_id"], name: "index_clusters_on_isolate_id", using: :btree
+    t.index ["marker_id"], name: "index_clusters_on_marker_id", using: :btree
+    t.index ["ngs_run_id"], name: "index_clusters_on_ngs_run_id", using: :btree
   end
 
   create_table "contig_pde_uploaders", force: :cascade do |t|
@@ -370,6 +375,15 @@ ActiveRecord::Schema.define(version: 20181030150104) do
     t.index ["marker_id", "project_id"], name: "index_markers_projects_on_marker_id_and_project_id", using: :btree
   end
 
+  create_table "metaprojects", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.text     "legal_disclosure"
+    t.text     "privacy_policy"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
   create_table "micronic_plates", force: :cascade do |t|
     t.string   "micronic_plate_id", limit: 255
     t.string   "name",              limit: 255
@@ -436,7 +450,10 @@ ActiveRecord::Schema.define(version: 20181030150104) do
     t.string   "set_tag_map_content_type"
     t.integer  "set_tag_map_file_size"
     t.datetime "set_tag_map_updated_at"
+    t.integer  "isolate_id"
+    t.string   "analysis_name"
     t.index ["higher_order_taxon_id"], name: "index_ngs_runs_on_higher_order_taxon_id", using: :btree
+    t.index ["isolate_id"], name: "index_ngs_runs_on_isolate_id", using: :btree
   end
 
   create_table "ngs_runs_projects", id: false, force: :cascade do |t|

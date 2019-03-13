@@ -5,6 +5,8 @@ class NgsRun < ApplicationRecord
 
   belongs_to :higher_order_taxon
   has_many :tag_primer_maps
+  has_many :clusters
+  has_many :isolates
 
   has_attached_file :fastq
   has_attached_file :set_tag_map
@@ -91,11 +93,75 @@ class NgsRun < ApplicationRecord
     packages_csv.close
 
     #TODO do stuff with updated tpm and packages csv
+
+    self.analysis_name = fastq_file_name.remove('.fasta')
+
+    # Start analysis on xylocalyx
+
+    # TODO: Check regularly somehow: e.g. process/script still running? results.zip present?)
+    check_results
   end
 
-  def import
-    run_pipe
+  def check_results
+    analysis_dir = "/data/data2/lara/Barcoding/#{self.analysis_name}_out.zip" #TODO How is the dir name related to that of TPM?
 
-    # Import results
+    Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
+      sftp.stat(analysis_dir) do |response|
+        if response.ok?
+          # Download result file
+          sftp.download!("/data/data2/lara/Barcoding/#{self.analysis_name}_out.zip", "#{Rails.root}/#{self.analysis_name}_out.zip")
+          import(5)
+        end
+      end
+    end
+  end
+
+  def import(project_id)
+    # TODO: send results to AWS storage
+
+    # Unzip results
+    Zip::File.open("#{Rails.root}/#{self.analysis_name}_out.zip") do |zip_file|
+      zip_file.each do |entry|
+        entry.extract("#{Rails.root}/#{entry.name}")
+      end
+    end
+
+    # Import results for each marker
+    Marker.gbol_marker.each do |marker|
+      if File.exist?("#{Rails.root}/#{self.analysis_name}_out/#{marker.name}.fasta")
+        puts "Importing results for #{marker.name}..."
+        Bio::FlatFile.open(Bio::FastaFormat, "#{Rails.root}/#{self.analysis_name}_out/#{marker.name}.fasta") do |ff|
+          ff.each do |entry|
+            def_parts = entry.definition.split('|')
+            next unless def_parts[1].include?('centroid')
+
+            cluster_def = def_parts[1].match(/\d+\**\w*\((\d+)\)/)
+
+            isolate_name = def_parts[0].split('_')[0]
+            sequence_count = cluster_def[1].to_i
+            reverse_complement = def_parts.last.match(/\bRC\b/)
+
+            cluster = Cluster.new(sequence_count: sequence_count, reverse_complement: reverse_complement)
+            isolate = Isolate.find_by_lab_nr(isolate_name)
+            isolate ||= Isolate.create(lab_nr: isolate_name, sequence_count: sequence_count, reverse_complement: reverse_complement)
+
+            cluster.centroid_sequence = entry.seq
+            cluster.ngs_run = self
+            cluster.marker = marker
+            cluster.save
+
+            isolate.add_project(project_id)
+            isolate.clusters << cluster
+            isolate.save
+
+            #TODO: Add project ID to cluster?
+          end
+        end
+      end
+    end
+
+    # Remove temporary files from server
+    FileUtils.rm_r("#{Rails.root}/#{self.analysis_name}_out.zip")
+    FileUtils.rm_r("#{Rails.root}/#{self.analysis_name}_out")
   end
 end
