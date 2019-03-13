@@ -5,6 +5,7 @@ class Marker < ApplicationRecord
 
   has_many :marker_sequences
   has_many :contigs
+  has_many :clusters
   has_many :primers
   has_many :mislabel_analyses
   has_and_belongs_to_many :higher_order_taxa
