@@ -1,0 +1,31 @@
+<% provide(:title, @cluster.name) %>
+<%= show_val_errors(@cluster)%>
+
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= @cluster.name %></h3>
+  </div>
+
+  <div class="panel-body">
+    <%= form_for(@cluster) do |f| %>
+      <div class="form-group">
+        <%= f.label :running_number %>
+        <%= f.text_field :running_number,  class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :reverse_complement %>
+        <%= f.text_field :reverse_complement, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label 'Marker' %>
+        <%= f.collection_select(:marker_id, Marker.order(:name).all, :id, :name, {}, { class: 'form-control' }) %>
+      </div>
+
+      <%= f.submit 'Update', :class => 'btn btn-default' %>
+
+    <% end %>
+  </div>
+</div>
