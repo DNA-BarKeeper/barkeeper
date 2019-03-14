@@ -43,6 +43,8 @@ GBOLapp::Application.routes.draw do
     end
   end
 
+  resources :clusters
+
   resources :individual_searches
 
   resources :contigs do

@@ -99,18 +99,19 @@ class NgsRun < ApplicationRecord
     # Start analysis on xylocalyx
 
     # TODO: Check regularly somehow: e.g. process/script still running? results.zip present?)
-    check_results
+    # TODO: Use actual current project ID
+    check_results(5)
   end
 
-  def check_results
-    analysis_dir = "/data/data2/lara/Barcoding/#{self.analysis_name}_out.zip" #TODO How is the dir name related to that of TPM?
+  def check_results(project_id)
+    analysis_dir = "/data/data2/lara/Barcoding/#{self.analysis_name}_out.zip"
 
     Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
       sftp.stat(analysis_dir) do |response|
         if response.ok?
           # Download result file
           sftp.download!("/data/data2/lara/Barcoding/#{self.analysis_name}_out.zip", "#{Rails.root}/#{self.analysis_name}_out.zip")
-          import(5)
+          import(project_id)
         end
       end
     end
@@ -135,16 +136,18 @@ class NgsRun < ApplicationRecord
             def_parts = entry.definition.split('|')
             next unless def_parts[1].include?('centroid')
 
-            cluster_def = def_parts[1].match(/\d+\**\w*\((\d+)\)/)
+            cluster_def = def_parts[1].match(/(\d+)\**\w*\((\d+)\)/)
 
             isolate_name = def_parts[0].split('_')[0]
-            sequence_count = cluster_def[1].to_i
-            reverse_complement = def_parts.last.match(/\bRC\b/)
-
-            cluster = Cluster.new(sequence_count: sequence_count, reverse_complement: reverse_complement)
             isolate = Isolate.find_by_lab_nr(isolate_name)
-            isolate ||= Isolate.create(lab_nr: isolate_name, sequence_count: sequence_count, reverse_complement: reverse_complement)
+            isolate ||= Isolate.create(lab_nr: isolate_name)
 
+            running_number = cluster_def[1].to_i
+            sequence_count = cluster_def[2].to_i
+            reverse_complement = def_parts.last.match(/\bRC\b/) ?  true : false
+            cluster = Cluster.new(running_number: running_number, sequence_count: sequence_count, reverse_complement: reverse_complement)
+
+            cluster.name = isolate_name + '_' + marker.name + '_' + running_number.to_s
             cluster.centroid_sequence = entry.seq
             cluster.ngs_run = self
             cluster.marker = marker
@@ -154,7 +157,7 @@ class NgsRun < ApplicationRecord
             isolate.clusters << cluster
             isolate.save
 
-            #TODO: Add project ID to cluster?
+            #TODO: Add project ID to clusters?
           end
         end
       end
