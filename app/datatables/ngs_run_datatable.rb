@@ -26,7 +26,7 @@ class NgsRunDatatable
     ngs_runs.map do |ngs_run|
 
       [
-        link_to(ngs_run.name, edit_ngs_run_path(ngs_run)),
+        link_to(ngs_run.analysis_name, edit_ngs_run_path(ngs_run)),
         ngs_run.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
         link_to('Delete', ngs_run, method: :delete, data: { confirm: 'Are you sure?' })
       ]
@@ -46,7 +46,7 @@ class NgsRunDatatable
     ngs_runs = ngs_runs.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      ngs_runs = ngs_runs.where("ngs_runs.name ILIKE :search", search: "%#{params[:sSearch]}%")
+      ngs_runs = ngs_runs.where("ngs_runs.analysis_name ILIKE :search", search: "%#{params[:sSearch]}%")
     end
 
     ngs_runs
@@ -61,7 +61,7 @@ class NgsRunDatatable
   end
 
   def sort_column
-    columns = %w[ngs_runs.name updated_at]
+    columns = %w[ngs_runs.analysis_name updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

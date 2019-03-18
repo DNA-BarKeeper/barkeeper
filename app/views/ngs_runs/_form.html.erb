@@ -1,36 +1,41 @@
-<% provide(:title, @ngs_run.name) %>
+<% provide(:title, @ngs_run.analysis_name) %>
 <%= show_val_errors(@ngs_run)%>
 
 <div class="panel panel-default">
 
-  <div class="panel-heading"><h3 class="panel-title"><%= @ngs_run.name %></h3></div>
+  <div class="panel-heading"><h3 class="panel-title"><%= @ngs_run.analysis_name %></h3></div>
 
   <div class="panel-body">
     <%= form_for(@ngs_run) do |f| %>
 
       <div class="form-group">
-        <%= f.label :name %>
-        <%= f.text_field :name, class: 'form-control' %>
+        <%= f.label :analysis_name %>
+        <%= f.text_field :analysis_name, class: 'form-control' %>
       </div>
 
       <div class="form-group">
         <%= f.label :quality_threshold %>
-        <%= f.text_field :quality_threshold, class: 'form-control' %>
+        <%= f.number_field :quality_threshold, min: 0, class: 'form-control' %>
       </div>
 
       <div class="form-group">
-        <%= f.label :tag_mismates %>
-        <%= f.text_field :tag_mismates, class: 'form-control' %>
+        <%= f.label :tag_mismatches %>
+        <%= f.number_field :tag_mismatches, min: 0, class: 'form-control' %>
       </div>
 
       <div class="form-group">
         <%= f.label :primer_mismatches %>
-        <%= f.text_field :primer_mismatches, class: 'form-control' %>
+        <%= f.number_field :primer_mismatches, min: 0, class: 'form-control' %>
       </div>
 
       <div class="form-group">
         <%= f.label :higher_order_taxon, 'Higher Order Taxon' %>
         <%= f.collection_select(:higher_order_taxon_id, HigherOrderTaxon.all, :id, :name, {}, { class: 'form-control' }) %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :comment %>
+        <%= f.text_field :comment, class: 'form-control' %>
       </div>
 
       <div class="form-group">
