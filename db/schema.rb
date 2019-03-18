@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190314145243) do
+ActiveRecord::Schema.define(version: 20190315095426) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -438,11 +438,11 @@ ActiveRecord::Schema.define(version: 20190314145243) do
 
   create_table "ngs_runs", force: :cascade do |t|
     t.integer  "quality_threshold"
-    t.integer  "tag_mismates"
+    t.integer  "tag_mismatches"
     t.integer  "primer_mismatches"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
-    t.string   "name"
+    t.string   "comment"
     t.string   "fastq_file_name"
     t.string   "fastq_content_type"
     t.integer  "fastq_file_size"

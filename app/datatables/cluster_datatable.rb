@@ -38,6 +38,7 @@ class ClusterDatatable
 
       [
           link_to(cluster.name, edit_cluster_path(cluster)),
+          link_to(cluster.ngs_run.analysis_name, edit_ngs_run_path(cluster.ngs_run)),
           link_to(species_name, edit_species_path(species_id)),
           link_to(individual_name, edit_individual_path(individual_id)),
           cluster.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
@@ -51,7 +52,7 @@ class ClusterDatatable
   end
 
   def fetch_clusters
-    clusters = Cluster.includes(isolate: [individual: :species]).order("#{sort_column} #{sort_direction}")
+    clusters = Cluster.includes(:ngs_run, isolate: [individual: :species]).order("#{sort_column} #{sort_direction}")
 
     clusters = clusters.page(page).per_page(per_page)
 
@@ -69,7 +70,7 @@ class ClusterDatatable
   end
 
   def sort_column
-    columns = %w[clusters.name species.composed_name individuals.specimen_id clusters.updated_at]
+    columns = %w[clusters.name ngs_runs.analysis_name species.composed_name individuals.specimen_id clusters.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

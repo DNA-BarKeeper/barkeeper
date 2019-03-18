@@ -1,7 +1,7 @@
 class NgsRun < ApplicationRecord
   include ProjectRecord
 
-  validates_presence_of :name
+  validates_presence_of :analysis_name
 
   belongs_to :higher_order_taxon
   has_many :tag_primer_maps
@@ -82,6 +82,8 @@ class NgsRun < ApplicationRecord
   end
 
   def run_pipe
+    # TODO: name all files after analysis_name given by user before sending them
+
     packages_csv = CSV.open('path', 'w', col_sep: "\t")
 
     tag_primer_maps.each do |tag_primer_map|
@@ -92,9 +94,10 @@ class NgsRun < ApplicationRecord
 
     packages_csv.close
 
-    #TODO do stuff with updated tpm and packages csv
+    #TODO: do stuff with updated tpm and packages csv
+    #TODO: set default values for analysis parameters?
 
-    self.analysis_name = fastq_file_name.remove('.fasta')
+    # self.analysis_name = fastq_file_name.remove('.fasta')
 
     # Start analysis on xylocalyx
 
