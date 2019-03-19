@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  hq_sequences: 1
+  incomplete_sequences: 1
+  cluster_count: 1
+
+two:
+  hq_sequences: 1
+  incomplete_sequences: 1
+  cluster_count: 1

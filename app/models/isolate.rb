@@ -7,6 +7,7 @@ class Isolate < ApplicationRecord
   has_many :marker_sequences
   has_many :contigs
   has_many :clusters
+  has_many :ngs_results
   belongs_to :micronic_plate
   belongs_to :plant_plate
   belongs_to :tissue

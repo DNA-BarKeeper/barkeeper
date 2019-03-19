@@ -22,6 +22,8 @@ class ClustersController < ApplicationController
 
   def edit; end
 
+  def show; end
+
   def destroy
     @cluster.destroy
     respond_to do |format|
