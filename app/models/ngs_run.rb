@@ -1,11 +1,12 @@
 class NgsRun < ApplicationRecord
   include ProjectRecord
 
-  validates_presence_of :analysis_name
+  validates_presence_of :name
 
   belongs_to :higher_order_taxon
   has_many :tag_primer_maps
   has_many :clusters
+  has_many :ngs_results
   has_many :isolates
 
   has_attached_file :fastq
@@ -82,12 +83,12 @@ class NgsRun < ApplicationRecord
   end
 
   def run_pipe
-    # TODO: name all files after analysis_name given by user before sending them
+    # TODO: name all files after analysis name given by user before sending them
 
     packages_csv = CSV.open('path', 'w', col_sep: "\t")
 
     tag_primer_maps.each do |tag_primer_map|
-      tpm = tag_primer_map.add_description
+      tpm = tag_primer_map.add_description # TODO ???
 
       packages_csv << [tag_primer_map.name, tag_primer_map.tag]
     end
@@ -97,7 +98,7 @@ class NgsRun < ApplicationRecord
     #TODO: do stuff with updated tpm and packages csv
     #TODO: set default values for analysis parameters?
 
-    # self.analysis_name = fastq_file_name.remove('.fasta')
+    # self.name = fastq_file_name.remove('.fasta')
 
     # Start analysis on xylocalyx
 
@@ -107,13 +108,13 @@ class NgsRun < ApplicationRecord
   end
 
   def check_results(project_id)
-    analysis_dir = "/data/data2/lara/Barcoding/#{self.analysis_name}_out.zip"
+    analysis_dir = "/data/data2/lara/Barcoding/#{self.name}_out.zip"
 
     Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
       sftp.stat(analysis_dir) do |response|
         if response.ok?
           # Download result file
-          sftp.download!("/data/data2/lara/Barcoding/#{self.analysis_name}_out.zip", "#{Rails.root}/#{self.analysis_name}_out.zip")
+          sftp.download!("/data/data2/lara/Barcoding/#{self.name}_out.zip", "#{Rails.root}/#{self.name}_out.zip")
           import(project_id)
         end
       end
@@ -124,50 +125,104 @@ class NgsRun < ApplicationRecord
     # TODO: send results to AWS storage
 
     # Unzip results
-    Zip::File.open("#{Rails.root}/#{self.analysis_name}_out.zip") do |zip_file|
+    Zip::File.open("#{Rails.root}/#{self.name}_out.zip") do |zip_file|
       zip_file.each do |entry|
         entry.extract("#{Rails.root}/#{entry.name}")
       end
     end
 
-    # Import results for each marker
-    Marker.gbol_marker.each do |marker|
-      if File.exist?("#{Rails.root}/#{self.analysis_name}_out/#{marker.name}.fasta")
-        puts "Importing results for #{marker.name}..."
-        Bio::FlatFile.open(Bio::FastaFormat, "#{Rails.root}/#{self.analysis_name}_out/#{marker.name}.fasta") do |ff|
-          ff.each do |entry|
-            def_parts = entry.definition.split('|')
-            next unless def_parts[1].include?('centroid')
+    # Marker.gbol_marker.each do |marker|
+    #   import_clusters(marker)
+    # end
+    #
+    # import_analysis_stats
 
-            cluster_def = def_parts[1].match(/(\d+)\**\w*\((\d+)\)/)
+    import_results
 
-            isolate_name = def_parts[0].split('_')[0]
-            isolate = Isolate.find_by_lab_nr(isolate_name)
-            isolate ||= Isolate.create(lab_nr: isolate_name)
+    self.save
 
-            running_number = cluster_def[1].to_i
-            sequence_count = cluster_def[2].to_i
-            reverse_complement = def_parts.last.match(/\bRC\b/) ?  true : false
-            cluster = Cluster.new(running_number: running_number, sequence_count: sequence_count, reverse_complement: reverse_complement)
+    # Remove temporary files from server
+    FileUtils.rm_r("#{Rails.root}/#{self.name}_out.zip")
+    FileUtils.rm_r("#{Rails.root}/#{self.name}_out")
+  end
 
-            cluster.name = isolate_name + '_' + marker.name + '_' + running_number.to_s
-            cluster.centroid_sequence = entry.seq
-            cluster.ngs_run = self
-            cluster.marker = marker
-            cluster.save
+  def import_clusters(marker)
+    if File.exist?("#{Rails.root}/#{self.name}_out/#{marker.name}.fasta")
+      puts "Importing results for #{marker.name}..."
+      Bio::FlatFile.open(Bio::FastaFormat, "#{Rails.root}/#{self.name}_out/#{marker.name}.fasta") do |ff|
+        ff.each do |entry|
+          def_parts = entry.definition.split('|')
+          next unless def_parts[1].include?('centroid')
 
-            isolate.add_project(project_id)
-            isolate.clusters << cluster
-            isolate.save
+          cluster_def = def_parts[1].match(/(\d+)\**\w*\((\d+)\)/)
 
-            #TODO: Add project ID to clusters?
-          end
+          isolate_name = def_parts[0].split('_')[0]
+          isolate = Isolate.find_by_lab_nr(isolate_name)
+          isolate ||= Isolate.create(lab_nr: isolate_name)
+
+          running_number = cluster_def[1].to_i
+          sequence_count = cluster_def[2].to_i
+          reverse_complement = def_parts.last.match(/\bRC\b/) ?  true : false
+          cluster = Cluster.new(running_number: running_number, sequence_count: sequence_count, reverse_complement: reverse_complement)
+
+          blast_taxonomy = def_parts[2]
+          blast_e_value = 0 # TODO remove as soon as fasta is corrected
+          # blast_e_value = def_parts[3]
+          blast_hit = BlastHit.create(taxonomy: blast_taxonomy, e_value: blast_e_value)
+
+          cluster.name = isolate_name + '_' + marker.name + '_' + running_number.to_s
+          cluster.centroid_sequence = entry.seq
+          cluster.ngs_run = self
+          cluster.marker = marker
+          cluster.blast_hits << blast_hit
+          cluster.save
+
+          isolate.add_project(project_id)
+          isolate.clusters << cluster
+          isolate.save
+
+          #TODO: Add project ID to clusters?
         end
       end
     end
+  end
 
-    # Remove temporary files from server
-    FileUtils.rm_r("#{Rails.root}/#{self.analysis_name}_out.zip")
-    FileUtils.rm_r("#{Rails.root}/#{self.analysis_name}_out")
+  def import_analysis_stats
+    File.open("#{Rails.root}/#{self.name}_out/#{self.name}_log.txt").each do |line|
+      line_parts = line.split(':')
+
+      case line_parts[0]
+      when "Seqs pre-filtering"
+        self.sequences_pre = line_parts[1].to_i
+      when "Seqs post-seqtk-filtering"
+        self.sequences_filtered = line_parts[1].to_i
+      when "Seqs post-qiimelike-filtering (highQual)"
+        self.sequences_high_qual = line_parts[1].to_i
+      when "Seqs w/o 2nd primer"
+        self.sequences_one_primer = line_parts[1].to_i
+      else
+        next
+      end
+    end
+  end
+
+  def import_results
+    results = CSV.read("#{Rails.root}/#{self.name}_out/tagPrimerMap_expanded.txt", headers:true, col_sep: "\t")
+
+    results.each do |result|
+      id_split = result['#SampleID'].split('_')
+
+      isolate = Isolate.find_by_lab_nr(id_split[0])
+      marker = Marker.find_by_name(id_split[1])
+
+      ngs_result = NgsResult.create(hq_sequences: result['HighQualSeqs'].to_i,
+                                    incomplete_sequences: result['LinkerPrimerOnly'].to_i,
+                                    cluster_count: result['Clusters'].to_i)
+      ngs_result.isolate = isolate if isolate
+      ngs_result.marker = marker if marker
+      ngs_result.ngs_run = self
+
+      ngs_result.save
+    end
   end
 end

@@ -220,7 +220,7 @@
               <% @isolate.clusters.order(:name).each do |cl| %>
                 <tr>
                   <td>
-                    <%= link_to cl.name, edit_cluster_path(cl) %>
+                    <%= link_to cl.name, cluster_path(cl) %>
                   </td>
                 </tr>
               <% end %>

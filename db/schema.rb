@@ -10,12 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190315095426) do
+ActiveRecord::Schema.define(version: 20190319152252) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
+
+  create_table "blast_hits", force: :cascade do |t|
+    t.integer  "cluster_id"
+    t.string   "taxonomy"
+    t.decimal  "e_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cluster_id"], name: "index_blast_hits_on_cluster_id", using: :btree
+  end
 
   create_table "clusters", force: :cascade do |t|
     t.datetime "created_at",         null: false
@@ -436,6 +445,20 @@ ActiveRecord::Schema.define(version: 20190315095426) do
     t.datetime "updated_at"
   end
 
+  create_table "ngs_results", force: :cascade do |t|
+    t.integer  "isolate_id"
+    t.integer  "marker_id"
+    t.integer  "ngs_run_id"
+    t.integer  "hq_sequences"
+    t.integer  "incomplete_sequences"
+    t.integer  "cluster_count"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.index ["isolate_id"], name: "index_ngs_results_on_isolate_id", using: :btree
+    t.index ["marker_id"], name: "index_ngs_results_on_marker_id", using: :btree
+    t.index ["ngs_run_id"], name: "index_ngs_results_on_ngs_run_id", using: :btree
+  end
+
   create_table "ngs_runs", force: :cascade do |t|
     t.integer  "quality_threshold"
     t.integer  "tag_mismatches"
@@ -453,7 +476,11 @@ ActiveRecord::Schema.define(version: 20190315095426) do
     t.integer  "set_tag_map_file_size"
     t.datetime "set_tag_map_updated_at"
     t.integer  "isolate_id"
-    t.string   "analysis_name"
+    t.string   "name"
+    t.integer  "sequences_pre"
+    t.integer  "sequences_filtered"
+    t.integer  "sequences_high_qual"
+    t.integer  "sequences_one_primer"
     t.index ["higher_order_taxon_id"], name: "index_ngs_runs_on_higher_order_taxon_id", using: :btree
     t.index ["isolate_id"], name: "index_ngs_runs_on_isolate_id", using: :btree
   end

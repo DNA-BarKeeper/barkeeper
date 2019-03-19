@@ -16,7 +16,11 @@
     <ul class="nav nav-tabs" role="tablist">
       <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
       <li><a href="#centroid" role="tab" data-toggle="tab">Centroid Sequence</a></li>
-      <%#= render :partial => 'shared/sativa_nav_tab', :locals => { :marker_sequences => [@contig.marker_sequence] } %>
+      <li>
+        <a href="#blast_hit" role="tab" data-toggle="tab" style="<%= blast_warning(@cluster.blast_hit) %>">
+          <span class="glyphicon glyphicon-exclamation-sign"></span> Best Blast Hit
+        </a>
+      </li>
     </ul>
 
     <!-- Tab panes -->
@@ -39,7 +43,7 @@
             <% if @cluster.ngs_run %>
               <%= link_to '', edit_ngs_run_path(@cluster.ngs_run), :class => "glyphicon glyphicon-share-alt" %>
             <% end %>
-            <%= f.collection_select(:ngs_run_id, NgsRun.order(:analysis_name).all, :id, :analysis_name, {}, { class: 'form-control' }) %>
+            <%= f.collection_select(:ngs_run_id, NgsRun.order(:name).all, :id, :name, {}, { class: 'form-control' }) %>
           </div>
 
           <div class="form-group">
@@ -82,6 +86,21 @@
 
         <% end %>
 
+      </div>
+
+      <div class="tab-pane" id="blast_hit">
+        <br>
+        <p>
+          <strong>Taxonomic Lineage</strong>
+          <br>
+          <%= taxonomic_lineage(@cluster.blast_hit.taxonomy) if @cluster.blast_hit %>
+        </p>
+
+        <p>
+          <strong>E-Value</strong>
+          <br>
+          <%= @cluster.blast_hit.e_value if @cluster.blast_hit %>
+        </p>
       </div>
     </div>
   </div>

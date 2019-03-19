@@ -65,6 +65,8 @@ class Ability
         can :edit, :all
       end
 
+      cannot :edit, Cluster
+
       # Additional permissions for administrators and supervisors
       if user.admin? || user.supervisor?
         can :manage, User
@@ -72,6 +74,7 @@ class Ability
         can :manage, Responsibility
         can :manage, MislabelAnalysis
         can :manage, Mislabel
+        can :manage, Cluster
 
         cannot %i[create update destroy], User, role: 'admin' if user.supervisor?
       end
