@@ -4,7 +4,6 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#marker_sequences').data('source'),
         "columnDefs": [
-            { "orderable": false, "targets": 1 },
             { "orderable": false, "targets": 3 }
         ],
         "order": [ 2, 'desc' ]

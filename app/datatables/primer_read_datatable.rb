@@ -59,7 +59,7 @@ class PrimerReadDatatable
     primer_reads = primer_reads.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      primer_reads = primer_reads.where('primer_reads.name ILIKE :search', search: "%#{params[:sSearch]}%")
+      primer_reads = primer_reads.where('primer_reads.name ILIKE :search OR contigs.name ILIKE :search', search: "%#{params[:sSearch]}%").references(:contig)
     end
 
     primer_reads
@@ -74,7 +74,7 @@ class PrimerReadDatatable
   end
 
   def sort_column
-    columns = %w[name assembled contigs.id updated_at]
+    columns = %w[primer_reads.name primer_reads.assembled contigs.name primer_reads.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

@@ -15,7 +15,7 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#contig_search_results').data('source'),
         "columnDefs": [{
-            "targets": 5,
+            "targets": [1, 2, 5],
             "orderable": false
         }],
         "order": [ 0, 'asc' ]

@@ -73,7 +73,6 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#primer_reads').data('source'),
         "columnDefs": [
-            { "orderable": false, "targets": 2 },
             { "orderable": false, "targets": 4 }
         ],
         "order": [ 3, 'desc' ]
@@ -94,7 +93,6 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#reads_without_contigs').data('source'),
         "columnDefs": [
-            { "orderable": false, "targets": 2 },
             { "orderable": false, "targets": 4 }
         ],
         "order": [ 3, 'desc' ]

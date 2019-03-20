@@ -48,7 +48,9 @@ class MarkerSequenceSearchResultDatatable
     @search_result = @search_result.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      @search_result = @search_result.where('marker_sequences.name ILIKE :search', search: "%#{params[:sSearch]}%")
+      @search_result = @search_result.where('marker_sequences.name ILIKE :search
+OR species.composed_name ILIKE :search', search: "%#{params[:sSearch]}%")
+                           .references(isolate: [individual: :species])
     end
 
     @search_result
