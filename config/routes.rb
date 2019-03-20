@@ -39,6 +39,7 @@ GBOLapp::Application.routes.draw do
 
   resources :ngs_runs do
     member do
+      get :analysis_results
       post :import
     end
   end

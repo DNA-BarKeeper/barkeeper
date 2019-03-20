@@ -2,7 +2,7 @@ class NgsRunsController < ApplicationController
   include ProjectConcern
   load_and_authorize_resource
 
-  before_action :set_ngs_run, only: [:show, :edit, :update, :destroy, :import]
+  before_action :set_ngs_run, only: [:show, :edit, :update, :destroy, :import, :analysis_results]
 
   def index
     respond_to do |format|
@@ -95,6 +95,13 @@ class NgsRunsController < ApplicationController
       end
     else
       redirect_back(fallback_location: ngs_runs_path, alert: 'Please make sure you uploaded a properly formatted FastQ.')
+    end
+  end
+
+  def analysis_results
+    respond_to do |format|
+      format.html
+      format.json { render json: NgsRunResultDatatable.new(view_context, params[:id]) }
     end
   end
 
