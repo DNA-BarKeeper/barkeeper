@@ -52,7 +52,9 @@ class ClusterDatatable
   end
 
   def fetch_clusters
-    clusters = Cluster.includes(:ngs_run, isolate: [individual: :species]).order("#{sort_column} #{sort_direction}")
+    clusters = Cluster.includes(:ngs_run, isolate: [individual: :species])
+                      .in_project(@current_default_project)
+                      .order("#{sort_column} #{sort_direction}")
 
     clusters = clusters.page(page).per_page(per_page)
 

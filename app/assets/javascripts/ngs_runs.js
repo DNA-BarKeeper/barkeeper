@@ -10,6 +10,16 @@ jQuery(function() {
         "order": [1, 'desc']
     });
 
+    $('#ngs_run_results').dataTable({
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#ngs_run_results').data('source'),
+        "paging": false,
+        "scrollY": 300,
+        "scrollX": true,
+        "order": [0, 'desc']
+    });
+
     // Make file input multiple if package map was selected/uploaded
     var set_tag_map = $('#ngs_run_set_tag_map');
     var tag_primer_map = $("#ngs_run_tag_primer_map");

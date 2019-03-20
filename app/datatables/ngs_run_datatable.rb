@@ -40,7 +40,6 @@ class NgsRunDatatable
   end
 
   def fetch_ngs_runs
-
     ngs_runs = NgsRun.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     ngs_runs = ngs_runs.page(page).per_page(per_page)

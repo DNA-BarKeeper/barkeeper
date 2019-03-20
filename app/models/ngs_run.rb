@@ -7,7 +7,7 @@ class NgsRun < ApplicationRecord
   has_many :tag_primer_maps
   has_many :clusters
   has_many :ngs_results
-  has_many :isolates
+  has_many :isolates, through: :clusters
 
   has_attached_file :fastq
   has_attached_file :set_tag_map

@@ -1,4 +1,6 @@
 class ClustersController < ApplicationController
+  include ProjectConcern
+
   load_and_authorize_resource
 
   before_action :set_cluster, only: %i[edit update destroy]
@@ -6,7 +8,7 @@ class ClustersController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: ClusterDatatable.new(view_context, current_user.id) }
+      format.json { render json: ClusterDatatable.new(view_context, current_project_id) }
     end
   end
 
@@ -41,7 +43,7 @@ class ClustersController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def cluster_params
-    params.require(:clusters).permit(:centroid_sequence, :fasta, :reverse_complement, :running_number, :sequence_count,
+    params.require(:clusters).permit(:centroid_sequence, :fasta, :name, :reverse_complement, :running_number, :sequence_count,
                                      :isolate_id, :marker_id, :ngs_run_id)
   end
 end
