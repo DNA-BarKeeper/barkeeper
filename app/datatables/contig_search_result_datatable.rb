@@ -55,7 +55,8 @@ class ContigSearchResultDatatable
     @search_result = @search_result.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      @search_result = @search_result.where('contigs.name ILIKE :search', search: "%#{params[:sSearch]}%")
+      @search_result = @search_result.where('contigs.name ILIKE :search OR species.composed_name ILIKE :search OR individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
+                                     .references(isolate: [individual: :species])
     end
 
     @search_result

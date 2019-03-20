@@ -11,7 +11,7 @@ class FamiliesController < ApplicationController
   # GET /families.json
 
   def index
-    @families = Family.includes(:order).in_project(current_project_id).order('name asc')
+    @families = Family.includes(:order).in_project(current_project_id).order('families.name asc').references(:order)
     respond_to :html, :json
   end
 

@@ -49,12 +49,16 @@ class MislabelAnalysisResultDatatable
   end
 
   def analysis_data
-    @analysis ||= MislabelAnalysis.find_by_id(@analysis_id).mislabels.joins(marker_sequence: [isolate: [individual: :species]]).reorder("#{sort_column} #{sort_direction}")
+    @analysis ||= MislabelAnalysis.find_by_id(@analysis_id).mislabels.includes(marker_sequence: [isolate: [individual: :species]]).reorder("#{sort_column} #{sort_direction}")
 
     @analysis = @analysis.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      @analysis = @analysis.where('marker_sequences.name ILIKE :search', search: "%#{params[:sSearch]}%")
+      @analysis = @analysis.where('marker_sequences.name ILIKE :search
+OR species.composed_name ILIKE :search
+OR mislabels.level ILIKE :search
+OR mislabels.proposed_label ILIKE :search', search: "%#{params[:sSearch]}%")
+                           .references(marker_sequence: [isolate: [individual: :species]])
     end
 
     @analysis
@@ -69,7 +73,7 @@ class MislabelAnalysisResultDatatable
   end
 
   def sort_column
-    columns = %w[marker_sequences.name individuals.species_id level confidence proposed_label marker_sequences.updated_at]
+    columns = %w[marker_sequences.name species.composed_name mislabels.level mislabels.confidence mislabels.proposed_label marker_sequences.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

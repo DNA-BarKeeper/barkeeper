@@ -45,11 +45,14 @@ class FreezerDatatable
   end
 
   def fetch_freezers
-    freezers = Freezer.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+    freezers = Freezer.includes(:lab).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     freezers = freezers.page(page).per_page(per_page)
 
-    freezers = freezers.where('freezercode ILIKE :search', search: "%#{params[:sSearch]}%") if params[:sSearch].present?
+    if params[:sSearch].present?
+      freezers = freezers.where('freezers.freezercode ILIKE :search OR labs.labcode ILIKE :search', search: "%#{params[:sSearch]}%")
+                         .references(:lab)
+    end
 
     freezers
   end
@@ -63,7 +66,7 @@ class FreezerDatatable
   end
 
   def sort_column
-    columns = %w[freezercode lab updated_at]
+    columns = %w[freezers.freezercode labs.labcode freezers.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

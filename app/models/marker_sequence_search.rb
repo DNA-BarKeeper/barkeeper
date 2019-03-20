@@ -62,7 +62,7 @@ class MarkerSequenceSearch < ApplicationRecord
 
     marker_sequences = marker_sequences.joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where('higher_order_taxa.name ilike ?', "%#{higher_order_taxon}%") if higher_order_taxon.present?
 
-    marker_sequences = marker_sequences.joins(isolate: { individual: { species: { family: :order } } }).where('orders.name ilike ?', "%#{order}%") if order.present?
+    marker_sequences = marker_sequences.joins(isolate: { individual: { species: { family: :order } } }).where('orders.name ilike ?', "%#{self.order}%") if self.order.present?
 
     marker_sequences = marker_sequences.joins(isolate: { individual: { species: :family } }).where('families.name ilike ?', "%#{family}%") if family.present?
 

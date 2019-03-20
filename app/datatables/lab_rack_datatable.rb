@@ -55,11 +55,15 @@ class LabRackDatatable
   end
 
   def fetch_lab_racks
-    lab_racks = LabRack.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+    lab_racks = LabRack.includes(freezer: [:lab, :shelves]).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     lab_racks = lab_racks.page(page).per_page(per_page)
 
-    lab_racks = lab_racks.where('rackcode ILIKE :search', search: "%#{params[:sSearch]}%") if params[:sSearch].present?
+    lab_racks = lab_racks.where('lab_racks.rackcode ILIKE :search
+OR shelves.name ILIKE :search
+OR freezers.freezercode ILIKE :search
+OR labs.labcode ILIKE :search', search: "%#{params[:sSearch]}%")
+                    .references(freezer: [:lab, :shelves]) if params[:sSearch].present?
 
     lab_racks
   end
@@ -73,7 +77,7 @@ class LabRackDatatable
   end
 
   def sort_column
-    columns = %w[rackcode shelf freezer lab updated_at]
+    columns = %w[lab_racks.rackcode shelves.name freezers.freezercode labs.labcode lab_racks.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

@@ -50,7 +50,10 @@ class IndividualSearchResultDatatable
     @search_result = @search_result.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      @search_result = @search_result.where('individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
+      @search_result = @search_result.where('individuals.specimen_id ILIKE :search
+OR species.composed_name ILIKE :search
+OR individuals.herbarium ILIKE :search', search: "%#{params[:sSearch]}%")
+                                     .references(:species)
     end
 
     @search_result
@@ -65,7 +68,7 @@ class IndividualSearchResultDatatable
   end
 
   def sort_column
-    columns = %w[individuals.specimen_id species.composed_name herbarium latitude_original longitude_original individuals.updated_at]
+    columns = %w[individuals.specimen_id species.composed_name individuals.herbarium individuals.latitude_original individuals.longitude_original individuals.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

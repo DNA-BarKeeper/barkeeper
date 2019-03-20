@@ -52,7 +52,10 @@ class SpeciesDatatable
     end
     species = species.page(page).per_page(per_page)
 
-    species = species.where('composed_name ILIKE :search', search: "%#{params[:sSearch]}%") if params[:sSearch].present?
+    species = species.where('species.composed_name ILIKE :search
+OR species.author ILIKE :search
+OR families.name ILIKE :search', search: "%#{params[:sSearch]}%")
+                     .references(:family) if params[:sSearch].present?
 
     species
   end
@@ -66,7 +69,7 @@ class SpeciesDatatable
   end
 
   def sort_column
-    columns = %w[composed_name author family_id updated_at]
+    columns = %w[species.composed_name species.author families.name species.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

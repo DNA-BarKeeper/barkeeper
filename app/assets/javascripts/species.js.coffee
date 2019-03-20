@@ -8,7 +8,6 @@ jQuery ->
     bServerSide: true
     sAjaxSource: $('#species').data('source')
     "columnDefs": [
-      { "orderable": false, "targets": 2 }
       { "orderable": false, "targets": 4 }
     ],
     "order": [ 3, 'desc' ]
