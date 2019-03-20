@@ -1,4 +1,6 @@
 class Cluster < ApplicationRecord
+  include ProjectRecord
+
   belongs_to :isolate
   belongs_to :ngs_run
   belongs_to :marker
