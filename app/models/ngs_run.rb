@@ -103,11 +103,10 @@ class NgsRun < ApplicationRecord
     # Start analysis on xylocalyx
 
     # TODO: Check regularly somehow: e.g. process/script still running? results.zip present?)
-    # TODO: Use actual current project ID
-    check_results(5)
+    check_results
   end
 
-  def check_results(project_id)
+  def check_results
     analysis_dir = "/data/data2/lara/Barcoding/#{self.name}_out.zip"
 
     Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
@@ -115,13 +114,13 @@ class NgsRun < ApplicationRecord
         if response.ok?
           # Download result file
           sftp.download!("/data/data2/lara/Barcoding/#{self.name}_out.zip", "#{Rails.root}/#{self.name}_out.zip")
-          import(project_id)
+          import
         end
       end
     end
   end
 
-  def import(project_id)
+  def import
     # TODO: send results to AWS storage
 
     # Unzip results
@@ -166,22 +165,20 @@ class NgsRun < ApplicationRecord
           cluster = Cluster.new(running_number: running_number, sequence_count: sequence_count, reverse_complement: reverse_complement)
 
           blast_taxonomy = def_parts[2]
-          blast_e_value = 0 # TODO remove as soon as fasta is corrected
-          # blast_e_value = def_parts[3]
+          blast_e_value = def_parts[3]
           blast_hit = BlastHit.create(taxonomy: blast_taxonomy, e_value: blast_e_value)
 
           cluster.name = isolate_name + '_' + marker.name + '_' + running_number.to_s
           cluster.centroid_sequence = entry.seq
           cluster.ngs_run = self
           cluster.marker = marker
-          cluster.blast_hits << blast_hit
+          cluster.blast_hit = blast_hit
+          cluster.add_projects(self.projects.map(&:id))
           cluster.save
 
-          isolate.add_project(project_id)
+          isolate.add_projects(self.projects.map(&:id))
           isolate.clusters << cluster
           isolate.save
-
-          #TODO: Add project ID to clusters?
         end
       end
     end

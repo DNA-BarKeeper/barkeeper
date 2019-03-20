@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190319152252) do
+ActiveRecord::Schema.define(version: 20190320110438) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,12 @@ ActiveRecord::Schema.define(version: 20190319152252) do
     t.index ["isolate_id"], name: "index_clusters_on_isolate_id", using: :btree
     t.index ["marker_id"], name: "index_clusters_on_marker_id", using: :btree
     t.index ["ngs_run_id"], name: "index_clusters_on_ngs_run_id", using: :btree
+  end
+
+  create_table "clusters_projects", id: false, force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "project_id", null: false
+    t.index ["cluster_id", "project_id"], name: "index_clusters_projects_on_cluster_id_and_project_id", using: :btree
   end
 
   create_table "contig_pde_uploaders", force: :cascade do |t|
