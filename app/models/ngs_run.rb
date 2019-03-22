@@ -112,6 +112,7 @@ class NgsRun < ApplicationRecord
   def check_results
     analysis_dir = "/data/data2/lara/Barcoding/#{self.name}_out.zip"
 
+    # Download results from Xylocalyx
     Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
       sftp.stat(analysis_dir) do |response|
         if response.ok?
@@ -121,12 +122,13 @@ class NgsRun < ApplicationRecord
         end
       end
     end
+
+    # Store results on AWS
+    self.results = File.open("#{Rails.root}/#{self.name}_out.zip")
   end
 
   def import
-    # Store results on AWS
-    self.results = File.open("#{Rails.root}/#{self.name}_out.zip")
-
+    #TODO: Maybe add possibility to use AWS copy here in case of a reimport of data at a later point
     # Unzip results
     Zip::File.open("#{Rails.root}/#{self.name}_out.zip") do |zip_file|
       zip_file.each do |entry|
