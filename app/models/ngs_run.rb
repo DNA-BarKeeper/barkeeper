@@ -11,12 +11,15 @@ class NgsRun < ApplicationRecord
 
   has_attached_file :fastq
   has_attached_file :set_tag_map
+  has_attached_file :results
 
   validates_attachment_content_type :fastq, content_type: 'text/plain' # Using 'chemical/seq-na-fastq' does not work reliably
   validates_attachment_content_type :set_tag_map, content_type: 'text/plain'
+  validates_attachment_content_type :results, content_type: 'application/zip'
 
   validates_attachment_file_name :fastq, :matches => [/fastq\Z/, /fq\Z/, /fastq.gz\Z/, /fq.gz\Z/]
   validates_attachment_file_name :set_tag_map, :matches => /fasta\Z/
+  validates_attachment_file_name :results, :matches => /zip\Z/
 
   attr_accessor :delete_fastq
   before_validation { fastq.clear if delete_fastq == '1' }
@@ -121,7 +124,8 @@ class NgsRun < ApplicationRecord
   end
 
   def import
-    # TODO: send results to AWS storage
+    # Store results on AWS
+    self.results = File.open("#{Rails.root}/#{self.name}_out.zip")
 
     # Unzip results
     Zip::File.open("#{Rails.root}/#{self.name}_out.zip") do |zip_file|
@@ -130,6 +134,7 @@ class NgsRun < ApplicationRecord
       end
     end
 
+    # Import data
     Marker.gbol_marker.each do |marker|
       import_clusters(marker)
     end
