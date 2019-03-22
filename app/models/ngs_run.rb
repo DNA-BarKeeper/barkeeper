@@ -130,11 +130,11 @@ class NgsRun < ApplicationRecord
       end
     end
 
-    # Marker.gbol_marker.each do |marker|
-    #   import_clusters(marker)
-    # end
-    #
-    # import_analysis_stats
+    Marker.gbol_marker.each do |marker|
+      import_clusters(marker)
+    end
+
+    import_analysis_stats
 
     import_results
 

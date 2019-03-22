@@ -2,7 +2,7 @@ module NgsRunsHelper
   def marker_headers
     headers = ''.dup
 
-    Marker.gbol_marker.each do |marker|
+    Marker.gbol_marker.order(:id).each do |marker|
       headers << "<th colspan=\"3\" style=\"text-align: center;\">#{marker.name}</th>"
     end
 
@@ -12,7 +12,7 @@ module NgsRunsHelper
   def ngs_result_headers
     headers = ''.dup
 
-    Marker.gbol_marker.size.times do
+    Marker.gbol_marker.order(:id).size.times do
       headers << "<th data-orderable=\"false\">High Quality Sequences</th>"
       headers << "<th data-orderable=\"false\">Clusters</th>"
       headers << "<th data-orderable=\"false\">Incomplete Sequences</th>"
