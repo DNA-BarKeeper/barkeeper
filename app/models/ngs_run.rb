@@ -106,7 +106,7 @@ class NgsRun < ApplicationRecord
     # Start analysis on xylocalyx
 
     # TODO: Check regularly somehow: e.g. process/script still running? results.zip present?)
-    check_results
+    NGSResultImporter.perform_async(self.id)
   end
 
   def check_results
