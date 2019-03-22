@@ -25,8 +25,14 @@ class NgsRunDatatable
   def data
     ngs_runs.map do |ngs_run|
 
+      ngs_run_path = if ngs_run.clusters.size > 0
+                       link_to(ngs_run.name, ngs_run_path(ngs_run, anchor: "results"))
+                     else
+                       link_to(ngs_run.name, edit_ngs_run_path(ngs_run))
+                     end
+
       [
-        link_to(ngs_run.name, edit_ngs_run_path(ngs_run)),
+        ngs_run_path,
         ngs_run.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
         link_to('Delete', ngs_run, method: :delete, data: { confirm: 'Are you sure?' })
       ]
