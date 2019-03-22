@@ -43,12 +43,12 @@ class NgsRunResultDatatable
           link_to(family_name, edit_family_path(family_id))
       ]
 
-      Marker.gbol_marker.each do |marker|
+      Marker.gbol_marker.order(:id).each do |marker|
         result = NgsResult.where(marker: marker, ngs_run_id: @analysis_id, isolate: isolate).first
 
         if result
           values << result.hq_sequences
-          values << result.clusters
+          values << link_to(result.cluster_count, edit_isolate_path(isolate, anchor: "assigned_clusters"))
           values << result.incomplete_sequences
         else
           3.times { values << "NA" }
