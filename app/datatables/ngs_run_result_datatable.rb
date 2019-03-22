@@ -48,8 +48,8 @@ class NgsRunResultDatatable
 
         if result
           values << result.hq_sequences
-          values << link_to(result.cluster_count, edit_isolate_path(isolate, anchor: "assigned_clusters"))
           values << result.incomplete_sequences
+          values << link_to(result.cluster_count, edit_isolate_path(isolate, anchor: "assigned_clusters"))
         else
           3.times { values << "NA" }
         end

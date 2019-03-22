@@ -6,138 +6,77 @@
   <div class="panel-heading"><h3 class="panel-title"><%= @ngs_run.name %></h3></div>
 
   <div class="panel-body">
-    <!-- Nav tabs -->
-    <ul class="nav nav-tabs" role="tablist">
-      <li class="active"><a href="#parameters" role="tab" data-toggle="tab">Parameters</a></li>
-      <li><a href="#stats" role="tab" data-toggle="tab">Result stats</a></li>
-      <li><a href="#results" role="tab" data-toggle="tab">Results</a></li>
-    </ul>
+    <%= form_for(@ngs_run) do |f| %>
 
-    <!-- Tab panes -->
-    <div class="tab-content">
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, class: 'form-control' %>
+      </div>
 
-      <div class="tab-pane active" id="parameters">
-        <%= form_for(@ngs_run) do |f| %>
+      <div class="form-group">
+        <%= f.label :quality_threshold %>
+        <%= f.number_field :quality_threshold, min: 0, class: 'form-control' %>
+      </div>
 
-          <div class="form-group">
-            <%= f.label :name %>
-            <%= f.text_field :name, class: 'form-control' %>
-          </div>
+      <div class="form-group">
+        <%= f.label :tag_mismatches %>
+        <%= f.number_field :tag_mismatches, min: 0, class: 'form-control' %>
+      </div>
 
-          <div class="form-group">
-            <%= f.label :quality_threshold %>
-            <%= f.number_field :quality_threshold, min: 0, class: 'form-control' %>
-          </div>
+      <div class="form-group">
+        <%= f.label :primer_mismatches %>
+        <%= f.number_field :primer_mismatches, min: 0, class: 'form-control' %>
+      </div>
 
-          <div class="form-group">
-            <%= f.label :tag_mismatches %>
-            <%= f.number_field :tag_mismatches, min: 0, class: 'form-control' %>
-          </div>
+      <div class="form-group">
+        <%= f.label :higher_order_taxon, 'Higher Order Taxon' %>
+        <%= f.collection_select(:higher_order_taxon_id, HigherOrderTaxon.all, :id, :name, {}, { class: 'form-control' }) %>
+      </div>
 
-          <div class="form-group">
-            <%= f.label :primer_mismatches %>
-            <%= f.number_field :primer_mismatches, min: 0, class: 'form-control' %>
-          </div>
+      <div class="form-group">
+        <%= f.label :comment %>
+        <%= f.text_field :comment, class: 'form-control' %>
+      </div>
 
-          <div class="form-group">
-            <%= f.label :higher_order_taxon, 'Higher Order Taxon' %>
-            <%= f.collection_select(:higher_order_taxon_id, HigherOrderTaxon.all, :id, :name, {}, { class: 'form-control' }) %>
-          </div>
+      <div class="form-group">
+        <%= f.label :set_tag_map, 'Packages (*.fasta)' %>
+        <%= f.file_field :set_tag_map, class: 'form-control' %>
 
-          <div class="form-group">
-            <%= f.label :comment %>
-            <%= f.text_field :comment, class: 'form-control' %>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :set_tag_map, 'Packages (*.fasta)' %>
-            <%= f.file_field :set_tag_map, class: 'form-control' %>
-
-            <% if @ngs_run.set_tag_map.path %>
-              <%= f.check_box(:delete_set_tag_map) %>
-              <%= "Remove current file ('#{@ngs_run.set_tag_map_file_name}')" %>
-            <% end %>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :tag_primer_map, 'Tag Primer Map (*.txt, *.csv)' %>
-            <%= link_to '(Show template file)', 'https://s3-eu-west-1.amazonaws.com/gbol5/tagPrimerMap_template.txt' %>
-            <br>
-            <%= 'Only one can be added unless a packages file is provided!' %>
-            <%= f.file_field :tag_primer_map, class: 'form-control', multiple: true %>
-
-            <% if @ngs_run.tag_primer_maps.size.positive? %>
-              <% @ngs_run.tag_primer_maps.each do |tpm| %>
-                <% if tpm.tag_primer_map.path %>
-                  <%= check_box 'delete_tag_primer_maps', tpm.id, {}, tpm.id %>
-                  <%= "Remove current file ('#{tpm.tag_primer_map_file_name}')" %>
-                  <br>
-                <% end %>
-              <% end %>
-            <% end %>
-          </div>
-
-          <div id='fastq_upload' class="form-group">
-            <%= f.label :fastq, 'FASTQ (*.fastq, *.fq)' %>
-            <%= f.file_field :fastq, class: 'form-control' %>
-
-            <% if @ngs_run.fastq.path %>
-              <%= f.check_box(:delete_fastq) %>
-              <%= "Remove current file ('#{@ngs_run.fastq_file_name}')" %>
-            <% end %>
-          </div>
-
-          <%= f.submit 'Update', data: { disable_with: 'Uploading...' }, :class => 'btn btn-default' %>
+        <% if @ngs_run.set_tag_map.path %>
+          <%= f.check_box(:delete_set_tag_map) %>
+          <%= "Remove current file ('#{@ngs_run.set_tag_map_file_name}')" %>
         <% end %>
       </div>
 
-      <div class="tab-pane active" id="stats">
+      <div class="form-group">
+        <%= f.label :tag_primer_map, 'Tag Primer Map (*.txt, *.csv)' %>
+        <%= link_to '(Show template file)', 'https://s3-eu-west-1.amazonaws.com/gbol5/tagPrimerMap_template.txt' %>
         <br>
-        <p>
-          <strong>Number of sequences before filtering</strong>
-          <br>
-          <%= @ngs_run.sequences_pre %>
-        </p>
+        <%= 'Only one can be added unless a packages file is provided!' %>
+        <%= f.file_field :tag_primer_map, class: 'form-control', multiple: true %>
 
-        <p>
-          <strong>Number of sequences post seqt filering</strong>
-          <br>
-          <%= @ngs_run.sequences_filtered %>
-        </p>
-
-        <p>
-          <strong>Number of sequences post qiime like filtering (high quality sequences)</strong>
-          <br>
-          <%= @ngs_run.sequences_high_qual %>
-        </p>
-
-        <p>
-          <strong>Number of sequences without second primer</strong>
-          <br>
-          <%= @ngs_run.sequences_one_primer %>
-        </p>
-
+        <% if @ngs_run.tag_primer_maps.size.positive? %>
+          <% @ngs_run.tag_primer_maps.each do |tpm| %>
+            <% if tpm.tag_primer_map.path %>
+              <%= check_box 'delete_tag_primer_maps', tpm.id, {}, tpm.id %>
+              <%= "Remove current file ('#{tpm.tag_primer_map_file_name}')" %>
+              <br>
+            <% end %>
+          <% end %>
+        <% end %>
       </div>
 
-      <div class="tab-pane active" id="results">
-        <div class="wideTable">
-          <table id="ngs_run_results" data-source="<%= analysis_results_ngs_run_path(format: "json") %>" class="table table-striped table-hover table-bordered">
-            <thead>
-              <tr>
-                <th rowspan="2">Name</th>
-                <th rowspan="2">Species</th>
-                <th rowspan="2">Family</th>
-                <%= marker_headers %>
-              </tr>
-              <tr>
-                <%= ngs_result_headers %>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
+      <div id='fastq_upload' class="form-group">
+        <%= f.label :fastq, 'FASTQ (*.fastq, *.fq)' %>
+        <%= f.file_field :fastq, class: 'form-control' %>
+
+        <% if @ngs_run.fastq.path %>
+          <%= f.check_box(:delete_fastq) %>
+          <%= "Remove current file ('#{@ngs_run.fastq_file_name}')" %>
+        <% end %>
       </div>
-    </div>
+
+      <%= f.submit 'Update', data: { disable_with: 'Uploading...' }, :class => 'btn btn-default' %>
+    <% end %>
   </div>
 </div>

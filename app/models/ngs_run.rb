@@ -4,9 +4,9 @@ class NgsRun < ApplicationRecord
   validates_presence_of :name
 
   belongs_to :higher_order_taxon
-  has_many :tag_primer_maps
-  has_many :clusters
-  has_many :ngs_results
+  has_many :tag_primer_maps, dependent: :destroy
+  has_many :clusters, dependent: :destroy
+  has_many :ngs_results, dependent: :destroy
   has_many :isolates, through: :clusters
 
   has_attached_file :fastq
@@ -125,9 +125,17 @@ class NgsRun < ApplicationRecord
 
     # Store results on AWS
     self.results = File.open("#{Rails.root}/#{self.name}_out.zip")
+
+    # Remove temporary files from server
+    FileUtils.rm_r("#{Rails.root}/#{self.name}_out.zip")
+    FileUtils.rm_r("#{Rails.root}/#{self.name}_out")
   end
 
   def import
+    # Delete older results
+    self.clusters.delete_all if self.clusters.size > 0
+    self.ngs_results if self.ngs_results.size > 0
+
     #TODO: Maybe add possibility to use AWS copy here in case of a reimport of data at a later point
     # Unzip results
     Zip::File.open("#{Rails.root}/#{self.name}_out.zip") do |zip_file|
@@ -146,10 +154,6 @@ class NgsRun < ApplicationRecord
     import_results
 
     self.save
-
-    # Remove temporary files from server
-    FileUtils.rm_r("#{Rails.root}/#{self.name}_out.zip")
-    FileUtils.rm_r("#{Rails.root}/#{self.name}_out")
   end
 
   def import_clusters(marker)
