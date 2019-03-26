@@ -88,8 +88,14 @@ class NgsRunsController < ApplicationController
       if @ngs_run.check_tag_primer_maps
         isolates_not_in_db = @ngs_run.samples_exist
         if isolates_not_in_db.blank?
-          @ngs_run.run_pipe
-          redirect_to ngs_runs_path, notice: 'Analysing data. This may take a while. Check in later to see results.'
+          running = @ngs_run.check_server_status # Check if barcoding pipe is already running
+
+          if running.empty?
+            AnalyseNGSData.perform_async(@ngs_run.id)
+            redirect_to ngs_runs_path, notice: 'Analysing data. This may take a while. Check in later to see results.'
+          else
+            redirect_to ngs_runs_path, alert: "Analysis could not be started: Server is busy. Try again later."
+          end
         else
           redirect_back(fallback_location: ngs_runs_path,
                         alert: "Please create database entries for the following sample IDs before starting the import: #{isolates_not_in_db.join(', ')}")

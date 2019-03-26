@@ -1,13 +1,17 @@
 <%= render 'form' %>
 
-<%= link_to 'Go to NGS runs index', ngs_runs_path, method: :get, class: 'btn btn-default' %>
+<p>
+  <% if user_signed_in? %>
+    <%= link_to 'Start analysis',
+                start_analysis_ngs_run_path,
+                method: :post,
+                class: 'btn btn-default' %>
+  <% end %>
+</p>
 
-<% if user_signed_in? %>
-  <%= link_to 'Start analysis of NGS run data',
-              start_analysis_ngs_run_path,
-              method: :post,
-              class: 'btn btn-default' %>
-<% end %>
+<p>
+  <%= link_to 'Go to NGS runs index', ngs_runs_path, method: :get, class: 'btn btn-default' %>
+</p>
 
 <table width="100%">
   <tr>
