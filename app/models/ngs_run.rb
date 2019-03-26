@@ -144,14 +144,15 @@ class NgsRun < ApplicationRecord
   end
 
   def import
-    analysis_dir = "/data/data1/sarah/ngs_barcoding/#{name}_out.zip"
+    # analysis_dir = "/data/data1/sarah/ngs_barcoding/#{name}_out.zip"
+    analysis_dir = "/data/data2/lara/Barcoding/#{name}_out.zip" #TODO change when finished
 
     # Download results from Xylocalyx
     Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
       sftp.stat(analysis_dir) do |response|
         if response.ok?
           # Download result file
-          sftp.download!("/data/data1/sarah/ngs_barcoding/#{name}_out.zip", "#{Rails.root}/#{self.name}_out.zip")
+          sftp.download!(analysis_dir, "#{Rails.root}/#{self.name}_out.zip")
 
           # Delete older results
           results.clear # TODO: Why is this not deleted?
@@ -174,17 +175,17 @@ class NgsRun < ApplicationRecord
           import_analysis_stats
 
           import_results
+
+          # Store results on AWS
+          update(results: File.open("#{Rails.root}/#{self.name}_out.zip"))
+          save!
+
+          # Remove temporary files from server
+          FileUtils.rm_r("#{Rails.root}/#{self.name}_out.zip")
+          FileUtils.rm_r("#{Rails.root}/#{self.name}_out")
         end
       end
     end
-
-    # Store results on AWS
-    update(results: File.open("#{Rails.root}/#{self.name}_out.zip"))
-    save!
-
-    # Remove temporary files from server
-    FileUtils.rm_r("#{Rails.root}/#{self.name}_out.zip")
-    FileUtils.rm_r("#{Rails.root}/#{self.name}_out")
   end
 
   def import_clusters(marker)

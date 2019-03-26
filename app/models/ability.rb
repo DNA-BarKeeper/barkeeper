@@ -45,6 +45,7 @@ class Ability
     can %i[edit index filter show_individuals xls], Species
     can :manage, TxtUploader
     can :manage, :overview_diagram
+    can :import, NgsRun
 
     # Additional permissions for logged in users
     if user.present?
