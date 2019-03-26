@@ -44,7 +44,7 @@
           <strong>NGS Run</strong>
           <br>
           <% if @cluster.ngs_run %>
-            <%= link_to @cluster.ngs_run.name, edit_ngs_run_path(@cluster.ngs_run) %>
+            <%= link_to(@cluster.ngs_run.name, ngs_run_path(@cluster.ngs_run, anchor: "results")) %>
           <% end %>
         </p>
 
@@ -69,15 +69,15 @@
       <div class="tab-pane" id="centroid">
         <br>
         <p>
-          <strong>Reverse Complement</strong>
-          <br>
-          <%= reverse_complement(@cluster.reverse_complement) %>
-        </p>
-
-        <p>
           <strong>Sequence</strong>
           <br>
           <p style="overflow-wrap: break-word;"><%= @cluster.centroid_sequence %></p>
+        </p>
+
+        <p>
+          <strong>Reverse Complement</strong>
+          <br>
+          <%= reverse_complement(@cluster.reverse_complement) %>
         </p>
 
       </div>
@@ -93,7 +93,7 @@
         <p>
           <strong>E-Value</strong>
           <br>
-          <%= @cluster.blast_hit.e_value if @cluster.blast_hit %>
+          <%= @cluster.blast_hit.e_value.to_f if @cluster.blast_hit %>
         </p>
       </div>
     </div>
