@@ -53,7 +53,7 @@ namespace :data do
       # Check if SATIVA.sh is already running
       running = session.exec!("pgrep -x \"SATIVA.sh\"")
 
-      unless running.empty?
+      if running.empty?
         marker_name = marker.name
         search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker_name, project_id: 5)
 

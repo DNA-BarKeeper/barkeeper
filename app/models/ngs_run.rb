@@ -2,6 +2,7 @@ class NgsRun < ApplicationRecord
   include ProjectRecord
 
   validates_presence_of :name
+  validates :name, uniqueness: true
 
   belongs_to :higher_order_taxon
   has_many :tag_primer_maps, dependent: :destroy
@@ -54,7 +55,7 @@ class NgsRun < ApplicationRecord
     nonexistent = []
     tag_primer_maps.each do |tp_map|
       tp_map = CSV.read(tp_map.tag_primer_map.path, { col_sep: "\t", headers: true })
-      nonexistent << tp_map['#SampleID'].select { |id| !Isolate.exists?(lab_nr: id.split('_')[0]) }
+      nonexistent << tp_map['#SampleID'].select { |id| !Isolate.exists?(lab_nr: id.match(/\D+\d+|\D+\z/)[0]) }
     end
 
     nonexistent.flatten!
@@ -103,39 +104,54 @@ class NgsRun < ApplicationRecord
     valid
   end
 
-  def run_pipe
-    tag_primer_maps.each do |tag_primer_map|
-      tpm = tag_primer_map.revised_tag_primer_map #TODO save somewhere
+  def check_server_status
+    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
+      session.exec!("pgrep -f \"barcoding_pipe.rb\"")
     end
+  end
 
-    # Start analysis on xylocalyx
-    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
-      # Check if SATIVA.sh is already running
-      running = session.exec!("pgrep -x \"barcoding_pipe.rb\"")
+  def run_pipe
+    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
+      analysis_dir = "/data/data1/sarah/ngs_barcoding/#{name}"
+      output_dir = "/data/data1/sarah/ngs_barcoding/#{name}_out"
 
-      unless running.empty?
-        analysis_dir = ""
-        output_dir = ""
+      # Write edited tag primer maps
+      tag_primer_maps.each do |tag_primer_map|
+        File.open("#{Rails.root}/#{tag_primer_map.tag_primer_map_file_name}", 'w') do |file|
+          file << tag_primer_map.revised_tag_primer_map
+        end
+      end
 
-        # Upload analysis input files
-        session.scp.upload! tag_primer_map, analysis_dir
-        session.scp.upload! fastq, analysis_dir
+      tag_primer_map_path = "#{analysis_dir}/#{tag_primer_maps.first.tag_primer_map_file_name}"
+      fastq_path = "#{analysis_dir}/#{fastq_file_name}"
 
-        # Start analysis on server
-        session.exec!("ruby /data/data2/lara/Barcoding/barcoding_pipe.rb -m #{tpm} -f #{fastq} -o #{output_dir}")
+      # Create analysis directory
+      session.exec!("mkdir #{analysis_dir}")
+
+      # Upload analysis input files
+      session.scp.upload! "#{Rails.root}/#{tag_primer_maps.first.tag_primer_map_file_name}", tag_primer_map_path
+      session.scp.upload! fastq.path, fastq_path
+      # session.scp.upload! fastq.url, fastq_path
+
+      # Start analysis on server #TODO uncomment when ready
+      # session.exec!("ruby /data/data2/lara/Barcoding/barcoding_pipe.rb -m #{tag_primer_map_path} -f #{fastq_path} -o #{output_dir}")
+
+      # Remove edited tag primer maps
+      tag_primer_maps.each do |tag_primer_map|
+        FileUtils.rm("#{Rails.root}/#{tag_primer_map.tag_primer_map_file_name}")
       end
     end
   end
 
   def import
-    analysis_dir = "/data/data2/lara/Barcoding/#{self.name}_out.zip"
+    analysis_dir = "/data/data1/sarah/ngs_barcoding/#{name}_out.zip"
 
     # Download results from Xylocalyx
     Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
       sftp.stat(analysis_dir) do |response|
         if response.ok?
           # Download result file
-          sftp.download!("/data/data2/lara/Barcoding/#{self.name}_out.zip", "#{Rails.root}/#{self.name}_out.zip")
+          sftp.download!("/data/data1/sarah/ngs_barcoding/#{name}_out.zip", "#{Rails.root}/#{self.name}_out.zip")
 
           # Delete older results
           results.clear # TODO: Why is this not deleted?
