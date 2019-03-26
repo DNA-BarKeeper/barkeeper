@@ -2,6 +2,8 @@ class NgsRunsController < ApplicationController
   include ProjectConcern
   load_and_authorize_resource
 
+  skip_before_action :verify_authenticity_token, only: :import
+
   before_action :set_ngs_run, only: [:show, :edit, :update, :destroy, :import, :analysis_results]
 
   def index
@@ -110,7 +112,6 @@ class NgsRunsController < ApplicationController
 
   def import
     NGSResultsImporter.perform_async(@ngs_run.id)
-    redirect_to ngs_runs_path, notice: 'NGS Run is being imported in the background. This may take a while.'
   end
 
   def analysis_results

@@ -5,7 +5,7 @@ class ContigsController < ApplicationController
 
   load_and_authorize_resource
 
-  skip_before_action :verify_authenticity_token
+  skip_before_action :verify_authenticity_token, only: [:as_fasq, :change_via_script, :compare_contigs]
 
   before_action :set_contig, only: %i[verify_next verify pde fasta fasta_trimmed fasta_raw overlap overlap_background show edit
                                       update destroy]
