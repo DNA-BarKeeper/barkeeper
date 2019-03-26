@@ -54,6 +54,10 @@ class NgsRunsController < ApplicationController
         if !params[:ngs_run][:set_tag_map].blank? || @ngs_run.set_tag_map_file_name || @ngs_run.tag_primer_maps.size.zero?
           map = TagPrimerMap.create(tag_primer_map: tpm)
           @ngs_run.tag_primer_maps << map
+        else
+          map = TagPrimerMap.create(tag_primer_map: tpm)
+          @ngs_run.tag_primer_maps.delete_all
+          @ngs_run.tag_primer_maps << map
         end
       end
     end
@@ -79,13 +83,13 @@ class NgsRunsController < ApplicationController
     end
   end
 
-  def import
+  def start_analysis
     if @ngs_run.check_fastq
       if @ngs_run.check_tag_primer_maps
         isolates_not_in_db = @ngs_run.samples_exist
         if isolates_not_in_db.blank?
-          @ngs_run.import
-          redirect_to ngs_runs_path, notice: 'NGS Run data imported.'
+          @ngs_run.run_pipe
+          redirect_to ngs_runs_path, notice: 'Analysing data. This may take a while. Check in later to see results.'
         else
           redirect_back(fallback_location: ngs_runs_path,
                         alert: "Please create database entries for the following sample IDs before starting the import: #{isolates_not_in_db.join(', ')}")
@@ -96,6 +100,11 @@ class NgsRunsController < ApplicationController
     else
       redirect_back(fallback_location: ngs_runs_path, alert: 'Please make sure you uploaded a properly formatted FastQ.')
     end
+  end
+
+  def import
+    NGSResultsImporter.perform_async(@ngs_run.id)
+    redirect_to ngs_runs_path, notice: 'NGS Run is being imported in the background. This may take a while.'
   end
 
   def analysis_results
@@ -113,6 +122,6 @@ class NgsRunsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def ngs_run_params
-    params.require(:ngs_run).permit(:name, :primer_mismatches, :quality_threshold, :tag_mismatches, :fastq, :set_tag_map, :higher_order_taxon_id, :delete_fastq, :delete_set_tag_map)
+    params.require(:ngs_run).permit(:name, :primer_mismatches, :quality_threshold, :tag_mismatches, :fastq, :set_tag_map, :higher_order_taxon_id, :delete_fastq, :delete_set_tag_map, :results)
   end
 end

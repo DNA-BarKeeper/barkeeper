@@ -41,6 +41,7 @@ GBOLapp::Application.routes.draw do
     member do
       get :analysis_results
       post :import
+      post :start_analysis
     end
   end
 

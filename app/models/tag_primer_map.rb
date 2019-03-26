@@ -20,14 +20,14 @@ class TagPrimerMap < ApplicationRecord
     valid = tp_map.instance_of?(CSV::Table)
 
     # Check if tag primer map has correct headers
-    expected_headers = ["#SampleID", "BarcodeSequence", "LinkerPrimerSequence", "ReversePrimer", "TagID", "Region"]
+    expected_headers = ["#SampleID", "BarcodeSequence", "LinkerPrimerSequence", "ReversePrimer", "Region", "Description"]
     valid &&= (expected_headers - tp_map.headers).empty? # Allows optional columns
 
     # Check if at least one row with data exists
     valid &&= tp_map.size.positive?
 
     # Check if only valid characters occur in data
-    valid &&= tp_map['#SampleID'].find { |s| /[^A-Za-z0-9]+/ =~ s }.blank? # Only letters and numbers are allowed
+    valid &&= tp_map['#SampleID'].find { |s| /[^A-Za-z0-9-]+/ =~ s }.blank? # Only letters, numbers and minus are allowed
     valid &&= tp_map['BarcodeSequence'].find { |s| /[^A-Za-z]+/ =~ s }.blank? # Only letters are allowed
     valid &&= tp_map['LinkerPrimerSequence'].find { |s| /[^A-Za-z]+/ =~ s }.blank?
     valid &&= tp_map['ReversePrimer'].find { |s| /[^A-Za-z]+/ =~ s }.blank?
@@ -38,40 +38,45 @@ class TagPrimerMap < ApplicationRecord
   def revised_tag_primer_map
     tp_map = CSV.read(tag_primer_map.path, { col_sep: "\t", headers: true })
 
-    primer_pairs = find_region_indices(tp_map)
-
     tp_map.each do |row|
-      sample_id = row['#SampleID']
-      region = row['Region']
+      sample_id = row['#SampleID'].match(/\D+\d+|\D+\z/)[0]
+      isolate = Isolate.joins(individual: :species).find_by_lab_nr(sample_id)
 
-      species = Isolate.joins(individual: :species).find_by_lab_nr(sample_id).individual.species.composed_name.gsub(' ', '_')
-      row['Description'] = [sample_id, species, row['TagID'], row['Region']].join('_')
+      if isolate
+        species = isolate.individual.species.composed_name.gsub(' ', '_')
+        row['Description'] = [sample_id, species, row['TagID'], row['Region']].join('_')
+      else
+        row['Description'] = [sample_id, row['TagID'], row['Region']].join('_')
+      end
 
-      next if primer_pairs[region].size < 2
-      primer_pair = [row['LinkerPrimerSequence'], row['ReversePrimer']]
-      row['Region'] = region + '_' + (primer_pairs[region].index(primer_pair) + 1).to_s
+      # Adding indices to the region to indicate differing primer pairs, not necessary right now
+      # region = row['Region']
+      # primer_pairs = find_region_indices(tp_map)
+      # next if primer_pairs[region].size < 2
+      # primer_pair = [row['LinkerPrimerSequence'], row['ReversePrimer']]
+      # row['Region'] = region + '_' + (primer_pairs[region].index(primer_pair) + 1).to_s
     end
 
     tp_map
   end
 
-  def find_region_indices(tp_map)
-    primer_pairs = {}
-
-    tp_map['LinkerPrimerSequence'].each_with_index do |linker_primer, index|
-      region = tp_map['Region'][index]
-      primer_pair = [linker_primer, tp_map['ReversePrimer'][index]]
-      existing_pairs = primer_pairs[region]
-
-      if existing_pairs
-        next if existing_pairs.include? primer_pair
-
-        primer_pairs[region] << primer_pair
-      else
-        primer_pairs[region] = [primer_pair]
-      end
-    end
-
-    primer_pairs
-  end
+  # def find_region_indices(tp_map)
+  #   primer_pairs = {}
+  #
+  #   tp_map['LinkerPrimerSequence'].each_with_index do |linker_primer, index|
+  #     region = tp_map['Region'][index]
+  #     primer_pair = [linker_primer, tp_map['ReversePrimer'][index]]
+  #     existing_pairs = primer_pairs[region]
+  #
+  #     if existing_pairs
+  #       next if existing_pairs.include? primer_pair
+  #
+  #       primer_pairs[region] << primer_pair
+  #     else
+  #       primer_pairs[region] = [primer_pair]
+  #     end
+  #   end
+  #
+  #   primer_pairs
+  # end
 end

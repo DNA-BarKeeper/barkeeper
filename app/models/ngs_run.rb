@@ -51,12 +51,30 @@ class NgsRun < ApplicationRecord
 
   # Check if all samples exist in app database
   def samples_exist
-    tp_map = CSV.read(tag_primer_map.path, { col_sep: "\t", headers: true }) if tag_primer_map
-    tp_map['#SampleID'].select { |id| !Isolate.exists?(lab_nr: id) } # TODO: Maybe shorten list if necessary
+    nonexistent = []
+    tag_primer_maps.each do |tp_map|
+      tp_map = CSV.read(tp_map.tag_primer_map.path, { col_sep: "\t", headers: true })
+      nonexistent << tp_map['#SampleID'].select { |id| !Isolate.exists?(lab_nr: id.split('_')[0]) }
+    end
+
+    nonexistent.flatten!
+
+    size = nonexistent.size
+
+    if size > 15
+      nonexistent = nonexistent.first(15)
+      nonexistent << "[... and #{size - 15} more]"
+    end
+
+    nonexistent
   end
 
   def check_fastq
-    valid = true if fastq.path
+    if fastq.path
+      valid = true
+    else
+      return false
+    end
 
     line_count = `wc -l "#{fastq.path}"`.strip.split(' ')[0].to_i
     valid &&= (line_count % 4).zero? # Number of lines is a multiple of 4
@@ -86,30 +104,30 @@ class NgsRun < ApplicationRecord
   end
 
   def run_pipe
-    # TODO: name all files after analysis name given by user before sending them
-
-    packages_csv = CSV.open('path', 'w', col_sep: "\t")
-
     tag_primer_maps.each do |tag_primer_map|
-      tpm = tag_primer_map.add_description # TODO ???
-
-      packages_csv << [tag_primer_map.name, tag_primer_map.tag]
+      tpm = tag_primer_map.revised_tag_primer_map #TODO save somewhere
     end
 
-    packages_csv.close
-
-    #TODO: do stuff with updated tpm and packages csv
-    #TODO: set default values for analysis parameters?
-
-    # self.name = fastq_file_name.remove('.fasta')
-
     # Start analysis on xylocalyx
+    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
+      # Check if SATIVA.sh is already running
+      running = session.exec!("pgrep -x \"barcoding_pipe.rb\"")
 
-    # TODO: Check regularly somehow: e.g. process/script still running? results.zip present?)
-    NGSResultImporter.perform_async(self.id)
+      unless running.empty?
+        analysis_dir = ""
+        output_dir = ""
+
+        # Upload analysis input files
+        session.scp.upload! tag_primer_map, analysis_dir
+        session.scp.upload! fastq, analysis_dir
+
+        # Start analysis on server
+        session.exec!("ruby /data/data2/lara/Barcoding/barcoding_pipe.rb -m #{tpm} -f #{fastq} -o #{output_dir}")
+      end
+    end
   end
 
-  def check_results
+  def import
     analysis_dir = "/data/data2/lara/Barcoding/#{self.name}_out.zip"
 
     # Download results from Xylocalyx
@@ -118,42 +136,39 @@ class NgsRun < ApplicationRecord
         if response.ok?
           # Download result file
           sftp.download!("/data/data2/lara/Barcoding/#{self.name}_out.zip", "#{Rails.root}/#{self.name}_out.zip")
-          import
+
+          # Delete older results
+          results.clear # TODO: Why is this not deleted?
+          Cluster.where(ngs_run_id: id).delete_all
+          NgsResult.where(ngs_run_id: id).delete_all
+
+          #TODO: Maybe add possibility to use AWS copy here in case of a reimport of data at a later point
+          # Unzip results
+          Zip::File.open("#{Rails.root}/#{self.name}_out.zip") do |zip_file|
+            zip_file.each do |entry|
+              entry.extract("#{Rails.root}/#{entry.name}")
+            end
+          end
+
+          # Import data
+          Marker.gbol_marker.each do |marker|
+            import_clusters(marker)
+          end
+
+          import_analysis_stats
+
+          import_results
         end
       end
     end
 
     # Store results on AWS
-    self.results = File.open("#{Rails.root}/#{self.name}_out.zip")
+    update(results: File.open("#{Rails.root}/#{self.name}_out.zip"))
+    save!
 
     # Remove temporary files from server
     FileUtils.rm_r("#{Rails.root}/#{self.name}_out.zip")
     FileUtils.rm_r("#{Rails.root}/#{self.name}_out")
-  end
-
-  def import
-    # Delete older results
-    self.clusters.delete_all if self.clusters.size > 0
-    self.ngs_results if self.ngs_results.size > 0
-
-    #TODO: Maybe add possibility to use AWS copy here in case of a reimport of data at a later point
-    # Unzip results
-    Zip::File.open("#{Rails.root}/#{self.name}_out.zip") do |zip_file|
-      zip_file.each do |entry|
-        entry.extract("#{Rails.root}/#{entry.name}")
-      end
-    end
-
-    # Import data
-    Marker.gbol_marker.each do |marker|
-      import_clusters(marker)
-    end
-
-    import_analysis_stats
-
-    import_results
-
-    self.save
   end
 
   def import_clusters(marker)
@@ -218,10 +233,10 @@ class NgsRun < ApplicationRecord
     results = CSV.read("#{Rails.root}/#{self.name}_out/tagPrimerMap_expanded.txt", headers:true, col_sep: "\t")
 
     results.each do |result|
-      id_split = result['#SampleID'].split('_')
+      sample_id = result['#SampleID'].match(/\D+\d+|\D+\z/)[0]
 
-      isolate = Isolate.find_by_lab_nr(id_split[0])
-      marker = Marker.find_by_name(id_split[1])
+      isolate = Isolate.find_by_lab_nr(sample_id)
+      marker = Marker.find_by_name(result['Region'])
 
       ngs_result = NgsResult.create(hq_sequences: result['HighQualSeqs'].to_i,
                                     incomplete_sequences: result['LinkerPrimerOnly'].to_i,

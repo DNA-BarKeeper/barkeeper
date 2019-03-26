@@ -1,7 +1,6 @@
-#frozen_string_literals
+# frozen_string_literal: true
 
 module ClustersHelper
-
   def reverse_complement(rc)
     if rc
       result = "<span class=\"glyphicon glyphicon-ok-circle\" style=\"color: green\"></span>"
