@@ -55,9 +55,9 @@ namespace :data do
   def analyse_on_server(marker)
     Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
       # Check if SATIVA.sh is already running
-      running = session.exec!("pgrep -x \"SATIVA.sh\"")
+      running = session.exec!("pgrep -f \"SATIVA.sh\"")
 
-      unless running.empty?
+      if running.empty?
         marker_name = marker.name
         search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker_name, project_id: 5)
 
