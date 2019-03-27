@@ -99,6 +99,12 @@
           <%= @ngs_run.sequences_one_primer %>
         </p>
 
+        <p>
+          <strong>Number of sequences that are too short or long</strong>
+          <br>
+          <%= @ngs_run.sequences_short %>
+        </p>
+
       </div>
 
       <div class="tab-pane" id="results">
@@ -109,6 +115,7 @@
               <th rowspan="2" style="vertical-align: middle;">Name</th>
               <th rowspan="2" style="vertical-align: middle;">Species</th>
               <th rowspan="2" style="vertical-align: middle;">Family</th>
+              <th rowspan="2" style="vertical-align: middle;">Total number of sequences</th>
               <%= marker_headers %>
             </tr>
             <tr>

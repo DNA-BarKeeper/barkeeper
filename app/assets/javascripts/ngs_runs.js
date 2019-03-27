@@ -17,6 +17,10 @@ jQuery(function() {
         "paging": false,
         "scrollY": 300,
         "scrollX": true,
+        "columnDefs": [{
+            "targets": 3,
+            "orderable": false
+        }],
         "order": [0, 'desc']
     });
 

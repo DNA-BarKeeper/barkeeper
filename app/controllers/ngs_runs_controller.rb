@@ -1,7 +1,9 @@
 class NgsRunsController < ApplicationController
   include ProjectConcern
+
   load_and_authorize_resource
 
+  http_basic_authenticate_with name: ENV['API_USER_NAME'], password: ENV['API_PASSWORD'], only: :import
   skip_before_action :verify_authenticity_token, only: :import
 
   before_action :set_ngs_run, only: [:show, :edit, :update, :destroy, :import, :analysis_results]
