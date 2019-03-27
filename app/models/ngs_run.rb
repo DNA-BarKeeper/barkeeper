@@ -155,7 +155,7 @@ class NgsRun < ApplicationRecord
           sftp.download!(analysis_dir, "#{Rails.root}/#{self.name}_out.zip")
 
           # Delete older results
-          results.clear # TODO: Why is this not deleted?
+          results.clear
           Cluster.where(ngs_run_id: id).delete_all
           NgsResult.where(ngs_run_id: id).delete_all
 
@@ -230,16 +230,19 @@ class NgsRun < ApplicationRecord
   def import_analysis_stats
     File.open("#{Rails.root}/#{self.name}_out/#{self.name}_log.txt").each do |line|
       line_parts = line.split(':')
+      value = line_parts[1].to_i
 
       case line_parts[0]
       when "Seqs pre-filtering"
-        self.sequences_pre = line_parts[1].to_i
+        self.sequences_pre = value
       when "Seqs post-seqtk-filtering"
-        self.sequences_filtered = line_parts[1].to_i
+        self.sequences_filtered = value
       when "Seqs post-qiimelike-filtering (highQual)"
-        self.sequences_high_qual = line_parts[1].to_i
+        self.sequences_high_qual = value
       when "Seqs w/o 2nd primer"
-        self.sequences_one_primer = line_parts[1].to_i
+        self.sequences_one_primer = value
+      when "Seqs too short/too long"
+        self.sequences_short = value
       else
         next
       end
@@ -257,7 +260,8 @@ class NgsRun < ApplicationRecord
 
       ngs_result = NgsResult.create(hq_sequences: result['HighQualSeqs'].to_i,
                                     incomplete_sequences: result['LinkerPrimerOnly'].to_i,
-                                    cluster_count: result['Clusters'].to_i)
+                                    cluster_count: result['Clusters'].to_i,
+                                    total_sequences: result['TotalSequences'].to_i)
       ngs_result.isolate = isolate if isolate
       ngs_result.marker = marker if marker
       ngs_result.ngs_run = self

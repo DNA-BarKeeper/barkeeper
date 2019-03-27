@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190322092232) do
+ActiveRecord::Schema.define(version: 20190327100436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -460,6 +460,7 @@ ActiveRecord::Schema.define(version: 20190322092232) do
     t.integer  "cluster_count"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.integer  "total_sequences"
     t.index ["isolate_id"], name: "index_ngs_results_on_isolate_id", using: :btree
     t.index ["marker_id"], name: "index_ngs_results_on_marker_id", using: :btree
     t.index ["ngs_run_id"], name: "index_ngs_results_on_ngs_run_id", using: :btree
@@ -491,6 +492,7 @@ ActiveRecord::Schema.define(version: 20190322092232) do
     t.string   "results_content_type"
     t.integer  "results_file_size"
     t.datetime "results_updated_at"
+    t.integer  "sequences_short"
     t.index ["higher_order_taxon_id"], name: "index_ngs_runs_on_higher_order_taxon_id", using: :btree
     t.index ["isolate_id"], name: "index_ngs_runs_on_isolate_id", using: :btree
   end

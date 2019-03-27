@@ -15,7 +15,7 @@ class NgsRunResultDatatable
   def as_json(_options = {})
     {
         sEcho: params[:sEcho].to_i,
-        iTotalRecords: Isolate.count,
+        iTotalRecords: NgsRun.find_by_id(@analysis_id).isolates.distinct.size,
         iTotalDisplayRecords: isolates_data.size,
         aaData: data
     }
@@ -40,7 +40,8 @@ class NgsRunResultDatatable
       values = [
           link_to(isolate.lab_nr, edit_isolate_path(isolate)),
           link_to(species_name, edit_species_path(species_id)),
-          link_to(family_name, edit_family_path(family_id))
+          link_to(family_name, edit_family_path(family_id)),
+          NgsResult.where(ngs_run_id: @analysis_id, isolate: isolate).sum(:total_sequences)
       ]
 
       Marker.gbol_marker.order(:id).each do |marker|
@@ -61,10 +62,10 @@ class NgsRunResultDatatable
 
   def isolates_data
     @analysis_result ||= NgsRun.find_by_id(@analysis_id)
-                               .isolates
-                               .includes(individual: [species: :family])
-                               .distinct
-                               .reorder("#{sort_column} #{sort_direction}")
+                             .isolates
+                             .includes(individual: [species: :family])
+                             .distinct
+                             .reorder("#{sort_column} #{sort_direction}")
 
     if params[:sSearch].present?
       @analysis_result = @analysis_result
