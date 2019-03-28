@@ -41,7 +41,7 @@ class MislabelAnalysis < ApplicationRecord
         FileUtils.rm(tax_file)
 
         # Start analysis on server
-        session.exec!("/home/kai/analysis-scripts/SATIVA.sh #{title}")
+        session.exec!("/home/kai/analysis-scripts/SATIVA.sh #{title} #{id}")
       end
     end
   end

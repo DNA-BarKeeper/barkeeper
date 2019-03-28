@@ -21,8 +21,11 @@ namespace :data do
         search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker_name, project_id: 5)
 
         title = "all_taxa_#{marker_name}_#{search.created_at.to_date}"
-        mislabel_analysis = MislabelAnalysis.create(title: title, marker_id: marker.id, automatic: true,
-                                                    total_seq_number: search.marker_sequences.size)
+        mislabel_analysis = MislabelAnalysis.create(title: title,
+                                                    automatic: true,
+                                                    total_seq_number: search.marker_sequences.size,
+                                                    marker: marker,
+                                                    marker_sequence_search: search)
 
         mislabel_analysis.analyse_on_server
       end
