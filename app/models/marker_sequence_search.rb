@@ -5,6 +5,7 @@ class MarkerSequenceSearch < ApplicationRecord
 
   belongs_to :user
   belongs_to :project
+  belongs_to :mislabel_analysis
 
   enum has_warnings: %i[both yes no]
 

@@ -10,21 +10,43 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181030150104) do
+ActiveRecord::Schema.define(version: 20190327160233) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
 
-  create_table "centroid_sequences", force: :cascade do |t|
+  create_table "blast_hits", force: :cascade do |t|
+    t.integer  "cluster_id"
+    t.string   "taxonomy"
+    t.decimal  "e_value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cluster_id"], name: "index_blast_hits_on_cluster_id", using: :btree
   end
 
   create_table "clusters", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "centroid_sequence"
+    t.integer  "sequence_count"
+    t.string   "fasta"
+    t.boolean  "reverse_complement"
+    t.integer  "isolate_id"
+    t.integer  "ngs_run_id"
+    t.integer  "marker_id"
+    t.integer  "running_number"
+    t.string   "name"
+    t.index ["isolate_id"], name: "index_clusters_on_isolate_id", using: :btree
+    t.index ["marker_id"], name: "index_clusters_on_marker_id", using: :btree
+    t.index ["ngs_run_id"], name: "index_clusters_on_ngs_run_id", using: :btree
+  end
+
+  create_table "clusters_projects", id: false, force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "project_id", null: false
+    t.index ["cluster_id", "project_id"], name: "index_clusters_projects_on_cluster_id_and_project_id", using: :btree
   end
 
   create_table "contig_pde_uploaders", force: :cascade do |t|
@@ -313,8 +335,8 @@ ActiveRecord::Schema.define(version: 20181030150104) do
     t.string   "species"
     t.string   "order"
     t.string   "specimen"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
     t.integer  "user_id"
     t.string   "title"
     t.string   "family"
@@ -330,6 +352,8 @@ ActiveRecord::Schema.define(version: 20181030150104) do
     t.date     "min_update"
     t.date     "max_update"
     t.string   "verified_by"
+    t.integer  "mislabel_analysis_id"
+    t.index ["mislabel_analysis_id"], name: "index_marker_sequence_searches_on_mislabel_analysis_id", using: :btree
     t.index ["project_id"], name: "index_marker_sequence_searches_on_project_id", using: :btree
   end
 
@@ -368,6 +392,15 @@ ActiveRecord::Schema.define(version: 20181030150104) do
     t.integer "marker_id",  null: false
     t.integer "project_id", null: false
     t.index ["marker_id", "project_id"], name: "index_markers_projects_on_marker_id_and_project_id", using: :btree
+  end
+
+  create_table "metaprojects", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.text     "legal_disclosure"
+    t.text     "privacy_policy"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   create_table "micronic_plates", force: :cascade do |t|
@@ -420,13 +453,28 @@ ActiveRecord::Schema.define(version: 20181030150104) do
     t.datetime "updated_at"
   end
 
+  create_table "ngs_results", force: :cascade do |t|
+    t.integer  "isolate_id"
+    t.integer  "marker_id"
+    t.integer  "ngs_run_id"
+    t.integer  "hq_sequences"
+    t.integer  "incomplete_sequences"
+    t.integer  "cluster_count"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.integer  "total_sequences"
+    t.index ["isolate_id"], name: "index_ngs_results_on_isolate_id", using: :btree
+    t.index ["marker_id"], name: "index_ngs_results_on_marker_id", using: :btree
+    t.index ["ngs_run_id"], name: "index_ngs_results_on_ngs_run_id", using: :btree
+  end
+
   create_table "ngs_runs", force: :cascade do |t|
     t.integer  "quality_threshold"
-    t.integer  "tag_mismates"
+    t.integer  "tag_mismatches"
     t.integer  "primer_mismatches"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
-    t.string   "name"
+    t.string   "comment"
     t.string   "fastq_file_name"
     t.string   "fastq_content_type"
     t.integer  "fastq_file_size"
@@ -436,7 +484,19 @@ ActiveRecord::Schema.define(version: 20181030150104) do
     t.string   "set_tag_map_content_type"
     t.integer  "set_tag_map_file_size"
     t.datetime "set_tag_map_updated_at"
+    t.integer  "isolate_id"
+    t.string   "name"
+    t.integer  "sequences_pre"
+    t.integer  "sequences_filtered"
+    t.integer  "sequences_high_qual"
+    t.integer  "sequences_one_primer"
+    t.string   "results_file_name"
+    t.string   "results_content_type"
+    t.integer  "results_file_size"
+    t.datetime "results_updated_at"
+    t.integer  "sequences_short"
     t.index ["higher_order_taxon_id"], name: "index_ngs_runs_on_higher_order_taxon_id", using: :btree
+    t.index ["isolate_id"], name: "index_ngs_runs_on_isolate_id", using: :btree
   end
 
   create_table "ngs_runs_projects", id: false, force: :cascade do |t|
@@ -728,6 +788,7 @@ ActiveRecord::Schema.define(version: 20181030150104) do
   add_foreign_key "contig_searches", "projects"
   add_foreign_key "individual_searches", "projects"
   add_foreign_key "individual_searches", "users"
+  add_foreign_key "marker_sequence_searches", "mislabel_analyses"
   add_foreign_key "marker_sequence_searches", "projects"
   add_foreign_key "mislabel_analyses", "markers"
   add_foreign_key "mislabels", "marker_sequences"
