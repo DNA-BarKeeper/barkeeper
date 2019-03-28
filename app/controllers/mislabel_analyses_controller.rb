@@ -3,6 +3,11 @@
 class MislabelAnalysesController < ApplicationController
   load_and_authorize_resource
 
+  before_action :set_mislabel_analysis, only: %i[show destroy import download_results]
+
+  http_basic_authenticate_with name: ENV['API_USER_NAME'], password: ENV['API_PASSWORD'], only: :download_results
+  skip_before_action :verify_authenticity_token, only: :download_results
+
   def index
     respond_to do |format|
       format.html
@@ -11,20 +16,10 @@ class MislabelAnalysesController < ApplicationController
   end
 
   def show
-    @mislabel_analysis = MislabelAnalysis.find(params[:id])
-
     respond_to do |format|
       format.html
       format.json { render json: MislabelAnalysisResultDatatable.new(view_context, params[:id]) }
     end
-  end
-
-  def create
-    # Allow user to select criteria for a ms search
-    # Then automatically generate fasta and tax file on server from search results
-    # Run python script with these files as worker process
-    # Redirect back to index with notification that this may take a long time
-    # Analyse output file & create and link mislabel objects
   end
 
   def destroy
@@ -47,5 +42,16 @@ class MislabelAnalysesController < ApplicationController
       @mislabel_analysis = MislabelAnalysis.import(results, title)
       redirect_to mislabel_analysis_path(@mislabel_analysis), notice: 'Imported analysis output. Possibly mislabeled sequences have been marked.'
     end
+  end
+
+  def download_results
+    @mislabel_analysis.download_results
+  end
+
+  private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_mislabel_analysis
+    @mislabel_analysis = MislabelAnalysis.find(params[:id])
   end
 end
