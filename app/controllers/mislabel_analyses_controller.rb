@@ -30,21 +30,6 @@ class MislabelAnalysesController < ApplicationController
     end
   end
 
-  def import
-    #TODO refactor
-    # file = params[:file]
-    #
-    # if file.blank? || File.extname(file.original_filename) != '.mis'
-    #   redirect_to mislabel_analyses_path, alert: 'Please select a SATIVA output file (*.mis) to import results.'
-    # else
-    #   results = File.new(params[:file].path)
-    #   title = File.basename(file.original_filename, '.mis')
-    #
-    #   @mislabel_analysis = MislabelAnalysis.import(results, title)
-    #   redirect_to mislabel_analysis_path(@mislabel_analysis), notice: 'Imported analysis output. Possibly mislabeled sequences have been marked.'
-    # end
-  end
-
   def download_results
     @mislabel_analysis.download_results
   end
