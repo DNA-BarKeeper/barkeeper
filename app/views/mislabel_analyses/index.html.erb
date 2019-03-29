@@ -9,6 +9,8 @@
         <thead>
         <tr>
           <th>Title</th>
+          <th>Number of identified mislabeled sequences</th>
+          <th>Total number of sequences included</th>
           <th>Created at?</th>
           <th></th>
         </tr>
@@ -18,21 +20,6 @@
         </tbody>
       </table>
     </div>
-
   </div>
-
-  <br>
-
-  <% if user_signed_in? && current_user.admin? %>
-    <div class="well">
-      Import SATIVA analysis results (*.mis file)
-      <%= form_tag import_mislabel_analyses_path, multipart: true do %>
-        <%= file_field_tag :file %>
-        <br>
-        <%= submit_tag "Import" %>
-      <% end %>
-    </div>
-  <% end %>
-
 </div>
 

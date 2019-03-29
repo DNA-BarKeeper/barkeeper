@@ -49,26 +49,28 @@ class MislabelAnalysis < ApplicationRecord
   # Check if recent SATIVA results exist and download them
   def download_results
     exists = false
-    analysis_dir = "/data/data1/sarah/SATIVA/#{title}"
+    results_remote = "/data/data1/sarah/SATIVA/#{title}"
+    results = "#{Rails.root}/#{title}.mis"
 
     # Check if file exists before download
     Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
-      sftp.stat("#{analysis_dir}/#{title}.mis") do |response|
+      sftp.stat(results_remote) do |response|
         if response.ok?
           # Download result file
-          sftp.download!("#{analysis_dir}/#{title}.mis", "#{Rails.root}/#{title}.mis")
+          sftp.download!(results_remote, results)
           exists = true
         end
       end
     end
 
-    next unless exists
-
     # Import analysis result and then remove them
-    results = File.new("#{Rails.root}/#{title}.mis")
-    import(results)
-    FileUtils.rm(results)
+    if exists
+      import(results)
+      FileUtils.rm(results)
+    end
   end
+
+  private
 
   # Import SATIVA result table (*.mis)
   def import(file)
@@ -95,12 +97,12 @@ class MislabelAnalysis < ApplicationRecord
         marker_sequence = MarkerSequence.find_by_name(name.gsub('DB', 'DB '))
       end
 
-      next unless marker_sequence
+      if marker_sequence
+        marker_sequence.mislabels << mislabel
 
-      marker_sequence.mislabels << mislabel
-
-      mislabels << mislabel
-      marker_sequences << marker_sequence
+        mislabels << mislabel
+        marker_sequences << marker_sequence
+      end
     end
   end
 end

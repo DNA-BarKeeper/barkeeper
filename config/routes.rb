@@ -181,10 +181,6 @@ GBOLapp::Application.routes.draw do
 
   resources :mislabel_analyses do
     post :download_results
-
-    collection do
-      post :import
-    end
   end
 
   resources :mislabels do
