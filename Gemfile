@@ -47,9 +47,9 @@ gem 'bootstrap-sass'
 gem 'builder'
 gem 'jbuilder', '~> 2.5' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'mime-types'
-gem 'net-scp',
-gem 'net-sftp',
-gem 'net-ssh',
+gem 'net-scp'
+gem 'net-sftp'
+gem 'net-ssh'
 gem 'roo-xls' # Handle excel files
 gem 'rubyzip' # Handle zip files
 gem 'simple_form'
