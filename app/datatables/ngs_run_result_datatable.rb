@@ -44,7 +44,7 @@ class NgsRunResultDatatable
           NgsResult.where(ngs_run_id: @analysis_id, isolate: isolate).sum(:total_sequences)
       ]
 
-      Marker.gbol_marker.order(:id).each do |marker|
+      NgsRun.find_by_id(@analysis_id).markers.order(:id).distinct.each do |marker|
         result = NgsResult.where(marker: marker, ngs_run_id: @analysis_id, isolate: isolate).first
 
         if result
