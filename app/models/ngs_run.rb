@@ -9,6 +9,7 @@ class NgsRun < ApplicationRecord
   has_many :clusters, dependent: :destroy
   has_many :ngs_results, dependent: :destroy
   has_many :isolates, through: :clusters
+  has_many :markers, through: :ngs_results
 
   has_attached_file :fastq
   has_attached_file :set_tag_map
@@ -168,7 +169,7 @@ class NgsRun < ApplicationRecord
           end
 
           # Import data
-          Marker.gbol_marker.each do |marker|
+          Marker.all.each do |marker|
             import_clusters(marker)
           end
 
