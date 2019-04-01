@@ -49,7 +49,7 @@ class MislabelAnalysis < ApplicationRecord
   # Check if recent SATIVA results exist and download them
   def download_results
     exists = false
-    results_remote = "/data/data1/sarah/SATIVA/#{title}"
+    results_remote = "/data/data1/sarah/SATIVA/#{title}/#{title}.mis"
     results = "#{Rails.root}/#{title}.mis"
 
     # Check if file exists before download
