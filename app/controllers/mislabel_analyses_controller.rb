@@ -32,6 +32,8 @@ class MislabelAnalysesController < ApplicationController
 
   def download_results
     @mislabel_analysis.download_results
+
+    render text: "SATIVA results were successfully imported into the GBOL5 web application!"
   end
 
   private
