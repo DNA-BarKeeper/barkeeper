@@ -180,7 +180,9 @@ GBOLapp::Application.routes.draw do
   end
 
   resources :mislabel_analyses do
-    post :download_results
+    member do
+      post :download_results
+    end
   end
 
   resources :mislabels do
