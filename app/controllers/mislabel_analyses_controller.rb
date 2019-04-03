@@ -31,8 +31,11 @@ class MislabelAnalysesController < ApplicationController
   end
 
   def download_results
-    @mislabel_analysis.download_results
-    send_data("SATIVA results were successfully imported into the GBOL5 web application!\n", filename: 'msg.txt', type: 'application/txt')
+    if @mislabel_analysis.download_results
+      send_data("SATIVA results were successfully imported into the GBOL5 web application!\n", filename: 'msg.txt', type: 'application/txt')
+    else
+      send_data("ERROR: The result file could not be found on the server!\n", filename: 'msg.txt', type: 'application/txt')
+    end
   end
 
   private
