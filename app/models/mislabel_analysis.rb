@@ -67,6 +67,9 @@ class MislabelAnalysis < ApplicationRecord
     if exists
       import(results)
       FileUtils.rm(results)
+      return true
+    else
+      return false
     end
   end
 
