@@ -45,6 +45,7 @@ class Ability
     can %i[edit index filter show_individuals xls], Species
     can :manage, TxtUploader
     can :manage, :overview_diagram
+    can :download_results, MislabelAnalysis
 
     # Additional permissions for logged in users
     if user.present?
