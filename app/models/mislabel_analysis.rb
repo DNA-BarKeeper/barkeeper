@@ -3,7 +3,7 @@
 class MislabelAnalysis < ApplicationRecord
   belongs_to :marker
   has_many :mislabels, dependent: :destroy
-  has_one :marker_sequence_search
+  has_one :marker_sequence_search, dependent: :destroy
   has_and_belongs_to_many :marker_sequences
 
   def percentage_of_mislabels
