@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190327160233) do
+ActiveRecord::Schema.define(version: 20190404151929) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -353,6 +353,7 @@ ActiveRecord::Schema.define(version: 20190327160233) do
     t.date     "max_update"
     t.string   "verified_by"
     t.integer  "mislabel_analysis_id"
+    t.boolean  "no_isolate"
     t.index ["mislabel_analysis_id"], name: "index_marker_sequence_searches_on_mislabel_analysis_id", using: :btree
     t.index ["project_id"], name: "index_marker_sequence_searches_on_project_id", using: :btree
   end
