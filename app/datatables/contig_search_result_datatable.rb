@@ -15,7 +15,7 @@ class ContigSearchResultDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: Contig.count,
+      iTotalRecords: Contig.in_project(ContigSearch.find(@search_id).project.id).count,
       iTotalDisplayRecords: contigs_data.total_entries,
       aaData: data
     }

@@ -15,7 +15,7 @@ class MarkerSequenceSearchResultDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: MarkerSequence.count,
+      iTotalRecords: MarkerSequence.in_project(MarkerSequenceSearch.find(@search_id).project.id).count,
       iTotalDisplayRecords: marker_sequences_data.total_entries,
       aaData: data
     }

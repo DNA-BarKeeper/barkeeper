@@ -14,7 +14,7 @@ class LabRackDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: LabRack.count,
+      iTotalRecords: LabRack.in_project(@current_default_project).count,
       iTotalDisplayRecords: lab_racks.total_entries,
       aaData: data
     }

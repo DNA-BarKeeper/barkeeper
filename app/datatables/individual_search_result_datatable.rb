@@ -14,7 +14,7 @@ class IndividualSearchResultDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: Individual.count,
+      iTotalRecords: Individual.in_project(IndividualSearch.find(@search_id).project.id).count,
       iTotalDisplayRecords: individuals_data.total_entries,
       aaData: data
     }
