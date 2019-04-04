@@ -69,7 +69,7 @@ class ContigSearchesController < ApplicationController
     archive = @contig_search.search_result_archive
 
     if archive.present?
-      data = Rails.env.development? ? File.open(File.join(Rails.root, archive.path)) : open("http:#{archive.url}")
+      data = Rails.env.development? ? File.open(archive.path) : open("http:#{archive.url}")
       send_data(data.read,
                 filename: @contig_search.search_result_archive_file_name,
                 type: 'application/zip')
@@ -83,6 +83,8 @@ class ContigSearchesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def contig_search_params
-    params.require(:contig_search).permit(:title, :assembled, :has_warnings, :family, :marker, :max_age, :max_update, :min_age, :min_update, :name, :order, :species, :specimen, :verified, :verified_by, :project_id, :search_result_archive)
+    params.require(:contig_search).permit(:title, :assembled, :has_warnings, :family, :marker, :max_age, :max_update,
+                                          :min_age, :min_update, :name, :order, :species, :specimen, :verified,
+                                          :verified_by, :project_id, :search_result_archive)
   end
 end
