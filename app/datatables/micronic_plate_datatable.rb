@@ -14,7 +14,7 @@ class MicronicPlateDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: MicronicPlate.count,
+      iTotalRecords: MicronicPlate.in_project(@current_default_project).count,
       iTotalDisplayRecords: micronic_plates.total_entries,
       aaData: data
     }

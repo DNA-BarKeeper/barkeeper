@@ -16,7 +16,7 @@ class SpeciesDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: Species.count,
+      iTotalRecords: Species.in_project(@current_default_project).count,
       iTotalDisplayRecords: species.total_entries,
       aaData: data
     }

@@ -14,7 +14,7 @@ class FreezerDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: Freezer.count,
+      iTotalRecords: Freezer.in_project(@current_default_project).count,
       iTotalDisplayRecords: freezers.total_entries,
       aaData: data
     }

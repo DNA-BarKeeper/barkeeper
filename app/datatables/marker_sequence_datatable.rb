@@ -16,7 +16,7 @@ class MarkerSequenceDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: MarkerSequence.count,
+      iTotalRecords: MarkerSequence.in_project(@current_default_project).count,
       iTotalDisplayRecords: marker_sequences.total_entries,
       aaData: data
     }
