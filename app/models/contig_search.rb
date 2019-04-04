@@ -35,16 +35,13 @@ class ContigSearch < ApplicationRecord
     Zip::File.open(archive_file, Zip::File::CREATE) do |archive|
       contigs.each do |contig|
         # Write contig PDE to a file and add this to the zip file
-        puts "Write contig PDE to a file and add this to the zip file"
         file_name = "#{contig.name}.pde"
         File.open("#{temp_folder}/#{file_name}", 'w') { |file| file.write(Contig.pde([contig], add_reads: true)) }
         archive.add(file_name, "#{temp_folder}/#{file_name}")
 
         # Write chromatogram to a file and add this to the zip file
-        puts "Write chromatogram to a file and add this to the zip file"
         contig.primer_reads.each do |read|
           File.open("#{temp_folder}/#{read.file_name_id}", 'wb') do |file|
-            puts "Writing #{read.file_name_id}..."
             file.write(URI.parse("http:#{read.chromatogram.url}").read) unless Rails.env.development?
             # TODO: copy files within AWS to increase performance: s3.buckets['bucket-name'].objects['source'].copy_to('target'‌​)
           end
