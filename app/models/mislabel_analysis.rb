@@ -69,7 +69,7 @@ class MislabelAnalysis < ApplicationRecord
       FileUtils.rm(results)
 
       # Also remove last automated analysis for this amrker from web app
-      last_analysis = MislabelAnalysis.where(automatic: true, marker: marker).order(created_at: :desc).first
+      last_analysis = MislabelAnalysis.where(automatic: true, marker: marker).order(created_at: :desc).last
       last_analysis.destroy
 
       return true
