@@ -37,6 +37,8 @@ class MarkerSequenceSearch < ApplicationRecord
 
     marker_sequences = marker_sequences.has_species if has_species.present?
 
+    marker_sequences = marker_sequences.no_isolate if no_isolate.present?
+
     if has_warnings != 'both'
       marker_sequences = marker_sequences.unsolved_warnings if has_warnings == 'yes'
       marker_sequences = marker_sequences.where.not(id: MarkerSequence.unsolved_warnings.pluck(:id)) if has_warnings == 'no'

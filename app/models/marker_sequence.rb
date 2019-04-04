@@ -12,6 +12,7 @@ class MarkerSequence < ApplicationRecord
   scope :verified, -> { joins(:contigs).where(contigs: { verified: true }) }
   scope :not_verified, -> { joins(:contigs).where(contigs: { verified: false }) }
   scope :has_species, -> { joins(isolate: [individual: :species]) }
+  scope :no_isolate, -> { where(isolate: nil) }
   scope :unsolved_warnings, -> { joins(:mislabels).where(mislabels: { solved: false }) }
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
