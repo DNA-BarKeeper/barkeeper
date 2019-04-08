@@ -94,7 +94,11 @@ class Isolate < ApplicationRecord
   end
 
   def assign_specimen
-    search_dna_bank(lab_nr)
+    if dna_bank_id
+      search_dna_bank(dna_bank_id)
+    else
+      search_dna_bank(lab_nr)
+    end
   end
 
   def individual_name
@@ -138,18 +142,24 @@ class Isolate < ApplicationRecord
     doc = Nokogiri::XML(res.body)
 
     specimen_unit_id = nil
-    full_name = nil
+    genus = nil
+    species_epithet = nil
+    infraspecific = nil
     herbarium = nil
     collector = nil
     locality = nil
     longitude = nil
     latitude = nil
+    higher_taxon_rank = nil
+    higher_taxon_name = nil
 
     begin
       unit = doc.at_xpath('//abcd21:Unit')
       unit_id = is_gbol_number ? doc.at_xpath('//abcd21:Unit/abcd21:UnitID').content : id_string # UnitID field contains DNA bank number
       specimen_unit_id = unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content
-      full_name = unit.at_xpath('//abcd21:FullScientificNameString').content
+      genus = unit.at_xpath('//abcd21:GenusOrMonomial').content
+      species_epithet = unit.at_xpath('//abcd21:FirstEpithet').content
+      infraspecific = unit.at_xpath('//abcd21:InfraspecificEpithet').content
       herbarium = unit.at_xpath('//abcd21:SourceInstitutionCode').content
       collector = unit.at_xpath('//abcd21:GatheringAgent').content
       locality = unit.at_xpath('//abcd21:LocalityText').content
@@ -173,32 +183,29 @@ class Isolate < ApplicationRecord
       individual.update(latitude: latitude) if latitude
       individual.update(herbarium: herbarium) if herbarium
 
-      if full_name
-        regex = /^(\w+)\s+(\w+)/
-        matches = full_name.match(regex)
-
-        if matches
-          genus = matches[1]
-          species_epithet = matches[2]
-          species_component = "#{genus} #{species_epithet}"
-
-          species = individual.species
-          if species.nil?
-            species = Species.find_or_create_by(species_component: species_component)
-            species.add_projects(projects.pluck(:id))
-            species.update(genus_name: genus, species_epithet: species_epithet, composed_name: species.full_name)
-
-            if higher_taxon_rank == 'familia'
-              higher_taxon_name = 'Lamiaceae' if higher_taxon_name.capitalize == 'Labiatae'
-
-              family = Family.find_or_create_by(name: higher_taxon_name.capitalize)
-              family.add_projects(projects.pluck(:id))
-              species.update(family: family)
-            end
-
-            individual.update(species: species)
-          end
+      if genus && species_epithet
+        if infraspecific
+          composed_name = "#{genus} #{infraspecific} #{species_epithet}"
+        else
+          composed_name = "#{genus} #{species_epithet}"
         end
+
+        species = Species.find_or_create_by(composed_name: composed_name)
+        species.add_projects(projects.pluck(:id))
+        species.update(genus_name: genus,
+                       species_epithet: species_epithet,
+                       infraspecific: infraspecific,
+                       species_component: "#{genus} #{species_epithet}")
+
+        if higher_taxon_rank == 'familia'
+          higher_taxon_name = 'Lamiaceae' if higher_taxon_name.capitalize == 'Labiatae'
+
+          family = Family.find_or_create_by(name: higher_taxon_name.capitalize)
+          family.add_projects(projects.pluck(:id))
+          species.update(family: family)
+        end
+
+        individual.update(species: species)
       end
 
       self.update_column(:individual_id, individual.id) # Does not trigger callbacks to avoid infinite loop

@@ -110,12 +110,16 @@ class ContigsController < ApplicationController
     verified_by = params[:contig][:verified_by]
     marker = params[:contig][:marker_id]
 
-    warning = Contig.import(file, verified_by, marker, current_project_id)
-    if !warning.empty?
-      redirect_to contigs_path,
-                  notice: "Finished. The following #{warning.size} contigs were not imported, since read data was already present: #{warning.join(', ')}"
+    if file && verified_by && marker
+      warning = Contig.import(file, verified_by, marker, current_project_id)
+      if !warning.empty?
+        redirect_to contigs_path,
+                    notice: "Finished. The following #{warning.size} contigs were not imported, since read data was already present: #{warning.join(', ')}"
+      else
+        redirect_to contigs_path, notice: 'Imported.'
+        end
     else
-      redirect_to contigs_path, notice: 'Imported.'
+      redirect_to contigs_path, notice: 'Please select a file, the user who verified the contained sequences and the marker they belong to.'
     end
   end
 
