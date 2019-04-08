@@ -51,6 +51,7 @@ GBOLapp::Application.routes.draw do
       get 'filter'
       get 'assemble_all'
       get 'duplicates'
+      post :import
       post :change_via_script
       post :compare_contigs # TODO: Marked for removal
       post :as_fasq
