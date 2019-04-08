@@ -33,7 +33,7 @@
       <%= file_field_tag :file %>
       <br>
       <%= label_tag 'Verified by'%>
-      <%= collection_select :contig, :verified_by, User.gbol, :id, :name, {} %>
+      <%= collection_select :contig, :verified_by, User.gbol.order(name: :asc), :id, :name, {} %>
       <br>
       <%= label_tag 'Marker'%>
       <%= collection_select :contig, :marker_id, Marker.gbol, :id, :name, {} %>
