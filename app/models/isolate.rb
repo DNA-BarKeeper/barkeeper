@@ -13,7 +13,7 @@ class Isolate < ApplicationRecord
 
   validates_presence_of :lab_nr
 
-  after_create :assign_specimen
+  after_save :assign_specimen, if: :lab_nr_changed?
 
   scope :recent, -> { where('isolates.updated_at > ?', 1.hours.ago) }
   scope :no_controls, -> { where(negative_control: false) }
@@ -89,7 +89,7 @@ class Isolate < ApplicationRecord
 
       individual.save!
 
-      isolate.update(individual_id: individual.id)
+      isolate.update(individual: individual)
     end
   end
 
@@ -201,9 +201,9 @@ class Isolate < ApplicationRecord
         end
       end
 
-      puts 'Done.'
+      self.update_column(:individual_id, individual.id) # Does not trigger callbacks to avoid infinite loop
 
-      update(individual: individual)
+      puts 'Done.'
     end
   end
 end
