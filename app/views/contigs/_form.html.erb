@@ -199,7 +199,7 @@
 
         <hr>
 
-        <% if @contig.primer_reads.assembled.count > 0 %>
+        <% if @contig.primer_reads.assembled.count.positive? || @contig.partial_cons_count&.positive? %>
             <% @contig.partial_cons.includes(:primer_reads).each do |partial_con| %>
                 <!-- draw contig alignment -->
                 <table style="table-layout: fixed; border-collapse: collapse;" width="100%; ">
@@ -255,10 +255,8 @@
 
                       </div>
                     </td>
-                    <td id="contig-drawing" style="padding:0; margin:0; overflow: scroll; position: relative;">
-
-                      <div class="partial_con" id="p-<%= partial_con.id %>" style="overflow: scroll;" width="100%" ></div>
-
+                    <td id="contig-drawing" style="padding:0; margin:0; position: relative;">
+                      <div class="partial_con" id="p-<%= partial_con.id %>"style="overflow: scroll;" width="100%" ></div>
                     </td>
                   </tr>
                 </table>

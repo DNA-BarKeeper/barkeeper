@@ -29,6 +29,126 @@ class Contig < ApplicationRecord
 
   scope :unsolved_warnings, -> { joins(marker_sequence: :mislabels).where(marker_sequence: { mislabels: { solved: false } }) }
 
+
+  def self.import(file, verified_by, marker_id, project_id)
+    pde = ''.dup
+    warning = []
+
+    gz_extract = Zlib::GzipReader.open(file.path)
+    gz_extract.each_line do |extract|
+      pde += extract
+    end
+
+    doc = Nokogiri::XML.parse(pde)
+
+    sequence_comments = {}
+
+    doc.xpath('//seq').each do |sequence|
+      identifier = ''
+      comment = ''
+
+      sequence.xpath('e').each do |meta_datum|
+        if meta_datum.attr("id") == "1"
+          identifier = meta_datum.text
+        elsif meta_datum.attr("id") == "4"
+          comment = meta_datum.text
+        end
+      end
+
+      identifier += '_dup' if sequence_comments[identifier]
+      sequence_comments[identifier] = comment
+    end
+
+    previous_sequence = ''
+
+    doc.at_xpath("//block").text.chomp.split("\\FF").each_with_index do |sequence, index|
+      sequence = sequence.delete("\n")
+
+      while sequence.match(/\\FE(\d+):/)
+        unknowns = "".dup
+        sequence.match(/\\FE(\d+):/)[1].reverse.to_i.times  { unknowns << '?' }
+
+        sequence.sub!(/\\FE\d+:/, unknowns)
+      end
+
+      # Replace placeholders in sequence string with actual bases
+      unless previous_sequence == ''
+        sequence.each_char.with_index do |c, index|
+          if c == '.'
+            sequence[index] = previous_sequence[index]
+          end
+        end
+      end
+
+      previous_sequence = sequence
+
+      identifier = sequence_comments.keys[index]
+      comment = sequence_comments[identifier]
+
+      identifier_components = identifier.match(/[A-Z]{3}_(DB\d+)_.*/)
+
+      if identifier_components # Only sequences with a DNA Bank ID and marker info
+        marker = Marker.find(marker_id)
+
+        name = identifier_components[1] + '_' + marker.name
+
+        contig = Contig.in_project(project_id).where('contigs.name ILIKE ?', name).first
+        unless contig
+          contig = Contig.create(name: name)
+          contig.add_project(project_id)
+          contig.marker = marker
+        end
+
+        if contig.primer_reads.use_for_assembly.size.positive? # Do not overwrite existing contigs with reads
+          warning << name
+        else
+          contig.imported = true
+          contig.assembled = true
+
+          date_pattern = /.*\b((3[01]|[12][0-9]|0[1-9]|[1-9])-(1[0-2]|0[1-9]|[1-9])-(\d{2,4}))\b.*/
+          date_match = comment.match(date_pattern)
+
+          if date_match
+            date_format = date_match[4].size == 2 ? "%d-%m-%y" : "%d-%m-%Y"
+            verified_at = Date.strptime(comment.match(date_pattern)[1], date_format)
+          else
+            verified_at = Date.today
+          end
+
+          contig.verified = true
+          contig.verified_by = verified_by
+          contig.verified_at = verified_at
+
+          contig.comment = comment
+
+          contig.partial_cons.destroy_all
+          new_partial_con = contig.partial_cons.create
+
+          # TODO: Check if contigs with only a consensus lead to issues somewhere in the app
+          new_partial_con.aligned_sequence = sequence
+          new_partial_con.aligned_qualities = []
+          new_partial_con.save
+
+          isolate = Isolate.find_by_lab_nr(identifier_components[1])
+          isolate ||= Isolate.create(lab_nr: identifier_components[1], dna_bank_id: identifier_components[1])
+          contig.isolate = isolate
+
+          marker_sequence = MarkerSequence.find_or_create_by(name: contig.name)
+          marker_sequence.add_project(project_id)
+          marker_sequence.sequence = sequence.delete('-').delete('?') if sequence
+          marker_sequence.contigs << contig
+          marker_sequence.marker = contig.marker
+          marker_sequence.isolate = contig.isolate
+          marker_sequence.save
+
+          contig.save
+        end
+      end
+    end
+
+    warning
+  end
+
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
     # TODO: (how to) includes spp. etc (on top of individual)
     contigs = Contig.select('species_id').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
