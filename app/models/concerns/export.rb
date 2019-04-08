@@ -82,35 +82,6 @@ module Export
       taxa
     end
 
-    # TODO: Unfinished feature (contigs)
-    # def zip_archive
-    #   # Only create new archive if no recent one exists
-    #   if !search_result_archive.present? || search_result_archive_updated_at < (Time.now - 24.hours).utc
-    #     archive_name = title.empty? ? "contig_search_#{created_at}" : title
-    #     archive_file = "#{archive_name}.zip"
-    #
-    #     # Create archive file
-    #     Zip::File.open(archive_file, Zip::File::CREATE) do |archive|
-    #       contigs.includes(:primer_reads, partial_cons: :primer_reads).each do |contig|
-    #         # Write contig PDE to a file and add this to the zip file
-    #         pde_file_name = "#{contig.name}.pde"
-    #         archive.get_output_stream(pde_file_name) { |file| file.write(contig.as_pde) }
-    #
-    #         # Write chromatogram to a file and add this to the zip file
-    #         contig.primer_reads.each do |read|
-    #           archive.get_output_stream(read.file_name_id) { |file| file.write(URI.parse("http:#{read.chromatogram.url}").read) }
-    #         end
-    #       end
-    #     end
-    #
-    #     # Upload created archive
-    #     file = File.open(archive_file)
-    #     self.search_result_archive = file
-    #     file.close
-    #     save!
-    #   end
-    # end
-
     private
 
     def pde_contigs(contigs, add_reads)
