@@ -7,32 +7,17 @@ class PrimersController < ApplicationController
 
   before_action :set_primer, only: %i[show edit update destroy]
 
-  # GET /primers
-  # GET /primers.json
   def index
     @primers = Primer.includes(:marker).in_project(current_project_id)
   end
 
-  def import
-    # TODO: if needed, add logic to distinguish between xls / xlsx / error etc here -> mv from model.
-    Primer.import(params[:file], current_project_id) # When adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
-    redirect_to primers_path, notice: 'Imported.'
-  end
-
-  # GET /primers/1
-  # GET /primers/1.json
   def show; end
 
-  # GET /primers/new
   def new
     @primer = Primer.new
   end
-
-  # GET /primers/1/edit
   def edit; end
 
-  # POST /primers
-  # POST /primers.json
   def create
     @primer = Primer.new(primer_params)
     @primer.add_project(current_project_id)
@@ -48,8 +33,6 @@ class PrimersController < ApplicationController
     end
   end
 
-  # PATCH/PUT /primers/1
-  # PATCH/PUT /primers/1.json
   def update
     respond_to do |format|
       if @primer.update(primer_params)
@@ -62,14 +45,17 @@ class PrimersController < ApplicationController
     end
   end
 
-  # DELETE /primers/1
-  # DELETE /primers/1.json
   def destroy
     @primer.destroy
     respond_to do |format|
       format.html { redirect_to primers_url }
       format.json { head :no_content }
     end
+  end
+
+  def import
+    Primer.import(params[:file], current_project_id)
+    redirect_to primers_path, notice: 'Imported.'
   end
 
   private
