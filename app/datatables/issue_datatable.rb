@@ -16,7 +16,7 @@ class IssueDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: Issue.count,
+      iTotalRecords: Issue.in_project(@current_default_project).count,
       iTotalDisplayRecords: issues.total_entries,
       aaData: data
     }

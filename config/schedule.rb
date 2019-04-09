@@ -17,13 +17,9 @@ every 1.day, at: '0:30 am' do
   rake 'data:remove_old_searches' # Delete all untitled contig searches older than a month
 end
 
-every 1.day, at: '8:30 pm' do
-  rake 'data:download_sativa_results' # Downloads any available SATIVA results from this day
+every 1.day, at: '9:00 pm' do
+  rake 'data:check_new_marker_sequences' # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
 end
-
-# every 1.day, at: '9:00 pm' do
-#   rake 'data:check_new_marker_sequences' # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
-# end
 
 every 1.day, at: '3:10 am' do
   rake 'data:flag_specimen' # Places a warning on specimens with multiple sequences that have issues

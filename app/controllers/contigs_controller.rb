@@ -5,13 +5,12 @@ class ContigsController < ApplicationController
 
   load_and_authorize_resource
 
-  skip_before_action :verify_authenticity_token
+  http_basic_authenticate_with name: ENV['API_USER_NAME'], password: ENV['API_PASSWORD'], only: [:as_fasq, :change_via_script, :compare_contigs]
+  skip_before_action :verify_authenticity_token, only: [:as_fasq, :change_via_script, :compare_contigs]
 
   before_action :set_contig, only: %i[verify_next verify pde fasta fasta_trimmed fasta_raw overlap overlap_background show edit
                                       update destroy]
 
-  # GET /contigs
-  # GET /contigs.json
   def index
     respond_to do |format|
       format.html
@@ -45,20 +44,14 @@ class ContigsController < ApplicationController
     end
   end
 
-  # GET /contigs/1
-  # GET /contigs/1.json
   def show; end
 
-  # GET /contigs/new
   def new
     @contig = Contig.new
   end
 
-  # GET /contigs/1/edit
   def edit; end
 
-  # POST /contigs
-  # POST /contigs.json
   def create
     @contig = Contig.new(contig_params)
     @contig.add_project(current_project_id)
@@ -74,8 +67,6 @@ class ContigsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /contigs/1
-  # PATCH/PUT /contigs/1.json
   def update
     respond_to do |format|
       if @contig.update(contig_params)
@@ -93,8 +84,6 @@ class ContigsController < ApplicationController
     end
   end
 
-  # DELETE /contigs/1
-  # DELETE /contigs/1.json
   def destroy
     @contig.destroy
 
@@ -114,6 +103,25 @@ class ContigsController < ApplicationController
 
   def analysis_output
     redirect_to TxtUploader.last.uploaded_file.url
+  end
+
+  def import
+    #TODO: Allow import of multiple files, especially when Bonn PDEs should be re-uploaded
+    file = params[:file]
+    verified_by = params[:contig][:verified_by]
+    marker = params[:contig][:marker_id]
+
+    if file && verified_by && marker
+      warning = Contig.import(file, verified_by, marker, current_project_id)
+      if !warning.empty?
+        redirect_to contigs_path,
+                    notice: "Finished. The following #{warning.size} contigs were not imported, since read data was already present: #{warning.join(', ')}"
+      else
+        redirect_to contigs_path, notice: 'Imported.'
+        end
+    else
+      redirect_to contigs_path, notice: 'Please select a file, the user who verified the contained sequences and the marker they belong to.'
+    end
   end
 
   # for overwriting with externally edited / verified contigs in fas format (via .pde)
@@ -151,7 +159,8 @@ class ContigsController < ApplicationController
       fas_seqs[1..-1].each do |fs|
         pair = fs.split("\n")
 
-        # overwrite single reads (aligned - / manually corrected version (?) ) (> that do match general read pattern; use the exactly matching read or generate new)
+        # overwrite single reads (aligned - / manually corrected version (?) )
+        # (> that do match general read pattern; use the exactly matching read or generate new)
 
         read_name = pair[0]
 
@@ -173,7 +182,8 @@ class ContigsController < ApplicationController
           primer_read.used_for_con = true
           primer_read.assembled = true
 
-          # TODO: adjust trimmedReadStart etc. based on ???? in aligned_seq (though this is not technically correct due to alignemnt of ??? with gappy stretches in other reads)
+          # TODO: adjust trimmedReadStart etc. based on ???? in aligned_seq
+          # (though this is not technically correct due to alignment of ??? with gappy stretches in other reads)
 
           if primer_read.trimmedReadStart.nil?
             primer_read.trimmedReadStart = 1
@@ -321,7 +331,9 @@ class ContigsController < ApplicationController
   end
 
   def overlap
-    if @contig.primer_reads.where(used_for_con: true).count <= 4
+    if @contig.primer_reads.size < 1
+      msg = 'No reads are available for assembly.'
+    elsif @contig.primer_reads.where(used_for_con: true).count <= 4
       @contig.auto_overlap
       msg = 'Assembly finished.'
     else
@@ -388,7 +400,7 @@ class ContigsController < ApplicationController
       contig_name += "_#{marker}"
 
       # mk case insensitive
-      contig = Contig.in_project(current_project_id).where('name ILIKE ?', contig_name).first
+      contig = Contig.in_project(current_project_id).where('contigs.name ILIKE ?', contig_name).first
 
       # ignore if not verified
       if contig
@@ -427,9 +439,9 @@ class ContigsController < ApplicationController
   # TODO filename and fastastring are only used by change via script action
   # TODO: isolate_name used in form for contig, but cant that be done via id?
   def contig_params
-    params.require(:contig).permit(:mira, :marker, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names,
+    params.require(:contig).permit(:mira, :marker, :marker_id, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names,
                                    :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id,
-                                   :isolate_id, :marker_sequence_id, :term, :isolate_name, :verified,
+                                   :isolate_id, :marker_sequence_id, :term, :isolate_name, :verified, :verified_by,
                                    project_ids: [])
   end
 end

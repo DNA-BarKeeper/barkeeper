@@ -33,6 +33,11 @@
       </div>
       <br/>
       <div>
+        <%= f.check_box :no_isolate %>
+        <%= f.label :no_isolate, "Does not have an associated isolate" %>
+      </div>
+      <br/>
+      <div>
         <%= f.label :has_warnings, 'Search for marker sequences with unsolved SATIVA warnings:' %><br>
         <%= f.radio_button :has_warnings, "yes" %>
         <%= f.label :yes, "Yes" %>

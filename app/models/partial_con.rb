@@ -66,7 +66,7 @@ class PartialCon < ApplicationRecord
   def to_json_for_position(position_string, width_in_bases)
     alignment_length = aligned_qualities.blank? ? aligned_sequence.length : aligned_qualities.length # Most externally edited contigs do not have the aligned qualities array
 
-    start_pos = position_string.to_i
+    start_pos = position_string.to_i - 1 # Enumeration starts with one in GUI
     start_pos = 0 if start_pos < 0
 
     end_pos = start_pos + (width_in_bases.to_i - 1)

@@ -13,7 +13,7 @@ class Isolate < ApplicationRecord
 
   validates_presence_of :lab_nr
 
-  after_create :assign_specimen
+  after_save :assign_specimen, if: :lab_nr_changed?
 
   scope :recent, -> { where('isolates.updated_at > ?', 1.hours.ago) }
   scope :no_controls, -> { where(negative_control: false) }
@@ -90,12 +90,16 @@ class Isolate < ApplicationRecord
 
       individual.save!
 
-      isolate.update(individual_id: individual.id)
+      isolate.update(individual: individual)
     end
   end
 
   def assign_specimen
-    assign_specimen_info(Isolate.read_abcd(lab_nr))
+    if dna_bank_id
+      assign_specimen_info(Isolate.read_abcd(dna_bank_id))
+    else
+      assign_specimen_info(Isolate.read_abcd(lab_nr))
+    end
   end
 
   def individual_name
@@ -127,35 +131,34 @@ class Isolate < ApplicationRecord
       individual.update(latitude: abcd_results[:latitude]) if abcd_results[:latitude]
       individual.update(herbarium: abcd_results[:herbarium]) if abcd_results[:herbarium]
 
-      if abcd_results[:full_name]
-        regex = /^(\w+)\s+(\w+)/
-        matches = abcd_results[:full_name].match(regex)
-
-        if matches
-          genus = matches[1]
-          species_epithet = matches[2]
-          species_component = "#{genus} #{species_epithet}"
-
-          species = individual.species
-          if species.nil?
-            species = Species.find_or_create_by(species_component: species_component)
-            species.add_projects(projects.pluck(:id))
-            species.update(genus_name: genus, species_epithet: species_epithet, composed_name: species.full_name)
-
-            if abcd_results[:higher_taxon_rank] == 'familia'
-              higher_taxon_name = higher_taxon_name.capitalize == 'Labiatae' ? 'Lamiaceae' : abcd_results[:higher_taxon_name]
-
-              family = Family.find_or_create_by(name: higher_taxon_name.capitalize)
-              family.add_projects(projects.pluck(:id))
-              species.update(family: family)
-            end
-
-            individual.update(species: species)
-          end
+      if abcd_results[:genus] && abcd_results[:species_epithet]
+        if abcd_results[:infraspecific]
+          composed_name = "#{abcd_results[:genus]} #{abcd_results[:infraspecific]} #{abcd_results[:species_epithet]}"
+        else
+          composed_name = "#{abcd_results[:genus]} #{abcd_results[:species_epithet]}"
         end
+
+        species = Species.find_or_create_by(composed_name: composed_name)
+        species.add_projects(projects.pluck(:id))
+        species.update(genus_name: abcd_results[:genus],
+                       species_epithet: abcd_results[:species_epithet],
+                       infraspecific: abcd_results[:infraspecific],
+                       species_component: "#{abcd_results[:genus]} #{abcd_results[:species_epithet]}")
+
+        if abcd_results[:higher_taxon_rank] == 'familia'
+          abcd_results[:higher_taxon_name] = 'Lamiaceae' if abcd_results[:higher_taxon_name].capitalize == 'Labiatae'
+
+          family = Family.find_or_create_by(name: abcd_results[:higher_taxon_name].capitalize)
+          family.add_projects(projects.pluck(:id))
+          species.update(family: family)
+        end
+
+        individual.update(species: species)
       end
 
-      update(individual: individual)
+      self.update_column(:individual_id, individual.id) # Does not trigger callbacks to avoid infinite loop
+
+      puts 'Done.'
     end
   end
 end
