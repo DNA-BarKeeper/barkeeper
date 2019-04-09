@@ -10,7 +10,7 @@ class Primer < ApplicationRecord
 
   validates_presence_of :name
 
-  # Import primer data from Excel file
+  # Import primer data from spreadsheet
   def self.import(file, project_id)
     spreadsheet = Primer.open_spreadsheet(file)
 
