@@ -49,6 +49,7 @@ GBOLapp::Application.routes.draw do
       get 'filter'
       get 'assemble_all'
       get 'duplicates'
+      post :import
       post :change_via_script
       post :compare_contigs # TODO: Marked for removal
       post :as_fasq
@@ -178,8 +179,8 @@ GBOLapp::Application.routes.draw do
   end
 
   resources :mislabel_analyses do
-    collection do
-      post :import
+    member do
+      post :download_results
     end
   end
 

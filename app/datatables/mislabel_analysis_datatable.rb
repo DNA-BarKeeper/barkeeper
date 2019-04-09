@@ -25,6 +25,8 @@ class MislabelAnalysisDatatable
     analyses.map do |analysis|
       [
         link_to(analysis.title, mislabel_analysis_path(analysis)),
+        analysis.mislabels.size,
+        analysis.total_seq_number,
         analysis.created_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
         link_to('Delete', analysis, method: :delete, data: { confirm: 'Are you sure?' })
       ]
@@ -32,7 +34,7 @@ class MislabelAnalysisDatatable
   end
 
   def analyses
-    @analyses = MislabelAnalysis.all.order("#{sort_column} #{sort_direction}")
+    @analyses = MislabelAnalysis.includes(:mislabels).order("#{sort_column} #{sort_direction}")
     @analyses = @analyses.page(page).per_page(per_page)
 
     if params[:sSearch].present?
@@ -51,7 +53,7 @@ class MislabelAnalysisDatatable
   end
 
   def sort_column
-    columns = %w[title created_at]
+    columns = %w[title id total_seq_number created_at]
     columns[params[:iSortCol_0].to_i]
   end
 

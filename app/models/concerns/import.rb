@@ -45,7 +45,9 @@ module Import
       unit = doc.at_xpath('//abcd21:Unit')
       results[:unit_id] = query_field == 'UnitID' ? id : doc.at_xpath('//abcd21:Unit/abcd21:UnitID').content.strip
       results[:specimen_unit_id] = unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content.strip
-      results[:full_name] = unit.at_xpath('//abcd21:FullScientificNameString').content.strip
+      results[:genus] = unit.at_xpath('//abcd21:GenusOrMonomial').content.strip
+      results[:species_epithet] = unit.at_xpath('//abcd21:FirstEpithet').content.strip
+      results[:infraspecific] = unit.at_xpath('//abcd21:InfraspecificEpithet').content.strip
       results[:herbarium] = unit.at_xpath('//abcd21:SourceInstitutionCode').content.strip
       results[:collector] = unit.at_xpath('//abcd21:GatheringAgent').content.strip
       results[:locality] = unit.at_xpath('//abcd21:LocalityText').content.strip

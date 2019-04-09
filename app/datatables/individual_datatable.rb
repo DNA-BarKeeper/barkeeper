@@ -17,7 +17,7 @@ class IndividualDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: Individual.count,
+      iTotalRecords: Individual.in_project(@current_default_project).count,
       iTotalDisplayRecords: individuals.total_entries,
       aaData: data
     }
@@ -57,7 +57,12 @@ class IndividualDatatable
     individuals = individuals.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      individuals = individuals.where('specimen_id ILIKE :search OR herbarium ILIKE :search OR collector ILIKE :search OR collection_nr ILIKE :search', search: "%#{params[:sSearch]}%")
+      individuals = individuals.where('individuals.specimen_id ILIKE :search
+OR species.composed_name ILIKE :search
+OR individuals.herbarium ILIKE :search
+OR individuals.collector ILIKE :search
+OR individuals.collection_nr ILIKE :search', search: "%#{params[:sSearch]}%")
+      .references(:species)
       # individuals = Individual.quick_search(params[:sSearch])
     end
 
@@ -73,7 +78,7 @@ class IndividualDatatable
   end
 
   def sort_column
-    columns = %w[specimen_id species_id herbarium collector collection_nr updated_at]
+    columns = %w[individuals.specimen_id species.composed_name individuals.herbarium individuals.collector individuals.collection_nr individuals.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

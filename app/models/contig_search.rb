@@ -29,7 +29,7 @@ class ContigSearch < ApplicationRecord
     Dir.mkdir("#{temp_folder}") unless File.exists?(temp_folder)
     FileUtils.rm_r archive_file if File.exists?(archive_file)
     search_result_archive.destroy
-    save
+    save!
 
     # Create archive file
     Zip::File.open(archive_file, Zip::File::CREATE) do |archive|

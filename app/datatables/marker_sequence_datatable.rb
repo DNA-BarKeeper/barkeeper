@@ -16,7 +16,7 @@ class MarkerSequenceDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: MarkerSequence.count,
+      iTotalRecords: MarkerSequence.in_project(@current_default_project).count,
       iTotalDisplayRecords: marker_sequences.total_entries,
       aaData: data
     }
@@ -49,11 +49,13 @@ class MarkerSequenceDatatable
   end
 
   def fetch_marker_sequences
-    marker_sequences = MarkerSequence.includes(:isolate).in_project(@current_default_project).order("#{sort_column} #{sort_direction}") # TODO: ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    marker_sequences = MarkerSequence.includes(isolate: [individual: :species]).in_project(@current_default_project).order("#{sort_column} #{sort_direction}") # TODO: ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     marker_sequences = marker_sequences.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      marker_sequences = marker_sequences.where('marker_sequences.name ILIKE :search', search: "%#{params[:sSearch]}%")
+      marker_sequences = marker_sequences.where('marker_sequences.name ILIKE :search
+OR species.composed_name ILIKE :search', search: "%#{params[:sSearch]}%")
+      .references(isolate: [individual: :species])
     end
 
     marker_sequences
@@ -68,7 +70,7 @@ class MarkerSequenceDatatable
   end
 
   def sort_column
-    columns = %w[name species_id updated_at]
+    columns = %w[marker_sequences.name species.composed_name marker_sequences.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

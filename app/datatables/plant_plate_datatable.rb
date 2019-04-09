@@ -14,7 +14,7 @@ class PlantPlateDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: PlantPlate.count,
+      iTotalRecords: PlantPlate.in_project(@current_default_project).count,
       iTotalDisplayRecords: plant_plates.total_entries,
       aaData: data
     }

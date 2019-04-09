@@ -4,11 +4,11 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#individuals').data('source'),
         "columnDefs": [
-            { "orderable": false, "targets": 1 },
             { "orderable": false, "targets": 6 }
         ],
         "order": [5, 'desc']
     });
+
     return $('#individual_species_name').autocomplete({
         source: $('#individual_species_name').data('autocomplete-source')
     });

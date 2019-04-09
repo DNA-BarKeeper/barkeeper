@@ -62,6 +62,26 @@ module Export
       @fastq
     end
 
+    def taxonomy_file(sequences)
+      taxa = +''
+
+      sequences.includes(isolate: [individual: [species: [family: [order: :higher_order_taxon]]]]).each do |marker_sequence|
+        if marker_sequence.sequence
+          species = marker_sequence.isolate&.individual&.species&.get_species_component
+          family = marker_sequence.isolate&.individual&.species&.family&.name
+          order = marker_sequence.isolate&.individual&.species&.family&.order&.name
+          hot = marker_sequence.isolate&.individual&.species&.family&.order&.higher_order_taxon&.name
+
+          taxa << marker_sequence.name.delete(' ')
+          taxa << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}"
+          taxa << "\t"
+          taxa << "Eukaryota;Embryophyta;#{hot};#{order};#{family};#{species}\n"
+        end
+      end
+
+      taxa
+    end
+
     private
 
     def pde_contigs(contigs, add_reads)
@@ -143,7 +163,7 @@ module Export
           name << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}" # Species
         end
 
-        add_sequence_to_fasta(name, marker_sequence.sequence)
+        add_sequence_to_fasta(name, marker_sequence.sequence) if marker_sequence.sequence
       end
     end
 

@@ -5,9 +5,9 @@ jQuery(function() {
         sAjaxSource: $('#mislabel_analyses').data('source'),
         "columnDefs": [{
             "orderable": false,
-            "targets": 2
+            "targets": [1, 4]
         }],
-        "order": [1, 'desc']
+        "order": [3, 'desc']
     });
 
     $('#mislabel_analysis_results').dataTable({

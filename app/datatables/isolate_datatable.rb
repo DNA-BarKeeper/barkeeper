@@ -15,7 +15,7 @@ class IsolateDatatable
   def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: Isolate.count,
+      iTotalRecords: Isolate.in_project(@current_default_project).count,
       iTotalDisplayRecords: isolates.total_entries,
       aaData: data
     }
@@ -65,7 +65,10 @@ class IsolateDatatable
     isolates = isolates.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      isolates = isolates.where('lab_nr ILIKE :search', search: "%#{params[:sSearch]}%") # TODO: --> fix to use case-insensitive / postgres
+      isolates = isolates.where('isolates.lab_nr ILIKE :search
+OR species.composed_name ILIKE :search
+OR individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
+                         .references(individual: :species)
     end
 
     isolates
@@ -80,7 +83,7 @@ class IsolateDatatable
   end
 
   def sort_column
-    columns = %w[lab_nr species.composed_name individuals.specimen_id updated_at]
+    columns = %w[isolates.lab_nr species.composed_name individuals.specimen_id isolates.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

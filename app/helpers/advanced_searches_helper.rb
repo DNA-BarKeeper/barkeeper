@@ -10,7 +10,8 @@ module AdvancedSearchesHelper
   end
 
   def attributes(search)
-    exclude = %w[id title project_id user_id created_at updated_at]
+    exclude = %w[id title project_id user_id search_result_archive_content_type search_result_archive_file_name
+                  search_result_archive_file_size search_result_archive_updated_at created_at updated_at]
     output_text = {
       all_issue: 'Has issues: both',
       issues: 'Has issues: yes',

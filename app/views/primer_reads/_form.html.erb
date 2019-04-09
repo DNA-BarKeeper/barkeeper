@@ -137,11 +137,12 @@
 
     <hr>
 
-    <% if @pos %>
+    <% unless @pos %>
+      <% @pos = 1 %>
     <% end %>
 
-    <%= content_tag 'div', class: 'alignment', id: "chromatogram_container_#{@primer_read.id}", data: {pos: @pos, read_id: @primer_read.id} do %>
-        <%= content_tag 'div', class: 'chromatogram', id: "primer_read_#{@primer_read.id}", data: {url: @primer_read, read_id: @primer_read.id } do %><% end %>
+    <%= content_tag 'div', class: 'alignment', id: "chromatogram_container_#{@primer_read.id}", data: {read_id: @primer_read.id} do %>
+        <%= content_tag 'div', class: 'chromatogram', id: "primer_read_#{@primer_read.id}", data: {url: @primer_read, read_id: @primer_read.id, pos: @pos } do %><% end %>
     <% end %>
 
     <!--buttons -->

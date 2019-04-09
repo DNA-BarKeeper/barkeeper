@@ -5,6 +5,7 @@ class MarkerSequenceSearch < ApplicationRecord
 
   belongs_to :user
   belongs_to :project
+  belongs_to :mislabel_analysis
 
   enum has_warnings: %i[both yes no]
 
@@ -20,22 +21,7 @@ class MarkerSequenceSearch < ApplicationRecord
 
   def taxon_file(include_singletons)
     sequences = include_singletons ? marker_sequences : remove_singletons(marker_sequences)
-
-    taxa = +''
-
-    sequences.includes(isolate: [individual: [species: [family: [order: :higher_order_taxon]]]]).each do |marker_sequence|
-      species = marker_sequence.isolate&.individual&.species&.get_species_component
-      family = marker_sequence.isolate&.individual&.species&.family&.name
-      order = marker_sequence.isolate&.individual&.species&.family&.order&.name
-      hot = marker_sequence.isolate&.individual&.species&.family&.order&.higher_order_taxon&.name
-
-      taxa << marker_sequence.name.delete(' ')
-      taxa << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}"
-      taxa << "\t"
-      taxa << "Eukaryota;Embryophyta;#{hot};#{order};#{family};#{species}\n"
-    end
-
-    taxa
+    MarkerSequenceSearch.taxonomy_file(sequences)
   end
 
   private
@@ -51,6 +37,8 @@ class MarkerSequenceSearch < ApplicationRecord
 
     marker_sequences = marker_sequences.has_species if has_species.present?
 
+    marker_sequences = marker_sequences.no_isolate if no_isolate.present?
+
     if has_warnings != 'both'
       marker_sequences = marker_sequences.unsolved_warnings if has_warnings == 'yes'
       marker_sequences = marker_sequences.where.not(id: MarkerSequence.unsolved_warnings.pluck(:id)) if has_warnings == 'no'
@@ -60,7 +48,7 @@ class MarkerSequenceSearch < ApplicationRecord
 
     marker_sequences = marker_sequences.joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where('higher_order_taxa.name ilike ?', "%#{higher_order_taxon}%") if higher_order_taxon.present?
 
-    marker_sequences = marker_sequences.joins(isolate: { individual: { species: { family: :order } } }).where('orders.name ilike ?', "%#{order}%") if order.present?
+    marker_sequences = marker_sequences.joins(isolate: { individual: { species: { family: :order } } }).where('orders.name ilike ?', "%#{self.order}%") if self.order.present?
 
     marker_sequences = marker_sequences.joins(isolate: { individual: { species: :family } }).where('families.name ilike ?', "%#{family}%") if family.present?
 

@@ -1,26 +1,10 @@
 jQuery(function() {
-
-    function scroll_to(pos, id) {
-        var primer_read_div = document.getElementById('primer_read_' + id);
-
-        var div_id = '#' + primer_read_div.id;
-        var chromatogram = $(div_id).data('url');
-        var scroll_to = chromatogram.peak_indices[pos - 1];
-
-        var alignment_id = "#chromatogram_container_" + id;
-
-        $(alignment_id).animate({
-            scrollLeft: scroll_to - 7
-        }, 0);
-
-    }
-
     $('.go-to-button_primer_read').click( function () {
         var read_id = $(this).data('readId');
         var input_id = "#go-to-pos_" + $(this).data('readId');
         var pos = $(input_id).val();
 
-        scroll_to(pos, read_id);
+        scroll_with_highlight(pos, read_id);
     });
 
     $('.scroll-left-button').click( function () {
@@ -32,10 +16,11 @@ jQuery(function() {
     });
 
     $('.scroll-right-button').click( function () {
-        var id = "#chromatogram_container_" + $(this).data('readId');
+        var readID = $(this).data('readId');
+        var id = "#chromatogram_container_" + readID;
 
         //get div chromatogram & its current width
-        var el  = document.getElementById("chromatogram_svg"); // or other selector like querySelector()
+        var el  = document.getElementById("chromatogram_svg_primer_read_" + readID); // or other selector like querySelector()
         var rect = el.getBoundingClientRect(); // get the bounding rectangle
 
         $(id).animate({
@@ -49,10 +34,11 @@ jQuery(function() {
     });
 
     $('.scroll-right-slowly-button').click( function () {
-        var id = "#chromatogram_container_" + $(this).data('readId');
+        var readID = $(this).data('readId');
+        var id = "#chromatogram_container_" + readID;
 
         //get div chromatogram & its current width
-        var el  = document.getElementById("chromatogram_svg"); // or other selector like querySelector()
+        var el  = document.getElementById("chromatogram_svg_primer_read_" + readID); // or other selector like querySelector()
         var rect = el.getBoundingClientRect(); // get the bounding rectangle
 
         var curr_scroll_pos = $(id).scrollLeft();
@@ -87,7 +73,6 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#primer_reads').data('source'),
         "columnDefs": [
-            { "orderable": false, "targets": 2 },
             { "orderable": false, "targets": 4 }
         ],
         "order": [ 3, 'desc' ]
@@ -108,7 +93,6 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#reads_without_contigs').data('source'),
         "columnDefs": [
-            { "orderable": false, "targets": 2 },
             { "orderable": false, "targets": 4 }
         ],
         "order": [ 3, 'desc' ]
@@ -132,7 +116,7 @@ jQuery(function() {
         draw_chromatogram(div_id, chromatogram);
 
         if (pos > 0) {
-            scroll_to(pos, read_id);
+            scroll_with_highlight(pos, read_id);
         }
     }
 });
@@ -150,7 +134,7 @@ function draw_chromatogram(div_id, chromatogram){
         .append('svg')
         .attr('width', chromatogram.atrace.length)
         .attr('height', ymax)
-        .attr('id', 'chromatogram_svg');
+        .attr('id', 'chromatogram_svg_' + div_id);
 
     //adjust clipped areas:
     var drag_left = d3.drag()
@@ -240,7 +224,8 @@ function draw_chromatogram(div_id, chromatogram){
         .attr("y", 15)
         .attr("width", 12)
         .attr("height", 20)
-        .attr("fill", "#fcff00");
+        .attr("fill", "#fcff00")
+        .attr("class", "highlight");
 
 
     //draw traces
@@ -473,6 +458,38 @@ function change_right_clip(base_index, read_id, div_id) {
     return 0;
 }
 
+function scroll_with_highlight(position, read_id) {
+    var chromatogram_position = $('#primer_read_' + read_id).data('url').peak_indices[position - 1];
+
+    // Scroll to position
+    $("#chromatogram_container_" + read_id).animate({
+        scrollLeft: chromatogram_position - 7
+    }, 0);
+
+    // Position of elements depends on order in which they were added, so highlight has to be moved to the back
+    d3.selection.prototype.moveToBack = function() {
+        return this.each(function() {
+            var firstChild = this.parentNode.firstChild;
+            if (firstChild) {
+                this.parentNode.insertBefore(this, firstChild);
+            }
+        });
+    };
+
+    var svg = d3.select('#chromatogram_svg_primer_read_' + read_id);
+
+    svg.selectAll("rect.highlight").remove(); // Remove previous highlight
+
+    // Add new highlight and move it to the back
+    svg.append('rect')
+        .attr("x", chromatogram_position - 7)
+        .attr("y", 15)
+        .attr("width", 12)
+        .attr("height", 20)
+        .attr("fill", "#fcff00")
+        .attr("class", "highlight")
+        .moveToBack();
+}
 
 function tempAlert(msg, duration, div_id) {
     var parent = document.getElementById(div_id).parentNode.parentNode;
