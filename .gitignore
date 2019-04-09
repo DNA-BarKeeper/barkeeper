@@ -2,6 +2,7 @@
 .idea/
 tmp/
 database.yml
+application.yml
 secrets.yml
 log/
 .DS_Store
@@ -12,3 +13,4 @@ species.xls
 public/assets/
 latest.dump
 .rbenv-vars
+.env

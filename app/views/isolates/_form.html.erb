@@ -252,7 +252,7 @@
             </table>
           </div>
 
-          <%= render :partial => 'shared/sativa_associated_warning', :locals => { :contigs => @isolate.contigs } %>
+          <%= render :partial => 'shared/sativa_associated_warning', :locals => { :contigs => @isolate.contigs.includes(:marker_sequence) } %>
 
         </div>
 
