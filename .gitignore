@@ -2,7 +2,6 @@
 .idea/
 tmp/
 database.yml
-application.yml
 secrets.yml
 log/
 .DS_Store
