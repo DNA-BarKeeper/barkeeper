@@ -38,6 +38,10 @@ GBOLapp::Application.routes.draw do
   end
 
   resources :ngs_runs do
+    collection do
+      post :revised_tpm
+    end
+
     member do
       get :analysis_results
       post :import

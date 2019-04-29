@@ -1,0 +1,35 @@
+# Main project details
+main_project_name: 'My awesome project' # State the name of your project as it should appear throughout the web application here
+project_domain: 'gbol5.de'
+about: ''
+
+# Puma
+rails_max_threads: '5'
+puma_workers: '2'
+
+# Admin account info
+admin_name: 'Admin'
+admin_email: 'admin@example.com'
+admin_password: 'securepassword'
+
+# Devise
+devise_admin_mail: 'sarah@gbol5.de'
+
+# Capistrano
+production_server_ip: '46.101.149.34'
+production_server_port: '1694'
+production_server_user: 'sarah'
+repository_url: 'ssh://Sarah_Wiechers@bitbucket.org/kai42/gbol5.git'
+ssh_key_path: '/home/sarah/.ssh/id_rsa'
+
+# Add environment specific config here
+#default: &defaults
+
+#development:
+#  <<: *defaults
+#
+#test:
+#  <<: *defaults
+#
+#production:
+#  <<: *defaults#
