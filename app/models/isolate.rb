@@ -26,7 +26,10 @@ class Isolate < ApplicationRecord
     [isolates.size, isolates_s.distinct.count, isolates.distinct.count, isolates_i.distinct.count]
   end
 
-  # TODO auf ABCD umstellen
+  def self.import_abcd(file, project_id)
+
+  end
+
   def self.import(file, project_id)
     spreadsheet = Isolate.open_spreadsheet(file)
     header = spreadsheet.row(1)
