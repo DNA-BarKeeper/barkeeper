@@ -45,7 +45,7 @@ class Ability
     can %i[edit index filter show_individuals xls], Species
     can :manage, TxtUploader
     can :manage, :overview_diagram
-    can :import, NgsRun
+    can [:import, :revised_tpm], NgsRun
 
     # Additional permissions for logged in users
     if user.present?
@@ -56,6 +56,7 @@ class Ability
       cannot :manage, Responsibility
       cannot %i[create destroy], MislabelAnalysis
       cannot %i[create destroy], Mislabel
+      cannot :start_analysis, NgsRun # TODO: remove when feature is done
 
       can %i[read search_taxa add_to_taxa], Project, id: user.project_ids
 
@@ -76,6 +77,7 @@ class Ability
         can :manage, MislabelAnalysis
         can :manage, Mislabel
         can :manage, Cluster
+        can :manage, NgsRun
 
         cannot %i[create update destroy], User, role: 'admin' if user.supervisor?
       end

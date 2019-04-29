@@ -3,8 +3,8 @@ class NgsRunsController < ApplicationController
 
   load_and_authorize_resource
 
-  http_basic_authenticate_with name: ENV['API_USER_NAME'], password: ENV['API_PASSWORD'], only: :import
-  skip_before_action :verify_authenticity_token, only: :import
+  http_basic_authenticate_with name: ENV['API_USER_NAME'], password: ENV['API_PASSWORD'], only: [:import, :revised_tpm]
+  skip_before_action :verify_authenticity_token, only: [:import, :revised_tpm]
 
   before_action :set_ngs_run, only: [:show, :edit, :update, :destroy, :import, :analysis_results]
 
@@ -120,6 +120,16 @@ class NgsRunsController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: NgsRunResultDatatable.new(view_context, params[:id]) }
+    end
+  end
+
+  def revised_tpm
+    tpm = TagPrimerMap.create(tag_primer_map: params[:tpm])
+
+    if tpm.check_tag_primer_map
+      send_data(tpm.revised_tag_primer_map, filename: tpm.tag_primer_map_file_name, type: 'application/txt')
+    else
+      render plain: "The Tag Primer Map is not properly formatted. Please try again after checking the file!\n"
     end
   end
 

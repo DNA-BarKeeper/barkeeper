@@ -20,7 +20,7 @@ class TagPrimerMap < ApplicationRecord
     valid = tp_map.instance_of?(CSV::Table)
 
     # Check if tag primer map has correct headers
-    expected_headers = ["#SampleID", "BarcodeSequence", "LinkerPrimerSequence", "ReversePrimer", "Region", "Description"]
+    expected_headers = ["#SampleID", "BarcodeSequence", "LinkerPrimerSequence", "ReversePrimer", "Region"]
     valid &&= (expected_headers - tp_map.headers).empty? # Allows optional columns
 
     # Check if at least one row with data exists
