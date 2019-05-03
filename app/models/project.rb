@@ -29,6 +29,9 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :micronic_plates
   has_and_belongs_to_many :plant_plates
 
+  has_and_belongs_to_many :ngs_runs
+  has_and_belongs_to_many :clusters
+
   validates_presence_of :name
 
   def add_project_to_taxa(taxa_selection)

@@ -44,6 +44,7 @@ gem 'select2-rails' # Integrate Select2 Javascript library
 gem 'bcrypt', '~> 3.1.7', platforms: :ruby
 gem 'bio' # BioRuby
 gem 'bootstrap-sass'
+gem 'bootstrap_progressbar'
 gem 'builder'
 gem 'jbuilder', '~> 2.5' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'mime-types'

@@ -13,3 +13,4 @@ public/assets/
 latest.dump
 .rbenv-vars
 .env
+application.yml
