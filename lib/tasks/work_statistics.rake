@@ -8,8 +8,6 @@ namespace :data do
     range = Time.new(args[:year].to_i, 1, 1).all_year
     prefix = lab_prefixes[args[:labcode].downcase.to_sym]
 
-    puts prefix
-
     isolates = Isolate.where('lab_nr ilike ?', "#{prefix}%")
                       .where(created_at: range)
                       .select(:id, :lab_nr)
