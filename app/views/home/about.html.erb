@@ -1,13 +1,24 @@
 <div class="jumbotron about-background" style="opacity: 0.8;">
 
   <a href="https://www.bolgermany.de"><img alt="GBOL" width="100" class="pull-right" src=<%= asset_path('project_images/GBoL_transparent.png')  %> /></a>
-  <h1><%= CONFIG[:main_project_name] %><br>
-    <a href='https://www.bmbf.de/'><img alt='BMBF' width='100' class='pull-right' src=<%= asset_path('project_images/BMBF_transparent.png') %> /></a>
-    <small><%= CONFIG[:project_description] %></small>
-  </h1>
+  <h1>GBOL5<br>
+    <small>Barcoding the German Flora</small></h1>
+  <h2>A project of the <a href="https://www.bolgermany.de">German Barcode of Life Initiative</a>
+    <a href="https://www.bmbf.de/"><img alt="BMBF" width="100" class="pull-right" src=<%= asset_path('project_images/BMBF_transparent.png') %> /></a>
+    <small><br>Funded by the <a href="https://www.bmbf.de/">Federal Ministry of Education and Research</a></small></h2>
 
   <br>
-  <%= CONFIG[:project_about].html_safe %>
+
+  <p><small>GBOL5 aims to provide a curated reference collection for the approximately 4,800 native land plant species
+    (bryophytes, lycophytes, ferns and seed plants) of the German flora with a linkage to specific sequence data (DNA barcodes).
+    To ensure identification success, GBOL5 generates sequence data for up to four fast evolving molecular markers from two genomes.</small></p>
+
+  <p><small>GBOL5 is a joint initiative of the <a href="https://www.nees.uni-bonn.de">Nees Institute for Plant Biodiversity
+    (NEES, University of Bonn)</a>, the <a href="https://www.uni-muenster.de/Evolution/">
+    Institute for Evolution and Biodiversity (IEB, University of Münster)</a>,
+    the <a href="https://www.bgbm.org/"> Botanical Garden and Botanical Museum Berlin (BGBM, Freie Universität Berlin)</a>
+    and the <a href="http://www.naturkundemuseum-bw.de/intl/englisch/stuttgart-state-museum-natural-history"> Stuttgart
+    State Museum of Natural History (SMNS)</a>.</small></p>
   <hr>
 
   <footer class="row">
