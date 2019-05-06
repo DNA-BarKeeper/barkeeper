@@ -11,20 +11,14 @@ class NgsRun < ApplicationRecord
   has_many :isolates, through: :clusters
   has_many :markers, through: :ngs_results
 
-  has_attached_file :fastq
   has_attached_file :set_tag_map
   has_attached_file :results
 
-  validates_attachment_content_type :fastq, content_type: 'text/plain' # Using 'chemical/seq-na-fastq' does not work reliably
   validates_attachment_content_type :set_tag_map, content_type: 'text/plain'
   validates_attachment_content_type :results, content_type: 'application/zip'
 
-  validates_attachment_file_name :fastq, :matches => [/fastq\Z/, /fq\Z/, /fastq.gz\Z/, /fq.gz\Z/]
   validates_attachment_file_name :set_tag_map, :matches => /fasta\Z/
   validates_attachment_file_name :results, :matches => /zip\Z/
-
-  attr_accessor :delete_fastq
-  before_validation { fastq.clear if delete_fastq == '1' }
 
   attr_accessor :delete_set_tag_map
   before_validation :remove_set_tag_map
@@ -71,25 +65,6 @@ class NgsRun < ApplicationRecord
     nonexistent
   end
 
-  def check_fastq
-    if fastq.path
-      valid = true
-    else
-      return false
-    end
-
-    line_count = `wc -l "#{fastq.path}"`.strip.split(' ')[0].to_i
-    valid &&= (line_count % 4).zero? # Number of lines is a multiple of 4
-
-    header = File.open(fastq.path, &:readline).strip
-
-    valid &&= header[0] == '@' # Header beginnt mit @
-
-    valid &&= header.include?('ccs') # Header enthält 'ccs' (file ist ccs file)
-
-    valid
-  end
-
   def check_tag_primer_maps
     # Check if the correct number of TPMs was uploaded
     if set_tag_map.path
@@ -124,18 +99,15 @@ class NgsRun < ApplicationRecord
       end
 
       tag_primer_map_path = "#{analysis_dir}/#{tag_primer_maps.first.tag_primer_map_file_name}"
-      fastq_path = "#{analysis_dir}/#{fastq_file_name}"
 
       # Create analysis directory
       session.exec!("mkdir #{analysis_dir}")
 
       # Upload analysis input files
       session.scp.upload! "#{Rails.root}/#{tag_primer_maps.first.tag_primer_map_file_name}", tag_primer_map_path
-      session.scp.upload! fastq.path, fastq_path
-      # session.scp.upload! fastq.url, fastq_path
 
       # Start analysis on server #TODO uncomment when ready
-      # session.exec!("ruby /data/data2/lara/Barcoding/barcoding_pipe.rb -m #{tag_primer_map_path} -f #{fastq_path} -o #{output_dir}")
+      # session.exec!("ruby /data/data2/lara/Barcoding/barcoding_pipe.rb -m #{tag_primer_map_path} -f #{fastq_location} -o #{output_dir}")
 
       # Remove edited tag primer maps
       tag_primer_maps.each do |tag_primer_map|

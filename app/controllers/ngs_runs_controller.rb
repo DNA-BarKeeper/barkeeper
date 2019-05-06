@@ -47,7 +47,6 @@ class NgsRunsController < ApplicationController
   end
 
   def update
-    params[:ngs_run].delete(:fastq) if params[:ngs_run][:fastq].blank?
     params[:ngs_run].delete(:set_tag_map) if params[:ngs_run][:set_tag_map].blank?
 
     if params[:ngs_run][:tag_primer_map].blank?
@@ -88,27 +87,23 @@ class NgsRunsController < ApplicationController
   end
 
   def start_analysis
-    if @ngs_run.check_fastq
-      if @ngs_run.check_tag_primer_maps
-        isolates_not_in_db = @ngs_run.samples_exist
-        if isolates_not_in_db.blank?
-          running = @ngs_run.check_server_status # Check if barcoding pipe is already running
+    if @ngs_run.check_tag_primer_maps
+      isolates_not_in_db = @ngs_run.samples_exist
+      if isolates_not_in_db.blank?
+        running = @ngs_run.check_server_status # Check if barcoding pipe is already running
 
-          if running.empty?
-            AnalyseNGSData.perform_async(@ngs_run.id)
-            redirect_to ngs_runs_path, notice: 'Analysing data. This may take a while. Check in later to see results.'
-          else
-            redirect_to ngs_runs_path, alert: "Analysis could not be started: Server is busy. Try again later."
-          end
+        if running.empty?
+          AnalyseNGSData.perform_async(@ngs_run.id)
+          redirect_to ngs_runs_path, notice: 'Analysing data. This may take a while. Check in later to see results.'
         else
-          redirect_back(fallback_location: ngs_runs_path,
-                        alert: "Please create database entries for the following sample IDs before starting the import: #{isolates_not_in_db.join(', ')}")
+          redirect_to ngs_runs_path, alert: "Analysis could not be started: Server is busy. Try again later."
         end
       else
-        redirect_back(fallback_location: ngs_runs_path, alert: 'Please make sure you uploaded as many properly formatted tag primer maps as stated in the packages fasta.')
+        redirect_back(fallback_location: ngs_runs_path,
+                      alert: "Please create database entries for the following sample IDs before starting the import: #{isolates_not_in_db.join(', ')}")
       end
     else
-      redirect_back(fallback_location: ngs_runs_path, alert: 'Please make sure you uploaded a properly formatted FastQ.')
+      redirect_back(fallback_location: ngs_runs_path, alert: 'Please make sure you uploaded as many properly formatted tag primer maps as stated in the packages fasta.')
     end
   end
 
@@ -141,6 +136,7 @@ class NgsRunsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def ngs_run_params
-    params.require(:ngs_run).permit(:name, :primer_mismatches, :quality_threshold, :tag_mismatches, :fastq, :set_tag_map, :higher_order_taxon_id, :delete_fastq, :delete_set_tag_map, :results)
+    params.require(:ngs_run).permit(:name, :primer_mismatches, :quality_threshold, :tag_mismatches, :fastq_location,
+                                    :set_tag_map, :higher_order_taxon_id, :delete_set_tag_map, :results)
   end
 end

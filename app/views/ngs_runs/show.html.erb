@@ -54,11 +54,13 @@
           <%= @ngs_run.comment %>
         </p>
 
-        <p>
-          <strong>Packages</strong>
-          <br>
-          <%= @ngs_run.set_tag_map_file_name if @ngs_run.set_tag_map_file_name %>
-        </p>
+        <% if @ngs_run.set_tag_map_file_name %>
+          <p>
+            <strong>Platepool set</strong>
+            <br>
+            <%= @ngs_run.set_tag_map_file_name %>
+          </p>
+        <% end %>
 
         <p>
           <strong>Tag Primer Map</strong>
@@ -67,9 +69,9 @@
         </p>
 
         <p>
-          <strong>FastQ</strong>
+          <strong>Raw file path</strong>
           <br>
-          <%= @ngs_run.fastq_file_name if @ngs_run.fastq_file_name%>
+          <%= @ngs_run.fastq_location if @ngs_run.fastq_location%>
         </p>
       </div>
 
