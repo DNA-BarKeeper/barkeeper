@@ -14,7 +14,7 @@ class TagPrimerMap < ApplicationRecord
   end
 
   def check_tag_primer_map
-    tpm_location = Rails.env.development? ? tag_primer_map.path : "http:#{tag_primer_map.url}"
+    tpm_location = Rails.env.development? ? tag_primer_map.path : open("http:#{tag_primer_map.url}")
     tp_map = CSV.read(tpm_location, { col_sep: "\t", headers: true }) if tpm_location
 
     # Check if file is actually of type CSV
@@ -37,7 +37,7 @@ class TagPrimerMap < ApplicationRecord
   end
 
   def revised_tag_primer_map
-    tpm_location = Rails.env.development? ? tag_primer_map.path : "http:#{tag_primer_map.url}"
+    tpm_location = Rails.env.development? ? tag_primer_map.path : open("http:#{tag_primer_map.url}")
     tp_map = CSV.read(tpm_location, { col_sep: "\t", headers: true })
 
     tp_map.each do |row|
