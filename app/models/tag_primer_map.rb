@@ -14,7 +14,7 @@ class TagPrimerMap < ApplicationRecord
   end
 
   def check_tag_primer_map
-    tp_map = CSV.read(tag_primer_map.path, { col_sep: "\t", headers: true }) if tag_primer_map.path
+    tp_map = CSV.read(tag_primer_map.url, { col_sep: "\t", headers: true }) if tag_primer_map.url
 
     # Check if file is actually of type CSV
     valid = tp_map.instance_of?(CSV::Table)
@@ -36,7 +36,7 @@ class TagPrimerMap < ApplicationRecord
   end
 
   def revised_tag_primer_map
-    tp_map = CSV.read(tag_primer_map.path, { col_sep: "\t", headers: true })
+    tp_map = CSV.read(tag_primer_map.url, { col_sep: "\t", headers: true })
 
     tp_map.each do |row|
       sample_id = row['#SampleID'].match(/\D+\d+|\D+\z/)[0]
