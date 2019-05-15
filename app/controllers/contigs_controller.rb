@@ -391,6 +391,8 @@ class ContigsController < ApplicationController
 
     mira = params[:mira]
 
+    verified = true if (params[:verified] == '1') || (params[:verified] == 1)
+
     contig_names_array = contig_names.split
 
     fasq_str = +''
@@ -405,16 +407,12 @@ class ContigsController < ApplicationController
 
       # ignore if not verified
       if contig
-        if contig.verified
-          if contig.imported
-            not_included_str += "#{contig_name}: Externally verified -> no quality scores.\n"
-          else
-            begin
-              fasq = contig.as_fasq(mira)
-              fasq_str += fasq
-            rescue StandardError
-              not_included_str += "#{contig_name}: Unknown issue.\n"
-            end
+        if contig.verified || !verified
+          begin
+            fasq = contig.as_fasq(mira)
+            fasq_str += fasq
+          rescue StandardError
+            not_included_str += "#{contig_name}: A problem occurred during FASTQ export.\n"
           end
         else
           not_included_str += "#{contig_name}: not verified.\n"
