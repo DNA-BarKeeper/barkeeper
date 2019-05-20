@@ -306,7 +306,7 @@ class Contig < ApplicationRecord
       post_assembly(true, single_read.trimmed_and_cleaned_seq, msg)
       return
     elsif remaining_reads.empty?
-      msg = 'Need at least 1 read for creating consensus sequence.'
+      msg = 'At least one read is needed to create a consensus sequence.'
       post_assembly(false, '', msg)
       return
     end

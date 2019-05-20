@@ -1,0 +1,25 @@
+<%= render 'form' %>
+
+<p>
+  <% if user_signed_in? %>
+    <%= link_to 'Start analysis',
+                start_analysis_ngs_run_path(@ngs_run),
+                method: :post,
+                class: 'btn btn-default' %>
+  <% end %>
+</p>
+
+<p>
+  <%= link_to 'Go to NGS runs index', ngs_runs_path, method: :get, class: 'btn btn-default' %>
+</p>
+
+<table width="100%">
+  <tr>
+    <td>
+      <%= link_to '', 'javascript:history.go(-1)', :class => "glyphicon glyphicon-chevron-left" %>
+    </td>
+    <td align="right">
+      <%= link_to '', @ngs_run, method: :delete, data: { confirm: 'Are you sure?' }, :class => "glyphicon glyphicon-trash" %>
+    </td>
+  </tr>
+</table>

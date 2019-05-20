@@ -46,6 +46,7 @@ class Ability
     can :manage, TxtUploader
     can :manage, :overview_diagram
     can :download_results, MislabelAnalysis
+    can [:import, :revised_tpm], NgsRun
 
     # Additional permissions for logged in users
     if user.present?
@@ -56,6 +57,7 @@ class Ability
       cannot :manage, Responsibility
       cannot %i[create destroy], MislabelAnalysis
       cannot %i[create destroy], Mislabel
+      cannot :start_analysis, NgsRun # TODO: remove when feature is done
 
       can %i[read search_taxa add_to_taxa], Project, id: user.project_ids
 
@@ -66,6 +68,8 @@ class Ability
         can :edit, :all
       end
 
+      cannot :edit, Cluster
+
       # Additional permissions for administrators and supervisors
       if user.admin? || user.supervisor?
         can :manage, User
@@ -73,6 +77,8 @@ class Ability
         can :manage, Responsibility
         can :manage, MislabelAnalysis
         can :manage, Mislabel
+        can :manage, Cluster
+        can :manage, NgsRun
 
         cannot %i[create update destroy], User, role: 'admin' if user.supervisor?
       end

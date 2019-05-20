@@ -17,8 +17,9 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
           <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
-          <li ><a href="#assigned_contigs" role="tab" data-toggle="tab">Contigs</a></li>
-          <li><a href="#assigned_marker_sequences" role="tab" data-toggle="tab">Sequences</a></li>
+          <li><a href="#assigned_clusters" role="tab" data-toggle="tab">Read Clusters</a></li>
+          <li><a href="#assigned_contigs" role="tab" data-toggle="tab">Contigs</a></li>
+          <li><a href="#assigned_marker_sequences" role="tab" data-toggle="tab">Marker Sequences</a></li>
           <%= render :partial => 'shared/sativa_nav_tab', :locals => { :marker_sequences => @isolate.marker_sequences } %>
         </ul>
 
@@ -47,12 +48,12 @@
 
             <div class="form-group">
               <%= f.label :tissue_id, 'Tissue type' %>
-              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name, :include_blank => '<no selection>') %>
+              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
             </div>
 
             <div class="form-group">
               <%= f.label :plant_plate_id, 'Plate (Tissue)' %>
-              <%= f.collection_select(:plant_plate_id, PlantPlate.all.order(:name), :id, :name, :include_blank => '<no selection>') %>
+              <%= f.collection_select(:plant_plate_id, PlantPlate.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
             </div>
 
             <div class="form-group">
@@ -75,7 +76,7 @@
 
                 <div class="form-group">
                   <%= f.label 'Lab' %>
-                  <%= f.collection_select(:lab_id_orig, Lab.all, :id, :labcode, :include_blank => '<no selection>') %>
+                  <%= f.collection_select(:lab_id_orig, Lab.all, :id, :labcode, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
                 </div>
 
                 <div  class="form-group">
@@ -83,7 +84,7 @@
                   <% if @isolate.micronic_plate_id_orig %>
                       <%= link_to '', edit_micronic_plate_path(@isolate.micronic_plate_id_orig),:class => 'glyphicon glyphicon-share-alt', :title => "go to micronic plate" %>
                   <% end %>
-                  <%= f.collection_select(:micronic_plate_id_orig, MicronicPlate.all, :id, :micronic_plate_id, :include_blank => '<no selection>') %>
+                  <%= f.collection_select(:micronic_plate_id_orig, MicronicPlate.all, :id, :micronic_plate_id, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
                 </div>
 
                 <% if @isolate.micronic_plate_id_orig %>
@@ -135,7 +136,7 @@
 
                 <div class="form-group">
                   <%= f.label 'Lab' %>
-                  <%= f.collection_select(:lab_id_copy, Lab.all, :id, :labcode, :include_blank => '<no selection>') %>
+                  <%= f.collection_select(:lab_id_copy, Lab.all, :id, :labcode, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
                 </div>
 
                 <div  class="form-group">
@@ -143,7 +144,7 @@
                   <% if @isolate.micronic_plate_id_copy %>
                       <%= link_to '', edit_micronic_plate_path(@isolate.micronic_plate_id_copy),:class => 'glyphicon glyphicon-share-alt', :title => "go to micronic plate" %>
                   <% end %>
-                  <%= f.collection_select(:micronic_plate_id_copy, MicronicPlate.all, :id, :micronic_plate_id, :include_blank => '<no selection>') %>
+                  <%= f.collection_select(:micronic_plate_id_copy, MicronicPlate.all, :id, :micronic_plate_id, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
                 </div>
 
                 <% if @isolate.micronic_plate_id_copy %>
@@ -192,16 +193,40 @@
             </div>
 
             <div class="form-group">
+              <%= f.check_box :negative_control %>
               <%= f.label :negative_control, 'Negative control' %>
-              <%= f.check_box :negative_control  %>
             </div>
 
             <div class="form-group">
-              Isolated by
-              <%= f.collection_select(:user_id, User.all.order(:name), :id, :name, :include_blank => '<no selection>') %>
-              on
-              <%= f.datetime_select(:isolation_date, :include_blank => '<no date selected>') %>
+              <%= f.label :user_id, 'Isolated by' %>
+              <%= f.collection_select(:user_id, User.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
+              <%= f.label :isolation_date, 'on' %><br />
+              <%= f.text_field(:isolation_date, class: 'form-control') %>
             </div>
+
+          </div>
+
+          <div class="tab-pane" id="assigned_clusters">
+            <br>
+            <table  class="table table-striped table-hover table-bordered">
+
+              <thead>
+              <tr>
+                <th>Name</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <% @isolate.clusters.order(:name).each do |cl| %>
+                <tr>
+                  <td>
+                    <%= link_to cl.name, cluster_path(cl) %>
+                  </td>
+                </tr>
+              <% end %>
+              </tbody>
+
+            </table>
 
           </div>
 
@@ -217,11 +242,11 @@
 
               <tbody>
               <% @isolate.contigs.each do |c| %>
-                  <tr>
-                    <td>
-                      <%= link_to c.name,edit_contig_path(c) %>
-                    </td>
-                  </tr>
+                <tr>
+                  <td>
+                    <%= link_to c.name,edit_contig_path(c) %>
+                  </td>
+                </tr>
               <% end %>
               </tbody>
 
@@ -252,7 +277,7 @@
             </table>
           </div>
 
-          <%= render :partial => 'shared/sativa_associated_warning', :locals => { :contigs => @isolate.contigs } %>
+          <%= render :partial => 'shared/sativa_associated_warning', :locals => { :contigs => @isolate.contigs.includes(:marker_sequence) } %>
 
         </div>
 

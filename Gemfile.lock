@@ -655,6 +655,7 @@ GEM
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
+    bootstrap_progressbar (0.2.0)
     builder (3.2.3)
     bullet (5.7.5)
       activesupport (>= 3.0.0)
@@ -968,6 +969,7 @@ DEPENDENCIES
   bio
   bootstrap-multiselect_rails
   bootstrap-sass
+  bootstrap_progressbar
   builder
   bullet
   cancancan

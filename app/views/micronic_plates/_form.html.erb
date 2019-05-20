@@ -12,7 +12,7 @@
 
       <div class="form-group">
         <%= f.label 'Rack' %>
-        <%= f.collection_select(:lab_rack_id, LabRack.all, :id, :rackcode, :include_blank => '<no selection>') %>
+        <%= f.collection_select(:lab_rack_id, LabRack.all, :id, :rackcode, { :include_blank => '<no selection>' }, { class: 'form-control' } ) %>
       </div>
 
       <div class="form-group">

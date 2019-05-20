@@ -1,0 +1,2 @@
+class BlastHit < ApplicationRecord
+end
