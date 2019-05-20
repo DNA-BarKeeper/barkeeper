@@ -18,10 +18,12 @@ services:
     command: bundle exec rails s -p 3000 -b '0.0.0.0'
     volumes:
       - .:/gbol5
-      - ../project_config/project_images:/gbol5/assets/project_images
-      - ../project_config/about.html.erb:/gbol5/app/views/home/about.html.erb
-      - ../project_config/impressum.html.erb:/gbol5/app/views/home/impressum.html.erb
-      - ../project_config/privacy_policy.html.erb:/gbol5/app/views/home/privacy_policy.html.erb
+      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/.env:/gbol5/.env
+      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/application.yml:/gbol5/config/application.yml
+      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/project_images:/gbol5/assets/project_images
+      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/about.html.erb:/gbol5/app/views/home/about.html.erb
+      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/impressum.html.erb:/gbol5/app/views/home/impressum.html.erb
+      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/privacy_policy.html.erb:/gbol5/app/views/home/privacy_policy.html.erb
     ports:
       - "3000:3000"
     env_file:
