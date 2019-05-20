@@ -6,6 +6,7 @@ class ContigsController < ApplicationController
   load_and_authorize_resource
 
   http_basic_authenticate_with name: ENV['API_USER_NAME'], password: ENV['API_PASSWORD'], only: [:as_fasq, :change_via_script, :compare_contigs]
+
   skip_before_action :verify_authenticity_token, only: [:as_fasq, :change_via_script, :compare_contigs]
 
   before_action :set_contig, only: %i[verify_next verify pde fasta fasta_trimmed fasta_raw overlap overlap_background show edit
@@ -390,6 +391,8 @@ class ContigsController < ApplicationController
 
     mira = params[:mira]
 
+    verified = true if (params[:verified] == '1') || (params[:verified] == 1)
+
     contig_names_array = contig_names.split
 
     fasq_str = +''
@@ -404,16 +407,12 @@ class ContigsController < ApplicationController
 
       # ignore if not verified
       if contig
-        if contig.verified
-          if contig.imported
-            not_included_str += "#{contig_name}: Externally verified -> no quality scores.\n"
-          else
-            begin
-              fasq = contig.as_fasq(mira)
-              fasq_str += fasq
-            rescue StandardError
-              not_included_str += "#{contig_name}: Unknown issue.\n"
-            end
+        if contig.verified || !verified
+          begin
+            fasq = contig.as_fasq(mira)
+            fasq_str += fasq
+          rescue StandardError
+            not_included_str += "#{contig_name}: A problem occurred during FASTQ export.\n"
           end
         else
           not_included_str += "#{contig_name}: not verified.\n"

@@ -35,6 +35,20 @@ GBOLapp::Application.routes.draw do
     get :export_as_pde
   end
 
+  resources :ngs_runs do
+    collection do
+      post :revised_tpm
+    end
+
+    member do
+      get :analysis_results
+      post :import
+      post :start_analysis
+    end
+  end
+
+  resources :clusters
+
   resources :individual_searches
 
   resources :contigs do

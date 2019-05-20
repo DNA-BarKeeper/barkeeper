@@ -273,6 +273,12 @@ input.form-control {
   width: auto !important;
 }
 
+select.form-control {
+  border: 1px solid lightgrey !important;
+  padding: 5px !important;
+  width: auto !important;
+}
+
 a.anchor {
   display: block;
   position: relative;

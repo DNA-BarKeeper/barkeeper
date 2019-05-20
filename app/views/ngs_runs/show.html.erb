@@ -1,0 +1,147 @@
+<% provide(:title, @ngs_run.name) %>
+<%= show_val_errors(@ngs_run)%>
+
+<div class="panel panel-default">
+
+  <div class="panel-heading"><h3 class="panel-title"><%= @ngs_run.name %></h3></div>
+
+  <div class="panel-body">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="active"><a href="#parameters" role="tab" data-toggle="tab">Parameters</a></li>
+      <li><a href="#stats" role="tab" data-toggle="tab">Result stats</a></li>
+      <li><a href="#results" role="tab" data-toggle="tab">Results</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+
+      <div class="tab-pane active" id="parameters">
+
+        <p>
+          <strong>Name</strong>
+          <br>
+          <%= @ngs_run.name %>
+        </p>
+
+        <p>
+          <strong>Quality Threshold</strong>
+          <br>
+          <%= @ngs_run.quality_threshold %>
+        </p>
+
+        <p>
+          <strong>Allowed Tag Mismatches</strong>
+          <br>
+          <%= @ngs_run.tag_mismatches %>
+        </p>
+
+        <p>
+          <strong>Allowed Primer Mismatches</strong>
+          <br>
+          <%= @ngs_run.primer_mismatches %>
+        </p>
+
+        <p>
+          <strong>Higher Order Taxon</strong>
+          <br>
+          <%= @ngs_run.higher_order_taxon.name if @ngs_run.higher_order_taxon %>
+        </p>
+
+        <p>
+          <strong>Comment</strong>
+          <br>
+          <%= @ngs_run.comment %>
+        </p>
+
+        <% if @ngs_run.set_tag_map_file_name %>
+          <p>
+            <strong>Platepool set</strong>
+            <br>
+            <%= @ngs_run.set_tag_map_file_name %>
+          </p>
+        <% end %>
+
+        <p>
+          <strong>Tag Primer Map</strong>
+          <br>
+          <%= tag_primer_maps(@ngs_run) %>
+        </p>
+
+        <p>
+          <strong>Raw file path</strong>
+          <br>
+          <%= @ngs_run.fastq_location if @ngs_run.fastq_location%>
+        </p>
+      </div>
+
+      <div class="tab-pane" id="stats">
+        <br>
+        <p>
+          <strong>Number of sequences before filtering</strong>
+          <br>
+          <%= @ngs_run.sequences_pre %>
+        </p>
+
+        <p>
+          <strong>Number of sequences post seqtk filtering</strong>
+          <br>
+          <%= @ngs_run.sequences_filtered %>
+        </p>
+
+        <p>
+          <strong>Number of demultiplexed sequences (hq seqs)</strong>
+          <br>
+          <%= @ngs_run.sequences_high_qual %>
+        </p>
+
+        <p>
+          <strong>Number of sequences without second primer</strong>
+          <br>
+          <%= @ngs_run.sequences_one_primer %>
+        </p>
+
+        <p>
+          <strong>Number of sequences that are too short or long</strong>
+          <br>
+          <%= @ngs_run.sequences_short %>
+        </p>
+
+      </div>
+
+      <div class="tab-pane" id="results">
+        <div class="wideTable">
+          <table id="ngs_run_results" data-source="<%= analysis_results_ngs_run_path(format: "json") %>" class="table table-striped table-hover table-bordered">
+            <thead>
+            <tr>
+              <th rowspan="2" style="vertical-align: middle;">Name</th>
+              <th rowspan="2" style="vertical-align: middle;">Species</th>
+              <th rowspan="2" style="vertical-align: middle;">Family</th>
+              <th rowspan="2" style="vertical-align: middle;">Total number of sequences</th>
+              <%= marker_headers(@ngs_run) %>
+            </tr>
+            <tr>
+              <%= ngs_result_headers(@ngs_run) %>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= link_to 'Go to NGS runs index', ngs_runs_path, method: :get, class: 'btn btn-default' %>
+
+<table width="100%">
+  <tr>
+    <td>
+      <%= link_to '', 'javascript:history.go(-1)', :class => "glyphicon glyphicon-chevron-left" %>
+    </td>
+    <td align="right">
+      <%= link_to '', @ngs_run, method: :delete, data: { confirm: 'Are you sure?' }, :class => "glyphicon glyphicon-trash" %>
+    </td>
+  </tr>
+</table>

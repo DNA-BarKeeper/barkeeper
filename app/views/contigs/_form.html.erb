@@ -36,16 +36,15 @@
             <% if @contig.isolate %>
                 <%= link_to '', edit_isolate_path(@contig.isolate), :class => "glyphicon glyphicon-share-alt" %>
             <% end %>
-            <%= f.text_field :isolate_name , data: {autocomplete_source: filter_isolates_path} , class: 'form-control'%>
+            <%= f.text_field :isolate_name , data: { autocomplete_source: filter_isolates_path } , class: 'form-control'%>
           </div>
 
           <div class="form-group">
             <%= f.label 'Marker' %>
-
-            <%= f.collection_select(:marker_id, Marker.all, :id, :name, include_blank: true) %>
             <% if @contig.marker %>
-                <%= link_to '', edit_marker_path(@contig.marker), :class => "glyphicon glyphicon-share-alt" %>
+              <%= link_to '', edit_marker_path(@contig.marker), :class => "glyphicon glyphicon-share-alt" %>
             <% end %>
+            <%= f.collection_select(:marker_id, Marker.all, :id, :name, { include_blank: '<no selection>' }, { class: 'form-control' }) %>
           </div>
 
           <div class="form-group">
@@ -53,7 +52,7 @@
             <% if @contig.marker_sequence %>
                 <%= link_to '', edit_marker_sequence_path(@contig.marker_sequence), :class => "glyphicon glyphicon-share-alt" %>
             <% end %>
-            <%= f.text_field :marker_sequence_name , data: {autocomplete_source: filter_marker_sequences_path} , class: 'form-control'%>
+            <%= f.text_field :marker_sequence_name , data: { autocomplete_source: filter_marker_sequences_path } , class: 'form-control'%>
           </div>
 
           <div class="vertical-spacer"></div>
@@ -392,8 +391,8 @@
 
         <div class="vertical-spacer"></div>
 
-        <% if @contig.imported %>
-            <p style="color: grey; font-size: smaller">Externally edited, imported contig. [Due to lack of information in imported files,   alignment of traces and quality scores to edited read sequences is not always available. App will try a re-alignment of externally edited primer read sequences and internally stored traces and quality scores later.]</p>
+        <% if @contig.imported && @contig.verified_by == 8 %>
+            <p style="color: grey; font-size: smaller">Externally edited, imported contig. [Due to lack of information in imported files, alignment of traces and quality scores to edited read sequences is not always available. App will try a re-alignment of externally edited primer read sequences and internally stored traces and quality scores later.]</p>
         <% end %>
       </div>
 
