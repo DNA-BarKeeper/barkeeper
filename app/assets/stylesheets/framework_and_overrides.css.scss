@@ -158,7 +158,7 @@ div.about-background {
 }
 
 body.about_page {
-  background: image-url('project_images/background.jpg') fixed;
+  background: asset-data-url('project_images/background.jpg') fixed;
   margin-bottom: 15px; /* Margin bottom by footer height */
 }
 

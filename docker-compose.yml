@@ -2,6 +2,9 @@ version: '3'
 services:
   postgres:
     image: 'postgres:9.5.14'
+    environment:
+      POSTGRES_USER: gbol5
+      POSTGRES_PASSWORD: passwordpsql
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
     env_file:
@@ -20,7 +23,7 @@ services:
       - .:/gbol5
       - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/.env:/gbol5/.env
       - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/application.yml:/gbol5/config/application.yml
-      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/project_images:/gbol5/assets/project_images
+      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/project_images:/gbol5/app/assets/images/project_images
       - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/about.html.erb:/gbol5/app/views/home/about.html.erb
       - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/impressum.html.erb:/gbol5/app/views/home/impressum.html.erb
       - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/privacy_policy.html.erb:/gbol5/app/views/home/privacy_policy.html.erb
