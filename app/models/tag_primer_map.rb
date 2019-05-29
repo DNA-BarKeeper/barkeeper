@@ -36,18 +36,20 @@ class TagPrimerMap < ApplicationRecord
     valid
   end
 
-  def revised_tag_primer_map
+  def revised_tag_primer_map(project_ids)
     tpm_location = Rails.env.development? ? tag_primer_map.path : open("http:#{tag_primer_map.url}")
     tp_map = CSV.read(tpm_location, { col_sep: "\t", headers: true })
 
     tp_map.each do |row|
       sample_id = row['#SampleID'].match(/\D+\d+|\D+\z/)[0]
-      isolate = Isolate.joins(individual: :species).find_or_create_by(lab_nr: sample_id)
+      isolate = Isolate.joins(individual: :species).find_by_lab_nr(sample_id)
 
       if isolate
         species = isolate.individual.species.composed_name.gsub(' ', '_')
         row['Description'] = [sample_id, species, row['TagID'], row['Region']].join('_')
       else
+        isolate = Isolate.joins(individual: :species).find_or_create_by(lab_nr: sample_id)
+        isolate.add_projects(project_ids)
         row['Description'] = [sample_id, row['TagID'], row['Region']].join('_')
       end
 
