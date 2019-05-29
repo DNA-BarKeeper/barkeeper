@@ -42,7 +42,7 @@ class TagPrimerMap < ApplicationRecord
 
     tp_map.each do |row|
       sample_id = row['#SampleID'].match(/\D+\d+|\D+\z/)[0]
-      isolate = Isolate.joins(individual: :species).find_or_create_by_lab_nr(sample_id)
+      isolate = Isolate.joins(individual: :species).find_or_create_by(lab_nr: sample_id)
 
       if isolate
         species = isolate.individual.species.composed_name.gsub(' ', '_')
