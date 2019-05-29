@@ -94,7 +94,7 @@ class NgsRun < ApplicationRecord
       # Write edited tag primer maps
       tag_primer_maps.each do |tag_primer_map|
         File.open("#{Rails.root}/#{tag_primer_map.tag_primer_map_file_name}", 'w') do |file|
-          file << tag_primer_map.revised_tag_primer_map
+          file << tag_primer_map.revised_tag_primer_map(projects.map(&:id))
         end
       end
 
