@@ -9,6 +9,8 @@ namespace :data do
       last_analysis = MislabelAnalysis.where(automatic: true, marker: marker).order(created_at: :desc).first
       count = -1
 
+      puts "Checking if new sequences for marker #{marker.name} exist..."
+
       if last_analysis
         count = MarkerSequence.where(marker_id: marker.id).where('marker_sequences.updated_at >= ?', last_analysis.created_at).size
       end
@@ -24,8 +26,13 @@ namespace :data do
                                                     marker: marker,
                                                     marker_sequence_search: search)
 
+        puts 'Starting analysis on Xylocalyx...'
         mislabel_analysis.analyse_on_server
+      else
+        puts 'Nothing to analyse.'
       end
     end
+
+    puts 'Finished successfully.'
   end
 end
