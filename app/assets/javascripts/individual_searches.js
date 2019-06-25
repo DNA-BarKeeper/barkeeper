@@ -5,9 +5,9 @@ jQuery(function() {
         sAjaxSource: $('#individual_searches').data('source'),
         "columnDefs": [{
             "orderable": false,
-            "targets": 2
+            "targets": 3
         }],
-        "order": [ 1, 'desc' ]
+        "order": [ 2, 'desc' ]
     });
 
     $('#individual_search_results').dataTable({

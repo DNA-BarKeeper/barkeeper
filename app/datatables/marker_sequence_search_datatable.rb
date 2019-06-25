@@ -35,7 +35,7 @@ class MarkerSequenceSearchDatatable
   end
 
   def searches
-    @searches = MarkerSequenceSearch.where.not(title: '').where(user_id: @current_user_id).order("#{sort_column} #{sort_direction}")
+    @searches = MarkerSequenceSearch.includes(:project).where.not(title: '').where(user_id: @current_user_id).order("#{sort_column} #{sort_direction}")
     @searches = @searches.page(page).per_page(per_page)
 
     if params[:sSearch].present?
@@ -54,7 +54,7 @@ class MarkerSequenceSearchDatatable
   end
 
   def sort_column
-    columns = %w[title created_at]
+    columns = %w[title projects.name created_at]
     columns[params[:iSortCol_0].to_i]
   end
 
