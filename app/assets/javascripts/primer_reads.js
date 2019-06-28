@@ -242,7 +242,7 @@ function draw_chromatogram(div_id, chromatogram){
         .attr("fill", "none");
     svg.append("path")
         .attr("d", lineFunction(chromatogram.gtrace))
-        .attr("stroke", "black")
+        .attr("stroke", "orange")
         .attr("stroke-width", 1)
         .attr("fill", "none");
     svg.append("path")
@@ -290,12 +290,36 @@ function draw_chromatogram(div_id, chromatogram){
         } else if (ch == 'C') {
             color = 'blue';
         } else if (ch == 'G') {
-            color = 'black';
+            color = 'orange';
         } else if (ch == 'T') {
             color = 'red';
         } else {
             color = 'gray';
         }
+
+        if (chromatogram.peak_indices[i-1]) {
+            var left = (chromatogram.peak_indices[i - 1] + chromatogram.peak_indices[i]) / 2;
+        }
+        else {
+            var left = 0;
+        }
+
+        if (chromatogram.peak_indices[i+1]) {
+            var right = (chromatogram.peak_indices[i+1] + chromatogram.peak_indices[i]) / 2;
+        }
+        else {
+            var right = chromatogram.peak_indices[i] * 2;
+        }
+
+        var width = right - left;
+
+        svg.append('rect')
+            .attr("x", left)
+            .attr("y", 19)
+            .attr("width", width)
+            .attr("height", 15)
+            .attr("id", "background_" + i)
+            .attr("fill", color);
 
         svg.append("text")
             .attr("x", pos)
@@ -303,18 +327,19 @@ function draw_chromatogram(div_id, chromatogram){
             .text(ch)
             .attr("font-family", "sans-serif")
             .attr("font-size", "10px")
-            .attr("fill", color)
+            .attr("font-weight", '600')
+            .attr("fill", 'black')
             .attr("text-anchor", ta)
             .attr("id", i)
             .on('mouseover', function () {
                 d3.select(this)
                     .style('font-size', '14px')
-                    .style('font-weight', 'bold')
+                    .attr("font-weight", '800')
             })
             .on('mouseout', function () {
                 d3.select(this)
                     .style('font-size', '10px')
-                    .style('font-weight', 'normal')
+                    .attr("font-weight", '600')
             })
             .on('click', function () {
 
@@ -352,16 +377,18 @@ function draw_chromatogram(div_id, chromatogram){
 
                             selected_base.text(newBase);
 
+                            var base_background = d3.select('#background_' + base_index);
+
                             if (newBase == "A") {
-                                selected_base.attr("fill", 'green');
+                                base_background.attr("fill", 'green');
                             } else if (newBase == "C") {
-                                selected_base.attr("fill", 'blue');
+                                base_background.attr("fill", 'blue');
                             } else if (newBase == "G") {
-                                selected_base.attr("fill", 'black');
+                                base_background.attr("fill", 'orange');
                             } else if (newBase == "T") {
-                                selected_base.attr("fill", 'red');
+                                base_background.attr("fill", 'red');
                             } else {
-                                selected_base.attr("fill", 'grey');
+                                base_background.attr("fill", 'grey');
                             }
 
                             frm.remove();
