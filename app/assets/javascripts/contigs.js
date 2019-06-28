@@ -431,7 +431,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             .attr("fill", "none");
         svg.append("path")
             .attr("d", lineFunction(gtrace_line_data))
-            .attr("stroke", "black")
+            .attr("stroke", "orange")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
         svg.append("path")
@@ -486,7 +486,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             } else if (ch == 'C') {
                 color = 'blue';
             } else if (ch == 'G') {
-                color = 'black';
+                color = 'orange';
             } else if (ch == 'T') {
                 color = 'red';
             } else {
@@ -495,13 +495,20 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
             x=x+10;
 
+            svg.append('rect')
+                .attr("x", x - 5)
+                .attr("y", y - 11)
+                .attr("width", 10)
+                .attr("height", 14)
+                .attr("fill", color);
+
             svg.append("text")
                 .attr("x", x)
                 .attr("y", y)
                 .text(ch)
                 .attr("font-family", "sans-serif")
                 .attr("font-size", font_size)
-                .attr("fill", color)
+                .attr("fill", "black")
                 .attr("text-anchor", 'middle')
                 .attr("id", used_read.id + "-" + used_read.original_positions[s])
                 .style("cursor", "crosshair")
@@ -541,13 +548,21 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             } else if (ch == 'C') {
                 color = 'blue';
             } else if (ch == 'G') {
-                color = 'black';
+                color = 'orange';
             } else if (ch == 'T') {
                 color = 'red';
             } else {
                 color = 'gray';
             }
+
             x=x+10;
+
+            svg.append('rect')
+                .attr("x", x - 5)
+                .attr("y", y - 11)
+                .attr("width", 10)
+                .attr("height", 14)
+                .attr("fill", color);
 
             svg.append("text")
                 .attr("x", x)
@@ -556,7 +571,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                 .attr("font-family", "sans-serif")
                 .attr("font-size", font_size)
                 .attr("font-weight", "bold")
-                .attr("fill", color)
+                .attr("fill", "black")
                 .attr("text-anchor", 'middle');
         }
         y+=10;
