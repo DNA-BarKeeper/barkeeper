@@ -294,7 +294,7 @@ function draw_chromatogram(div_id, chromatogram){
         } else if (ch == 'T') {
             color = 'red';
         } else {
-            color = 'gray';
+            color = 'lightgray';
         }
 
         if (chromatogram.peak_indices[i-1]) {

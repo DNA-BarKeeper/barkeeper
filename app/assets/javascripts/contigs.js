@@ -490,7 +490,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             } else if (ch == 'T') {
                 color = 'red';
             } else {
-                color = 'gray';
+                color = 'lightgray';
             }
 
             x=x+10;
@@ -538,7 +538,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
         //sequence row:
 
-        color = 'gray';
+        color = 'lightgray';
         font_size = '10px';
 
         for (s=0; s< partial_contig.aligned_sequence.length; s++){
@@ -552,7 +552,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             } else if (ch == 'T') {
                 color = 'red';
             } else {
-                color = 'gray';
+                color = 'lightgray';
             }
 
             x=x+10;
