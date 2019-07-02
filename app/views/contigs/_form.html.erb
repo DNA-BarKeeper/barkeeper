@@ -233,9 +233,17 @@
                       <div class="read-names">
                         <div id="partial-con" style="padding:0; margin:0;" >
                           <% partial_con.primer_reads.each do |read|%>
-                              <div style="height: 60px;padding:0; margin:0;">
+                              <div style="height: 60px;padding:0; margin:0;" id="<%= "primer_read_#{read.id}" %>">
                                 <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => 'Do not use this read in assembly & re-assemble' do %>
-                                    <span class="glyphicon glyphicon-remove grey" title="Do not use in assembly"></span>
+                                    <span class="glyphicon glyphicon-remove" title="Do not use in assembly" style="color: red;"></span>
+                                <% end %>
+
+                                <%= content_tag 'a', class: 'move_up', href: "#", title: 'Move up one position', data: {div_id: "#primer_read_#{read.id}"} do %>
+                                  <span class="grey glyphicon glyphicon-chevron-up" title="Move up"></span>
+                                <% end %>
+
+                                <%= content_tag 'a', class: 'move_down', title: 'Move down one position', data: {div_id: "#primer_read_#{read.id}"} do %>
+                                  <span class="grey glyphicon glyphicon-chevron-down" title="Move down"></span>
                                 <% end %>
 
                                 <%= content_tag 'a', class: 'show_primer_read', href: "#read_view_#{read.id}", title: 'Show primer read view', data: {div_id: "#primer_read_#{read.id}_view"} do %>
