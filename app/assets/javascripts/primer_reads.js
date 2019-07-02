@@ -286,13 +286,13 @@ function draw_chromatogram(div_id, chromatogram){
 
         //base calls
         if (ch == 'A') {
-            color = 'green';
+            color = '#5AE45D';
         } else if (ch == 'C') {
-            color = 'blue';
+            color = '#5A5AE6';
         } else if (ch == 'G') {
-            color = 'orange';
+            color = '#E2E65A';
         } else if (ch == 'T') {
-            color = 'red';
+            color = '#E65A5A';
         } else {
             color = 'lightgray';
         }
@@ -380,13 +380,13 @@ function draw_chromatogram(div_id, chromatogram){
                             var base_background = d3.select('#background_' + base_index);
 
                             if (newBase == "A") {
-                                base_background.attr("fill", 'green');
+                                base_background.attr("fill", '#5AE45D');
                             } else if (newBase == "C") {
-                                base_background.attr("fill", 'blue');
+                                base_background.attr("fill", '#5A5AE6');
                             } else if (newBase == "G") {
-                                base_background.attr("fill", 'orange');
+                                base_background.attr("fill", '#E2E65A');
                             } else if (newBase == "T") {
-                                base_background.attr("fill", 'red');
+                                base_background.attr("fill", '#E65A5A');
                             } else {
                                 base_background.attr("fill", 'grey');
                             }
