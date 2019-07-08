@@ -33,8 +33,9 @@ class NgsRun < ApplicationRecord
   end
 
   def parse_package_map
-    if set_tag_map.path
-      package_map = Bio::FastaFormat.open(set_tag_map.path)
+    if set_tag_map.present?
+      package_map_file = Rails.env.development? ? File.open(set_tag_map.path) : open("http:#{set_tag_map.url}")
+      package_map = Bio::FastaFormat.open(package_map_file)
       package_map.each do |entry|
         tag_primer_maps.where(name: entry.definition)&.first&.update(tag: entry.seq)
       end
@@ -49,8 +50,13 @@ class NgsRun < ApplicationRecord
   def samples_exist
     nonexistent = []
     tag_primer_maps.each do |tp_map|
-      tp_map = CSV.read(tp_map.tag_primer_map.path, { col_sep: "\t", headers: true })
-      nonexistent << tp_map['#SampleID'].select { |id| !Isolate.exists?(lab_nr: id.match(/\D+\d+|\D+\z/)[0]) }
+      if tp_map.tag_primer_map.present?
+        tpm_file = Rails.env.development? ? File.open(tp_map.path) : open("http:#{tp_map.url}")
+        tp_map = CSV.read(tpm_file, { col_sep: "\t", headers: true })
+        nonexistent << tp_map['#SampleID'].select { |id| !Isolate.exists?(lab_nr: id.match(/\D+\d+|\D+\z/)[0]) }
+      else
+        nonexistent << "Tag Primer Map #{tp_map.name} could not be found."
+      end
     end
 
     nonexistent.flatten!
@@ -67,8 +73,9 @@ class NgsRun < ApplicationRecord
 
   def check_tag_primer_maps
     # Check if the correct number of TPMs was uploaded
-    if set_tag_map.path
-      package_cnt = Bio::FastaFormat.open(set_tag_map.path).entries.size
+    if set_tag_map.present?
+      set_tag_map_file = Rails.env.development? ? File.open(set_tag_map.path) : open("http:#{set_tag_map.url}")
+      package_cnt = Bio::FastaFormat.open(set_tag_map_file).entries.size
       valid = (package_cnt == tag_primer_maps.size) && package_cnt.positive?
     else
       valid = (tag_primer_maps.size == 1)
@@ -116,16 +123,13 @@ class NgsRun < ApplicationRecord
     end
   end
 
-  def import
-    # analysis_dir = "/data/data1/sarah/ngs_barcoding/#{name}_out.zip"
-    analysis_dir = "/data/data2/lara/Barcoding/#{name}_out.zip" #TODO change when finished
-
+  def import(results_path)
     # Download results from Xylocalyx
     Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
-      sftp.stat(analysis_dir) do |response|
+      sftp.stat(results_path) do |response|
         if response.ok?
           # Download result file
-          sftp.download!(analysis_dir, "#{Rails.root}/#{self.name}_out.zip")
+          sftp.download!(results_path, "#{Rails.root}/#{self.name}_out.zip")
 
           # Delete older results
           results.clear
@@ -136,7 +140,7 @@ class NgsRun < ApplicationRecord
           # Unzip results
           Zip::File.open("#{Rails.root}/#{self.name}_out.zip") do |zip_file|
             zip_file.each do |entry|
-              entry.extract("#{Rails.root}/#{entry.name}")
+              entry.extract("#{Rails.root}/#{entry.name}") # TODO: seems to extract to the wrong place???
             end
           end
 
@@ -147,7 +151,9 @@ class NgsRun < ApplicationRecord
 
           import_analysis_stats
 
-          import_results
+          tag_primer_maps.each do |tpm|
+            import_results("#{tpm.tag_primer_map_file_name.gsub('.txt', '')}_expanded.txt")
+          end
 
           # Store results on AWS
           update(results: File.open("#{Rails.root}/#{self.name}_out.zip"))
@@ -222,8 +228,8 @@ class NgsRun < ApplicationRecord
     end
   end
 
-  def import_results
-    results = CSV.read("#{Rails.root}/#{self.name}_out/tagPrimerMap_expanded.txt", headers:true, col_sep: "\t")
+  def import_results(tpm_file_name)
+    results = CSV.read("#{Rails.root}/#{self.name}_out/#{tpm_file_name}", headers:true, col_sep: "\t")
 
     results.each do |result|
       sample_id = result['#SampleID'].match(/\D+\d+|\D+\z/)[0]
