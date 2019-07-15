@@ -12,10 +12,3 @@ project = Project.create!(name: 'All')
 user = CreateAdminService.new.call([project])
 
 puts +'CREATED ADMIN USER: ' << user.email
-
-records = JSON.parse(File.read('seeds.json'))
-records.each do |record|
-  ModelName.create!(record)
-end
-
-Contig.update_all(verified_by: user.id, verified_at: Time.now)
