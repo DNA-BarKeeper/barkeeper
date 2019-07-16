@@ -108,7 +108,8 @@ class NgsRunsController < ApplicationController
   end
 
   def import
-    NGSResultsImporter.perform_async(@ngs_run.id)
+    render plain: "Results stored in #{params[:results_path]} will be imported in the background.\n"
+    NGSResultsImporter.perform_async(@ngs_run.id, params[:results_path])
   end
 
   def analysis_results
