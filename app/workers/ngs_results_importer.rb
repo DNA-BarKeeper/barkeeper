@@ -4,8 +4,8 @@
 class NGSResultsImporter
   include Sidekiq::Worker
 
-  def perform(ngs_run_id)
+  def perform(ngs_run_id, results_path)
     ngs_run = NgsRun.find(ngs_run_id)
-    ngs_run.import
+    ngs_run.import(results_path)
   end
 end
