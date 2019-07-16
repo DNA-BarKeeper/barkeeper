@@ -125,23 +125,16 @@ jQuery(function() {
         var id = $(this).data('divId');
         var element = $(id);
 
-        // if (element.previousElementSibling) {
-        //     element.parentNode.insertBefore(element, element.previousElementSibling);
-        //     console.log(id);
-        // }
-
         element.insertBefore(element.prev());
-
-        // $(id).prev().insertAfter($(id));
-        console.log(id);
     });
 
     $(".move_down").click(function() {
         var id = $(this).data('divId');
         var element = $(id);
-        console.log(id);
 
-        element.insertAfter(element.next());
+        if (element.next().attr("id") != "consensus") { // Do not move consensus sequence
+            element.insertAfter(element.next());
+        }
     });
 });
 
