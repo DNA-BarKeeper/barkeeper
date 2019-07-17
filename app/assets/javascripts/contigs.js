@@ -505,13 +505,13 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             var ch= seq1[s];
 
             if (ch == 'A') {
-                color = 'green';
+                color = '#5AE45D';
             } else if (ch == 'C') {
-                color = 'blue';
+                color = '#5A5AE6';
             } else if (ch == 'G') {
-                color = 'orange';
+                color = '#E2E65A';
             } else if (ch == 'T') {
-                color = 'red';
+                color = '#E65A5A';
             } else {
                 color = 'lightgray';
             }
@@ -567,13 +567,13 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         for (s=0; s< partial_contig.aligned_sequence.length; s++){
             ch= partial_contig.aligned_sequence[s];
             if (ch == 'A') {
-                color = 'green';
+                color = '#5AE45D';
             } else if (ch == 'C') {
-                color = 'blue';
+                color = '#5A5AE6';
             } else if (ch == 'G') {
-                color = 'orange';
+                color = '#E2E65A';
             } else if (ch == 'T') {
-                color = 'red';
+                color = '#E65A5A';
             } else {
                 color = 'lightgray';
             }
