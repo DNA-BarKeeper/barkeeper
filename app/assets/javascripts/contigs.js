@@ -45,13 +45,17 @@ jQuery(function() {
     // do for all div with class partial_con
 
     $('.single-page-button').click(function () {
+        $('button.first-page-button').attr("disabled", true);
+        $('button.last-page-button').attr("disabled", true);
+        $('button.next-page-button').attr("disabled", true);
+        $('button.previous-page-button').attr("disabled", true);
 
-        //todo: rm all other buttons for page navigation
-
-        var partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
-        var page = 0;
+        let partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
+        let page = 0;
 
         draw_as_single_page(partial_con_container_id, page);
+
+        $('button.single-page-button').hide();
     });
 
     $('.go-to-button-partial-con').click( function () {
@@ -112,32 +116,72 @@ jQuery(function() {
     });
 
     $(".hide_primer_read").click(function() {
-        var id = $(this).data('divId');
+        let id = $(this).data('divId');
         $(id).hide();
     });
 
     $(".show_primer_read").click(function() {
-        var id = $(this).data('divId');
+        let id = $(this).data('divId');
         $(id).show();
     });
 
     $(".move_up").click(function() {
-        var id = $(this).data('divId');
-        var element = $(id + "_contig");
-        var svg = $(id + "_svg");
+        let id = $(this).data('divId');
+        let element = $(id + "_contig");
+        let group = $(id + "_group");
+        let prev_group = $('#' + element.prev().attr("id").replace("contig", "group"));
 
-        element.insertBefore(element.prev());
-        svg.insertBefore(svg.prev());
+        let diff = 58; // Height of a read
+        let translate_y = 0;
+        let translate_y_prev = 0;
+
+        if (prev_group.offset()) {
+            element.insertBefore(element.prev()).hide().show(300, 'linear');
+
+            if (group.attr("transform")) {
+                let string = group.attr("transform");
+                translate_y = parseInt(string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",")[1]);
+            }
+
+            if (prev_group.attr("transform")) {
+                let string_prev = prev_group.attr("transform");
+                translate_y_prev = parseInt(string_prev.substring(string_prev.indexOf("(")+1, string_prev.indexOf(")")).split(",")[1]);
+            }
+
+            console.log(group.attr("transform"), prev_group.attr("transform"));
+
+            group.attr("transform", `translate(0, ${translate_y - diff})`);
+            prev_group.attr("transform", `translate(0, ${translate_y_prev + diff})`);
+        }
     });
 
     $(".move_down").click(function() {
         var id = $(this).data('divId');
         var element = $(id + "_contig");
-        var svg = $(id + "_svg");
+        let group = $(id + "_group");
+        let next_group = $('#' + element.next().attr("id").replace("contig", "group"));
+
+        let diff = 58; // Height of a read
+        let translate_y = 0;
+        let translate_y_next = 0;
 
         if (element.next().attr("id") != "consensus") { // Do not move consensus sequence
-            element.insertAfter(element.next());
-            svg.insertAfter(svg.next());
+            element.insertAfter(element.next()).hide().show(300, 'linear');
+
+            if (group.attr("transform")) {
+                let string = group.attr("transform");
+                translate_y = parseInt(string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",")[1]);
+            }
+
+            if (next_group.attr("transform")) {
+                let string_next = next_group.attr("transform");
+                translate_y_next = parseInt(string_next.substring(string_next.indexOf("(")+1, string_next.indexOf(")")).split(",")[1]);
+            }
+
+            console.log(group.attr("transform"), next_group.attr("transform"));
+
+            group.attr("transform", `translate(0, ${translate_y + diff})`);
+            next_group.attr("transform", `translate(0, ${translate_y_next - diff})`);
         }
     });
 });
@@ -299,7 +343,9 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         // Create child svg necessary for reordering
         var read_group = svg
             .append('g')
-            .attr('id', "primer_read_" + used_read.id + "_svg");
+            .style("transition", "transform 0.4s")
+            .attr("transform", "translate(0,0)")
+            .attr('id', "primer_read_" + used_read.id + "_group");
 
         var seq1 = null;
         if (used_read.aligned_seq){
