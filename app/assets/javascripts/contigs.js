@@ -123,17 +123,21 @@ jQuery(function() {
 
     $(".move_up").click(function() {
         var id = $(this).data('divId');
-        var element = $(id);
+        var element = $(id + "_contig");
+        var svg = $(id + "_svg");
 
         element.insertBefore(element.prev());
+        svg.insertBefore(svg.prev());
     });
 
     $(".move_down").click(function() {
         var id = $(this).data('divId');
-        var element = $(id);
+        var element = $(id + "_contig");
+        var svg = $(id + "_svg");
 
         if (element.next().attr("id") != "consensus") { // Do not move consensus sequence
             element.insertAfter(element.next());
+            svg.insertAfter(svg.next());
         }
     });
 });
@@ -275,7 +279,8 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
     var svg = d3.select(container_name)
         .append('svg')
         .attr('width', contig_drawing_width - 20) // Substract 20 pixel to adjust for scroll bar in page mode
-        .attr('height', h);
+        .attr('height', h)
+        .attr('id', 'svg_contig');
     var x = 0;
     var y = 20;
 
@@ -287,9 +292,14 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
     var used_reads = partial_contig.primer_reads;
 
     // For each read to show in assembly:
-    for (var used_read_index=0; used_read_index < used_reads.length; used_read_index++){
+    for (var used_read_index=0; used_read_index < used_reads.length; used_read_index++) {
 
         var used_read = used_reads[used_read_index];
+
+        // Create child svg necessary for reordering
+        var read_group = svg
+            .append('g')
+            .attr('id', "primer_read_" + used_read.id + "_svg");
 
         var seq1 = null;
         if (used_read.aligned_seq){
@@ -435,22 +445,22 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             .y(function(d) { return d.y; });
 
         //draw line SVG Path for all visible alignment positions simultaneously:
-        svg.append("path")
+        read_group.append("path")
             .attr("d", lineFunction(atrace_line_data))
             .attr("stroke", "green")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
-        svg.append("path")
+        read_group.append("path")
             .attr("d", lineFunction(ctrace_line_data))
             .attr("stroke", "blue")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
-        svg.append("path")
+        read_group.append("path")
             .attr("d", lineFunction(gtrace_line_data))
             .attr("stroke", "orange")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
-        svg.append("path")
+        read_group.append("path")
             .attr("d", lineFunction(ttrace_line_data))
             .attr("stroke", "red")
             .attr("stroke-width", 0.5)
@@ -511,14 +521,14 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
             x=x+10;
 
-            svg.append('rect')
+            read_group.append('rect')
                 .attr("x", x - 5)
                 .attr("y", y - 11)
                 .attr("width", 10)
                 .attr("height", 14)
                 .attr("fill", color);
 
-            svg.append("text")
+            read_group.append("text")
                 .attr("x", x)
                 .attr("y", y)
                 .text(ch)
