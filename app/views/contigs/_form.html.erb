@@ -233,7 +233,7 @@
                       <div class="read-names">
                         <div id="partial-con" style="padding:0; margin:0;" >
                           <% partial_con.primer_reads.each do |read|%>
-                              <div style="height: 60px;padding:0; margin:0;" id="<%= "primer_read_#{read.id}" %>">
+                              <div style="height: 60px;padding:0; margin:0;" id="<%= "primer_read_#{read.id}_contig" %>">
                                 <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => 'Do not use this read in assembly & re-assemble' do %>
                                     <span class="glyphicon glyphicon-remove" title="Do not use in assembly" style="color: red;"></span>
                                 <% end %>
@@ -255,7 +255,7 @@
                                 <% end %>
                               </div>
                           <%end %>
-                          <div style="height: 60px; padding:0; margin:0;">
+                          <div id="contig_consensus" style="height: 60px; padding:0; margin:0;">
                             <b>Consensus</b> <span class="grey">(id: <%= partial_con.id %>)</span>
                           </div>
                         </div>
