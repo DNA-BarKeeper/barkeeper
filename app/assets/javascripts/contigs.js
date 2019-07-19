@@ -123,25 +123,22 @@ jQuery(function() {
 
     $(".move_up").click(function() {
         var id = $(this).data('divId');
-        var element = $(id);
-
-        // if (element.previousElementSibling) {
-        //     element.parentNode.insertBefore(element, element.previousElementSibling);
-        //     console.log(id);
-        // }
+        var element = $(id + "_contig");
+        var svg = $(id + "_svg");
 
         element.insertBefore(element.prev());
-
-        // $(id).prev().insertAfter($(id));
-        console.log(id);
+        svg.insertBefore(svg.prev());
     });
 
     $(".move_down").click(function() {
         var id = $(this).data('divId');
-        var element = $(id);
-        console.log(id);
+        var element = $(id + "_contig");
+        var svg = $(id + "_svg");
 
-        element.insertAfter(element.next());
+        if (element.next().attr('id') != "contig_consensus") {
+            element.insertAfter(element.next());
+            svg.insertAfter(svg.next());
+        }
     });
 });
 
@@ -298,6 +295,11 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
         var used_read = used_reads[used_read_index];
 
+        var child_group = svg
+            .append('g')
+            .attr('id', "primer_read_" + used_read.id + "_svg")
+            .style('transition', 'transform 0.4s');
+
         var seq1 = null;
         if (used_read.aligned_seq){
             seq1 = used_read.aligned_seq;
@@ -442,22 +444,22 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             .y(function(d) { return d.y; });
 
         //draw line SVG Path for all visible alignment positions simultaneously:
-        svg.append("path")
+        child_group.append("path")
             .attr("d", lineFunction(atrace_line_data))
             .attr("stroke", "green")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
-        svg.append("path")
+        child_group.append("path")
             .attr("d", lineFunction(ctrace_line_data))
             .attr("stroke", "blue")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
-        svg.append("path")
+        child_group.append("path")
             .attr("d", lineFunction(gtrace_line_data))
             .attr("stroke", "orange")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
-        svg.append("path")
+        child_group.append("path")
             .attr("d", lineFunction(ttrace_line_data))
             .attr("stroke", "red")
             .attr("stroke-width", 0.5)
@@ -518,14 +520,14 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
             x=x+10;
 
-            svg.append('rect')
+            child_group.append('rect')
                 .attr("x", x - 5)
                 .attr("y", y - 11)
                 .attr("width", 10)
                 .attr("height", 14)
                 .attr("fill", color);
 
-            svg.append("text")
+            child_group.append("text")
                 .attr("x", x)
                 .attr("y", y)
                 .text(ch)
