@@ -45,13 +45,17 @@ jQuery(function() {
     // do for all div with class partial_con
 
     $('.single-page-button').click(function () {
+        $('button.first-page-button').attr("disabled", true);
+        $('button.last-page-button').attr("disabled", true);
+        $('button.next-page-button').attr("disabled", true);
+        $('button.previous-page-button').attr("disabled", true);
 
-        //todo: rm all other buttons for page navigation
-
-        var partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
-        var page = 0;
+        let partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
+        let page = 0;
 
         draw_as_single_page(partial_con_container_id, page);
+
+        $('button.single-page-button').hide();
     });
 
     $('.go-to-button-partial-con').click( function () {
@@ -112,32 +116,68 @@ jQuery(function() {
     });
 
     $(".hide_primer_read").click(function() {
-        var id = $(this).data('divId');
+        let id = $(this).data('divId');
         $(id).hide();
     });
 
     $(".show_primer_read").click(function() {
-        var id = $(this).data('divId');
+        let id = $(this).data('divId');
         $(id).show();
     });
 
     $(".move_up").click(function() {
-        var id = $(this).data('divId');
-        var element = $(id + "_contig");
-        var svg = $(id + "_svg");
+        let id = $(this).data('divId');
+        let element = $(id + "_contig");
+        let group = $(id + "_group");
+        let prev_group = $('#' + element.prev().attr("id").replace("contig", "group"));
 
-        element.insertBefore(element.prev());
-        svg.insertBefore(svg.prev());
+        let diff = 58; // Height of a read
+        let translate_y = 0;
+        let translate_y_prev = 0;
+
+        if (prev_group.offset()) {
+            element.insertBefore(element.prev()).hide().show(300, 'linear');
+
+            if (group.attr("transform")) {
+                let string = group.attr("transform");
+                translate_y = parseInt(string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",")[1]);
+            }
+
+            if (prev_group.attr("transform")) {
+                let string_prev = prev_group.attr("transform");
+                translate_y_prev = parseInt(string_prev.substring(string_prev.indexOf("(")+1, string_prev.indexOf(")")).split(",")[1]);
+            }
+
+            group.attr("transform", `translate(0, ${translate_y - diff})`);
+            prev_group.attr("transform", `translate(0, ${translate_y_prev + diff})`);
+        }
     });
 
     $(".move_down").click(function() {
         var id = $(this).data('divId');
         var element = $(id + "_contig");
-        var svg = $(id + "_svg");
+        let group = $(id + "_group");
+        let next_group = $('#' + element.next().attr("id").replace("contig", "group"));
 
-        if (element.next().attr('id') != "contig_consensus") {
-            element.insertAfter(element.next());
-            svg.insertAfter(svg.next());
+        let diff = 58; // Height of a read
+        let translate_y = 0;
+        let translate_y_next = 0;
+
+        if (element.next().attr("id") != "consensus") { // Do not move consensus sequence
+            element.insertAfter(element.next()).hide().show(300, 'linear');
+
+            if (group.attr("transform")) {
+                let string = group.attr("transform");
+                translate_y = parseInt(string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",")[1]);
+            }
+
+            if (next_group.attr("transform")) {
+                let string_next = next_group.attr("transform");
+                translate_y_next = parseInt(string_next.substring(string_next.indexOf("(")+1, string_next.indexOf(")")).split(",")[1]);
+            }
+
+            group.attr("transform", `translate(0, ${translate_y + diff})`);
+            next_group.attr("transform", `translate(0, ${translate_y_next - diff})`);
         }
     });
 });
@@ -279,7 +319,8 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
     var svg = d3.select(container_name)
         .append('svg')
         .attr('width', contig_drawing_width - 20) // Substract 20 pixel to adjust for scroll bar in page mode
-        .attr('height', h);
+        .attr('height', h)
+        .attr('id', 'svg_contig');
     var x = 0;
     var y = 20;
 
@@ -291,14 +332,16 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
     var used_reads = partial_contig.primer_reads;
 
     // For each read to show in assembly:
-    for (var used_read_index=0; used_read_index < used_reads.length; used_read_index++){
+    for (var used_read_index=0; used_read_index < used_reads.length; used_read_index++) {
 
         var used_read = used_reads[used_read_index];
 
-        var child_group = svg
+        // Create nested group necessary for reordering
+        var read_group = svg
             .append('g')
-            .attr('id', "primer_read_" + used_read.id + "_svg")
-            .style('transition', 'transform 0.4s');
+            .style("transition", "transform 0.4s")
+            .attr("transform", "translate(0,0)")
+            .attr('id', "primer_read_" + used_read.id + "_group");
 
         var seq1 = null;
         if (used_read.aligned_seq){
@@ -444,22 +487,22 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             .y(function(d) { return d.y; });
 
         //draw line SVG Path for all visible alignment positions simultaneously:
-        child_group.append("path")
+        read_group.append("path")
             .attr("d", lineFunction(atrace_line_data))
             .attr("stroke", "green")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
-        child_group.append("path")
+        read_group.append("path")
             .attr("d", lineFunction(ctrace_line_data))
             .attr("stroke", "blue")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
-        child_group.append("path")
+        read_group.append("path")
             .attr("d", lineFunction(gtrace_line_data))
             .attr("stroke", "orange")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
-        child_group.append("path")
+        read_group.append("path")
             .attr("d", lineFunction(ttrace_line_data))
             .attr("stroke", "red")
             .attr("stroke-width", 0.5)
@@ -520,14 +563,14 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
             x=x+10;
 
-            child_group.append('rect')
+            read_group.append('rect')
                 .attr("x", x - 5)
                 .attr("y", y - 11)
                 .attr("width", 10)
                 .attr("height", 14)
                 .attr("fill", color);
 
-            child_group.append("text")
+            read_group.append("text")
                 .attr("x", x)
                 .attr("y", y)
                 .text(ch)
