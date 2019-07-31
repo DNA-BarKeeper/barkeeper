@@ -148,8 +148,6 @@ jQuery(function() {
                 translate_y_prev = parseInt(string_prev.substring(string_prev.indexOf("(")+1, string_prev.indexOf(")")).split(",")[1]);
             }
 
-            console.log(group.attr("transform"), prev_group.attr("transform"));
-
             group.attr("transform", `translate(0, ${translate_y - diff})`);
             prev_group.attr("transform", `translate(0, ${translate_y_prev + diff})`);
         }
@@ -177,8 +175,6 @@ jQuery(function() {
                 let string_next = next_group.attr("transform");
                 translate_y_next = parseInt(string_next.substring(string_next.indexOf("(")+1, string_next.indexOf(")")).split(",")[1]);
             }
-
-            console.log(group.attr("transform"), next_group.attr("transform"));
 
             group.attr("transform", `translate(0, ${translate_y + diff})`);
             next_group.attr("transform", `translate(0, ${translate_y_next - diff})`);
@@ -362,7 +358,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
         var used_read = used_reads[used_read_index];
 
-        // Create child svg necessary for reordering
+        // Create nested group necessary for reordering
         var read_group = svg
             .append('g')
             .style("transition", "transform 0.4s")
