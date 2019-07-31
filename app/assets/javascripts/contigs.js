@@ -156,8 +156,8 @@ jQuery(function() {
     });
 
     $(".move_down").click(function() {
-        var id = $(this).data('divId');
-        var element = $(id + "_contig");
+        let id = $(this).data('divId');
+        let element = $(id + "_contig");
         let group = $(id + "_group");
         let next_group = $('#' + element.next().attr("id").replace("contig", "group"));
 
@@ -184,6 +184,28 @@ jQuery(function() {
             next_group.attr("transform", `translate(0, ${translate_y_next - diff})`);
         }
     });
+
+    $(".dropbtn").click(function() {
+        let id = $(this).data('divId');
+        let dropdown = $(id + "_dropdown");
+        let visible = dropdown.is(":visible"); // Has to be stored here to toggle correct state
+
+        $('.dropdown-content').hide(); // Hide all dropdowns
+
+        if (visible) {
+            dropdown.hide();
+        }
+        else {
+            dropdown.show();
+        }
+    });
+});
+
+// Hide all dropdowns if user clicks anywhere but on a dropdown button
+$(document).click(function(e) {
+    if (!(e.target.matches('.dropbtn') || e.target.matches('.glyphicon-info-sign'))) {
+        $('.dropdown-content').hide();
+    }
 });
 
 function draw_as_single_page(id, page){
