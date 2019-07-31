@@ -233,27 +233,39 @@
                       <div class="read-names">
                         <div id="partial-con" style="padding:0; margin:0;" >
                           <% partial_con.primer_reads.each do |read|%>
-                              <div style="height: 60px;padding:0; margin:0;" id="<%= "primer_read_#{read.id}_contig" %>">
-                                <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => 'Do not use this read in assembly & re-assemble' do %>
-                                    <span class="glyphicon glyphicon-remove" title="Do not use in assembly" style="color: #E65A5A;"></span>
-                                <% end %>
+                            <div style="height: 60px;padding:0; margin:0;" id="<%= "primer_read_#{read.id}_contig" %>">
+                              <%= content_tag 'a', class: 'show_primer_read', href: "#read_view_#{read.id}", title: 'Show primer read view', data: {div_id: "#primer_read_#{read.id}_view"} do %>
+                                  <% read.name[0..-5] %>
+                              <% end %>
 
-                                <%= content_tag 'a', class: 'show_primer_read', href: "#read_view_#{read.id}", title: 'Show primer read view', data: {div_id: "#primer_read_#{read.id}_view"} do %>
-                                    <% read.name[0..-5] %>
+                              <div class="dropdown">
+                                <%= content_tag 'a', class: 'dropbtn', title: 'Show actions', data: {div_id: "#primer_read_#{read.id}"} do %>
+                                  <span class="grey glyphicon glyphicon-info-sign" title="Show actions"></span>
                                 <% end %>
+                                <div id="<%= "primer_read_#{read.id}_dropdown" %>" class="dropdown-content">
+                                  <%= content_tag 'a', class: 'move_up', title: 'Move up one position', data: {div_id: "#primer_read_#{read.id}"} do %>
+                                    <span class="grey glyphicon glyphicon-chevron-up" title="Move up"></span>
+                                    Move up
+                                  <% end %>
 
-                                <%= link_to  edit_primer_read_path(read), :target => '_blank', :title => 'Open in new tab' do %>
+                                  <%= content_tag 'a', class: 'move_down', title: 'Move down one position', data: {div_id: "#primer_read_#{read.id}"} do %>
+                                    <span class="grey glyphicon glyphicon-chevron-down" title="Move down"></span>
+                                    Move down
+                                  <% end %>
+
+                                  <%= link_to  edit_primer_read_path(read), :target => '_blank', :title => 'Open in new tab' do %>
                                     <span class="grey glyphicon glyphicon-share-alt"></span>
-                                <% end %>
+                                    Open in new tab
+                                  <% end %>
 
-                                <%= content_tag 'a', class: 'move_up', title: 'Move up one position', data: {div_id: "#primer_read_#{read.id}"} do %>
-                                  <span class="grey glyphicon glyphicon-chevron-up" title="Move up"></span>
-                                <% end %>
-
-                                <%= content_tag 'a', class: 'move_down', title: 'Move down one position', data: {div_id: "#primer_read_#{read.id}"} do %>
-                                  <span class="grey glyphicon glyphicon-chevron-down" title="Move down"></span>
-                                <% end %>
+                                  <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => 'Do not use this read in assembly & re-assemble' do %>
+                                    <span class="glyphicon glyphicon-remove" title="Do not use in assembly" style="color: #E65A5A;"></span>
+                                    Do not use for assembly
+                                  <% end %>
+                                </div>
                               </div>
+
+                            </div>
                           <%end %>
                           <div id="consensus" style="height: 60px; padding:0; margin:0;">
                             <b>Consensus</b> <span class="grey">(id: <%= partial_con.id %>)</span>
