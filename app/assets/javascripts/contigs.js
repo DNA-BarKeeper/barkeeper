@@ -228,6 +228,12 @@ function draw_as_single_page(id, page){
             dataType: 'json',
             success: function (data) {
                 mm_container.empty();
+
+                var ids = $('#partial-con .read-div').map(function(){
+                    return $(this).attr('id');
+                }).get();
+                // TODO Get order of sequence divs here to draw sequence svgs in correct order
+
                 draw_partial_con(data, container_name, contig_drawing_width);
                 $( "body" ).data("current_page", data.page);
             },
