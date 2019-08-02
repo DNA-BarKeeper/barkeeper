@@ -233,7 +233,7 @@
                       <div class="read-names">
                         <div id="partial-con" style="padding:0; margin:0;" >
                           <% partial_con.primer_reads.each do |read|%>
-                            <div style="height: 60px;padding:0; margin:0;" id="<%= "primer_read_#{read.id}_contig" %>">
+                            <div style="height: 60px;padding:0; margin:0;" class="read-div" id="<%= "primer_read_#{read.id}_contig" %>">
                               <%= content_tag 'a', class: 'show_primer_read', href: "#read_view_#{read.id}", title: 'Show primer read view', data: {div_id: "#primer_read_#{read.id}_view"} do %>
                                   <% read.name[0..-5] %>
                               <% end %>
