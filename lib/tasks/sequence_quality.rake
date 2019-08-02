@@ -23,8 +23,8 @@ namespace :data do
     puts "Number of marker sequences: #{marker_sequences.size}"
     puts "Number of verified marker sequences in database: #{marker_sequences.verified.size}"
     puts "Number of verified marker sequences with associated species in database: #{marker_sequences.has_species.verified.length}"
-    puts "Number of marker sequences without associated contigs: #{marker_sequences.includes(:contigs).where(contigs: { id: nil }).size}"
-    puts "Number of marker sequences without associated isolate: #{marker_sequences.includes(:isolate).where(isolate: nil).size}"
+    puts "Number of marker sequences without associated contigs: #{marker_sequences.left_outer_joins(:contigs).where(contigs: { id: nil }).size}"
+    puts "Number of marker sequences without associated isolate: #{marker_sequences.left_outer_joins(:isolate).where(isolate: nil).size}"
     puts ''
 
     contigs = Contig.gbol
