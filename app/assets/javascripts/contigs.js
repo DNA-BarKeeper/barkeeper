@@ -229,11 +229,6 @@ function draw_as_single_page(id, page){
             success: function (data) {
                 mm_container.empty();
 
-                var ids = $('#partial-con .read-div').map(function(){
-                    return $(this).attr('id');
-                }).get();
-                // TODO Get order of sequence divs here to draw sequence svgs in correct order
-
                 draw_partial_con(data, container_name, contig_drawing_width);
                 $( "body" ).data("current_page", data.page);
             },
@@ -313,7 +308,6 @@ function draw_position(id, position) {
 }
 
 function draw_partial_con(partial_contig, container_name, contig_drawing_width){
-
 //    compute height:
 
 //    pixel per read:
@@ -357,7 +351,16 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
     var font_size = "7px";
 
 
-    var used_reads = partial_contig.primer_reads;
+    // Get IDs from sequence divs here to draw sequence SVGs in correct order
+    var ids = $('#partial-con .read-div').map(function(){
+        return parseInt($(this).attr('id').match(/.+_(\d+)_.+/)[1]);
+    }).get();
+
+    // Sort reads by current order of IDs
+    var used_reads = partial_contig.primer_reads.sort(function(a, b){
+        return ids.indexOf(a.id) - ids.indexOf(b.id);
+    });
+
 
     // For each read to show in assembly:
     for (var used_read_index=0; used_read_index < used_reads.length; used_read_index++) {
