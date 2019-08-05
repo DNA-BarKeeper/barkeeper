@@ -50,8 +50,8 @@ jQuery(function() {
         $('button.next-page-button').attr("disabled", true);
         $('button.previous-page-button').attr("disabled", true);
 
-        let partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
-        let page = 0;
+        var partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
+        var page = 0;
 
         draw_as_single_page(partial_con_container_id, page);
 
@@ -116,35 +116,35 @@ jQuery(function() {
     });
 
     $(".hide_primer_read").click(function() {
-        let id = $(this).data('divId');
+        var id = $(this).data('divId');
         $(id).hide();
     });
 
     $(".show_primer_read").click(function() {
-        let id = $(this).data('divId');
+        var id = $(this).data('divId');
         $(id).show();
     });
 
     $(".move_up").click(function() {
-        let id = $(this).data('divId');
-        let element = $(id + "_contig");
-        let group = $(id + "_group");
-        let prev_group = $('#' + element.prev().attr("id").replace("contig", "group"));
+        var id = $(this).data('divId');
+        var element = $(id + "_contig");
+        var group = $(id + "_group");
+        var prev_group = $('#' + element.prev().attr("id").replace("contig", "group"));
 
-        let diff = 58; // Height of a read
-        let translate_y = 0;
-        let translate_y_prev = 0;
+        var diff = 58; // Height of a read
+        var translate_y = 0;
+        var translate_y_prev = 0;
 
         if (prev_group.offset()) {
             element.insertBefore(element.prev()).hide().show(300, 'linear');
 
             if (group.attr("transform")) {
-                let string = group.attr("transform");
+                var string = group.attr("transform");
                 translate_y = parseInt(string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",")[1]);
             }
 
             if (prev_group.attr("transform")) {
-                let string_prev = prev_group.attr("transform");
+                var string_prev = prev_group.attr("transform");
                 translate_y_prev = parseInt(string_prev.substring(string_prev.indexOf("(")+1, string_prev.indexOf(")")).split(",")[1]);
             }
 
@@ -154,25 +154,25 @@ jQuery(function() {
     });
 
     $(".move_down").click(function() {
-        let id = $(this).data('divId');
-        let element = $(id + "_contig");
-        let group = $(id + "_group");
-        let next_group = $('#' + element.next().attr("id").replace("contig", "group"));
+        var id = $(this).data('divId');
+        var element = $(id + "_contig");
+        var group = $(id + "_group");
+        var next_group = $('#' + element.next().attr("id").replace("contig", "group"));
 
-        let diff = 58; // Height of a read
-        let translate_y = 0;
-        let translate_y_next = 0;
+        var diff = 58; // Height of a read
+        var translate_y = 0;
+        var translate_y_next = 0;
 
         if (element.next().attr("id") != "consensus") { // Do not move consensus sequence
             element.insertAfter(element.next()).hide().show(300, 'linear');
 
             if (group.attr("transform")) {
-                let string = group.attr("transform");
+                var string = group.attr("transform");
                 translate_y = parseInt(string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",")[1]);
             }
 
             if (next_group.attr("transform")) {
-                let string_next = next_group.attr("transform");
+                var string_next = next_group.attr("transform");
                 translate_y_next = parseInt(string_next.substring(string_next.indexOf("(")+1, string_next.indexOf(")")).split(",")[1]);
             }
 
@@ -182,9 +182,9 @@ jQuery(function() {
     });
 
     $(".dropbtn").click(function() {
-        let id = $(this).data('divId');
-        let dropdown = $(id + "_dropdown");
-        let visible = dropdown.is(":visible"); // Has to be stored here to toggle correct state
+        var id = $(this).data('divId');
+        var dropdown = $(id + "_dropdown");
+        var visible = dropdown.is(":visible"); // Has to be stored here to toggle correct state
 
         $('.dropdown-content').hide(); // Hide all dropdowns
 
