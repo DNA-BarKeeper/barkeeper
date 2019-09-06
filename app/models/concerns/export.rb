@@ -45,7 +45,7 @@ module Export
       if records.first.is_a? Contig
         fasta_contigs(records, options[:mode])
       elsif records.first.is_a? MarkerSequence
-        fasta_marker_sequences(records, options[:metadata])
+        fasta_marker_sequences(records, options[:metadata], options[:warnings])
       end
 
       @fasta
@@ -150,7 +150,7 @@ module Export
       end
     end
 
-    def fasta_marker_sequences(sequences, meta_data)
+    def fasta_marker_sequences(sequences, meta_data, warnings=false)
       sequences.each do |marker_sequence|
         name = marker_sequence.name.delete(' ')
 
@@ -162,6 +162,8 @@ module Export
         else
           name << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}" # Species
         end
+
+        name << "|sativa_warning" if warnings && marker_sequence.has_unsolved_mislabels # Label sequences with SATIVA warnings
 
         add_sequence_to_fasta(name, marker_sequence.sequence) if marker_sequence.sequence
       end
