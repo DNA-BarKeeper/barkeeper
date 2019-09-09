@@ -14,7 +14,7 @@ GBoL3626 GBoL3627 GBoL3635 GBoL3636 GBoL3606 GBoL3637 GBoL3541".split
       marker_sequences = MarkerSequence.in_project(5).order(:name).where(name: name_list_marker)
 
       File.open("#{marker.name}_sanger.fasta", 'w') do |file|
-        file.puts MarkerSequenceSearch.fasta(marker_sequences, metadata: false)
+        file.puts MarkerSequenceSearch.fasta(marker_sequences,{ metadata: false, warnings: true })
       end
 
       File.open("#{marker.name}_taxonomy.tax", 'w') do |file|
