@@ -259,8 +259,8 @@
                                   <% end %>
 
                                   <%= link_to  do_not_use_for_assembly_primer_read_path(read), :title => 'Do not use this read in assembly & re-assemble' do %>
-                                    <span class="glyphicon glyphicon-remove" title="Do not use in assembly" style="color: #E65A5A;"></span>
-                                    Do not use for assembly
+                                    <span class="glyphicon glyphicon-remove" title="Do not use this read in assembly & re-assemble" style="color: #E65A5A;"></span>
+                                    Do not use in assembly
                                   <% end %>
                                 </div>
                               </div>
@@ -383,10 +383,10 @@
                           <% user= '?'%>
                       <%end%>
 
-                      Verified by <%=  user %> on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>.
+                      Verified by <%=  user %> on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>
 
-                      <%= link_to  verify_contig_path(@contig), :class => "btn btn-danger btn-xs my-btn" do %>
-                          <span class = "glyphicon glyphicon-remove"></span>
+                      <%= link_to  verify_contig_path(@contig), title: 'Remove verification' do %>
+                        <span class="glyphicon glyphicon-remove" title="Remove verification" style="color: #E65A5A;"></span>
                       <% end %>
 
                   <% else %>
