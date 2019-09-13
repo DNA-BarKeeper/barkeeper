@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190913154232) do
+ActiveRecord::Schema.define(version: 20190913163724) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -217,33 +217,33 @@ ActiveRecord::Schema.define(version: 20190913154232) do
   end
 
   create_table "individuals", force: :cascade do |t|
-    t.string   "specimen_id",        limit: 255
-    t.string   "DNA_bank_id",        limit: 255
-    t.string   "collector",          limit: 255
+    t.string   "specimen_id",             limit: 255
+    t.string   "DNA_bank_id",             limit: 255
+    t.string   "collector",               limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "silica_gel"
     t.date     "collected"
     t.integer  "species_id"
-    t.string   "herbarium",          limit: 255
-    t.string   "country",            limit: 255
-    t.string   "state_province",     limit: 255
+    t.string   "herbarium",               limit: 255
+    t.string   "country",                 limit: 255
+    t.string   "state_province",          limit: 255
     t.text     "locality"
-    t.string   "latitude_original",  limit: 255
-    t.string   "longitude_original", limit: 255
-    t.string   "elevation",          limit: 255
-    t.string   "exposition",         limit: 255
+    t.string   "latitude_original",       limit: 255
+    t.string   "longitude_original",      limit: 255
+    t.string   "elevation",               limit: 255
+    t.string   "exposition",              limit: 255
     t.text     "habitat"
-    t.string   "substrate",          limit: 255
-    t.string   "life_form",          limit: 255
-    t.string   "collection_nr",      limit: 255
-    t.string   "collection_date",    limit: 255
-    t.string   "determination",      limit: 255
-    t.string   "revision",           limit: 255
-    t.string   "confirmation",       limit: 255
+    t.string   "substrate",               limit: 255
+    t.string   "life_form",               limit: 255
+    t.string   "collectors_field_number", limit: 255
+    t.string   "collection_date",         limit: 255
+    t.string   "determination",           limit: 255
+    t.string   "revision",                limit: 255
+    t.string   "confirmation",            limit: 255
     t.text     "comments"
-    t.decimal  "latitude",                       precision: 15, scale: 6
-    t.decimal  "longitude",                      precision: 15, scale: 6
+    t.decimal  "latitude",                            precision: 15, scale: 6
+    t.decimal  "longitude",                           precision: 15, scale: 6
     t.boolean  "has_issue"
   end
 

@@ -81,7 +81,7 @@ class Isolate < ApplicationRecord
       individual.habitat = row['Habitat']
       individual.substrate = row['Substrate']
       individual.life_form = row['Life form']
-      individual.collection_nr = row['Collection number']
+      individual.collectors_field_number = row['Collection number']
       individual.collection_date = row['Date']
       individual.determination = row['Determination']
       individual.revision = row['Revision']

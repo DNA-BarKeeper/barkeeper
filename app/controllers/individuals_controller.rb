@@ -138,7 +138,7 @@ class IndividualsController < ApplicationController
                                        :habitat,
                                        :substrate,
                                        :life_form,
-                                       :collection_nr,
+                                       :collectors_field_number,
                                        :collection_date,
                                        :determination,
                                        :revision,

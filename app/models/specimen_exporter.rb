@@ -35,7 +35,7 @@ class SpecimenExporter < ApplicationRecord
                      'Entwicklungsstadium', 'Sex', 'evtl. Bemerkungen zur Probe', 'Fundortbeschreibung',
                      'Region', 'Bundesland', 'Land', 'Datum', 'Sammelmethode', 'Breitengrad',
                      'Längengrad', 'Benutzte Methode', 'Ungenauigkeitsangabe', 'Höhe/Tiefe [m]',
-                     'Habitat', 'Sammler', 'Nummer', 'Behörde']
+                     'Habitat', 'Sammler', 'Feld-Sammelnummer', 'Behörde']
 
     markers.each do |m|
       @header_cells << "#{m.name} - URL"
@@ -65,10 +65,10 @@ class SpecimenExporter < ApplicationRecord
               cell_tag(xml, individual.id) # GBOL5 specimen ID
 
               # Feldnummer
-              if individual.collection_nr&.include?('s.n.') || individual.collection_nr&.include?('s. n.')
+              if individual.collectors_field_number&.include?('s.n.') || individual.collectors_field_number&.include?('s. n.')
                 cell_tag(xml, '')
               else
-                cell_tag(xml, individual.collection_nr)
+                cell_tag(xml, individual.collectors_field_number)
               end
 
               cell_tag(xml, individual.herbarium) # Institut
@@ -117,7 +117,7 @@ class SpecimenExporter < ApplicationRecord
               cell_tag(xml, individual.elevation) # Höhe/Tiefe [m]
               cell_tag(xml, individual.habitat) # Habitat
               cell_tag(xml, individual.collector) # Sammler
-              cell_tag(xml, individual.collection_nr) # Nummer
+              cell_tag(xml, individual.collectors_field_number) # Feld-Sammelnummer
               cell_tag(xml, '') # Behörde
 
               markers.each do |marker|
