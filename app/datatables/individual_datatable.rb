@@ -36,7 +36,7 @@ class IndividualDatatable
         species,
         individual.herbarium,
         individual.collector,
-        individual.collection_nr,
+        individual.collectors_field_number,
         individual.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
         link_to('Delete', individual, method: :delete, data: { confirm: 'Are you sure?' })
       ]
@@ -61,7 +61,7 @@ class IndividualDatatable
 OR species.composed_name ILIKE :search
 OR individuals.herbarium ILIKE :search
 OR individuals.collector ILIKE :search
-OR individuals.collection_nr ILIKE :search', search: "%#{params[:sSearch]}%")
+OR individuals.collectors_field_number ILIKE :search', search: "%#{params[:sSearch]}%")
       .references(:species)
       # individuals = Individual.quick_search(params[:sSearch])
     end
@@ -78,7 +78,7 @@ OR individuals.collection_nr ILIKE :search', search: "%#{params[:sSearch]}%")
   end
 
   def sort_column
-    columns = %w[individuals.specimen_id species.composed_name individuals.herbarium individuals.collector individuals.collection_nr individuals.updated_at]
+    columns = %w[individuals.specimen_id species.composed_name individuals.herbarium individuals.collector individuals.collectors_field_number individuals.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
