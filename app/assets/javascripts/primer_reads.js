@@ -268,10 +268,10 @@ function draw_chromatogram(div_id, chromatogram){
 
             svg.append("text")
                 .attr("x", pos)
-                .attr("y", 10)
+                .attr("y", 12)
                 .text(disp)
                 .attr("font-family", "sans-serif")
-                .attr("font-size", "7px")
+                .attr("font-size", "10px")
                 .attr("fill", color)
                 .attr("text-anchor", ta);
             svg.append("text")

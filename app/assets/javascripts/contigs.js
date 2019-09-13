@@ -680,7 +680,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         // coordinates - position indicator
 
         color = 'gray';
-        font_size = '7px';
+        font_size = '10px';
 
         for (var c=partial_contig.start_pos; c < partial_contig.end_pos; c++) {
             var disp = c + 1;
@@ -697,7 +697,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                     .attr("text-anchor", 'middle');
                 svg.append("text")
                     .attr("x", x+10)
-                    .attr("y", y+10)
+                    .attr("y", y+12)
                     .text(disp)
                     .attr("font-family", "sans-serif")
                     .attr("font-size", font_size)
