@@ -125,7 +125,6 @@ class IndividualsController < ApplicationController
                                        :collector,
                                        :specimen_id,
                                        :herbarium,
-                                       :voucher,
                                        :country,
                                        :state_province,
                                        :locality,
