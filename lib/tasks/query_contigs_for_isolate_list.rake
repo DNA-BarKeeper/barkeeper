@@ -79,8 +79,6 @@ GBoL3541
 
     puts outputstr
 
-    puts
-
-    puts 'Done.'
+    puts "\nDone."
   end
 end

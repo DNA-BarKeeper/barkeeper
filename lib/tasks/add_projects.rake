@@ -85,6 +85,48 @@ namespace :data do
     add_to_join_table(project, MarkerSequence.where('name like ?', 'F%').or(MarkerSequence.where('name like ?', 'B%')).select(:id))
   end
 
+  desc 'Move all individuals and related records within GBOL5 project to GBOL5_Non_German project if the country field is not "Germany" or empty.'
+  task move_non_german_entries: :environment do
+    non_german_project = Project.find_or_create_by(name: 'GBOL5_Non_German')
+    gbol5_project = Project.find_or_create_by(name: 'GBOL5')
+
+    individuals = Individual.in_project(gbol5_project.id).where.not(country: [nil, '', 'Germany']).includes(isolates: [contigs: [:primer_reads, :marker_sequence]])
+
+    # Remove GBOL5 project and add GBOL5_Non_German project
+    individuals.each do |individual|
+      individual.projects.delete(gbol5_project)
+      individual.projects << non_german_project
+
+      individual.isolates.each do |isolate|
+        isolate.projects.delete(gbol5_project)
+        isolate.projects << non_german_project
+
+        isolate.contigs.each do |contig|
+          contig.projects.delete(gbol5_project)
+          contig.projects << non_german_project
+
+          contig.marker_sequence.projects.delete(gbol5_project) if contig.marker_sequence
+          contig.marker_sequence.projects << non_german_project if contig.marker_sequence
+
+          contig.issues.each do |issue|
+            issue.projects.delete(gbol5_project)
+            issue.projects << non_german_project
+          end
+
+          contig.primer_reads.each do |pr|
+            pr.projects.delete(gbol5_project)
+            pr.projects << non_german_project
+
+            pr.issues.each do |issue|
+              issue.projects.delete(gbol5_project)
+              issue.projects << non_german_project
+            end
+          end
+        end
+      end
+    end
+  end
+
   private
 
   def add_to_join_table(project, records)
