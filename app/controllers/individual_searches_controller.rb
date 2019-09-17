@@ -29,15 +29,7 @@ class IndividualSearchesController < ApplicationController
     @individual_search.update(user_id: current_user.id)
     @individual_search.update(project_id: current_user.default_project_id)
 
-    respond_to do |format|
-      if @individual_search.save
-        format.html { redirect_to @individual_search, notice: 'Individual search was successfully created.' }
-        format.json { render :show, status: :created, location: @individual_search }
-      else
-        format.html { render :new }
-        format.json { render json: @individual_search.errors, status: :unprocessable_entity }
-      end
-    end
+    redirect_to @individual_search
   end
 
   def destroy
@@ -57,6 +49,7 @@ class IndividualSearchesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def individual_search_params
-    params.require(:individual_search).permit(:title, :DNA_bank_id, :family, :has_issue, :has_problematic_location, :has_species, :order, :species, :specimen_id)
+    params.require(:individual_search).permit(:title, :DNA_bank_id, :family, :has_issue, :has_problematic_location,
+                                              :has_species, :order, :species, :specimen_id, :herbarium)
   end
 end

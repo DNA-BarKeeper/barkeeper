@@ -26,6 +26,10 @@ jQuery(function() {
         minLength: 2
     });
 
+    $('#individual_search_herbarium').autocomplete({
+        source: $('#individual_search_herbarium').data('autocomplete-source')
+    });
+
     $('#individual_search_species').autocomplete({
         source: $('#individual_search_species').data('autocomplete-source'),
         minLength: 2
