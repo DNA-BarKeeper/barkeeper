@@ -53,7 +53,7 @@ class NgsRun < ApplicationRecord
       if tp_map.tag_primer_map.present?
         tpm_file = Rails.env.development? ? File.open(tp_map.path) : open("http:#{tp_map.url}")
         tp_map = CSV.read(tpm_file, { col_sep: "\t", headers: true })
-        nonexistent << tp_map['#SampleID'].select { |id| !Isolate.exists?(lab_nr: id.match(/\D+\d+|\D+\z/)[0]) }
+        nonexistent << tp_map['#SampleID'].select { |id| !Isolate.exists?(lab_isolation_nr: id.match(/\D+\d+|\D+\z/)[0]) }
       else
         nonexistent << "Tag Primer Map #{tp_map.name} could not be found."
       end
@@ -178,8 +178,8 @@ class NgsRun < ApplicationRecord
           cluster_def = def_parts[1].match(/(\d+)\**\w*\((\d+)\)/)
 
           isolate_name = def_parts[0].split('_')[0]
-          isolate = Isolate.find_by_lab_nr(isolate_name)
-          isolate ||= Isolate.create(lab_nr: isolate_name)
+          isolate = Isolate.find_by_lab_isolation_nr(isolate_name)
+          isolate ||= Isolate.create(lab_isolation_nr: isolate_name)
 
           running_number = cluster_def[1].to_i
           sequence_count = cluster_def[2].to_i
@@ -234,7 +234,7 @@ class NgsRun < ApplicationRecord
     results.each do |result|
       sample_id = result['#SampleID'].match(/\D+\d+|\D+\z/)[0]
 
-      isolate = Isolate.find_by_lab_nr(sample_id)
+      isolate = Isolate.find_by_lab_isolation_nr(sample_id)
       marker = Marker.find_by_name(result['Region'])
 
       ngs_result = NgsResult.create(hq_sequences: result['HighQualSeqs'].to_i,

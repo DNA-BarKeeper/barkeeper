@@ -33,7 +33,7 @@ namespace :data do
     gbol_numbers.each do |name|
       gbol_name = "gbol#{name}"
 
-      isolate = Isolate.where('lab_nr ilike ?', gbol_name).first
+      isolate = Isolate.where('lab_isolation_nr ilike ?', gbol_name).first
 
       isolates.add? isolate if isolate
       present << name if isolate
@@ -59,7 +59,7 @@ namespace :data do
 
     unless primer_reads.empty?
       puts "#{primer_reads.size} isolates with associated primer reads were found:"
-      primer_reads.each { |isolate| print "#{isolate.lab_nr}, " }
+      primer_reads.each { |isolate| print "#{isolate.lab_isolation_nr}, " }
       puts "\n\n"
     end
 
@@ -76,7 +76,7 @@ namespace :data do
 
     gbol_numbers.each do |name|
       gbol_name = "GBoL#{name}"
-      isolate = Isolate.where('lab_nr ilike ?', gbol_name)
+      isolate = Isolate.where('lab_isolation_nr ilike ?', gbol_name)
 
       if isolate.size > 1
         puts "More than one isolate with the name #{gbol_name} was found."

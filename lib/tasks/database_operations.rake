@@ -132,15 +132,15 @@ namespace :data do
   task merge_duplicate_isolates: :environment do
     # get list w duplicates
     a = []
-    Isolate.select('lab_nr').all.each do |i|
-      a << i.lab_nr
+    Isolate.select('lab_isolation_nr').all.each do |i|
+      a << i.lab_isolation_nr
     end
     d = a.select { |e| a.count(e) > 1 }.uniq
 
     # iterate over duplicate lab_nrs:
     d.each do |duplicate_isolate|
       # get  all members of given duplicate list:
-      dups = Isolate.includes(individual: :species).where(lab_nr: duplicate_isolate)
+      dups = Isolate.includes(individual: :species).where(lab_isolation_nr: duplicate_isolate)
 
       # get first
       first_dup = dups.first
@@ -148,7 +148,7 @@ namespace :data do
       # get all others and compare to first
       (1..dups.count - 1).each do |i|
         curr_dup = dups[i]
-        puts "#{curr_dup.lab_nr} (#{curr_dup.id})  vs #{first_dup.lab_nr} ( #{first_dup.id} ):"
+        puts "#{curr_dup.lab_isolation_nr} (#{curr_dup.id})  vs #{first_dup.lab_isolation_nr} ( #{first_dup.id} ):"
 
         first_dup.update(individual: curr_dup.individual) if curr_dup.individual
 

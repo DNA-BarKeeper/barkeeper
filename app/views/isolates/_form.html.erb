@@ -1,9 +1,9 @@
-<% provide(:title, @isolate.lab_nr) %>
+<% provide(:title, @isolate.lab_isolation_nr) %>
 <%= show_val_errors(@isolate)%>
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Isolate <%= @isolate.lab_nr %>
+    <h3 class="panel-title">Isolate <%= @isolate.lab_isolation_nr %>
 
       <% if @isolate.try(:individual).try(:species) %>
           - <%=link_to(@isolate.individual.species.name_for_display, edit_species_path(@isolate.individual.species.id))  %>
@@ -29,13 +29,13 @@
             <br>
 
             <div class="form-group">
-              <%= f.label :lab_nr, 'Lab isolation number' %>
-              <%= f.text_field :lab_nr,  class: 'form-control' %>
+              <%= f.label :dna_bank_id, 'DNA Bank ID' %>
+              <%= f.text_field :dna_bank_id,  class: 'form-control' %>
             </div>
 
             <div class="form-group">
-              <%= f.label :dna_bank_id, 'DNA Bank ID' %>
-              <%= f.text_field :dna_bank_id,  class: 'form-control' %>
+              <%= f.label :lab_isolation_nr, 'Lab isolation number' %>
+              <%= f.text_field :lab_isolation_nr,  class: 'form-control' %>
             </div>
 
             <div class="form-group">

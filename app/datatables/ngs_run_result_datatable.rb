@@ -38,7 +38,7 @@ class NgsRunResultDatatable
       end
 
       values = [
-          link_to(isolate.lab_nr, edit_isolate_path(isolate)),
+          link_to(isolate.lab_isolation_nr, edit_isolate_path(isolate)),
           link_to(species_name, edit_species_path(species_id)),
           link_to(family_name, edit_family_path(family_id)),
           NgsResult.where(ngs_run_id: @analysis_id, isolate: isolate).sum(:total_sequences)
@@ -69,7 +69,7 @@ class NgsRunResultDatatable
 
     if params[:sSearch].present?
       @analysis_result = @analysis_result
-                             .where('isolates.lab_nr ILIKE :search OR species.composed_name ILIKE :search OR families.name ILIKE :search', search: "%#{params[:sSearch]}%")
+                             .where('isolates.lab_isolation_nr ILIKE :search OR species.composed_name ILIKE :search OR families.name ILIKE :search', search: "%#{params[:sSearch]}%")
                              .references(individual: [species: :family])
     end
 
@@ -77,7 +77,7 @@ class NgsRunResultDatatable
   end
 
   def sort_column
-    columns = %w[isolates.lab_nr species.composed_name families.name]
+    columns = %w[isolates.lab_isolation_nr species.composed_name families.name]
     columns[params[:iSortCol_0].to_i]
   end
 
