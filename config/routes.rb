@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 GBOLapp::Application.routes.draw do
+  resources :herbaria
   root to: 'home#about'
 
   match 'help', to: 'home#help', via: 'get'
