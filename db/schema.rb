@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190917113100) do
+ActiveRecord::Schema.define(version: 20190917130338) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -275,7 +275,7 @@ ActiveRecord::Schema.define(version: 20190917113100) do
     t.integer  "plant_plate_id"
     t.integer  "individual_id"
     t.string   "dna_bank_id",                  limit: 255
-    t.string   "lab_nr",                       limit: 255
+    t.string   "lab_isolation_nr",             limit: 255
     t.boolean  "negative_control",                                                  default: false
     t.integer  "lab_id_orig"
     t.integer  "lab_id_copy"

@@ -44,7 +44,7 @@ namespace :data do
     add_to_join_table(project, User.joins(:lab).merge(Lab.in_project(project.id)).select(:id))
     # add_to_join_table(project, Marker.where(is_gbol: true).select(:id)) # Column is_gbol does not exist anymore
     add_to_join_table(project, Primer.joins(:marker).merge(Marker.in_project(project.id)).select(:id))
-    add_to_join_table(project, Isolate.where('lab_nr ilike ?', 'gbol%').or(Isolate.where('lab_nr ilike ?', 'db%')).select(:id).find_each)
+    add_to_join_table(project, Isolate.where('lab_isolation_nr ilike ?', 'gbol%').or(Isolate.where('lab_isolation_nr ilike ?', 'db%')).select(:id).find_each)
     add_to_join_table(project, Contig.where('name ilike ?', 'gbol%').or(Contig.where('name ilike ?', 'db%')).select(:id).find_each)
     add_to_join_table(project, PrimerRead.joins(:contig).merge(Contig.in_project(project.id).select(:id)).select(:id).find_each)
     add_to_join_table(project, Issue.joins(:primer_read).merge(PrimerRead.in_project(project.id)).select(:id) + Issue.joins(:contig).merge(Contig.in_project(project.id)).select(:id))
@@ -78,7 +78,7 @@ namespace :data do
     add_to_join_table(project, PlantPlate.all.select(:id))
     add_to_join_table(project, Marker.all.select(:id))
     add_to_join_table(project, Primer.joins(:marker).merge(Marker.in_project(project.id)).select(:id))
-    add_to_join_table(project, Isolate.where('lab_nr like ?', 'F%').or(Isolate.where('lab_nr like ?', 'B%')).select(:id).find_each)
+    add_to_join_table(project, Isolate.where('lab_isolation_nr like ?', 'F%').or(Isolate.where('lab_isolation_nr like ?', 'B%')).select(:id).find_each)
     add_to_join_table(project, Contig.where('name like ?', 'F%').or(Contig.where('name like ?', 'B%')).select(:id).find_each)
     add_to_join_table(project, PrimerRead.joins(:contig).merge(Contig.in_project(project.id).select(:id)).select(:id).find_each)
     add_to_join_table(project, Issue.joins(:primer_read).merge(PrimerRead.in_project(project.id)).select(:id) + Issue.joins(:contig).merge(Contig.in_project(project.id)).select(:id))

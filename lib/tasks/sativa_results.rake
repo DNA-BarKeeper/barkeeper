@@ -12,7 +12,7 @@ GBoL3589 GBoL3590 GBoL3591 GBoL3592 GBoL3593 GBoL3594 GBoL3595 GBoL3596 GBoL3597
 GBoL3616 GBoL3617 GBoL3618 GBoL3619 GBoL3641 GBoL3625 GBoL3626 GBoL3627 GBoL3635 GBoL3636 GBoL3606 GBoL3637
 GBoL3541)
 
-    isolates = Isolate.includes(individual: :species).where(lab_nr: ids)
+    isolates = Isolate.includes(individual: :species).where(lab_isolation_nr: ids)
     analyses = [14, 15, 21, 22]
     # analyses = [7, 18, 19, 20]
 
@@ -28,7 +28,7 @@ GBoL3541)
 
       isolates.each do |i|
         line = []
-        line << i.lab_nr
+        line << i.lab_isolation_nr
         species = i.individual&.species&.composed_name
         if species
           line << species

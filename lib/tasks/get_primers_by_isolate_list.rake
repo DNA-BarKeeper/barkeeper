@@ -9,7 +9,7 @@ namespace :data do
       csv << ['isolate', 'primer read', 'primer']
 
       isolates.each do |isolate_name|
-        isolate = Isolate.find_by_lab_nr(isolate_name)
+        isolate = Isolate.find_by_lab_isolation_nr(isolate_name)
         if isolate
           contigs = isolate.contigs.where(marker_id: 7) # trnK-matK
 

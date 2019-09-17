@@ -19,7 +19,7 @@ namespace :data do
       isolate_lab_nr = row['GBoL Isolation No.']
       latitude = row['Latitude (calc.)']&.to_d
       longitude = row['Longitude (calc.)']&.to_d
-      specimen = Individual.find_by_id(Isolate.where(lab_nr: isolate_lab_nr).first&.individual_id)
+      specimen = Individual.find_by_id(Isolate.where(lab_isolation_nr: isolate_lab_nr).first&.individual_id)
 
       if specimen
         if latitude&.nonzero? && specimen.latitude != latitude

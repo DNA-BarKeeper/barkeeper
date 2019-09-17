@@ -42,13 +42,13 @@ class TagPrimerMap < ApplicationRecord
 
     tp_map.each do |row|
       sample_id = row['#SampleID'].match(/\D+\d+|\D+\z/)[0]
-      isolate = Isolate.joins(individual: :species).find_by_lab_nr(sample_id)
+      isolate = Isolate.joins(individual: :species).find_by_lab_isolation_nr(sample_id)
 
       if isolate
         species = isolate.individual.species.composed_name.gsub(' ', '_')
         row['Description'] = [sample_id, species, row['TagID'], row['Region']].join('_')
       else
-        isolate = Isolate.joins(individual: :species).find_or_create_by(lab_nr: sample_id)
+        isolate = Isolate.joins(individual: :species).find_or_create_by(lab_isolation_nr: sample_id)
         isolate.add_projects(project_ids)
         row['Description'] = [sample_id, row['TagID'], row['Region']].join('_')
       end

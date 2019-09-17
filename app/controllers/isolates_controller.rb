@@ -29,8 +29,8 @@ class IsolatesController < ApplicationController
   end
 
   def filter
-    @isolates = Isolate.in_project(current_project_id).select('lab_nr, id').where('lab_nr ILIKE ?', "%#{params[:term]}%").order(:lab_nr)
-    render json: @isolates.map(&:lab_nr)
+    @isolates = Isolate.in_project(current_project_id).select('lab_isolation_nr, id').where('lab_isolation_nr ILIKE ?', "%#{params[:term]}%").order(:lab_isolation_nr)
+    render json: @isolates.map(&:lab_isolation_nr)
   end
 
   def import
@@ -91,7 +91,7 @@ class IsolatesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def isolate_params
-    params.require(:isolate).permit(:comment_orig, :comment_copy, :micronic_tube_id_copy, :micronic_tube_id_orig, :concentration_copy, :concentration_orig, :well_pos_micronic_plate_copy, :well_pos_micronic_plate_orig, :micronic_plate_id_copy, :micronic_plate_id_orig, :isolation_date, :lab_id_copy, :lab_id_orig, :user_id, :well_pos_plant_plate, :lab_nr, :micronic_tube_id, :well_pos_micronic_plate, :concentration,
+    params.require(:isolate).permit(:comment_orig, :comment_copy, :micronic_tube_id_copy, :micronic_tube_id_orig, :concentration_copy, :concentration_orig, :well_pos_micronic_plate_copy, :well_pos_micronic_plate_orig, :micronic_plate_id_copy, :micronic_plate_id_orig, :isolation_date, :lab_id_copy, :lab_id_orig, :user_id, :well_pos_plant_plate, :lab_isolation_nr, :micronic_tube_id, :well_pos_micronic_plate, :concentration,
                                     :tissue_id, :micronic_plate_id, :plant_plate_id, :term,
                                     :file,
                                     :individual_name,

@@ -14,9 +14,9 @@ class Isolate < ApplicationRecord
   belongs_to :tissue
   belongs_to :individual
 
-  validates_presence_of :lab_nr
+  validates_presence_of :lab_isolation_nr
 
-  after_save :assign_specimen, if: :lab_nr_changed?
+  after_save :assign_specimen, if: :lab_isolation_nr_changed?
 
   scope :recent, -> { where('isolates.updated_at > ?', 1.hours.ago) }
   scope :no_controls, -> { where(negative_control: false) }
@@ -37,13 +37,13 @@ class Isolate < ApplicationRecord
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
       # Update existing isolate or create new, case-insensitive!
-      lab_nr = row['GBoL Isolation No.']
-      lab_nr ||= row['DNA Bank No']
+      lab_isolation_nr = row['GBoL Isolation No.']
+      lab_isolation_nr ||= row['DNA Bank No']
 
-      next unless lab_nr # Cannot save isolate without lab_nr
+      next unless lab_isolation_nr # Cannot save isolate without lab_isolation_nr
 
-      isolate = Isolate.where('lab_nr ILIKE ?', lab_nr).first
-      isolate ||= Isolate.new(lab_nr: lab_nr)
+      isolate = Isolate.where('lab_isolation_nr ILIKE ?', lab_isolation_nr).first
+      isolate ||= Isolate.new(lab_isolation_nr: lab_isolation_nr)
 
       plant_plate = PlantPlate.find_or_create_by(name: row['GBoL5 Tissue Plate No.'].to_i.to_s)
       plant_plate.add_project(project_id)
@@ -100,7 +100,7 @@ class Isolate < ApplicationRecord
     if dna_bank_id
       search_dna_bank(dna_bank_id)
     else
-      search_dna_bank(lab_nr)
+      search_dna_bank(lab_isolation_nr)
     end
   end
 
