@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190917090720) do
+ActiveRecord::Schema.define(version: 20190917113100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -219,6 +219,7 @@ ActiveRecord::Schema.define(version: 20190917090720) do
     t.datetime "updated_at",               null: false
     t.integer  "project_id"
     t.integer  "user_id"
+    t.string   "herbarium"
     t.index ["project_id"], name: "index_individual_searches_on_project_id", using: :btree
     t.index ["user_id"], name: "index_individual_searches_on_user_id", using: :btree
   end

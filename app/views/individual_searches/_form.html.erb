@@ -50,6 +50,11 @@
       </div>
       <br/>
       <div class="field">
+        <%= f.label :herbarium, 'Herbarium (Acronym)' %><br />
+        <%= f.text_field :herbarium, data: { autocomplete_source: Herbarium.order(:acronym).map(&:acronym) }, class: 'form-control' %>
+      </div>
+      <br/>
+      <div class="field">
         <%= f.label :species %><br />
         <%= f.text_field :species, data: { autocomplete_source: filter_species_index_path }, include_blank: true, class: 'form-control' %>
       </div>

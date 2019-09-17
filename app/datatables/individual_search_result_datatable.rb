@@ -47,7 +47,7 @@ class IndividualSearchResultDatatable
   end
 
   def individuals_data
-    @search_result ||= IndividualSearch.find_by_id(@search_id).individuals.includes(:species).reorder("#{sort_column} #{sort_direction}")
+    @search_result ||= IndividualSearch.find_by_id(@search_id).individuals.includes(:species, :herbarium).reorder("#{sort_column} #{sort_direction}")
 
     @search_result = @search_result.page(page).per_page(per_page)
 
