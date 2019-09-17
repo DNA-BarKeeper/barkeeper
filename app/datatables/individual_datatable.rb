@@ -30,11 +30,12 @@ class IndividualDatatable
       species = ''
 
       species = link_to individual.species.name_for_display, edit_species_path(individual.species) if individual.species
+      herbarium = link_to individual.herbarium.acronym, edit_herbarium_path(individual.herbarium) if individual.herbarium
 
       [
         link_to(individual.specimen_id, edit_individual_path(individual)),
         species,
-        individual.herbarium,
+        herbarium,
         individual.collector,
         individual.collectors_field_number,
         individual.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
@@ -49,9 +50,9 @@ class IndividualDatatable
 
   def fetch_individuals
     if @species_id
-      individuals = Individual.includes(:species).where(species_id: @species_id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      individuals = Individual.includes(:species, :herbarium).where(species_id: @species_id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     else
-      individuals = Individual.includes(:species).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      individuals = Individual.includes(:species, :herbarium).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
     individuals = individuals.page(page).per_page(per_page)
@@ -59,7 +60,7 @@ class IndividualDatatable
     if params[:sSearch].present?
       individuals = individuals.where('individuals.specimen_id ILIKE :search
 OR species.composed_name ILIKE :search
-OR individuals.herbarium ILIKE :search
+OR herbaria.acronym ILIKE :search
 OR individuals.collector ILIKE :search
 OR individuals.collectors_field_number ILIKE :search', search: "%#{params[:sSearch]}%")
       .references(:species)
@@ -78,7 +79,7 @@ OR individuals.collectors_field_number ILIKE :search', search: "%#{params[:sSear
   end
 
   def sort_column
-    columns = %w[individuals.specimen_id species.composed_name individuals.herbarium individuals.collector individuals.collectors_field_number individuals.updated_at]
+    columns = %w[individuals.specimen_id species.composed_name herbaria.acronym individuals.collector individuals.collectors_field_number individuals.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

@@ -6,6 +6,7 @@ class Individual < ApplicationRecord
 
   has_many :isolates
   belongs_to :species
+  belongs_to :herbarium
 
   pg_search_scope :quick_search, against: %i[specimen_id herbarium collector collectors_field_number]
 
