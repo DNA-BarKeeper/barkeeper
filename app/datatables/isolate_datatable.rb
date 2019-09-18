@@ -55,8 +55,8 @@ class IsolateDatatable
     when 'no_specimen'
       isolates = Isolate.includes(individual: :species).where(individual: nil).where(negative_control: false).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     when 'duplicates'
-      names_with_multiple = Isolate.group(:lab_isolation_nr).having('count(lab_isolation_nr) > 1').count.keys
-      isolates = Isolate.includes(individual: :species).where(lab_isolation_nr: names_with_multiple)
+      names_with_multiple = Isolate.group(:dna_bank_id).having('count(dna_bank_id) > 1').count.keys
+      isolates = Isolate.includes(individual: :species).where(dna_bank_id: names_with_multiple)
                         .in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     else
       isolates = Isolate.includes(individual: :species).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
