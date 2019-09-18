@@ -404,15 +404,6 @@ ActiveRecord::Schema.define(version: 20190917130338) do
     t.index ["marker_id", "project_id"], name: "index_markers_projects_on_marker_id_and_project_id", using: :btree
   end
 
-  create_table "metaprojects", force: :cascade do |t|
-    t.string   "name"
-    t.text     "description"
-    t.text     "legal_disclosure"
-    t.text     "privacy_policy"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-  end
-
   create_table "micronic_plates", force: :cascade do |t|
     t.string   "micronic_plate_id", limit: 255
     t.string   "name",              limit: 255
