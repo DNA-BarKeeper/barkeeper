@@ -2,6 +2,8 @@ namespace :data do
   task move_isolate_names_to_correct_fields: :environment do
     isolates = Isolate.where('lab_isolation_nr ilike ?', "DB%").where(dna_bank_id: ['', nil])
     isolates.all.each { |isolate| isolate.update(dna_bank_id: isolate.lab_isolation_nr) }
+
+    puts "#{isolates.size} DB numbers were moved to the correct field."
   end
 
   task find_duplicate_db_numbers: :environment do
