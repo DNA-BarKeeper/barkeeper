@@ -24,14 +24,14 @@ class MarkerSequence < ApplicationRecord
 
   def generate_name
     if marker.present? && isolate.present?
-      update(name: "#{isolate.lab_isolation_nr}_#{marker.name}")
+      update(name: "#{isolate.display_name}_#{marker.name}")
     else
       update(name: '<unnamed>')
     end
   end
 
-  def isolate_lab_isolation_nr
-    isolate.try(:lab_isolation_nr)
+  def isolate_display_name
+    isolate.try(:display_name)
   end
 
   def isolate_lab_isolation_nr=(lab_isolation_nr)

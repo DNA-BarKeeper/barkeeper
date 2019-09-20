@@ -17,7 +17,7 @@ class Isolate < ApplicationRecord
   validates :display_name, presence: { message: "Either a DNA Bank Number or a lab isolation number must be provided!" }
   before_validation :assign_display_name
 
-  after_save :assign_specimen, if: :lab_isolation_nr_changed?
+  after_save :assign_specimen, if: -> { :lab_isolation_nr_changed? || :dna_bank_id_changed? }
 
   scope :recent, -> { where('isolates.updated_at > ?', 1.hours.ago) }
   scope :no_controls, -> { where(negative_control: false) }
@@ -39,7 +39,7 @@ class Isolate < ApplicationRecord
 
       # Update existing isolate or create new, case-insensitive!
       lab_isolation_nr = row['GBoL Isolation No.']
-      lab_isolation_nr ||= row['DNA Bank No']
+      lab_isolation_nr ||= row['DNA Bank No'] # TODO: Not correct/necessary anymore, change!
 
       next unless lab_isolation_nr # Cannot save isolate without lab_isolation_nr
 

@@ -10,7 +10,7 @@ jQuery(function() {
     });
 
 
-    $('#marker_sequence_isolate_lab_isolation_nr').autocomplete({
-        source: $('#marker_sequence_isolate_lab_isolation_nr').data('autocomplete-source')
+    $('#marker_sequence_isolate_display_name').autocomplete({
+        source: $('#marker_sequence_isolate_display_name').data('autocomplete-source')
     });
 });

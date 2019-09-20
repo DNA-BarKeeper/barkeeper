@@ -8,6 +8,6 @@ class Cluster < ApplicationRecord
   has_one :blast_hit, dependent: :destroy
 
   def isolate_name
-    isolate.try(:lab_isolation_nr)
+    isolate.try(:display_name)
   end
 end

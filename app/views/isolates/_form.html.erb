@@ -1,9 +1,9 @@
-<% provide(:title, @isolate.lab_isolation_nr) %>
+<% provide(:title, @isolate.display_name) %>
 <%= show_val_errors(@isolate)%>
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Isolate <%= @isolate.lab_isolation_nr %>
+    <h3 class="panel-title">Isolate <%= @isolate.display_name %>
 
       <% if @isolate.try(:individual).try(:species) %>
           - <%=link_to(@isolate.individual.species.name_for_display, edit_species_path(@isolate.individual.species.id))  %>
