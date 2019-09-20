@@ -14,7 +14,8 @@ class Isolate < ApplicationRecord
   belongs_to :tissue
   belongs_to :individual
 
-  validates_presence_of :lab_isolation_nr
+  validates :display_name, presence: { message: "Either a DNA Bank Number or a lab isolation number must be provided!" }
+  before_validation :assign_display_name
 
   after_save :assign_specimen, if: :lab_isolation_nr_changed?
 
@@ -96,6 +97,14 @@ class Isolate < ApplicationRecord
     end
   end
 
+  def assign_display_name(db_id = self.dna_bank_id, isolation_nr = self.lab_isolation_nr)
+    if db_id && !db_id.empty?
+      self.display_name = db_id
+    else
+      self.display_name = isolation_nr
+    end
+  end
+
   def assign_specimen
     if dna_bank_id
       search_dna_bank(dna_bank_id)
@@ -121,8 +130,6 @@ class Isolate < ApplicationRecord
   def search_dna_bank(id_string, individual = nil)
     individual ||= individual
     is_gbol_number = false
-    message = ''
-    service_url = ''
 
     if id_string.downcase.include? 'db'
       id_parts = id_string.match(/^([A-Za-z]+)[\s_]?([0-9]+)$/)
@@ -135,6 +142,9 @@ class Isolate < ApplicationRecord
 
       message = "Query for GBoL number '#{id_string}'...\n"
       service_url = "http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/SpecimenUnit/Preparations/preparation/sampleDesignations/sampleDesignation'>#{id_string}</like></filter><count>false</count></search></request>"
+    else
+      puts "The ID \"#{id_string}\" you provided is not valid."
+      return
     end
 
     puts message

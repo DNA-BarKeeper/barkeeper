@@ -50,6 +50,7 @@ class IsolatesController < ApplicationController
   def create
     @isolate = Isolate.new(isolate_params)
     @isolate.add_project(current_project_id)
+    @isolate.assign_display_name(isolate_params.fetch('dna_bank_id'), isolate_params.fetch('lab_isolation_nr'))
 
     respond_to do |format|
       if @isolate.save
@@ -91,11 +92,12 @@ class IsolatesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def isolate_params
-    params.require(:isolate).permit(:comment_orig, :comment_copy, :micronic_tube_id_copy, :micronic_tube_id_orig, :concentration_copy, :concentration_orig, :well_pos_micronic_plate_copy, :well_pos_micronic_plate_orig, :micronic_plate_id_copy, :micronic_plate_id_orig, :isolation_date, :lab_id_copy, :lab_id_orig, :user_id, :well_pos_plant_plate, :lab_isolation_nr, :micronic_tube_id, :well_pos_micronic_plate, :concentration,
-                                    :tissue_id, :micronic_plate_id, :plant_plate_id, :term,
-                                    :file,
-                                    :individual_name,
-                                    :query,
-                                    project_ids: [])
+    params.require(:isolate).permit(:comment_orig, :comment_copy, :micronic_tube_id_copy, :micronic_tube_id_orig,
+                                    :concentration_copy, :concentration_orig, :well_pos_micronic_plate_copy,
+                                    :well_pos_micronic_plate_orig, :micronic_plate_id_copy, :micronic_plate_id_orig,
+                                    :isolation_date, :lab_id_copy, :lab_id_orig, :user_id, :well_pos_plant_plate,
+                                    :lab_isolation_nr, :micronic_tube_id, :well_pos_micronic_plate, :concentration,
+                                    :tissue_id, :micronic_plate_id, :plant_plate_id, :term, :file, :individual_name,
+                                    :query, :dna_bank_id, :negative_control, project_ids: [])
   end
 end
