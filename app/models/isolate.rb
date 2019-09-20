@@ -158,7 +158,7 @@ class Isolate < ApplicationRecord
     genus = nil
     species_epithet = nil
     infraspecific = nil
-    herbarium = nil
+    herbarium_name = nil
     collector = nil
     locality = nil
     longitude = nil
@@ -173,7 +173,7 @@ class Isolate < ApplicationRecord
       genus = unit.at_xpath('//abcd21:GenusOrMonomial').content
       species_epithet = unit.at_xpath('//abcd21:FirstEpithet').content
       infraspecific = unit.at_xpath('//abcd21:InfraspecificEpithet').content
-      herbarium = unit.at_xpath('//abcd21:SourceInstitutionCode').content
+      herbarium_name = unit.at_xpath('//abcd21:SourceInstitutionCode').content
       collector = unit.at_xpath('//abcd21:GatheringAgent').content
       locality = unit.at_xpath('//abcd21:LocalityText').content
       longitude = unit.at_xpath('//abcd21:LongitudeDecimal').content
@@ -194,7 +194,11 @@ class Isolate < ApplicationRecord
       individual.update(locality: locality) if locality
       individual.update(longitude: longitude) if longitude
       individual.update(latitude: latitude) if latitude
-      individual.update(herbarium: herbarium) if herbarium
+
+      if herbarium_name
+        herbarium = Herbarium.find_by(acronym: herbarium_name)
+        individual.update(herbarium: herbarium) if herbarium
+      end
 
       if genus && species_epithet
         if infraspecific
