@@ -159,7 +159,7 @@ class Contig < ApplicationRecord
   end
 
   def isolate_name
-    isolate.try(:lab_isolation_nr)
+    isolate.try(:display_name)
   end
 
   def isolate_name=(name)

@@ -155,7 +155,7 @@ module Export
         name = marker_sequence.name.delete(' ')
 
         if meta_data
-          name << "|#{marker_sequence.isolate&.lab_isolation_nr}" # Isolate
+          name << "|#{marker_sequence.isolate&.display_name}" # Isolate
           name << "|#{marker_sequence.isolate&.individual&.specimen_id}" # Specimen
           name << "|#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}" # Species
           name << "|#{marker_sequence.isolate&.individual&.species&.family&.name}" # Family

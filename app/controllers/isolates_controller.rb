@@ -29,8 +29,8 @@ class IsolatesController < ApplicationController
   end
 
   def filter
-    @isolates = Isolate.in_project(current_project_id).select('lab_isolation_nr, id').where('lab_isolation_nr ILIKE ?', "%#{params[:term]}%").order(:lab_isolation_nr)
-    render json: @isolates.map(&:lab_isolation_nr)
+    @isolates = Isolate.in_project(current_project_id).select('display_name, id').where('display_name ILIKE ?', "%#{params[:term]}%").order(:display_name)
+    render json: @isolates.map(&:display_name)
   end
 
   def import
