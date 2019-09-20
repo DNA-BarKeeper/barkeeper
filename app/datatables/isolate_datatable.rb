@@ -25,8 +25,12 @@ class IsolateDatatable
 
   def data
     isolates.map do |isolate|
+
+      dna_bank_id = ''
+      dna_bank_id = link_to isolate.dna_bank_id, edit_isolate_path(isolate) if isolate.dna_bank_id
+
       lab_isolation_nr = ''
-      lab_isolation_nr = link_to isolate.lab_isolation_nr, edit_isolate_path(isolate) if isolate.lab_isolation_nr
+      lab_isolation_nr = isolate.lab_isolation_nr if isolate.lab_isolation_nr
 
       species_name = ''
       species_name = link_to isolate.individual.species.name_for_display, edit_species_path(isolate.individual.species) if isolate.individual&.species
@@ -37,6 +41,7 @@ class IsolateDatatable
       end
 
       [
+        dna_bank_id,
         lab_isolation_nr,
         species_name,
         individual,
@@ -66,7 +71,8 @@ class IsolateDatatable
     isolates = isolates.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      isolates = isolates.where('isolates.lab_isolation_nr ILIKE :search
+      isolates = isolates.where('isolates.dna_bank_id ILIKE :search
+OR isolates.lab_isolation_nr ILIKE :search
 OR species.composed_name ILIKE :search
 OR individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
                          .references(individual: :species)
@@ -84,7 +90,7 @@ OR individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
   end
 
   def sort_column
-    columns = %w[isolates.lab_isolation_nr species.composed_name individuals.specimen_id isolates.updated_at]
+    columns = %w[isolates.dna_bank_id isolates.lab_isolation_nr species.composed_name individuals.specimen_id isolates.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

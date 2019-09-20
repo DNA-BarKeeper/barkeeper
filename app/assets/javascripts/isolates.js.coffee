@@ -4,9 +4,9 @@ jQuery ->
     bServerSide: true
     sAjaxSource: $('#isolates').data('source')
     "columnDefs": [
-      { "orderable": false, "targets": 4 }
+      { "orderable": false, "targets": 5 }
     ]
-    "order": [ 3, 'desc' ]
+    "order": [ 4, 'desc' ]
   });
 
   $('#isolates_no_specimen').DataTable( {
@@ -14,9 +14,9 @@ jQuery ->
     bServerSide: true
     sAjaxSource: $('#isolates_no_specimen').data('source')
     "columnDefs": [
-      { "orderable": false, "targets": 4 }
+      { "orderable": false, "targets": 5 }
     ]
-    "order": [ 3, 'desc' ]
+    "order": [ 4, 'desc' ]
   });
 
   $('#isolates_duplicates').DataTable( {
@@ -24,9 +24,9 @@ jQuery ->
     bServerSide: true
     sAjaxSource: $('#isolates_duplicates').data('source')
     "columnDefs": [
-      { "orderable": false, "targets": 4 }
+      { "orderable": false, "targets": 5 }
     ]
-    "order": [ 3, 'desc' ]
+    "order": [ 0, 'desc' ]
   });
 
   $('#isolate_individual_name').autocomplete
