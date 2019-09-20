@@ -127,6 +127,53 @@ namespace :data do
     end
   end
 
+  desc 'Move all isolates and related records within GBOL5 project to High_Isolation_Numbers project if the GBOL number is over 1000000.'
+  task move_high_isolation_numbers: :environment do
+    high_numbers_project = Project.find_or_create_by(name: 'High_Isolation_Numbers')
+    gbol5_project = Project.find_or_create_by(name: 'GBOL5')
+
+    # Isolates with unreasonably high GBOL numbers
+    high_numbers_pattern = /[Gg][Bb][Oo][Ll]1000\d{3}/
+    gbol_numbers = Isolate.all.select(:lab_isolation_nr).map(&:lab_isolation_nr).select { |nr| nr.match(high_numbers_pattern) }
+    isolates = Isolate.where(lab_isolation_nr: gbol_numbers).includes(contigs: [:primer_reads, :marker_sequence])
+
+    # Isolates with same DB numbers as those above
+    dna_bank_numbers = isolates.select(:dna_bank_id).map(&:dna_bank_id)
+    dna_bank_numbers.delete('')
+    isolates += Isolate.where(lab_isolation_nr: dna_bank_numbers).includes(contigs: [:primer_reads, :marker_sequence])
+
+    puts "Moving #{isolates.size} isolates..."
+
+    # Remove GBOL5 project and add High_Isolation_Numbers project
+    isolates.each do |isolate|
+      isolate.projects.delete(gbol5_project)
+      isolate.add_project_and_save(high_numbers_project.id)
+
+      isolate.contigs.each do |contig|
+        contig.projects.delete(gbol5_project)
+        contig.add_project_and_save(high_numbers_project.id)
+
+        contig.marker_sequence.projects.delete(gbol5_project) if contig.marker_sequence
+        contig.marker_sequence.add_project_and_save(high_numbers_project.id) if contig.marker_sequence
+
+        contig.issues.each do |issue|
+          issue.projects.delete(gbol5_project)
+          issue.add_project_and_save(high_numbers_project.id)
+        end
+
+        contig.primer_reads.each do |pr|
+          pr.projects.delete(gbol5_project)
+          pr.add_project_and_save(high_numbers_project.id)
+
+          pr.issues.each do |issue|
+            issue.projects.delete(gbol5_project)
+            issue.add_project_and_save(high_numbers_project.id)
+          end
+        end
+      end
+    end
+  end
+
   private
 
   def add_to_join_table(project, records)
