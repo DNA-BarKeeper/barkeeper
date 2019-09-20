@@ -30,7 +30,7 @@ class IsolateDatatable
       dna_bank_id = link_to isolate.dna_bank_id, edit_isolate_path(isolate) if isolate.dna_bank_id
 
       lab_isolation_nr = ''
-      lab_isolation_nr = isolate.lab_isolation_nr if isolate.lab_isolation_nr
+      lab_isolation_nr = link_to isolate.lab_isolation_nr, edit_isolate_path(isolate) if isolate.lab_isolation_nr
 
       species_name = ''
       species_name = link_to isolate.individual.species.name_for_display, edit_species_path(isolate.individual.species) if isolate.individual&.species
