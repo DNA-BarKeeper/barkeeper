@@ -274,4 +274,14 @@ namespace :data do
 
     puts "#{delete_cnt} duplicate sequences could be deleted."
   end
+
+  task add_tissue_type_to_individuals: :environment do
+    isolates = Isolate.joins(:individual, :tissue).distinct
+
+    isolates.each do |isolate|
+      individual = isolate.individual
+      individual.update(tissue_id: isolate.tissue_id)
+      individual.save
+    end
+  end
 end

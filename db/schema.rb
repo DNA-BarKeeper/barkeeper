@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190920105121) do
+ActiveRecord::Schema.define(version: 20190925131934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -254,7 +254,9 @@ ActiveRecord::Schema.define(version: 20190920105121) do
     t.decimal  "longitude",                           precision: 15, scale: 6
     t.boolean  "has_issue"
     t.integer  "herbarium_id"
+    t.integer  "tissue_id"
     t.index ["herbarium_id"], name: "index_individuals_on_herbarium_id", using: :btree
+    t.index ["tissue_id"], name: "index_individuals_on_tissue_id", using: :btree
   end
 
   create_table "individuals_projects", id: false, force: :cascade do |t|
@@ -788,6 +790,7 @@ ActiveRecord::Schema.define(version: 20190920105121) do
   add_foreign_key "individual_searches", "projects"
   add_foreign_key "individual_searches", "users"
   add_foreign_key "individuals", "herbaria"
+  add_foreign_key "individuals", "tissues"
   add_foreign_key "marker_sequence_searches", "mislabel_analyses"
   add_foreign_key "marker_sequence_searches", "projects"
   add_foreign_key "mislabel_analyses", "markers"
