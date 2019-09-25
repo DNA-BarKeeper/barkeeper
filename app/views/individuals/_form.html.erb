@@ -56,6 +56,11 @@
             </div>
 
             <div class="form-group">
+              <%= f.label :tissue_id, 'Tissue type' %>
+              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
+            </div>
+
+            <div class="form-group">
               <%= f.label :life_form %>
               <%= f.text_field :life_form, class: 'form-control' %>
             </div>
