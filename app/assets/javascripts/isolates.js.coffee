@@ -16,7 +16,7 @@ jQuery ->
     "columnDefs": [
       { "orderable": false, "targets": 5 }
     ]
-    "order": [ 4, 'desc' ]
+    "order": [ 0, 'asc' ]
   });
 
   $('#isolates_duplicates').DataTable( {
