@@ -146,6 +146,7 @@ class IndividualsController < ApplicationController
                                        :comments,
                                        :species_id,
                                        :species_name,
+                                       :tissue_id,
                                        project_ids: [])
   end
 end
