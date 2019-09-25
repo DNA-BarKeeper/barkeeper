@@ -17,7 +17,7 @@ class Isolate < ApplicationRecord
   validates :display_name, presence: { message: "Either a DNA Bank Number or a lab isolation number must be provided!" }
   before_validation :assign_display_name
 
-  after_save :assign_specimen, if: -> { :lab_isolation_nr_changed? || :dna_bank_id_changed? }
+  after_save :assign_specimen, :if => proc{ |iso| iso.lab_isolation_nr_changed? || iso.dna_bank_id_changed? }
 
   scope :recent, -> { where('isolates.updated_at > ?', 1.hours.ago) }
   scope :no_controls, -> { where(negative_control: false) }
@@ -128,7 +128,7 @@ class Isolate < ApplicationRecord
   private
 
   def search_dna_bank(id_string, individual = nil)
-    individual ||= individual
+    individual ||= self.individual
     is_gbol_number = false
 
     if id_string.downcase.include? 'db'
@@ -154,32 +154,14 @@ class Isolate < ApplicationRecord
     res = Net::HTTP.start(url.host, url.port) { |http| http.request(req) }
     doc = Nokogiri::XML(res.body)
 
+    unit_id = nil
     specimen_unit_id = nil
-    genus = nil
-    species_epithet = nil
-    infraspecific = nil
-    herbarium_name = nil
-    collector = nil
-    locality = nil
-    longitude = nil
-    latitude = nil
-    higher_taxon_rank = nil
-    higher_taxon_name = nil
 
     begin
       unit = doc.at_xpath('//abcd21:Unit')
       unit_id = is_gbol_number ? doc.at_xpath('//abcd21:Unit/abcd21:UnitID').content : id_string # UnitID field contains DNA bank number
       specimen_unit_id = unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content
-      genus = unit.at_xpath('//abcd21:GenusOrMonomial').content
-      species_epithet = unit.at_xpath('//abcd21:FirstEpithet').content
-      infraspecific = unit.at_xpath('//abcd21:InfraspecificEpithet').content
-      herbarium_name = unit.at_xpath('//abcd21:SourceInstitutionCode').content
-      collector = unit.at_xpath('//abcd21:GatheringAgent').content
-      locality = unit.at_xpath('//abcd21:LocalityText').content
-      longitude = unit.at_xpath('//abcd21:LongitudeDecimal').content
-      latitude = unit.at_xpath('//abcd21:LatitudeDecimal').content
-      higher_taxon_rank = unit.at_xpath('//abcd21:HigherTaxonRank').content
-      higher_taxon_name = unit.at_xpath('//abcd21:HigherTaxonName').content
+
     rescue StandardError
       puts 'Could not read ABCD.'
     end
@@ -188,46 +170,11 @@ class Isolate < ApplicationRecord
       individual ||= Individual.find_or_create_by(specimen_id: specimen_unit_id)
       individual.add_projects(projects.pluck(:id))
 
-      individual.update(specimen_id: specimen_unit_id)
       individual.update(DNA_bank_id: unit_id) if unit_id
-      individual.update(collector: collector.strip) if collector
-      individual.update(locality: locality) if locality
-      individual.update(longitude: longitude) if longitude
-      individual.update(latitude: latitude) if latitude
-
-      if herbarium_name
-        herbarium = Herbarium.find_by(acronym: herbarium_name)
-        individual.update(herbarium: herbarium) if herbarium
-      end
-
-      if genus && species_epithet
-        if infraspecific
-          composed_name = "#{genus} #{infraspecific} #{species_epithet}"
-        else
-          composed_name = "#{genus} #{species_epithet}"
-        end
-
-        species = Species.find_or_create_by(composed_name: composed_name)
-        species.add_projects(projects.pluck(:id))
-        species.update(genus_name: genus,
-                       species_epithet: species_epithet,
-                       infraspecific: infraspecific,
-                       species_component: "#{genus} #{species_epithet}")
-
-        if higher_taxon_rank == 'familia'
-          higher_taxon_name = 'Lamiaceae' if higher_taxon_name.capitalize == 'Labiatae'
-
-          family = Family.find_or_create_by(name: higher_taxon_name.capitalize)
-          family.add_projects(projects.pluck(:id))
-          species.update(family: family)
-        end
-
-        individual.update(species: species)
-      end
-
-      self.update_column(:individual_id, individual.id) # Does not trigger callbacks to avoid infinite loop
-
-      puts 'Done.'
     end
+
+    self.update_column(:individual_id, individual.id) # Does not trigger callbacks to avoid infinite loop
+
+    puts 'Done.'
   end
 end
