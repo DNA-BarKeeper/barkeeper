@@ -283,5 +283,11 @@ namespace :data do
       individual.update(tissue_id: isolate.tissue_id)
       individual.save
     end
+
+    individuals = Individual.where('specimen_id ilike ?', "B GT%")
+
+    individuals.each do |individual|
+      individual.update(tissue_id: 3)
+    end
   end
 end

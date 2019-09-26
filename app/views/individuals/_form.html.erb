@@ -15,8 +15,8 @@
     <%= form_for(@individual) do |f| %>
 
         <ul class="nav nav-tabs" role="tablist">
-          <li ><a href="#description" role="tab" data-toggle="tab">Description</a></li>
-          <li class="active"><a href="#locality" role="tab" data-toggle="tab">Locality</a></li>
+          <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
+          <li><a href="#locality" role="tab" data-toggle="tab">Locality</a></li>
           <li ><a href="#assigned_isolates" role="tab" data-toggle="tab">Isolates</a></li>
           <li>
             <a href="#sativa_warnings" role="tab" data-toggle="tab" style="<%= warning_color_individual(@individual) %>">
@@ -26,16 +26,16 @@
         </ul>
 
         <div class="tab-content">
-          <div class="tab-pane" id="description">
+          <div class="tab-pane active" id="description">
             <br>
 
             <div class="form-group">
-              <%= f.label 'Specimen ID' %>
+              <%= f.label :specimen_id, 'Specimen ID' %>
               <%= f.text_field :specimen_id, class: 'form-control' %>
             </div>
 
             <div class="form-group">
-              <%= f.label :DNA_bank_id, 'DNA Bank ID' %>
+              <%= f.label :DNA_bank_id, 'Associated DNA Bank ID' %>
               <%= f.text_field :DNA_bank_id, class: 'form-control' %>
             </div>
 
@@ -106,7 +106,7 @@
             </div>
           </div>
 
-          <div class="tab-pane active" id="locality" >
+          <div class="tab-pane" id="locality" >
             <br>
             <div class="form-group">
               <%= f.label :country %>
