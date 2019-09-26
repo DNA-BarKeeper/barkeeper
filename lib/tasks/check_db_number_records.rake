@@ -12,12 +12,13 @@ namespace :data do
 
     isolates_sent_to_bonn = isolates_sent_to_bonn.flatten.collect { |id| id.downcase.gsub(' ', '') }.uniq
 
-    puts "#{isolates_sent_to_bonn.size} Isolates were sent to Bonn."
+    puts "#{isolates_sent_to_bonn.size} unique Isolates were sent to Bonn."
 
     isolates_in_app = Isolate.in_project(5).map(&:dna_bank_id).compact.collect { |id| id.downcase.gsub(' ', '') }.uniq
 
     isolates_in_app = isolates_in_app & isolates_sent_to_bonn
 
     puts "#{isolates_in_app.size} of these Isolates were found in the web app."
+    p isolates_in_app
   end
 end
