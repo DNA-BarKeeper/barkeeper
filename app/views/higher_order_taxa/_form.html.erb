@@ -11,15 +11,15 @@
 
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-          <li><a href="#description" role="tab" data-toggle="tab">Description</a></li>
+          <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
           <li><a href="#assigned_orders" role="tab" data-toggle="tab">Orders</a></li>
-          <li class="active"><a href="#assigned_species" role="tab" data-toggle="tab">Species</a></li>
+          <li><a href="#assigned_species" role="tab" data-toggle="tab">Species</a></li>
         </ul>
 
         <!-- Tab panes -->
         <div class="tab-content">
 
-          <div class="tab-pane" id="description">
+          <div class="tab-pane active" id="description">
             <br>
             <div class="form-group">
               <%= f.label :name %>
@@ -27,12 +27,17 @@
             </div>
 
             <div class="form-group">
-              <%= f.label 'Deutsch' %>
+              <%= f.label 'German common name' %>
               <%= f.text_field :german_name, class: 'form-control' %>
             </div>
 
             <div class="form-group">
-              <%= f.label :position %>
+              <%= f.label :parent_id, 'Parent taxon' %>
+              <%= f.collection_select(:parent_id, HigherOrderTaxon.all.order(:position), :id, :name, { :include_blank => '<no parent>' }, { class: 'form-control' }) %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :position, 'Display position index' %>
               <%= f.text_field :position,  class: 'form-control' %>
             </div>
 
@@ -45,6 +50,12 @@
               <%= f.label :projects, 'Projects this object belongs to' %>
               <%= project_list(@higher_order_taxon) %>
             </div>
+
+<!--            <div class="form-group">-->
+              <%#= f.label :project_ids, 'Projects this object belongs to' %>
+<!--              <br>-->
+              <%#= f.collection_select :project_ids, current_user.projects.order(:name), :id, :name, {}, { multiple: true }  %>
+<!--            </div>-->
           </div>
 
           <div class="tab-pane" id="assigned_orders">
@@ -70,7 +81,7 @@
             </table>
           </div>
 
-          <div class="tab-pane active" id="assigned_species">
+          <div class="tab-pane" id="assigned_species">
             <!-- Do not show species while creating HOT-->
             <% if @higher_order_taxon.id %>
               <br>
