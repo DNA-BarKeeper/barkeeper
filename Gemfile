@@ -41,6 +41,7 @@ gem 'jquery-fileupload-rails'
 gem 'jquery-turbolinks'
 gem 'select2-rails' # Integrate Select2 Javascript library
 
+gem 'ancestry'
 gem 'bcrypt', '~> 3.1.7', platforms: :ruby
 gem 'bio' # BioRuby
 gem 'bootstrap-sass'

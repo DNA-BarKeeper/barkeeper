@@ -18,7 +18,7 @@
       </thead>
 
       <tbody>
-      <% @higher_order_taxons.each do |higher_order_taxon| %>
+      <% @higher_order_taxa.each do |higher_order_taxon| %>
           <tr>
             <td><%= link_to higher_order_taxon.name, edit_higher_order_taxon_path(higher_order_taxon) %></span></td>
             <td><%= higher_order_taxon.german_name %></td>
