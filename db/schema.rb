@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190925131934) do
+ActiveRecord::Schema.define(version: 20191001081727) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -193,6 +193,8 @@ ActiveRecord::Schema.define(version: 20190925131934) do
     t.datetime "updated_at"
     t.string   "german_name", limit: 255
     t.integer  "position"
+    t.string   "ancestry"
+    t.index ["ancestry"], name: "index_higher_order_taxa_on_ancestry", using: :btree
   end
 
   create_table "higher_order_taxa_markers", id: false, force: :cascade do |t|
