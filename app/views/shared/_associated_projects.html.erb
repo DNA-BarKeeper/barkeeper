@@ -1,0 +1,5 @@
+<div class="form-group">
+  <%= form.label :project_ids, 'Projects this object belongs to' %>
+  <br>
+  <%= form.collection_select :project_ids, projects.order(:name), :id, :name, {}, { multiple: true }  %>
+</div>

@@ -63,10 +63,7 @@
 
             <div class="vertical-spacer"></div>
 
-            <div class="form-group">
-              <%= f.label :projects, 'Projects this object belongs to' %>
-              <%= project_list(@isolate) %>
-            </div>
+            <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@isolate) } %>
 
             <div id="isolate_copies">
 

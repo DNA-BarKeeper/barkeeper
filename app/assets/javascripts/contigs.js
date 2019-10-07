@@ -42,6 +42,11 @@ jQuery(function() {
         source: $('#contig_marker_sequence_name').data('autocomplete-source')
     });
 
+    $('#contig_project_ids').chosen({
+        allow_single_deselect: true,
+        no_results_text: 'No results matched'
+    });
+
     // do for all div with class partial_con
 
     $('.single-page-button').click(function () {

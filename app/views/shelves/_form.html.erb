@@ -9,10 +9,7 @@
         <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
       </div>
 
-      <div class="form-group">
-        <%= f.label :projects, 'Projects this object belongs to' %>
-        <%= project_list(@shelf) %>
-      </div>
+      <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@shelf) } %>
 
       <%= f.submit 'Update', :class => 'button right' %>
     <% end %>

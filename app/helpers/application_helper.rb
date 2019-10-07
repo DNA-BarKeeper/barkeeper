@@ -12,21 +12,18 @@ module ApplicationHelper
     end
   end
 
-  def project_list(record)
+  def associated_projects(record)
     projects = if user_signed_in?
-                 record.projects.select(:id, :name) & current_user.projects.select(:id, :name)
+                 if record.id?
+                   record.projects.where(id: current_user.projects.map(&:id)).select(:id, :name)
+                 else
+                   current_user.projects.select(:id, :name)
+                 end
                else
-                 record.projects.select(:id, :name) & Project.where(name: 'GBOL5').select(:id, :name)
+                 record.projects.select(:id, :name)
                end
 
-    html = +'<ul>'
-
-    projects.each do |project|
-      html << content_tag(:li, project.name)
-    end
-
-    html << '</ul>'
-    html.html_safe
+    projects
   end
 
   # Returns the full title on a per-page basis.

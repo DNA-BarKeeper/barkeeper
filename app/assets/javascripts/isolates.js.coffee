@@ -29,6 +29,11 @@ jQuery ->
     "order": [ 0, 'desc' ]
   });
 
+  $('#isolate_project_ids').chosen({
+    allow_single_deselect: true
+    no_results_text: 'No results matched'
+  });
+
   $('#isolate_individual_name').autocomplete
     source: $('#isolate_individual_name').data('autocomplete-source')
 

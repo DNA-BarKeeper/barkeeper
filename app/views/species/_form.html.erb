@@ -75,10 +75,7 @@
               <%= f.text_area :comment, class: 'form-control' %>
             </div>
 
-            <div class="form-group">
-              <%= f.label :projects, 'Projects this object belongs to' %>
-              <%= project_list(@species) %>
-            </div>
+            <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@species) } %>
 
             <%= f.submit 'Update', :class =>  'btn btn-default'%>
           </div>
