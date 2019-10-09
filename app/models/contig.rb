@@ -166,7 +166,7 @@ class Contig < ApplicationRecord
     if name == ''
       self.isolate = nil
     else
-      self.isolate = Isolate.find_or_create_by(lab_isolation_nr: name) if name.present? # TODO is it used? Add project if so
+      self.isolate = Isolate.find_or_create_by(display_name: name) if name.present? # TODO: Add project
     end
   end
 
