@@ -34,11 +34,11 @@ class MarkerSequence < ApplicationRecord
     isolate.try(:display_name)
   end
 
-  def isolate_lab_isolation_nr=(lab_isolation_nr)
-    if lab_isolation_nr == ''
+  def isolate_display_name=(isolate_display_name)
+    if isolate_display_name == ''
       self.isolate = nil
     else
-      self.isolate = Isolate.find_or_create_by(lab_isolation_nr: lab_isolation_nr) if lab_isolation_nr.present? # TODO is it used? Add project if so
+      self.isolate = Isolate.find_by(display_name: isolate_display_name) if isolate_display_name.present?
     end
   end
 
