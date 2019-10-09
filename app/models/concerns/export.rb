@@ -67,7 +67,7 @@ module Export
 
       sequences.includes(isolate: [individual: [species: [family: [order: :higher_order_taxon]]]]).each do |marker_sequence|
         if marker_sequence.sequence
-          species = marker_sequence.isolate&.individual&.species&.get_species_component
+          species = marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')
           family = marker_sequence.isolate&.individual&.species&.family&.name
           order = marker_sequence.isolate&.individual&.species&.family&.order&.name
           hot = marker_sequence.isolate&.individual&.species&.family&.order&.higher_order_taxon&.name
