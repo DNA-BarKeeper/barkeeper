@@ -4,6 +4,8 @@ class HigherOrderTaxon < ApplicationRecord
 
   multisearchable :against => :name
 
+  has_ancestry
+
   has_many :orders
   has_many :families, :through => :orders
   has_many :ngs_runs
