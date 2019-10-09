@@ -50,7 +50,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :isolate %>
+              <%= f.label :isolate_display_name, 'Isolate' %>
               <% if @marker_sequence.isolate %>
                   <%= link_to '', edit_isolate_path(@marker_sequence.isolate), :class => "glyphicon glyphicon-share-alt" %>
               <% end %>
