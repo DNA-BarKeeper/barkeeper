@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 GBOLapp::Application.routes.draw do
-  resources :herbaria
   root to: 'home#about'
 
   match 'help', to: 'home#help', via: 'get'
@@ -53,6 +52,8 @@ GBOLapp::Application.routes.draw do
   resources :clusters
 
   resources :individual_searches
+
+  resources :herbaria
 
   resources :contigs do
     collection do
@@ -119,7 +120,7 @@ GBOLapp::Application.routes.draw do
 
   resources :issues
 
-  resources :higher_order_taxons do
+  resources :higher_order_taxa do
     member do
       get 'show_species'
     end
