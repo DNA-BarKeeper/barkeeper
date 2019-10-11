@@ -90,6 +90,13 @@ class IsolatesController < ApplicationController
     end
   end
 
+  def show_clusters
+    respond_to do |format|
+      format.html
+      format.json { render json: ClusterDatatable.new(view_context, params[:id], current_project_id) }
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

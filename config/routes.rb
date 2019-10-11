@@ -194,6 +194,9 @@ GBOLapp::Application.routes.draw do
       get 'no_specimen'
       post :import
     end
+    member do
+      get 'show_clusters'
+    end
   end
 
   resources :mislabel_analyses do

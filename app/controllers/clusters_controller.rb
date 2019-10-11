@@ -8,7 +8,7 @@ class ClustersController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: ClusterDatatable.new(view_context, current_project_id) }
+      format.json { render json: ClusterDatatable.new(view_context, nil, current_project_id) }
     end
   end
 
