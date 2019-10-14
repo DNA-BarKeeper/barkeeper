@@ -51,6 +51,8 @@ GBOLapp::Application.routes.draw do
 
   resources :individual_searches
 
+  resources :herbaria
+
   resources :contigs do
     collection do
       get 'show_need_verify'
@@ -116,7 +118,7 @@ GBOLapp::Application.routes.draw do
 
   resources :issues
 
-  resources :higher_order_taxons do
+  resources :higher_order_taxa do
     member do
       get 'show_species'
     end
@@ -189,6 +191,9 @@ GBOLapp::Application.routes.draw do
       get 'duplicates'
       get 'no_specimen'
       post :import
+    end
+    member do
+      get 'show_clusters'
     end
   end
 

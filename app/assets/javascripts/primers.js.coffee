@@ -9,3 +9,8 @@ jQuery ->
       { "orderable": false, "targets": 5 }
     ]
   } );
+
+  $('#primer_project_ids').chosen({
+    allow_single_deselect: true
+    no_results_text: 'No results matched'
+  });

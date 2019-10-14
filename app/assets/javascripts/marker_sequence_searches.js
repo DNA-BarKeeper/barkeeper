@@ -5,9 +5,9 @@ jQuery(function() {
         sAjaxSource: $('#marker_sequence_searches').data('source'),
         "columnDefs": [{
             "orderable": false,
-            "targets": 2
+            "targets": 3
         }],
-        "order": [ 1, 'desc' ]
+        "order": [ 2, 'desc' ]
     });
 
     $('#marker_sequence_search_results').dataTable({

@@ -62,7 +62,7 @@ GBoL3541
     list_with_gbol_nrs.each do |i|
       outputstr += "#{i}\t"
 
-      isolate = Isolate.where(lab_nr: i).first
+      isolate = Isolate.where(lab_isolation_nr: i).first
 
       isolate.contigs.each do |c|
         outputstr += if c.verified_at.nil?
@@ -79,8 +79,6 @@ GBoL3541
 
     puts outputstr
 
-    puts
-
-    puts 'Done.'
+    puts "\nDone."
   end
 end

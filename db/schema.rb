@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190506133205) do
+ActiveRecord::Schema.define(version: 20191001081727) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -180,12 +180,21 @@ ActiveRecord::Schema.define(version: 20190506133205) do
     t.datetime "updated_at"
   end
 
+  create_table "herbaria", force: :cascade do |t|
+    t.string   "name"
+    t.string   "acronym"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "higher_order_taxa", force: :cascade do |t|
     t.string   "name",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "german_name", limit: 255
     t.integer  "position"
+    t.string   "ancestry"
+    t.index ["ancestry"], name: "index_higher_order_taxa_on_ancestry", using: :btree
   end
 
   create_table "higher_order_taxa_markers", id: false, force: :cascade do |t|
@@ -212,40 +221,44 @@ ActiveRecord::Schema.define(version: 20190506133205) do
     t.datetime "updated_at",               null: false
     t.integer  "project_id"
     t.integer  "user_id"
+    t.string   "herbarium"
     t.index ["project_id"], name: "index_individual_searches_on_project_id", using: :btree
     t.index ["user_id"], name: "index_individual_searches_on_user_id", using: :btree
   end
 
   create_table "individuals", force: :cascade do |t|
-    t.string   "specimen_id",        limit: 255
-    t.string   "DNA_bank_id",        limit: 255
-    t.string   "collector",          limit: 255
+    t.string   "specimen_id",             limit: 255
+    t.string   "DNA_bank_id",             limit: 255
+    t.string   "collector",               limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "silica_gel"
     t.date     "collected"
     t.integer  "species_id"
-    t.string   "herbarium",          limit: 255
-    t.string   "voucher",            limit: 255
-    t.string   "country",            limit: 255
-    t.string   "state_province",     limit: 255
+    t.string   "herbarium_code",          limit: 255
+    t.string   "country",                 limit: 255
+    t.string   "state_province",          limit: 255
     t.text     "locality"
-    t.string   "latitude_original",  limit: 255
-    t.string   "longitude_original", limit: 255
-    t.string   "elevation",          limit: 255
-    t.string   "exposition",         limit: 255
+    t.string   "latitude_original",       limit: 255
+    t.string   "longitude_original",      limit: 255
+    t.string   "elevation",               limit: 255
+    t.string   "exposition",              limit: 255
     t.text     "habitat"
-    t.string   "substrate",          limit: 255
-    t.string   "life_form",          limit: 255
-    t.string   "collection_nr",      limit: 255
-    t.string   "collection_date",    limit: 255
-    t.string   "determination",      limit: 255
-    t.string   "revision",           limit: 255
-    t.string   "confirmation",       limit: 255
+    t.string   "substrate",               limit: 255
+    t.string   "life_form",               limit: 255
+    t.string   "collectors_field_number", limit: 255
+    t.string   "collection_date",         limit: 255
+    t.string   "determination",           limit: 255
+    t.string   "revision",                limit: 255
+    t.string   "confirmation",            limit: 255
     t.text     "comments"
-    t.decimal  "latitude",                       precision: 15, scale: 6
-    t.decimal  "longitude",                      precision: 15, scale: 6
+    t.decimal  "latitude",                            precision: 15, scale: 6
+    t.decimal  "longitude",                           precision: 15, scale: 6
     t.boolean  "has_issue"
+    t.integer  "herbarium_id"
+    t.integer  "tissue_id"
+    t.index ["herbarium_id"], name: "index_individuals_on_herbarium_id", using: :btree
+    t.index ["tissue_id"], name: "index_individuals_on_tissue_id", using: :btree
   end
 
   create_table "individuals_projects", id: false, force: :cascade do |t|
@@ -266,7 +279,7 @@ ActiveRecord::Schema.define(version: 20190506133205) do
     t.integer  "plant_plate_id"
     t.integer  "individual_id"
     t.string   "dna_bank_id",                  limit: 255
-    t.string   "lab_nr",                       limit: 255
+    t.string   "lab_isolation_nr",             limit: 255
     t.boolean  "negative_control",                                                  default: false
     t.integer  "lab_id_orig"
     t.integer  "lab_id_copy"
@@ -282,6 +295,7 @@ ActiveRecord::Schema.define(version: 20190506133205) do
     t.integer  "user_id"
     t.text     "comment_orig"
     t.text     "comment_copy"
+    t.string   "display_name"
   end
 
   create_table "isolates_projects", id: false, force: :cascade do |t|
@@ -786,6 +800,8 @@ ActiveRecord::Schema.define(version: 20190506133205) do
   add_foreign_key "contig_searches", "projects"
   add_foreign_key "individual_searches", "projects"
   add_foreign_key "individual_searches", "users"
+  add_foreign_key "individuals", "herbaria"
+  add_foreign_key "individuals", "tissues"
   add_foreign_key "marker_sequence_searches", "mislabel_analyses"
   add_foreign_key "marker_sequence_searches", "projects"
   add_foreign_key "mislabel_analyses", "markers"

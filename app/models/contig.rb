@@ -129,8 +129,8 @@ class Contig < ApplicationRecord
           new_partial_con.aligned_qualities = []
           new_partial_con.save
 
-          isolate = Isolate.find_by_lab_nr(identifier_components[1])
-          isolate ||= Isolate.create(lab_nr: identifier_components[1], dna_bank_id: identifier_components[1])
+          isolate = Isolate.find_by_lab_isolation_nr(identifier_components[1])
+          isolate ||= Isolate.create(lab_isolation_nr: identifier_components[1], dna_bank_id: identifier_components[1])
           contig.isolate = isolate
 
           marker_sequence = MarkerSequence.find_or_create_by(name: contig.name)
@@ -159,14 +159,14 @@ class Contig < ApplicationRecord
   end
 
   def isolate_name
-    isolate.try(:lab_nr)
+    isolate.try(:display_name)
   end
 
   def isolate_name=(name)
     if name == ''
       self.isolate = nil
     else
-      self.isolate = Isolate.find_or_create_by(lab_nr: name) if name.present? # TODO is it used? Add project if so
+      self.isolate = Isolate.find_or_create_by(display_name: name) if name.present? # TODO: Add project
     end
   end
 
@@ -184,7 +184,7 @@ class Contig < ApplicationRecord
 
   def generate_name
     self.name = if marker.present? && isolate.present?
-                  "#{isolate.lab_nr}_#{marker.name}"
+                  "#{isolate.lab_isolation_nr}_#{marker.name}"
                 else
                   '<unnamed>'
                 end

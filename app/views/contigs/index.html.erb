@@ -26,7 +26,7 @@
   </div>
 </div>
 
-<% if current_user.admin? || current_user.supervisor? || current_user.name == "Virginia Duwe" %>
+<% if current_user&.admin? || current_user&.supervisor? %>
   <div class="well">
     Import Contigs from PDE file:<p></p>
     <%= form_tag import_contigs_path, multipart: true do %>

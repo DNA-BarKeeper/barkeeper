@@ -36,6 +36,8 @@ class IndividualSearch < ApplicationRecord
       individuals = individuals.without_species if has_species == 'no_species'
     end
 
+    individuals = individuals.joins(:herbarium).where('herbaria.acronym ilike ?', "%#{herbarium}%") if herbarium.present?
+
     individuals = individuals.joins(species: { family: :order }).where('orders.name ilike ?', "%#{self.order}%") if order.present?
 
     individuals = individuals.joins(species: :family).where('families.name ilike ?', "%#{family}%") if family.present?

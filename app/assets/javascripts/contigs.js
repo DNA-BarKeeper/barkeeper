@@ -42,16 +42,25 @@ jQuery(function() {
         source: $('#contig_marker_sequence_name').data('autocomplete-source')
     });
 
+    $('#contig_project_ids').chosen({
+        allow_single_deselect: true,
+        no_results_text: 'No results matched'
+    });
+
     // do for all div with class partial_con
 
     $('.single-page-button').click(function () {
+        $('button.first-page-button').attr("disabled", true);
+        $('button.last-page-button').attr("disabled", true);
+        $('button.next-page-button').attr("disabled", true);
+        $('button.previous-page-button').attr("disabled", true);
 
-        //todo: rm all other buttons for page navigation
-
-        var partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
-        var page = 0;
+        let partial_con_container_id = $(this).closest('table').find('.partial_con').attr("id");
+        let page = 0;
 
         draw_as_single_page(partial_con_container_id, page);
+
+        $('button.single-page-button').hide();
     });
 
     $('.go-to-button-partial-con').click( function () {
@@ -112,14 +121,92 @@ jQuery(function() {
     });
 
     $(".hide_primer_read").click(function() {
-        var id = $(this).data('divId');
+        let id = $(this).data('divId');
         $(id).hide();
     });
 
     $(".show_primer_read").click(function() {
-        var id = $(this).data('divId');
+        let id = $(this).data('divId');
         $(id).show();
     });
+
+    $(".move_up").click(function() {
+        let id = $(this).data('divId');
+        let element = $(id + "_contig");
+        let group = $(id + "_group");
+        let prev_group = $('#' + element.prev().attr("id").replace("contig", "group"));
+
+        let diff = 58; // Height of a read
+        let translate_y = 0;
+        let translate_y_prev = 0;
+
+        if (prev_group.offset()) {
+            element.insertBefore(element.prev()).hide().show(300, 'linear');
+
+            if (group.attr("transform")) {
+                let string = group.attr("transform");
+                translate_y = parseInt(string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",")[1]);
+            }
+
+            if (prev_group.attr("transform")) {
+                let string_prev = prev_group.attr("transform");
+                translate_y_prev = parseInt(string_prev.substring(string_prev.indexOf("(")+1, string_prev.indexOf(")")).split(",")[1]);
+            }
+
+            group.attr("transform", `translate(0, ${translate_y - diff})`);
+            prev_group.attr("transform", `translate(0, ${translate_y_prev + diff})`);
+        }
+    });
+
+    $(".move_down").click(function() {
+        let id = $(this).data('divId');
+        let element = $(id + "_contig");
+        let group = $(id + "_group");
+        let next_group = $('#' + element.next().attr("id").replace("contig", "group"));
+
+        let diff = 58; // Height of a read
+        let translate_y = 0;
+        let translate_y_next = 0;
+
+        if (element.next().attr("id") != "consensus") { // Do not move consensus sequence
+            element.insertAfter(element.next()).hide().show(300, 'linear');
+
+            if (group.attr("transform")) {
+                let string = group.attr("transform");
+                translate_y = parseInt(string.substring(string.indexOf("(")+1, string.indexOf(")")).split(",")[1]);
+            }
+
+            if (next_group.attr("transform")) {
+                let string_next = next_group.attr("transform");
+                translate_y_next = parseInt(string_next.substring(string_next.indexOf("(")+1, string_next.indexOf(")")).split(",")[1]);
+            }
+
+            group.attr("transform", `translate(0, ${translate_y + diff})`);
+            next_group.attr("transform", `translate(0, ${translate_y_next - diff})`);
+        }
+    });
+
+    $(".dropbtn").click(function() {
+        let id = $(this).data('divId');
+        let dropdown = $(id + "_dropdown");
+        let visible = dropdown.is(":visible"); // Has to be stored here to toggle correct state
+
+        $('.dropdown-content').hide(); // Hide all dropdowns
+
+        if (visible) {
+            dropdown.hide();
+        }
+        else {
+            dropdown.show();
+        }
+    });
+});
+
+// Hide all dropdowns if user clicks anywhere but on a dropdown button
+$(document).click(function(e) {
+    if (!(e.target.matches('.dropbtn') || e.target.matches('.glyphicon-info-sign'))) {
+        $('.dropdown-content').hide();
+    }
 });
 
 function draw_as_single_page(id, page){
@@ -146,6 +233,7 @@ function draw_as_single_page(id, page){
             dataType: 'json',
             success: function (data) {
                 mm_container.empty();
+
                 draw_partial_con(data, container_name, contig_drawing_width);
                 $( "body" ).data("current_page", data.page);
             },
@@ -225,7 +313,6 @@ function draw_position(id, position) {
 }
 
 function draw_partial_con(partial_contig, container_name, contig_drawing_width){
-
 //    compute height:
 
 //    pixel per read:
@@ -259,7 +346,8 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
     var svg = d3.select(container_name)
         .append('svg')
         .attr('width', contig_drawing_width - 20) // Substract 20 pixel to adjust for scroll bar in page mode
-        .attr('height', h);
+        .attr('height', h)
+        .attr('id', 'svg_contig');
     var x = 0;
     var y = 20;
 
@@ -268,12 +356,28 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
     var font_size = "7px";
 
 
-    var used_reads = partial_contig.primer_reads;
+    // Get IDs from sequence divs here to draw sequence SVGs in correct order
+    var ids = $('#partial-con .read-div').map(function(){
+        return parseInt($(this).attr('id').match(/.+_(\d+)_.+/)[1]);
+    }).get();
+
+    // Sort reads by current order of IDs
+    var used_reads = partial_contig.primer_reads.sort(function(a, b){
+        return ids.indexOf(a.id) - ids.indexOf(b.id);
+    });
+
 
     // For each read to show in assembly:
-    for (var used_read_index=0; used_read_index < used_reads.length; used_read_index++){
+    for (var used_read_index=0; used_read_index < used_reads.length; used_read_index++) {
 
         var used_read = used_reads[used_read_index];
+
+        // Create nested group necessary for reordering
+        var read_group = svg
+            .append('g')
+            .style("transition", "transform 0.4s")
+            .attr("transform", "translate(0,0)")
+            .attr('id', "primer_read_" + used_read.id + "_group");
 
         var seq1 = null;
         if (used_read.aligned_seq){
@@ -419,22 +523,22 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             .y(function(d) { return d.y; });
 
         //draw line SVG Path for all visible alignment positions simultaneously:
-        svg.append("path")
+        read_group.append("path")
             .attr("d", lineFunction(atrace_line_data))
             .attr("stroke", "green")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
-        svg.append("path")
+        read_group.append("path")
             .attr("d", lineFunction(ctrace_line_data))
             .attr("stroke", "blue")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
-        svg.append("path")
+        read_group.append("path")
             .attr("d", lineFunction(gtrace_line_data))
-            .attr("stroke", "black")
+            .attr("stroke", "orange")
             .attr("stroke-width", 0.5)
             .attr("fill", "none");
-        svg.append("path")
+        read_group.append("path")
             .attr("d", lineFunction(ttrace_line_data))
             .attr("stroke", "red")
             .attr("stroke-width", 0.5)
@@ -482,26 +586,33 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
             var ch= seq1[s];
 
             if (ch == 'A') {
-                color = 'green';
+                color = '#5AE45D';
             } else if (ch == 'C') {
-                color = 'blue';
+                color = '#5A5AE6';
             } else if (ch == 'G') {
-                color = 'black';
+                color = '#E2E65A';
             } else if (ch == 'T') {
-                color = 'red';
+                color = '#E65A5A';
             } else {
-                color = 'gray';
+                color = 'lightgray';
             }
 
             x=x+10;
 
-            svg.append("text")
+            read_group.append('rect')
+                .attr("x", x - 5)
+                .attr("y", y - 11)
+                .attr("width", 10)
+                .attr("height", 14)
+                .attr("fill", color);
+
+            read_group.append("text")
                 .attr("x", x)
                 .attr("y", y)
                 .text(ch)
                 .attr("font-family", "sans-serif")
                 .attr("font-size", font_size)
-                .attr("fill", color)
+                .attr("fill", "black")
                 .attr("text-anchor", 'middle')
                 .attr("id", used_read.id + "-" + used_read.original_positions[s])
                 .style("cursor", "crosshair")
@@ -531,23 +642,31 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 
         //sequence row:
 
-        color = 'gray';
+        color = 'lightgray';
         font_size = '10px';
 
         for (s=0; s< partial_contig.aligned_sequence.length; s++){
             ch= partial_contig.aligned_sequence[s];
             if (ch == 'A') {
-                color = 'green';
+                color = '#5AE45D';
             } else if (ch == 'C') {
-                color = 'blue';
+                color = '#5A5AE6';
             } else if (ch == 'G') {
-                color = 'black';
+                color = '#E2E65A';
             } else if (ch == 'T') {
-                color = 'red';
+                color = '#E65A5A';
             } else {
-                color = 'gray';
+                color = 'lightgray';
             }
+
             x=x+10;
+
+            svg.append('rect')
+                .attr("x", x - 5)
+                .attr("y", y - 11)
+                .attr("width", 10)
+                .attr("height", 14)
+                .attr("fill", color);
 
             svg.append("text")
                 .attr("x", x)
@@ -556,7 +675,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                 .attr("font-family", "sans-serif")
                 .attr("font-size", font_size)
                 .attr("font-weight", "bold")
-                .attr("fill", color)
+                .attr("fill", "black")
                 .attr("text-anchor", 'middle');
         }
         y+=10;
@@ -566,7 +685,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
         // coordinates - position indicator
 
         color = 'gray';
-        font_size = '7px';
+        font_size = '10px';
 
         for (var c=partial_contig.start_pos; c < partial_contig.end_pos; c++) {
             var disp = c + 1;
@@ -583,7 +702,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
                     .attr("text-anchor", 'middle');
                 svg.append("text")
                     .attr("x", x+10)
-                    .attr("y", y+10)
+                    .attr("y", y+12)
                     .text(disp)
                     .attr("font-family", "sans-serif")
                     .attr("font-size", font_size)

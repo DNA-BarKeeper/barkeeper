@@ -223,9 +223,9 @@ class PrimerRead < ApplicationRecord
             isolate_component = "#{db_number_name_components[1]} #{db_number_name_components[2]}" # DNABank number
           end
 
-          isolate = Isolate.where('isolates.lab_nr ILIKE ?', isolate_component.to_s).first
+          isolate = Isolate.where('isolates.lab_isolation_nr ILIKE ?', isolate_component.to_s).first
           isolate ||= Isolate.where('isolates.dna_bank_id ILIKE ?', isolate_component.to_s).first
-          isolate ||= Isolate.create(lab_nr: isolate_component)
+          isolate ||= Isolate.create(lab_isolation_nr: isolate_component)
 
           isolate.update(dna_bank_id: isolate_component) if db_number_name_components
           isolate.add_projects(projects.pluck(:id))

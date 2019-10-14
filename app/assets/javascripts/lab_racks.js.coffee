@@ -8,3 +8,8 @@ jQuery ->
     ]
     "order": [ 0, 'desc' ]
   } );
+
+  $('#lab_rack_project_ids').chosen({
+    allow_single_deselect: true
+    no_results_text: 'No results matched'
+  });

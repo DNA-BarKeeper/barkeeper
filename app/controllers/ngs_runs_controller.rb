@@ -108,7 +108,8 @@ class NgsRunsController < ApplicationController
   end
 
   def import
-    NGSResultsImporter.perform_async(@ngs_run.id)
+    render plain: "Results stored in #{params[:results_path]} will be imported in the background.\n"
+    NGSResultsImporter.perform_async(@ngs_run.id, params[:results_path])
   end
 
   def analysis_results
@@ -122,7 +123,7 @@ class NgsRunsController < ApplicationController
     tpm = TagPrimerMap.create(tag_primer_map: params[:tpm])
 
     if tpm.check_tag_primer_map
-      send_data(tpm.revised_tag_primer_map, filename: tpm.tag_primer_map_file_name, type: 'application/txt')
+      send_data(tpm.revised_tag_primer_map([5]), filename: tpm.tag_primer_map_file_name, type: 'application/txt')
     else
       render plain: "The Tag Primer Map is not properly formatted. Please try again after checking the file!\n"
     end

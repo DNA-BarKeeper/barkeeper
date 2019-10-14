@@ -144,7 +144,7 @@ namespace :data do
       # inconsistent in DNABank: sometimes lowercase, sometimes uppercase o in GBOL:
       gbol_nr[2] = 'o' if gbol_nr[2] == 'O'
       puts gbol_nr
-      isolate = Isolate.find_or_create_by(lab_nr: gbol_nr)
+      isolate = Isolate.find_or_create_by(lab_isolation_nr: gbol_nr)
       isolate.update(individual: individual)
     end
 
@@ -154,10 +154,10 @@ namespace :data do
   desc 'Get all GBOL-Nrs that have no specimen assigned and extract all specimen info from DNABank, if corresponding GBOL-Nr exists there.'
   task get_DNABank_by_gbol_nr: :environment do
     # get all gbol-nr where no specimen
-    Isolate.where(individual: nil).where('isolates.lab_nr ILIKE ?', '%GBOL%').each do |i|
+    Isolate.where(individual: nil).where('isolates.lab_isolation_nr ILIKE ?', '%GBOL%').each do |i|
       # for each number, do a call for GBOL and GBoL versions:
 
-      gbol_nr = i.lab_nr
+      gbol_nr = i.lab_isolation_nr
 
       gbol_nr_1 = gbol_nr
 
@@ -263,7 +263,7 @@ namespace :data do
 
         end
 
-        isolate = Isolate.where(lab_nr: i.lab_nr).first
+        isolate = Isolate.where(lab_isolation_nr: i.lab_isolation_nr).first
 
         isolate&.update(individual: individual)
 
@@ -281,7 +281,7 @@ namespace :data do
       # for each number, do a call for GBOL and GBoL versions:
 
       begin
-        gbol_nr = individual.isolates.first.lab_nr
+        gbol_nr = individual.isolates.first.lab_isolation_nr
 
         gbol_nr_1 = gbol_nr
 
@@ -382,7 +382,7 @@ namespace :data do
 
           end
 
-          isolate = Isolate.where(lab_nr: i.lab_nr).first
+          isolate = Isolate.where(lab_isolation_nr: i.lab_isolation_nr).first
 
           isolate&.update(individual: individual)
 
@@ -415,7 +415,7 @@ namespace :data do
         species = i.individual.species.species_component if i.individual.species
       end
 
-      gbol_nr = i.lab_nr
+      gbol_nr = i.lab_isolation_nr
 
       unit = nil
       unit_id = nil
@@ -459,7 +459,7 @@ namespace :data do
         if unit_id.gsub(/\s+/, '') == i.dna_bank_id.gsub(/\s+/, '')
           # don't output anything - correction from upcoming DNABank query will not change anything
         else
-          outputstr += "#{i.id}\t#{i.lab_nr}\t#{i.dna_bank_id}\t#{specimen}\t#{species}\t"
+          outputstr += "#{i.id}\t#{i.lab_isolation_nr}\t#{i.dna_bank_id}\t#{specimen}\t#{species}\t"
           outputstr += "#{unit_id}\t" # future dna_bank_id
 
           if specimen_id

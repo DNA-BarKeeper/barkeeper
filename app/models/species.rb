@@ -176,6 +176,6 @@ class Species < ApplicationRecord
   end
 
   def family_name=(name)
-    self.family = Family.find_or_create_by(name: name) if name.present? # TODO is it used? Add project if so
+    self.family = Family.find_or_create_by(name: name) if name.present? # TODO: Add project
   end
 end

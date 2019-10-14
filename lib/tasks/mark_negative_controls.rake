@@ -74,7 +74,7 @@ namespace :data do
     ]
 
     controls.each do |c|
-      isolate = Isolate.where(lab_nr: c).first
+      isolate = Isolate.where(lab_isolation_nr: c).first
       isolate&.update(negative_control: true)
     end
 

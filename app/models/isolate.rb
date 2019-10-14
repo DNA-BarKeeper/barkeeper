@@ -14,9 +14,10 @@ class Isolate < ApplicationRecord
   belongs_to :tissue
   belongs_to :individual
 
-  validates_presence_of :lab_nr
+  validates :display_name, presence: { message: "Either a DNA Bank Number or a lab isolation number must be provided!" }
+  before_validation :assign_display_name
 
-  after_save :assign_specimen, if: :lab_nr_changed?
+  after_save :assign_specimen, :if => proc{ |iso| iso.lab_isolation_nr_changed? || iso.dna_bank_id_changed? }
 
   scope :recent, -> { where('isolates.updated_at > ?', 1.hours.ago) }
   scope :no_controls, -> { where(negative_control: false) }
@@ -29,10 +30,6 @@ class Isolate < ApplicationRecord
     [isolates.size, isolates_s.distinct.count, isolates.distinct.count, isolates_i.distinct.count]
   end
 
-  def self.import_abcd(file, project_id)
-
-  end
-
   def self.import(file, project_id)
     spreadsheet = Isolate.open_spreadsheet(file)
     header = spreadsheet.row(1)
@@ -41,13 +38,13 @@ class Isolate < ApplicationRecord
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
       # Update existing isolate or create new, case-insensitive!
-      lab_nr = row['GBoL Isolation No.']
-      lab_nr ||= row['DNA Bank No']
+      lab_isolation_nr = row['GBoL Isolation No.']
+      lab_isolation_nr ||= row['DNA Bank No'] # TODO: Not correct/necessary anymore, change!
 
-      next unless lab_nr # Cannot save isolate without lab_nr
+      next unless lab_isolation_nr # Cannot save isolate without lab_isolation_nr
 
-      isolate = Isolate.where('lab_nr ILIKE ?', lab_nr).first
-      isolate ||= Isolate.new(lab_nr: lab_nr)
+      isolate = Isolate.where('lab_isolation_nr ILIKE ?', lab_isolation_nr).first
+      isolate ||= Isolate.new(lab_isolation_nr: lab_isolation_nr)
 
       plant_plate = PlantPlate.find_or_create_by(name: row['GBoL5 Tissue Plate No.'].to_i.to_s)
       plant_plate.add_project(project_id)
@@ -85,7 +82,7 @@ class Isolate < ApplicationRecord
       individual.habitat = row['Habitat']
       individual.substrate = row['Substrate']
       individual.life_form = row['Life form']
-      individual.collection_nr = row['Collection number']
+      individual.collectors_field_number = row['Collection number']
       individual.collection_date = row['Date']
       individual.determination = row['Determination']
       individual.revision = row['Revision']
@@ -97,6 +94,14 @@ class Isolate < ApplicationRecord
       individual.save!
 
       isolate.update(individual: individual)
+    end
+  end
+
+  def assign_display_name(db_id = self.dna_bank_id, isolation_nr = self.lab_isolation_nr)
+    if db_id && !db_id.empty?
+      self.display_name = db_id
+    else
+      self.display_name = isolation_nr
     end
   end
 

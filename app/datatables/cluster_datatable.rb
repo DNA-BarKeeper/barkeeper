@@ -6,8 +6,9 @@ class ClusterDatatable
   delegate :url_helpers, to: 'Rails.application.routes'
   delegate :params, :link_to, :h, to: :@view
 
-  def initialize(view, current_default_project)
+  def initialize(view, isolate_id, current_default_project)
     @view = view
+    @isolate_id = isolate_id
     @current_default_project = current_default_project
   end
 
@@ -52,9 +53,16 @@ class ClusterDatatable
   end
 
   def fetch_clusters
-    clusters = Cluster.includes(:ngs_run, isolate: [individual: :species])
-                      .in_project(@current_default_project)
-                      .order("#{sort_column} #{sort_direction}")
+    if @isolate_id
+      clusters = Cluster.includes(:ngs_run, isolate: [individual: :species])
+                     .where(isolate_id: @isolate_id)
+                     .in_project(@current_default_project)
+                     .order("#{sort_column} #{sort_direction}")
+    else
+      clusters = Cluster.includes(:ngs_run, isolate: [individual: :species])
+                     .in_project(@current_default_project)
+                     .order("#{sort_column} #{sort_direction}")
+    end
 
     clusters = clusters.page(page).per_page(per_page)
 

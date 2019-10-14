@@ -124,8 +124,8 @@ class IndividualsController < ApplicationController
                                        :DNA_bank_id,
                                        :collector,
                                        :specimen_id,
-                                       :herbarium,
-                                       :voucher,
+                                       :herbarium_code,
+                                       :herbarium_id,
                                        :country,
                                        :state_province,
                                        :locality,
@@ -138,7 +138,7 @@ class IndividualsController < ApplicationController
                                        :habitat,
                                        :substrate,
                                        :life_form,
-                                       :collection_nr,
+                                       :collectors_field_number,
                                        :collection_date,
                                        :determination,
                                        :revision,
@@ -146,6 +146,7 @@ class IndividualsController < ApplicationController
                                        :comments,
                                        :species_id,
                                        :species_name,
+                                       :tissue_id,
                                        project_ids: [])
   end
 end
