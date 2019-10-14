@@ -45,7 +45,7 @@ module Export
       if records.first.is_a? Contig
         fasta_contigs(records, options[:mode])
       elsif records.first.is_a? MarkerSequence
-        fasta_marker_sequences(records, options[:metadata])
+        fasta_marker_sequences(records, options[:metadata], options[:warnings])
       end
 
       @fasta
@@ -67,7 +67,7 @@ module Export
 
       sequences.includes(isolate: [individual: [species: [family: [order: :higher_order_taxon]]]]).each do |marker_sequence|
         if marker_sequence.sequence
-          species = marker_sequence.isolate&.individual&.species&.get_species_component
+          species = marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')
           family = marker_sequence.isolate&.individual&.species&.family&.name
           order = marker_sequence.isolate&.individual&.species&.family&.order&.name
           hot = marker_sequence.isolate&.individual&.species&.family&.order&.higher_order_taxon&.name
@@ -150,18 +150,20 @@ module Export
       end
     end
 
-    def fasta_marker_sequences(sequences, meta_data)
+    def fasta_marker_sequences(sequences, meta_data, warnings=false)
       sequences.each do |marker_sequence|
         name = marker_sequence.name.delete(' ')
 
         if meta_data
-          name << "|#{marker_sequence.isolate&.lab_nr}" # Isolate
+          name << "|#{marker_sequence.isolate&.display_name}" # Isolate
           name << "|#{marker_sequence.isolate&.individual&.specimen_id}" # Specimen
           name << "|#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}" # Species
           name << "|#{marker_sequence.isolate&.individual&.species&.family&.name}" # Family
         else
           name << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}" # Species
         end
+
+        name << "|sativa_warning" if warnings && marker_sequence.has_unsolved_mislabels # Label sequences with SATIVA warnings
 
         add_sequence_to_fasta(name, marker_sequence.sequence) if marker_sequence.sequence
       end

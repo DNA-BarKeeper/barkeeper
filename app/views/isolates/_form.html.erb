@@ -1,9 +1,9 @@
-<% provide(:title, @isolate.lab_nr) %>
+<% provide(:title, @isolate.display_name) %>
 <%= show_val_errors(@isolate)%>
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Isolate <%= @isolate.lab_nr %>
+    <h3 class="panel-title">Isolate <%= @isolate.display_name %>
 
       <% if @isolate.try(:individual).try(:species) %>
           - <%=link_to(@isolate.individual.species.name_for_display, edit_species_path(@isolate.individual.species.id))  %>
@@ -29,13 +29,13 @@
             <br>
 
             <div class="form-group">
-              <%= f.label :lab_nr, 'Lab isolation number' %>
-              <%= f.text_field :lab_nr,  class: 'form-control' %>
+              <%= f.label :dna_bank_id, 'DNA Bank ID' %>
+              <%= f.text_field :dna_bank_id,  class: 'form-control' %>
             </div>
 
             <div class="form-group">
-              <%= f.label :dna_bank_id, 'DNA Bank ID' %>
-              <%= f.text_field :dna_bank_id,  class: 'form-control' %>
+              <%= f.label :lab_isolation_nr, 'Lab isolation number' %>
+              <%= f.text_field :lab_isolation_nr,  class: 'form-control' %>
             </div>
 
             <div class="form-group">
@@ -63,10 +63,7 @@
 
             <div class="vertical-spacer"></div>
 
-            <div class="form-group">
-              <%= f.label :projects, 'Projects this object belongs to' %>
-              <%= project_list(@isolate) %>
-            </div>
+            <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@isolate) } %>
 
             <div id="isolate_copies">
 
@@ -207,27 +204,25 @@
           </div>
 
           <div class="tab-pane" id="assigned_clusters">
-            <br>
-            <table  class="table table-striped table-hover table-bordered">
-
-              <thead>
-              <tr>
-                <th>Name</th>
-              </tr>
-              </thead>
-
-              <tbody>
-              <% @isolate.clusters.order(:name).each do |cl| %>
-                <tr>
-                  <td>
-                    <%= link_to cl.name, cluster_path(cl) %>
-                  </td>
-                </tr>
-              <% end %>
-              </tbody>
-
-            </table>
-
+            <% if @isolate.id %>
+              <br>
+              <div class="wideTable">
+                <table id="clusters" data-source="<%= show_clusters_isolate_url(format: "json") %>" class="table table-striped table-hover table-bordered">
+                  <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>NGS Run</th>
+                    <th>Species</th>
+                    <th>Specimen</th>
+                    <th>Last updated</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+            <% end %>
           </div>
 
           <div class="tab-pane" id="assigned_contigs">

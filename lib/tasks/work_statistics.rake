@@ -8,9 +8,9 @@ namespace :data do
     range = Time.new(args[:year].to_i, 1, 1).all_year
     prefix = lab_prefixes[args[:labcode].downcase.to_sym]
 
-    isolates = Isolate.where('lab_nr ilike ?', "#{prefix}%")
+    isolates = Isolate.where('lab_isolation_nr ilike ?', "#{prefix}%")
                       .where(created_at: range)
-                      .select(:id, :lab_nr)
+                      .select(:id, :lab_isolation_nr)
     contigs = Contig.where('contigs.name ilike ?', "#{prefix}%")
                     .where(verified_at: range)
                     .select(:id, :name)
@@ -62,8 +62,8 @@ namespace :data do
     puts 'Calculating activities in total...'
 
     all_isolates_count = Isolate.all.size
-    isolates_bonn_cnt = Isolate.where('lab_nr ilike ?', '%gbol%').size
-    isolates_berlin_cnt = Isolate.where('lab_nr ilike ?', '%db%').size
+    isolates_bonn_cnt = Isolate.where('lab_isolation_nr ilike ?', '%gbol%').size
+    isolates_berlin_cnt = Isolate.where('lab_isolation_nr ilike ?', '%db%').size
     other_isolates_count = all_isolates_count - isolates_bonn_cnt - isolates_berlin_cnt
     puts "Number of isolates: #{all_isolates_count} (total), #{isolates_bonn_cnt} (Bonn), #{isolates_berlin_cnt} (Berlin), #{other_isolates_count} (not assigned to a lab)"
 

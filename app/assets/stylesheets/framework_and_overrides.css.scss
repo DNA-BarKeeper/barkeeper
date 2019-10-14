@@ -307,3 +307,91 @@ html {
 .multiselect-item.multiselect-group > a {
   padding-left: 0;
 }
+
+// Styles for read dropdown menu in contig view
+/* Dropdown Button */
+.dropbtn {
+  padding: 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+  color: #2980B9;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  font-size: 14px;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #ddd
+}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {
+  display: block;
+}
+
+/* Styles for Devise */
+.radio, .checkbox {
+  margin-left: 20px;
+}
+
+/* Styles for nested taxa index */
+.higher_order_taxon {
+  border: 1px solid lightgrey;
+  margin: 4px 8px;
+  padding: 5px;
+  height: 34px;
+  color: #555555;
+  background-color: #fff;
+  background-image: none;
+  border-radius: 4px;
+  display: inline-block
+}
+
+.nested_taxa {
+  margin-left: 2%;
+}
+
+.nested_taxa .nested_taxa .nested_taxa .nested_taxa .nested_taxa .nested_taxa {
+  margin-left: 0;
+}
+
+/* Styles for Chosen */
+.chosen-container-multi .chosen-choices {
+  //display: inline-block;
+  border: 1px solid lightgrey;
+  border-radius: 4px;
+  background-color: #fff;
+  background-image: none;
+  padding: 5px;
+}
+
+.chosen-container {
+  font-size: 14px;
+  width: 190px !important;
+}

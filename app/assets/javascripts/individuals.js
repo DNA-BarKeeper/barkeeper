@@ -9,6 +9,11 @@ jQuery(function() {
         "order": [5, 'desc']
     });
 
+    $('#individual_project_ids').chosen({
+        allow_single_deselect: true,
+        no_results_text: 'No results matched'
+    });
+
     return $('#individual_species_name').autocomplete({
         source: $('#individual_species_name').data('autocomplete-source')
     });

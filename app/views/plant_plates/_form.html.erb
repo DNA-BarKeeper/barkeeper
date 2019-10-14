@@ -6,14 +6,11 @@
   <div class="panel-body">
     <%= form_for(@plant_plate) do |f| %>
       <div class="form-group">
-        <%= f.label "Name/Code" %>
+        <%= f.label :name, "Name / Code" %>
         <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
       </div>
 
-      <div class="form-group">
-        <%= f.label :projects, 'Projects this object belongs to' %>
-        <%= project_list(@plant_plate) %>
-      </div>
+      <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@plant_plate) } %>
 
       <%= f.submit 'Update', :class => 'btn btn-default' %>
     <% end %>

@@ -1,0 +1,9 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Top-level Taxa</h3>
+  </div>
+  <%= nested_taxa(@higher_order_taxa.arrange(:order => :position)) %>
+</div>
+
+<%= link_to 'New top-level taxon', new_higher_order_taxon_path %>
+

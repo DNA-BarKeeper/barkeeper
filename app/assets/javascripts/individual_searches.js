@@ -5,9 +5,9 @@ jQuery(function() {
         sAjaxSource: $('#individual_searches').data('source'),
         "columnDefs": [{
             "orderable": false,
-            "targets": 2
+            "targets": 3
         }],
-        "order": [ 1, 'desc' ]
+        "order": [ 2, 'desc' ]
     });
 
     $('#individual_search_results').dataTable({
@@ -24,6 +24,10 @@ jQuery(function() {
     $('#individual_search_specimen_id').autocomplete({
         source: $('#individual_search_specimen_id').data('autocomplete-source'),
         minLength: 2
+    });
+
+    $('#individual_search_herbarium').autocomplete({
+        source: $('#individual_search_herbarium').data('autocomplete-source')
     });
 
     $('#individual_search_species').autocomplete({

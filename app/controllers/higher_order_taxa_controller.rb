@@ -1,16 +1,15 @@
 # frozen_string_literal: true
 
-class HigherOrderTaxonsController < ApplicationController
+class HigherOrderTaxaController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
   before_action :set_higher_order_taxon, only: %i[show edit update destroy]
 
-  # GET /higher_order_taxons
-  # GET /higher_order_taxons.json
+
   def index
-    @higher_order_taxons = HigherOrderTaxon.order(:position).in_project(current_project_id)
+    @higher_order_taxa = HigherOrderTaxon.order(:position).in_project(current_project_id)
   end
 
   def show_species
@@ -20,27 +19,21 @@ class HigherOrderTaxonsController < ApplicationController
     end
   end
 
-  # GET /higher_order_taxons/1
-  # GET /higher_order_taxons/1.json
   def show; end
 
-  # GET /higher_order_taxons/new
   def new
     @higher_order_taxon = HigherOrderTaxon.new
   end
 
-  # GET /higher_order_taxons/1/edit
   def edit; end
 
-  # POST /higher_order_taxons
-  # POST /higher_order_taxons.json
   def create
     @higher_order_taxon = HigherOrderTaxon.new(higher_order_taxon_params)
     @higher_order_taxon.add_project(current_project_id)
 
     respond_to do |format|
       if @higher_order_taxon.save
-        format.html { redirect_to higher_order_taxons_path, notice: 'Higher order taxon was successfully created.' }
+        format.html { redirect_to higher_order_taxa_path, notice: 'Higher order taxon was successfully created.' }
         format.json { render :show, status: :created, location: @higher_order_taxon }
       else
         format.html { render :new }
@@ -49,12 +42,10 @@ class HigherOrderTaxonsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /higher_order_taxons/1
-  # PATCH/PUT /higher_order_taxons/1.json
   def update
     respond_to do |format|
       if @higher_order_taxon.update(higher_order_taxon_params)
-        format.html { redirect_to higher_order_taxons_path, notice: 'Higher order taxon was successfully updated.' }
+        format.html { redirect_to higher_order_taxa_path, notice: 'Higher order taxon was successfully updated.' }
         format.json { render :show, status: :ok, location: @higher_order_taxon }
       else
         format.html { render :edit }
@@ -63,12 +54,10 @@ class HigherOrderTaxonsController < ApplicationController
     end
   end
 
-  # DELETE /higher_order_taxons/1
-  # DELETE /higher_order_taxons/1.json
   def destroy
     @higher_order_taxon.destroy
     respond_to do |format|
-      format.html { redirect_to higher_order_taxons_url, notice: 'Higher order taxon was successfully destroyed.' }
+      format.html { redirect_to higher_order_taxa_url, notice: 'Higher order taxon was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

@@ -3,17 +3,6 @@
 require 'net/http'
 require 'nokogiri'
 
-def get_state(i)
-  if i.locality
-    regex = /^([A-Za-z0-9\-]+)\..+/
-    matches = i.locality.match(regex)
-    if matches
-      state_component = matches[1]
-      i.update(state_province: state_component)
-    end
-  end
-end
-
 namespace :data do
   desc 'Change precision of existing specimen location data records'
   task change_location_data_precision: :environment do
@@ -83,17 +72,6 @@ namespace :data do
     puts 'Done.'
   end
 
-  desc 'fix empty state-province from DNABank- import'
-  task fix_state_province: :environment do
-    Individual.where(state_province: nil).each do |i|
-      get_state(i)
-    end
-
-    Individual.where(state_province: '').each do |i|
-      get_state(i)
-    end
-  end
-
   # TODO: scary loop in which arr.elements are deleted - fix!
 
   desc 'Merge multiple copies of same contigs into one with all associations & attributes'
@@ -154,15 +132,15 @@ namespace :data do
   task merge_duplicate_isolates: :environment do
     # get list w duplicates
     a = []
-    Isolate.select('lab_nr').all.each do |i|
-      a << i.lab_nr
+    Isolate.select('lab_isolation_nr').all.each do |i|
+      a << i.lab_isolation_nr
     end
     d = a.select { |e| a.count(e) > 1 }.uniq
 
     # iterate over duplicate lab_nrs:
     d.each do |duplicate_isolate|
       # get  all members of given duplicate list:
-      dups = Isolate.includes(individual: :species).where(lab_nr: duplicate_isolate)
+      dups = Isolate.includes(individual: :species).where(lab_isolation_nr: duplicate_isolate)
 
       # get first
       first_dup = dups.first
@@ -170,7 +148,7 @@ namespace :data do
       # get all others and compare to first
       (1..dups.count - 1).each do |i|
         curr_dup = dups[i]
-        puts "#{curr_dup.lab_nr} (#{curr_dup.id})  vs #{first_dup.lab_nr} ( #{first_dup.id} ):"
+        puts "#{curr_dup.lab_isolation_nr} (#{curr_dup.id})  vs #{first_dup.lab_isolation_nr} ( #{first_dup.id} ):"
 
         first_dup.update(individual: curr_dup.individual) if curr_dup.individual
 
@@ -295,5 +273,21 @@ namespace :data do
     end
 
     puts "#{delete_cnt} duplicate sequences could be deleted."
+  end
+
+  task add_tissue_type_to_individuals: :environment do
+    isolates = Isolate.joins(:individual, :tissue).distinct
+
+    isolates.each do |isolate|
+      individual = isolate.individual
+      individual.update(tissue_id: isolate.tissue_id)
+      individual.save
+    end
+
+    individuals = Individual.where('specimen_id ilike ?', "B GT%")
+
+    individuals.each do |individual|
+      individual.update(tissue_id: 3)
+    end
   end
 end
