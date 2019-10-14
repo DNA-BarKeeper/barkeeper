@@ -13,3 +13,6 @@
 //= require d3.min
 //= require bootstrap-multiselect
 //= require_tree .
+
+// Make datatables warning more meaningful
+$.fn.dataTable.ext.errMode = () => alert('An error occurred while loading the table data. Please contact an admin if the error persists.');
