@@ -141,10 +141,12 @@ function draw_chromatogram(div_id, chromatogram){
         .attr('height', ymax)
         .attr('id', 'chromatogram_svg_' + div_id);
 
+    var prev_drawn_position = 0;
     //adjust clipped areas:
     var drag_left = d3.drag()
         .on('start', function() {
             left_clip_area.style('fill', '#eeebb5');
+            prev_drawn_position = left_clip_area.attr('width');
         })
         .on('drag', function() {
             left_clip_area.attr('width', d3.event.x);
@@ -152,21 +154,24 @@ function draw_chromatogram(div_id, chromatogram){
         .on('end', function() {
             left_clip_area.style('fill', "#d3d3d3");
 
-            var drawn_position=left_clip_area.attr('width');
+            var drawn_position = left_clip_area.attr('width');
 
             // find  peak closest to new x -> in chromatogram1.peak_indices
             for(var g=0; g < chromatogram.peak_indices.length; g++) {
-                if (chromatogram.peak_indices[g]-drawn_position > 0) {
+                if (chromatogram.peak_indices[g] - drawn_position > 0) {
                     break;
                 }
             }
 
-            change_left_clip(g+1, chromatogram.id, div_id);
+            if(prev_drawn_position !== drawn_position) { // Avoid triggering action when user just clicks in clipped area
+                change_left_clip(g+1, chromatogram.id, div_id);
+            }
         });
 
     var drag_right = d3.drag()
         .on('start', function() {
             right_clip_area.style('fill', '#eeebb5');
+            prev_drawn_position = right_clip_area.attr('x');
         })
         .on('drag', function() {
             right_clip_area.attr('x', d3.event.x).attr('width', chromatogram.atrace.length - d3.event.x);
@@ -183,8 +188,9 @@ function draw_chromatogram(div_id, chromatogram){
                 }
             }
 
-            change_right_clip(g+1, chromatogram.id, div_id);
-
+            if(prev_drawn_position !== drawn_position) { // Avoid triggering action when user just clicks in clipped area
+                change_right_clip(g+1, chromatogram.id, div_id);
+            }
         });
 
     //draw clipped areas
