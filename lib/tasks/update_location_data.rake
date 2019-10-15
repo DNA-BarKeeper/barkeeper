@@ -83,6 +83,29 @@ namespace :data do
     end
   end
 
+  desc "Fix java unicode characters in locality descriptions"
+  task fix_locality: :environment do
+    individuals = Individual.where('locality like ? OR locality like ? OR locality like ? OR locality like ?', '%%', '%á%', '%„%', '%”%')
+
+    puts "#{individuals.size} individuals with buggy locality found."
+    puts 'Replacing special characters...'
+
+    individuals.each do |ind|
+      locality = ind.locality
+                     .gsub('á', 'ß') # \u00E1
+                     .gsub('„', 'ä') # \u0084
+                     .gsub('”', 'ö') # \u0094
+                     .gsub('', 'ü') # \u0081
+                     .gsub('Ž', 'Ä') # \u008e
+                     .gsub('™', 'Ö') # \u0099
+                     .gsub('š', 'Ü') # \u009A
+      ind.update(locality: locality)
+      ind.save
+    end
+
+    puts 'Done.'
+  end
+
   def get_state(i)
     if i.locality
       regex = /^([A-Za-z0-9\-]+)\..+/
