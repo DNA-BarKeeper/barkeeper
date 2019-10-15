@@ -123,7 +123,10 @@ class PrimerReadsController < ApplicationController
 
   # Tries to extract associated primer and isolate from primer read name (in turn based on uploaded scf file name):
   def assign
+    previous_primer = @primer_read.primer
+
     msg_hash = @primer_read.auto_assign
+    @primer_read.auto_trim(true) if (previous_primer != @primer_read.primer)
 
     if msg_hash[:create_issue]
       redirect_to edit_primer_read_path, alert: msg_hash[:msg]
