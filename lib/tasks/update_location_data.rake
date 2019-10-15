@@ -60,9 +60,6 @@ namespace :data do
       latitude = degree_to_decimal(ind.latitude_original.strip)
       latitude ||= north_east_to_decimal(ind.latitude_original.strip)
 
-      puts ind.latitude_original
-      puts latitude
-
       ind.update(latitude: latitude) if latitude
       updated += 1 if latitude
     end
@@ -70,9 +67,6 @@ namespace :data do
     bad_longitude.each do |ind|
       longitude = degree_to_decimal(ind.longitude_original.strip)
       longitude ||= north_east_to_decimal(ind.longitude_original.strip)
-
-      puts ind.longitude_original
-      puts longitude
 
       ind.update(longitude: longitude) if longitude
       updated += 1 if longitude
