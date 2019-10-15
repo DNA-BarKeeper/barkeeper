@@ -106,6 +106,17 @@ namespace :data do
     puts 'Done.'
   end
 
+  task fix_country_languange: :environment do
+    Individual.where(country: 'Frankreich').update_all(country: 'France')
+    Individual.where(country: 'Sweden, Sterilkultur').update_all(country: 'Sweden')
+    Individual.where(country: 'Schweden').update_all(country: 'Sweden')
+    Individual.where(country: 'Belgien').update_all(country: 'Belgium')
+    Individual.where(country: 'Schweiz').update_all(country: 'Switzerland')
+    Individual.where(country: 'Schweiz').update_all(country: 'Switzerland')
+    Individual.where(country: nil).update_all(country: '')
+    Individual.where(country: ' -').update_all(country: '')
+  end
+
   def get_state(i)
     if i.locality
       regex = /^([A-Za-z0-9\-]+)\..+/
