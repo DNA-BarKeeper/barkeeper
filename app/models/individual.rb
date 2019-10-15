@@ -17,8 +17,10 @@ class Individual < ApplicationRecord
   scope :without_species, -> { where(species: nil) }
   scope :without_isolates, -> { left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
   scope :no_species_isolates, -> { without_species.left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
-  scope :bad_longitude, -> { where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}') }
-  scope :bad_latitude, -> { where('individuals.latitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}') }
+  scope :bad_longitude, -> { where(longitude: nil).where.not(longitude_original: [nil, ''])
+                                 .where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}') }
+  scope :bad_latitude, -> { where(latitude: nil).where.not(latitude_original: [nil, ''])
+                                .where('individuals.latitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}') }
   scope :bad_location, -> { bad_latitude.or(Individual.bad_longitude) }
 
   def self.to_csv(options = {})
