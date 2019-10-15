@@ -14,7 +14,7 @@ class Individual < ApplicationRecord
 
   pg_search_scope :quick_search, against: %i[specimen_id herbarium collector collectors_field_number]
 
-  scope :without_species, -> { where(species: nil) }
+  scope :without_species, -> { joins(:isolates).where.not(isolates: { negative_control: true }).where(species: nil) }
   scope :without_isolates, -> { left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
   scope :no_species_isolates, -> { without_species.left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
   scope :bad_longitude, -> { where(longitude: nil).where.not(longitude_original: [nil, ''])
