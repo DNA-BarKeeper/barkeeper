@@ -38,4 +38,23 @@ namespace :data do
     puts "#{cnt} DB numbers were assigned to isolates based on their GBOL numbers. #{not_found} Isolates could not be found in the database."
     puts "Done."
   end
+
+  task isolate_table_check: :environment do
+    suspicious_columns = %w(comment_copy comment_orig concentration_copy concentration isCopy lab_id_copy lab_id_orig
+micronic_plate_id_copy micronic_plate_id_orig micronic_plate_id micronic_tube_id_copy micronic_tube_id_orig micronic_tube_id
+well_pos_micronic_plate_copy well_pos_micronic_plate_orig well_pos_micronic_plate)
+
+    suspicious_columns.each do |column|
+      type = Isolate.column_for_attribute(column).type
+
+      if type == :decimal || type == :integer || type == :boolean
+        sql = "SELECT \"isolates\".* FROM \"isolates\" WHERE (\"isolates\".\"#{column}\" IS NOT NULL)"
+      elsif type == :string || type == :text
+        sql = "SELECT \"isolates\".* FROM \"isolates\" WHERE (NOT ((\"isolates\".\"comment_copy\" = '' OR \"isolates\".\"comment_copy\" IS NULL)))"
+      end
+
+      isolates_size = Isolate.find_by_sql(sql).size
+      puts "There are #{isolates_size} isolates where column #{column} is used."
+    end
+  end
 end
