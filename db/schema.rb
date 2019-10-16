@@ -10,12 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191001081727) do
+ActiveRecord::Schema.define(version: 20191016124801) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
+
+  create_table "aliquots", force: :cascade do |t|
+    t.text     "comment"
+    t.decimal  "concentration"
+    t.string   "well_pos_micronic_plate"
+    t.integer  "lab_id"
+    t.integer  "micronic_plate_id"
+    t.integer  "isolate_id"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.string   "micronic_tube"
+    t.boolean  "is_copy"
+    t.index ["isolate_id"], name: "index_aliquots_on_isolate_id", using: :btree
+    t.index ["lab_id"], name: "index_aliquots_on_lab_id", using: :btree
+    t.index ["micronic_plate_id"], name: "index_aliquots_on_micronic_plate_id", using: :btree
+  end
 
   create_table "blast_hits", force: :cascade do |t|
     t.integer  "cluster_id"
@@ -273,7 +289,6 @@ ActiveRecord::Schema.define(version: 20191001081727) do
     t.decimal  "concentration"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "isCopy"
     t.integer  "tissue_id"
     t.integer  "micronic_plate_id"
     t.integer  "plant_plate_id"
