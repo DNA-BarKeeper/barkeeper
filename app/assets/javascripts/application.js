@@ -3,6 +3,8 @@
 //= require jquery_ujs
 // require turbolinks
 //= require dataTables/jquery.dataTables
+//= require best_in_place
+//= require best_in_place.jquery-ui
 //= require jquery.autosize
 //= require jquery-fileupload/basic
 //= require jquery-fileupload/vendor/tmpl
@@ -16,3 +18,8 @@
 
 // Make datatables warning more meaningful
 $.fn.dataTable.ext.errMode = () => alert('An error occurred while loading the table data. Please contact an admin if the error persists.');
+
+$(document).ready(function() {
+    /* Activating Best In Place */
+    jQuery(".best_in_place").best_in_place();
+});

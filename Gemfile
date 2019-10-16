@@ -37,6 +37,7 @@ gem 'paperclip'
 gem 'bootstrap-multiselect_rails' # multi select boxes using bootstrap
 gem 'chosen-rails' # Javascript select boxes
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
+gem 'best_in_place' # In-line editing
 gem 'jquery-fileupload-rails'
 gem 'jquery-turbolinks'
 gem 'select2-rails' # Integrate Select2 Javascript library

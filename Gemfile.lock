@@ -646,6 +646,9 @@ GEM
     aws-sigv4 (1.0.2)
     bcrypt (3.1.12)
     bcrypt (3.1.12-x86-mingw32)
+    best_in_place (3.1.1)
+      actionpack (>= 3.2)
+      railties (>= 3.2)
     better_errors (2.4.0)
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
@@ -967,6 +970,7 @@ DEPENDENCIES
   ancestry
   aws-sdk
   bcrypt (~> 3.1.7)
+  best_in_place
   better_errors
   binding_of_caller
   bio
