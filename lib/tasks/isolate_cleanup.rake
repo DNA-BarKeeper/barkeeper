@@ -40,7 +40,7 @@ namespace :data do
   end
 
   task isolate_table_check: :environment do
-    suspicious_columns = %w(comment_copy comment_orig concentration_copy concentration isCopy lab_id_copy lab_id_orig
+    suspicious_columns = %w(comment_copy comment_orig concentration_copy concentration_orig concentration isCopy lab_id_copy lab_id_orig
 micronic_plate_id_copy micronic_plate_id_orig micronic_plate_id micronic_tube_id_copy micronic_tube_id_orig micronic_tube_id
 well_pos_micronic_plate_copy well_pos_micronic_plate_orig well_pos_micronic_plate)
 
