@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  comment: MyText
+  concentration: 9.99
+  well_pos_micronic_plate: MyString
+
+two:
+  comment: MyText
+  concentration: 9.99
+  well_pos_micronic_plate: MyString

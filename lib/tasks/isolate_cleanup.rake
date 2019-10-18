@@ -57,4 +57,28 @@ well_pos_micronic_plate_copy well_pos_micronic_plate_orig well_pos_micronic_plat
       puts "There are #{isolates_size} isolates where column #{column} is used."
     end
   end
+
+  task create_aliquots: :environment do
+    Isolate.all.each do |isolate|
+      isolate.aliquots.create(comment: isolate.comment_orig,
+                              concentration: isolate.concentration_orig,
+                              lab_id: isolate.lab_id_orig,
+                              micronic_plate_id: isolate.micronic_plate_id_orig,
+                              micronic_tube: isolate.micronic_tube_id_orig,
+                              well_pos_micronic_plate: isolate.well_pos_micronic_plate_orig,
+                              is_original: true)
+
+      # Only create copy aliquot if any actual values exist
+      if isolate.comment_copy || isolate.concentration_copy || isolate.lab_id_copy || isolate.micronic_plate_id_copy ||
+          isolate.micronic_tube_id_copy || isolate.well_pos_micronic_plate_copy
+        isolate.aliquots.create(comment: isolate.comment_copy,
+                                concentration: isolate.concentration_copy,
+                                lab_id: isolate.lab_id_copy,
+                                micronic_plate_id: isolate.micronic_plate_id_copy,
+                                micronic_tube: isolate.micronic_tube_id_copy,
+                                well_pos_micronic_plate: isolate.well_pos_micronic_plate_copy,
+                                is_original: false)
+      end
+    end
+  end
 end
