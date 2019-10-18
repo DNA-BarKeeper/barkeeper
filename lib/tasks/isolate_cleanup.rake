@@ -66,7 +66,7 @@ well_pos_micronic_plate_copy well_pos_micronic_plate_orig well_pos_micronic_plat
                               micronic_plate_id: isolate.micronic_plate_id_orig,
                               micronic_tube: isolate.micronic_tube_id_orig,
                               well_pos_micronic_plate: isolate.well_pos_micronic_plate_orig,
-                              is_copy: false)
+                              is_original: true)
 
       # Only create copy aliquot if any actual values exist
       if isolate.comment_copy || isolate.concentration_copy || isolate.lab_id_copy || isolate.micronic_plate_id_copy ||
@@ -77,7 +77,7 @@ well_pos_micronic_plate_copy well_pos_micronic_plate_orig well_pos_micronic_plat
                                 micronic_plate_id: isolate.micronic_plate_id_copy,
                                 micronic_tube: isolate.micronic_tube_id_copy,
                                 well_pos_micronic_plate: isolate.well_pos_micronic_plate_copy,
-                                is_copy: true)
+                                is_original: false)
       end
     end
   end

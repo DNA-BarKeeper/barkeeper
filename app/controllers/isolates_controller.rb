@@ -50,7 +50,6 @@ class IsolatesController < ApplicationController
 
   def new
     @isolate = Isolate.new
-    @isolate.aliquots.build
   end
 
   def edit; end
@@ -110,7 +109,7 @@ class IsolatesController < ApplicationController
     params.require(:isolate).permit(:id, :isolation_date, :user_id, :well_pos_plant_plate,
                                     :lab_isolation_nr, :tissue_id, :plant_plate_id, :individual_name,
                                     :dna_bank_id, :negative_control, project_ids: [],
-                                    aliquots_attributes: [:id, :comment, :concentration, :is_copy, :lab_id,
+                                    aliquots_attributes: [:id, :comment, :concentration, :is_original, :lab_id,
                                                           :well_pos_micronic_plate, :micronic_tube, :micronic_plate_id,
                                                           :isolate_id, :_destroy])
   end
