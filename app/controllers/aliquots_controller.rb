@@ -1,2 +1,0 @@
-class AliquotsController < ApplicationController
-end
