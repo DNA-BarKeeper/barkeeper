@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191016124801) do
+ActiveRecord::Schema.define(version: 20191018124928) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,10 +24,10 @@ ActiveRecord::Schema.define(version: 20191016124801) do
     t.integer  "lab_id"
     t.integer  "micronic_plate_id"
     t.integer  "isolate_id"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
     t.string   "micronic_tube"
-    t.boolean  "is_copy"
+    t.boolean  "is_original",             default: false
     t.index ["isolate_id"], name: "index_aliquots_on_isolate_id", using: :btree
     t.index ["lab_id"], name: "index_aliquots_on_lab_id", using: :btree
     t.index ["micronic_plate_id"], name: "index_aliquots_on_micronic_plate_id", using: :btree
