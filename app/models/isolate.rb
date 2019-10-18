@@ -15,6 +15,8 @@ class Isolate < ApplicationRecord
   belongs_to :tissue
   belongs_to :individual
 
+  accepts_nested_attributes_for :aliquots, allow_destroy: true
+
   validates :display_name, presence: { message: "Either a DNA Bank Number or a lab isolation number must be provided!" }
   before_validation :assign_display_name
 
