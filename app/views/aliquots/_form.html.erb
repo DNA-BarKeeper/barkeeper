@@ -1,0 +1,24 @@
+<p>
+  <strong>Name:</strong>
+  <%= best_in_place @user, :name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= best_in_place @user, :email %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= best_in_place @isolate.comment_orig, :comment, :as => :textarea, :ok_button => 'Save', :cancel_button => 'Cancel' %>
+</p>
+
+<p>
+  <strong>Lab:</strong>
+  <%= best_in_place @isolate.lab_id, :gender, :as => :select, :collection => Lab.all %>
+</p>
+
+<p>
+  <strong>Is Copy:</strong>
+  <%= best_in_place @isolate, :subscribe, as: :checkbox, collection: {false: "No", true: "Yes"} %>
+</p>

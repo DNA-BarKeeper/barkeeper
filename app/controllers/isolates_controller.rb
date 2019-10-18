@@ -61,8 +61,8 @@ class IsolatesController < ApplicationController
 
     respond_to do |format|
       if @isolate.save
-        format.html { redirect_to isolates_path, notice: 'Isolate was successfully created.' }
-        format.json { render :show, status: :created, location: @isolate }
+        format.html { redirect_to edit_isolate_path(@isolate), notice: 'Isolate was successfully created.' }
+        format.json { render :edit, status: :created, location: @isolate }
       else
         format.html { render :new }
         format.json { render json: @isolate.errors, status: :unprocessable_entity }
@@ -73,8 +73,8 @@ class IsolatesController < ApplicationController
   def update
     respond_to do |format|
       if @isolate.update(isolate_params)
-        format.html { redirect_to isolates_path, notice: 'Isolate was successfully updated.' }
-        format.json { render :show, status: :ok, location: @isolate }
+        format.html { redirect_to edit_isolate_path(@isolate), notice: 'Isolate was successfully updated.' }
+        format.json { render :edit, status: :ok, location: @isolate }
       else
         format.html { render :edit }
         format.json { render json: @isolate.errors, status: :unprocessable_entity }
@@ -106,12 +106,11 @@ class IsolatesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def isolate_params
-    params.require(:isolate).permit(:comment_orig, :comment_copy, :micronic_tube_id_copy, :micronic_tube_id_orig,
-                                    :concentration_copy, :concentration_orig, :well_pos_micronic_plate_copy,
-                                    :well_pos_micronic_plate_orig, :micronic_plate_id_copy, :micronic_plate_id_orig,
-                                    :isolation_date, :lab_id_copy, :lab_id_orig, :user_id, :well_pos_plant_plate,
-                                    :lab_isolation_nr, :micronic_tube_id, :well_pos_micronic_plate, :concentration,
-                                    :tissue_id, :micronic_plate_id, :plant_plate_id, :term, :file, :individual_name,
-                                    :query, :dna_bank_id, :negative_control, project_ids: [])
+    params.require(:isolate).permit(:id, :isolation_date, :user_id, :well_pos_plant_plate,
+                                    :lab_isolation_nr, :tissue_id, :plant_plate_id, :individual_name,
+                                    :dna_bank_id, :negative_control, project_ids: [],
+                                    aliquots_attributes: [:id, :comment, :concentration, :is_original, :lab_id,
+                                                          :well_pos_micronic_plate, :micronic_tube, :micronic_plate_id,
+                                                          :isolate_id, :_destroy])
   end
 end

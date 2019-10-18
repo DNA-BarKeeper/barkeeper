@@ -9,10 +9,13 @@ class Isolate < ApplicationRecord
   has_many :clusters
   has_many :ngs_results
   has_many :ngs_runs, through: :clusters
-  belongs_to :micronic_plate
+  has_many :aliquots
+  belongs_to :micronic_plate # TODO remove after all values are transferred to aliquots
   belongs_to :plant_plate
   belongs_to :tissue
   belongs_to :individual
+
+  accepts_nested_attributes_for :aliquots, allow_destroy: true
 
   validates :display_name, presence: { message: "Either a DNA Bank Number or a lab isolation number must be provided!" }
   before_validation :assign_display_name
