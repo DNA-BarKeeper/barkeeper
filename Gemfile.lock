@@ -646,9 +646,6 @@ GEM
     aws-sigv4 (1.0.2)
     bcrypt (3.1.12)
     bcrypt (3.1.12-x86-mingw32)
-    best_in_place (3.1.1)
-      actionpack (>= 3.2)
-      railties (>= 3.2)
     better_errors (2.4.0)
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
@@ -787,6 +784,10 @@ GEM
       ruby-progressbar
     multi_json (1.13.1)
     mustermann (1.0.2)
+    nested_form_fields (0.8.2)
+      coffee-rails (>= 3.2.1)
+      jquery-rails
+      rails (>= 3.2.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
@@ -970,7 +971,6 @@ DEPENDENCIES
   ancestry
   aws-sdk
   bcrypt (~> 3.1.7)
-  best_in_place
   better_errors
   binding_of_caller
   bio
@@ -1002,6 +1002,7 @@ DEPENDENCIES
   minitest-fail-fast
   minitest-rails-capybara
   minitest-reporters
+  nested_form_fields
   net-scp
   net-sftp
   net-ssh
