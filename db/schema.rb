@@ -284,33 +284,33 @@ ActiveRecord::Schema.define(version: 20191018124928) do
 
   create_table "isolates", force: :cascade do |t|
     t.string   "well_pos_plant_plate",         limit: 255
-    t.string   "micronic_tube_id",             limit: 255
-    t.string   "well_pos_micronic_plate",      limit: 255
-    t.decimal  "concentration"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "tissue_id"
-    t.integer  "micronic_plate_id"
     t.integer  "plant_plate_id"
     t.integer  "individual_id"
     t.string   "dna_bank_id",                  limit: 255
     t.string   "lab_isolation_nr",             limit: 255
-    t.boolean  "negative_control",                                                  default: false
-    t.integer  "lab_id_orig"
-    t.integer  "lab_id_copy"
+    t.boolean  "negative_control",                         default: false
     t.datetime "isolation_date"
-    t.integer  "micronic_plate_id_orig"
-    t.integer  "micronic_plate_id_copy"
-    t.string   "well_pos_micronic_plate_orig"
-    t.string   "well_pos_micronic_plate_copy"
-    t.decimal  "concentration_orig",                       precision: 15, scale: 2
-    t.decimal  "concentration_copy",                       precision: 15, scale: 2
-    t.string   "micronic_tube_id_orig"
-    t.string   "micronic_tube_id_copy"
     t.integer  "user_id"
+    t.string   "display_name"
+    t.string   "well_pos_micronic_plate_copy"
+    t.string   "well_pos_micronic_plate_orig"
+    t.string   "well_pos_micronic_plate"
+    t.string   "micronic_tube_id_copy"
+    t.string   "micronic_tube_id_orig"
+    t.string   "micronic_tube_id"
+    t.integer  "micronic_plate_id_copy"
+    t.integer  "micronic_plate_id_orig"
+    t.integer  "micronic_plate_id"
+    t.integer  "lab_id_copy"
+    t.integer  "lab_id_orig"
+    t.decimal  "concentration_copy"
+    t.decimal  "concentration_orig"
+    t.decimal  "concentration"
     t.text     "comment_orig"
     t.text     "comment_copy"
-    t.string   "display_name"
   end
 
   create_table "isolates_projects", id: false, force: :cascade do |t|
