@@ -3,6 +3,7 @@
 //= require jquery_ujs
 // require turbolinks
 //= require dataTables/jquery.dataTables
+//= require dataTables/extras/dataTables.scroller
 //= require nested_form_fields
 //= require jquery.autosize
 //= require jquery-fileupload/basic
