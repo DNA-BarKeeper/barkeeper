@@ -10,13 +10,13 @@ jQuery(function() {
         "order": [1, 'desc']
     });
 
-    var oTable = $('#ngs_run_results').dataTable({
+    $('#ngs_run_results').dataTable({
         bProcessing: true,
         bServerSide: true,
         sAjaxSource: $('#ngs_run_results').data('source'),
         "paging": false,
         "scrollX": true,
-        "sScrollY": document.body.clientHeight * 55 / 100,
+        "sScrollY": document.body.clientHeight * 80 / 100,
         "columnDefs": [{
             "targets": 3,
             "orderable": false
