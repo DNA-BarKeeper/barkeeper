@@ -395,3 +395,12 @@ html {
   font-size: 14px;
   width: 190px !important;
 }
+
+/* Do not show page control buttons in NGS result view */
+div#ngs_run_results_wrapper div.dataTables_paginate {
+  display:none;
+}
+
+div#ngs_run_results_wrapper div.dataTables_length {
+  display:none;
+}
