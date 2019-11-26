@@ -13,15 +13,17 @@
 
  *= require_self
  *= require dataTables/jquery.dataTables
+ *= require dataTables/extras/dataTables.scroller
  *= require chosen
  *= require jquery-ui/datepicker
+ *= require bootstrap-multiselect
  *= require_tree .
  */
 
 .read-names {
   font-size: 11px;
   white-space: nowrap;
-  overflow-x: auto;
+  overflow-x: visible;
 }
 
 div#contig {

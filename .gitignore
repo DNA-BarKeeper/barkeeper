@@ -1,8 +1,9 @@
 /coverage
 .idea/
 tmp/
-database.yml
-secrets.yml
+config/database.yml
+config/secrets.yml
+config/application.yml
 log/
 .DS_Store
 rails_best_practices_output.html
@@ -12,3 +13,5 @@ species.xls
 public/assets/
 latest.dump
 spec/examples.txt
+.rbenv-vars
+.env

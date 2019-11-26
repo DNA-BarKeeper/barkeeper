@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class PrimersController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_primer, only: [:show, :edit, :update, :destroy]
+  before_action :set_primer, only: %i[show edit update destroy]
 
   # GET /primers
   # GET /primers.json
@@ -12,17 +14,14 @@ class PrimersController < ApplicationController
   end
 
   def import
-    file = params[:file]
-
     # TODO: if needed, add logic to distinguish between xls / xlsx / error etc here -> mv from model.
-    Primer.import(file, current_project_id) # When adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
+    Primer.import(params[:file], current_project_id) # When adding delayed_job here: jetzt wird nur string gespeichert for delayed_job yml representation in ActiveRecord, zuvor ganzes File!
     redirect_to primers_path, notice: 'Imported.'
   end
 
   # GET /primers/1
   # GET /primers/1.json
-  def show
-  end
+  def show; end
 
   # GET /primers/new
   def new
@@ -30,8 +29,7 @@ class PrimersController < ApplicationController
   end
 
   # GET /primers/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /primers
   # POST /primers.json
@@ -75,13 +73,14 @@ class PrimersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_primer
-      @primer = Primer.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def primer_params
-      params.require(:primer).permit(:alt_name, :position, :file, :name, :sequence, :reverse, :marker_id, :project_ids => [])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_primer
+    @primer = Primer.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def primer_params
+    params.require(:primer).permit(:alt_name, :position, :file, :name, :sequence, :reverse, :marker_id, project_ids: [])
+  end
 end

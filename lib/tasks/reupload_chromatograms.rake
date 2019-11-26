@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require 'net/http'
 
 namespace :data do
-
   desc 'Delete faulty primer reads and import them again correctly'
-  task :reimport_chromatograms => :environment do
+  task reimport_chromatograms: :environment do
     nil_reads = PrimerRead.where(sequence: nil)
 
     # download chromatograms of records without sequence

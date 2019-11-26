@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddMarkerIdToPrimer < ActiveRecord::Migration
   def change
     add_column :primers, :marker_id, :integer

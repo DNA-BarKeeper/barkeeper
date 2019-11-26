@@ -1,9 +1,9 @@
-<% provide(:title, @isolate.lab_nr) %>
+<% provide(:title, @isolate.display_name) %>
 <%= show_val_errors(@isolate)%>
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Isolate <%= @isolate.lab_nr %>
+    <h3 class="panel-title">Isolate <%= @isolate.display_name %>
 
       <% if @isolate.try(:individual).try(:species) %>
           - <%=link_to(@isolate.individual.species.name_for_display, edit_species_path(@isolate.individual.species.id))  %>
@@ -17,8 +17,11 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
           <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
-          <li ><a href="#assigned_contigs" role="tab" data-toggle="tab">Contigs</a></li>
-          <li><a href="#assigned_marker_sequences" role="tab" data-toggle="tab">Sequences</a></li>
+          <li><a href="#aliquots" role="tab" data-toggle="tab">Aliquots</a></li>
+          <li><a href="#assigned_clusters" role="tab" data-toggle="tab">Read Clusters</a></li>
+          <li><a href="#assigned_contigs" role="tab" data-toggle="tab">Contigs</a></li>
+          <li><a href="#assigned_marker_sequences" role="tab" data-toggle="tab">Marker Sequences</a></li>
+          <%= render :partial => 'shared/sativa_nav_tab', :locals => { :marker_sequences => @isolate.marker_sequences } %>
         </ul>
 
         <div class="tab-content">
@@ -27,13 +30,13 @@
             <br>
 
             <div class="form-group">
-              <%= f.label :lab_nr, 'Lab isolation number' %>
-              <%= f.text_field :lab_nr,  class: 'form-control' %>
+              <%= f.label :dna_bank_id, 'DNA Bank ID' %>
+              <%= f.text_field :dna_bank_id,  class: 'form-control' %>
             </div>
 
             <div class="form-group">
-              <%= f.label :dna_bank_id, 'DNA Bank ID' %>
-              <%= f.text_field :dna_bank_id,  class: 'form-control' %>
+              <%= f.label :lab_isolation_nr, 'Lab isolation number' %>
+              <%= f.text_field :lab_isolation_nr,  class: 'form-control' %>
             </div>
 
             <div class="form-group">
@@ -46,12 +49,12 @@
 
             <div class="form-group">
               <%= f.label :tissue_id, 'Tissue type' %>
-              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name, :include_blank => '<no selection>') %>
+              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
             </div>
 
             <div class="form-group">
               <%= f.label :plant_plate_id, 'Plate (Tissue)' %>
-              <%= f.collection_select(:plant_plate_id, PlantPlate.all.order(:name), :id, :name, :include_blank => '<no selection>') %>
+              <%= f.collection_select(:plant_plate_id, PlantPlate.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
             </div>
 
             <div class="form-group">
@@ -59,142 +62,85 @@
               <%= f.text_field :well_pos_plant_plate,  class: 'form-control' %>
             </div>
 
-            <div id="isolate_copies">
-
-              <div class="isolate-copy">
-
-                <div class="isolate-copy-label">DNA G5o</div>
-
-                <div class="form-group">
-                  <%= f.label 'Lab' %>
-                  <%= f.collection_select(:lab_id_orig, Lab.all, :id, :labcode, :include_blank => '<no selection>') %>
-                </div>
-
-                <div  class="form-group">
-                  <%= f.label :micronic_plate_id_orig, 'Plate (DNA)' %>
-                  <% if @isolate.micronic_plate_id_orig %>
-                      <%= link_to '', edit_micronic_plate_path(@isolate.micronic_plate_id_orig),:class => 'glyphicon glyphicon-share-alt', :title => "go to micronic plate" %>
-                  <% end %>
-                  <%= f.collection_select(:micronic_plate_id_orig, MicronicPlate.all, :id, :micronic_plate_id, :include_blank => '<no selection>') %>
-                </div>
-
-                <% if @isolate.micronic_plate_id_orig %>
-                  <div class="form-group" >
-                    <% micronic_plate_orig = MicronicPlate.includes(:lab_rack).find(@isolate.micronic_plate_id_orig) %>
-                    <% if micronic_plate_orig %>
-                        <b>Location in Rack:</b>
-                        <%= micronic_plate_orig.location_in_rack %>
-                        <% if micronic_plate_orig.lab_rack %>
-                            -<b> Rack:</b>
-                            <% lab_rack = micronic_plate_orig.lab_rack %>
-                            <%= lab_rack.rackcode %>
-                            -<b> Shelf:</b>
-                            <%= lab_rack.shelf %>
-                            <% if lab_rack.freezer %>
-                                -<b> Freezer:</b>
-                                <%== lab_rack.freezer.freezercode %>
-                            <% end %>
-                        <% end %>
-                    <% end %>
-                  </div>
-                <% end %>
-
-                <div  class="form-group">
-                  <%= f.label :well_pos_micronic_plate_orig, 'Well position in DNA plate' %>
-                  <%= f.text_field :well_pos_micronic_plate_orig,  class: 'form-control' %>
-                </div>
-
-                <div  class="form-group">
-                  <%= f.label :micronic_tube_id_orig, 'Micronic tube ID' %>
-                  <%= f.text_field :micronic_tube_id_orig,  class: 'form-control' %>
-                </div>
-
-                <div class="form-group" >
-                  <%= f.label :concentration_orig, 'Concentration (ng/µl)' %>
-                  <%= f.text_field :concentration_orig, class: 'form-control' %>
-                </div>
-
-                <div class="form-group">
-                  <%= f.label :comment_orig, 'Comment' %>
-                  <%= f.text_area :comment_orig, class: 'form-control' %>
-                </div>
-
-              </div>
-
-              <div class="isolate-copy">
-
-                <div class="isolate-copy-label">DNA G5c</div>
-
-                <div class="form-group">
-                  <%= f.label 'Lab' %>
-                  <%= f.collection_select(:lab_id_copy, Lab.all, :id, :labcode, :include_blank => '<no selection>') %>
-                </div>
-
-                <div  class="form-group">
-                  <%= f.label :micronic_plate_id_copy, 'Plate (DNA)' %>
-                  <% if @isolate.micronic_plate_id_copy %>
-                      <%= link_to '', edit_micronic_plate_path(@isolate.micronic_plate_id_copy),:class => 'glyphicon glyphicon-share-alt', :title => "go to micronic plate" %>
-                  <% end %>
-                  <%= f.collection_select(:micronic_plate_id_copy, MicronicPlate.all, :id, :micronic_plate_id, :include_blank => '<no selection>') %>
-                </div>
-
-                <% if @isolate.micronic_plate_id_copy %>
-                  <div class="form-group" >
-                    <% micronic_plate_copy = MicronicPlate.includes(:lab_rack).find(@isolate.micronic_plate_id_copy) %>
-                    <% if micronic_plate_copy %>
-                        <b>Location in Rack:</b>
-                        <%= micronic_plate_copy.location_in_rack %>
-                        <% if micronic_plate_copy.lab_rack %>
-                            -<b> Rack:</b>
-                            <% lab_rack = micronic_plate_copy.lab_rack %>
-                            <%= lab_rack.rackcode %>
-                            -<b> Shelf:</b>
-                            <%= lab_rack.shelf %>
-                            <% if lab_rack.freezer %>
-                                -<b> Freezer:</b>
-                                <%== lab_rack.freezer.freezercode %>
-                            <% end %>
-                        <% end %>
-                    <% end %>
-                  </div>
-                <% end %>
-
-                <div class="form-group">
-                  <%= f.label :well_pos_micronic_plate_copy, 'Well position in DNA plate' %>
-                  <%= f.text_field :well_pos_micronic_plate_copy,  class: 'form-control' %>
-                </div>
-
-                <div class="form-group" >
-                  <%= f.label :micronic_tube_id_copy, 'Micronic tube ID' %>
-                  <%= f.text_field :micronic_tube_id_copy,  class: 'form-control' %>
-                </div>
-
-                <div class="form-group">
-                  <%= f.label :concentration_copy, 'Concentration (ng/µl)' %>
-                  <%= f.text_field :concentration_copy, class: 'form-control' %>
-                </div>
-
-                <div class="form-group">
-                  <%= f.label :comment_copy, 'Comment' %>
-                  <%= f.text_area :comment_copy, class: 'form-control' %>
-                </div>
-
-              </div>
-
-            </div>
-
             <div class="form-group">
+              <%= f.check_box :negative_control %>
               <%= f.label :negative_control, 'Negative control' %>
-              <%= f.check_box :negative_control  %>
             </div>
 
             <div class="form-group">
-              Isolated by
-              <%= f.collection_select(:user_id, User.all.order(:name), :id, :name, :include_blank => '<no selection>') %>
-              on
-              <%= f.datetime_select(:isolation_date, :include_blank => '<no date selected>') %>
+              <%= f.label :user_id, 'Isolated by' %>
+              <%= f.collection_select(:user_id, User.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
+              <%= f.label :isolation_date, 'on' %><br />
+              <%= f.text_field(:isolation_date, class: 'form-control') %>
             </div>
 
+            <div class="vertical-spacer"></div>
+
+            <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@isolate) } %>
+
+          </div>
+
+          <div class="tab-pane" id="aliquots">
+            <br>
+            <div style="overflow: auto;">
+              <%= f.nested_fields_for :aliquots, @isolate.aliquots.order(is_original: :desc, updated_at: :asc) do |aliquots_form| %>
+                <table  class="table table-striped table-hover table-bordered">
+                  <thead>
+                  <tr>
+                    <th>Original</th>
+                    <th>Concentration (ng/µl)</th>
+                    <th>Lab</th>
+                    <th>DNA Plate</th>
+                    <th>Well Position in DNA Plate</th>
+                    <th>Micronic Tube</th>
+                    <th>Comment</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td><%= aliquots_form.check_box :is_original, class: 'form-control' %></td>
+                      <td><%= aliquots_form.text_field :concentration, class: 'form-control' %></td>
+                      <td><%= aliquots_form.collection_select(:lab_id, Lab.all, :id, :labcode, { :include_blank => '<no selection>' }, { class: 'form-control' }) %></td>
+                      <td><%= aliquots_form.collection_select(:micronic_plate_id, MicronicPlate.all, :id, :micronic_plate_id, { :include_blank => '<no selection>' }, { class: 'form-control' }) %></td>
+                      <td><%= aliquots_form.text_field :well_pos_micronic_plate, class: 'form-control' %></td>
+                      <td><%= aliquots_form.text_field :micronic_tube, class: 'form-control' %></td>
+                      <td><%= aliquots_form.text_area :comment, class: 'form-control' %></td>
+                      <td><%= aliquots_form.remove_nested_fields_link 'Remove', data: { confirm: "Are you sure?\n(You need to update the isolate to permanently remove the aliquot.)" } %></td>
+                    </tr>
+                  </tbody>
+                </table>
+              <% end %>
+            </div>
+
+            <%= f.add_nested_fields_link :aliquots do %>
+              <span>Add new Aliquot</span>
+            <% end %>
+            (You need to update the isolate to permanently add the aliquot.)
+            <br><br>
+          </div>
+
+          <div class="tab-pane" id="assigned_clusters">
+            <% if @isolate.id %>
+              <br>
+              <div class="wideTable">
+                <table id="clusters" data-source="<%= show_clusters_isolate_url(format: "json") %>" class="table table-striped table-hover table-bordered">
+                  <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>NGS Run</th>
+                    <th>Species</th>
+                    <th>Specimen</th>
+                    <th>Last updated</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+            <% end %>
           </div>
 
           <div class="tab-pane" id="assigned_contigs">
@@ -209,11 +155,11 @@
 
               <tbody>
               <% @isolate.contigs.each do |c| %>
-                  <tr>
-                    <td>
-                      <%= link_to c.name,edit_contig_path(c) %>
-                    </td>
-                  </tr>
+                <tr>
+                  <td>
+                    <%= link_to c.name,edit_contig_path(c) %>
+                  </td>
+                </tr>
               <% end %>
               </tbody>
 
@@ -244,9 +190,11 @@
             </table>
           </div>
 
+          <%= render :partial => 'shared/sativa_associated_warning', :locals => { :contigs => @isolate.contigs.includes(:marker_sequence) } %>
+
         </div>
 
-        <%= f.submit 'Update', :class =>  'btn btn-default' %>
+      <%= f.submit 'Update', :class =>  'btn btn-default' %>
 
     <% end %>
   </div>

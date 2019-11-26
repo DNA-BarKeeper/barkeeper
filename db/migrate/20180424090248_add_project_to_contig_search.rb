@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddProjectToContigSearch < ActiveRecord::Migration[5.0]
   def change
     add_reference :contig_searches, :project, foreign_key: true

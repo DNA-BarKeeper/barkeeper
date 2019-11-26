@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateContigSearches < ActiveRecord::Migration[5.0]
   def up
     create_table :contig_searches do |t|

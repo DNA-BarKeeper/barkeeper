@@ -1,0 +1,112 @@
+<% provide(:title, @cluster.name) %>
+<%= show_val_errors(@cluster)%>
+
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title">Cluster <%= @cluster.name %>
+      <% if @cluster.try(:isolate).try(:individual).try(:species) %>
+        - <%= link_to(@cluster.isolate.individual.species.name_for_display, edit_species_path(@cluster.isolate.individual.species.id)) %>
+      <% end %>
+    </h3>
+  </div>
+
+  <div class="panel-body">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
+      <li><a href="#centroid" role="tab" data-toggle="tab">Centroid Sequence</a></li>
+      <li>
+        <a href="#blast_hit" role="tab" data-toggle="tab" style="<%= blast_warning(@cluster.blast_hit) %>">
+          <span class="glyphicon glyphicon-exclamation-sign"></span> Best Blast Hit
+        </a>
+      </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+
+      <div class="tab-pane active" id="description">
+        <br>
+        <p>
+          <strong>Name</strong>
+          <br>
+          <%= @cluster.name %>
+        </p>
+
+        <p>
+          <strong>Number of contained sequences</strong>
+          <br>
+          <%= @cluster.sequence_count %>
+        </p>
+
+        <p>
+          <strong>NGS Run</strong>
+          <br>
+          <% if @cluster.ngs_run %>
+            <%= link_to(@cluster.ngs_run.name, ngs_run_path(@cluster.ngs_run, anchor: "results")) %>
+          <% end %>
+        </p>
+
+        <p>
+          <strong>Isolate</strong>
+          <br>
+          <% if @cluster.isolate %>
+            <%= link_to @cluster.isolate.display_name, edit_isolate_path(@cluster.isolate) %>
+          <% end %>
+        </p>
+
+        <p>
+          <strong>Marker</strong>
+          <br>
+          <% if @cluster.marker %>
+            <%= link_to @cluster.marker.name, edit_marker_path(@cluster.marker) %>
+          <% end %>
+        </p>
+
+      </div>
+
+      <div class="tab-pane" id="centroid">
+        <br>
+        <p>
+          <strong>Sequence</strong>
+          <br>
+          <p style="overflow-wrap: break-word;"><%= @cluster.centroid_sequence %></p>
+        </p>
+
+        <p>
+          <strong>Reverse Complement</strong>
+          <br>
+          <%= reverse_complement(@cluster.reverse_complement) %>
+        </p>
+
+      </div>
+
+      <div class="tab-pane" id="blast_hit">
+        <br>
+        <p>
+          <strong>Taxonomic Lineage</strong>
+          <br>
+          <%= taxonomic_lineage(@cluster.blast_hit.taxonomy) if @cluster.blast_hit %>
+        </p>
+
+        <p>
+          <strong>E-Value</strong>
+          <br>
+          <%= @cluster.blast_hit.e_value.to_f if @cluster.blast_hit %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<table width="100%">
+  <tr>
+    <td>
+      <%= link_to '', 'javascript:history.go(-1)', :class => "glyphicon glyphicon-chevron-left" %>
+    </td>
+    <td align="right">
+      <%= link_to '', @cluster, method: :delete, data: { confirm: 'Are you sure?' }, :class => "glyphicon glyphicon-trash" %>
+    </td>
+  </tr>
+</table>

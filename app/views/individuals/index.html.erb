@@ -1,7 +1,7 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Specimens / Individuals</h3>
+    <h3 class="panel-title">Specimens</h3>
   </div>
 
   <div class="panel-body">
@@ -15,7 +15,7 @@
           <th>Species</th>
           <th>Herbarium</th>
           <th>Collector</th>
-          <th>Collection Nr</th>
+          <th>Collector's Field Number</th>
           <th>Last updated</th>
           <th></th>
         </tr>
@@ -31,8 +31,8 @@
 </div>
 <p>
   <% if user_signed_in? %>
-      <%= link_to 'Export specimens to xls…', specimens_create_xls_path, :class => 'btn btn-default' %>
-      <%= link_to 'Download last specimens export', specimens_xls_path, :class => 'btn btn-default' %>
+      <%= link_to 'Export specimens to xls…', create_xls_individuals_path, :class => 'btn btn-default' %>
+      <%= link_to 'Download last specimens export', xls_individuals_path, :class => 'btn btn-default' %>
   <%end %>
 </p>
-<%= link_to 'New Individual', new_individual_path %>
+<%= link_to 'New Specimen', new_individual_path %>

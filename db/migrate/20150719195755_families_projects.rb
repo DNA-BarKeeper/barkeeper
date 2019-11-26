@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FamiliesProjects < ActiveRecord::Migration
   def change
     create_table :families_projects, id: false do |t|

@@ -1,71 +1,83 @@
-$.ajax({
-    type: "GET",
-    contentType: "application/json; charset=utf-8",
-    url: 'all_species',
-    dataType: 'json',
-    processData: false,
-    success: function (data) {
-        createVisualization(data, 1);
-        drawLegend(taxa_legend_entries);
-    },
-    error: function (result) {
-        console.error("Error getting data.");
+jQuery(function() {
+    if (document.getElementById("all_species") != null) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: 'all_species',
+            dataType: 'json',
+            processData: false,
+            success: function (data) {
+                createVisualization(data, 1);
+                drawLegend(taxa_legend_entries);
+            },
+            error: function (result) {
+                console.error("Error getting data.");
+            }
+        });
     }
-});
 
-$.ajax({
-    type: "GET",
-    contentType: "application/json; charset=utf-8",
-    url: 'finished_species_trnlf',
-    dataType: 'json',
-    processData: false,
-    success: function (data) {
-        createVisualization(data, 2);
-    },
-    error: function (result) {
-        console.error("Error getting data.");
+    if (document.getElementById("trnLF")) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: 'finished_species_trnlf',
+            dataType: 'json',
+            processData: false,
+            success: function (data) {
+                createVisualization(data, 2);
+            },
+            error: function (result) {
+                console.error("Error getting data.");
+            }
+        });
     }
-});
 
-$.ajax({
-    type: "GET",
-    contentType: "application/json; charset=utf-8",
-    url: 'finished_species_its',
-    dataType: 'json',
-    processData: false,
-    success: function (data) {
-        createVisualization(data, 3);
-    },
-    error: function (result) {
-        console.error("Error getting data.");
+    if (document.getElementById("ITS")) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: 'finished_species_its',
+            dataType: 'json',
+            processData: false,
+            success: function (data) {
+                createVisualization(data, 3);
+            },
+            error: function (result) {
+                console.error("Error getting data.");
+            }
+        });
     }
-});
 
-$.ajax({
-    type: "GET",
-    contentType: "application/json; charset=utf-8",
-    url: 'finished_species_rpl16',
-    dataType: 'json',
-    processData: false,
-    success: function (data) {
-        createVisualization(data, 4);
-    },
-    error: function (result) {
-        console.error("Error getting data.");
+    if (document.getElementById("rpl16")) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: 'finished_species_rpl16',
+            dataType: 'json',
+            processData: false,
+            success: function (data) {
+                createVisualization(data, 4);
+            },
+            error: function (result) {
+                console.error("Error getting data.");
+            }
+        });
     }
-});
 
-$.ajax({
-    type: "GET",
-    contentType: "application/json; charset=utf-8",
-    url: 'finished_species_trnk_matk',
-    dataType: 'json',
-    processData: false,
-    success: function (data) {
-        createVisualization(data, 5);
-    },
-    error: function (result) {
-        console.error("Error getting data.");
+    if (document.getElementById("trnk_matk")) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: 'finished_species_trnk_matk',
+            dataType: 'json',
+            processData: false,
+            success: function (data) {
+                createVisualization(data, 5);
+            },
+            error: function (result) {
+                console.error("Error getting data.");
+            }
+        });
     }
 });
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContigSearchesController < ApplicationController
   load_and_authorize_resource
 
@@ -15,8 +17,8 @@ class ContigSearchesController < ApplicationController
   def create
     @contig_search = ContigSearch.create!(contig_search_params)
 
-    @contig_search.update(:user_id => current_user.id)
-    @contig_search.update(:project_id => current_user.default_project_id)
+    @contig_search.update(user_id: current_user.id)
+    @contig_search.update(project_id: current_user.default_project_id)
 
     redirect_to @contig_search
   end
@@ -38,9 +40,51 @@ class ContigSearchesController < ApplicationController
     end
   end
 
+  def delete_all
+    @contig_search = ContigSearch.find(params[:contig_search_id])
+    @contig_search.contigs.destroy_all
+
+    respond_to do |format|
+      format.html { redirect_to contig_search_path(@contig_search), notice: 'All contigs and associated records were successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
+  def export_as_pde
+    @contig_search = ContigSearch.find(params[:contig_search_id])
+    file_name = @contig_search.title.empty? ? "contig_search_#{@contig_search.created_at}" : @contig_search.title
+    send_data(ContigSearch.pde(@contig_search.contigs.includes(:partial_cons, isolate: [individual: :species]), add_reads: false), filename: "#{file_name}.pde", type: 'application/txt')
+  end
+
+  def export_results_as_zip
+    @contig_search = ContigSearch.find(params[:contig_search_id])
+
+    ContigSearchResultExport.perform_async(params[:contig_search_id])
+    redirect_to @contig_search,
+                notice: "The result archive file is being written to the server in the background. May take a minute or so. Download with 'Download result archive' button."
+  end
+
+  def download_results
+    @contig_search = ContigSearch.find(params[:contig_search_id])
+    archive = @contig_search.search_result_archive
+
+    if archive.present?
+      data = Rails.env.development? ? File.open(archive.path) : open("http:#{archive.url}")
+      send_data(data.read,
+                filename: @contig_search.search_result_archive_file_name,
+                type: 'application/zip')
+    else
+      redirect_to @contig_search,
+                  notice: 'Please wait while the result archive is being written to the server.'
+    end
+  end
+
   private
+
   # Never trust parameters from the scary internet, only allow the white list through.
   def contig_search_params
-    params.require(:contig_search).permit(:title, :assembled, :family, :marker, :max_age, :max_update, :min_age, :min_update, :name, :order, :species, :specimen, :verified, :project_id)
+    params.require(:contig_search).permit(:title, :assembled, :has_warnings, :family, :marker, :max_age, :max_update,
+                                          :min_age, :min_update, :name, :order, :species, :specimen, :verified,
+                                          :verified_by, :project_id, :search_result_archive)
   end
 end

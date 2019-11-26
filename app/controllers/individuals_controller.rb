@@ -1,15 +1,11 @@
+# frozen_string_literal: true
+
 class IndividualsController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_individual, :only => [:show, :edit, :update, :destroy]
-
-  def specimens_without_species
-  end
-
-  def problematic_location_data
-  end
+  before_action :set_individual, only: %i[show edit update destroy]
 
   def index
     respond_to do |format|
@@ -19,31 +15,40 @@ class IndividualsController < ApplicationController
   end
 
   def create_xls
-    SpecimenExport.perform_async
+    SpecimenExport.perform_async(current_project_id)
     redirect_to individuals_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Specimens index page > 'Download last specimens export'."
   end
 
   def xls
-    data = open("http:#{XmlUploader.last.uploaded_file.url}")
-    send_data data.read, filename: 'specimens.xls', type: 'application/vnd.ms-excel', disposition: 'attachment', stream: 'true', buffer_size: '4096'
+    export = SpecimenExporter.last.specimen_export
+
+    if export.present?
+      data = Rails.env.development? ? File.open(File.join(Rails.root, export.path)) : open("http:#{export.url}")
+      send_data(data.read, filename: 'specimens_export.xls',
+                           type: 'application/vnd.ms-excel',
+                           disposition: 'attachment',
+                           stream: 'true',
+                           buffer_size: '4096')
+    else
+      redirect_to individuals_path, notice: 'Please wait while the file is being written to the server.'
+    end
   end
 
   def problematic_specimens
     # Liste aller Bundesländer to check 'state_province' against:
-    @states = %w(Baden-Württemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein Thüringen)
+    @states = %w[Baden-Württemberg Bayern Berlin Brandenburg Bremen Hamburg Hessen Mecklenburg-Vorpommern Niedersachsen Nordrhein-Westfalen Rheinland-Pfalz Saarland Sachsen Sachsen-Anhalt Schleswig-Holstein Thüringen]
     @individuals = []
 
     Individual.in_project(current_project_id).each do |i|
-      if i.country == "Germany"
+      if i.country == 'Germany'
         @individuals.push(i) unless @states.include? i.state_province
       end
     end
-
   end
 
   def filter
-    @individuals = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").in_project(current_project_id).limit(100)
-    size = Individual.where("individuals.specimen_id ilike ?", "%#{params[:term]}%").in_project(current_project_id).size
+    @individuals = Individual.where('individuals.specimen_id ilike ?', "%#{params[:term]}%").in_project(current_project_id).limit(100)
+    size = Individual.where('individuals.specimen_id ilike ?', "%#{params[:term]}%").in_project(current_project_id).size
 
     if size > 100
       message = "and #{size} more..."
@@ -55,8 +60,7 @@ class IndividualsController < ApplicationController
 
   # GET /individuals/1
   # GET /individuals/1.json
-  def show
-  end
+  def show; end
 
   # GET /individuals/new
   def new
@@ -64,8 +68,7 @@ class IndividualsController < ApplicationController
   end
 
   # GET /individuals/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /individuals
   # POST /individuals.json
@@ -121,8 +124,8 @@ class IndividualsController < ApplicationController
                                        :DNA_bank_id,
                                        :collector,
                                        :specimen_id,
-                                       :herbarium,
-                                       :voucher,
+                                       :herbarium_code,
+                                       :herbarium_id,
                                        :country,
                                        :state_province,
                                        :locality,
@@ -135,7 +138,7 @@ class IndividualsController < ApplicationController
                                        :habitat,
                                        :substrate,
                                        :life_form,
-                                       :collection_nr,
+                                       :collectors_field_number,
                                        :collection_date,
                                        :determination,
                                        :revision,
@@ -143,6 +146,7 @@ class IndividualsController < ApplicationController
                                        :comments,
                                        :species_id,
                                        :species_name,
-                                       :project_ids => [])
+                                       :tissue_id,
+                                       project_ids: [])
   end
 end

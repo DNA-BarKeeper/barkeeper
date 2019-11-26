@@ -1,6 +1,7 @@
-class ContigSearchResultDatatable
+# frozen_string_literal: true
 
-  #ToDo: fig out if this inclusion is necessary. Found on https://gist.github.com/jhjguxin/4544826, but unclear if makes sense. "delegate" statement alone does not work.
+class ContigSearchResultDatatable
+  # TODO: fig out if this inclusion is necessary. Found on https://gist.github.com/jhjguxin/4544826, but unclear if makes sense. "delegate" statement alone does not work.
   include Rails.application.routes.url_helpers
 
   delegate :url_helpers, to: 'Rails.application.routes'
@@ -11,12 +12,12 @@ class ContigSearchResultDatatable
     @search_id = search_id
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     {
-        :sEcho => params[:sEcho].to_i,
-        :iTotalRecords => Contig.count,
-        :iTotalDisplayRecords => contigs_data.total_entries,
-        :aaData => data
+      sEcho: params[:sEcho].to_i,
+      iTotalRecords: Contig.in_project(ContigSearch.find(@search_id).project.id).count,
+      iTotalDisplayRecords: contigs_data.total_entries,
+      aaData: data
     }
   end
 
@@ -24,49 +25,45 @@ class ContigSearchResultDatatable
 
   def data
     contigs_data.map do |contig|
-
-      assembled='No'
-      if contig.assembled
-        assembled='Yes'
-      end
-
-      species_name=''
-      species_id=0
-      individual_name=''
-      individual_id=0
+      assembled = contig.assembled ? 'Yes' : 'No'
+      species_name = ''
+      species_id = 0
+      individual_name = ''
+      individual_id = 0
 
       if contig.try(:isolate).try(:individual).try(:species)
-        species_name=contig.isolate.individual.species.name_for_display
-        species_id=contig.isolate.individual.species.id
-        individual_name=contig.isolate.individual.specimen_id
-        individual_id=contig.isolate.individual.id
+        species_name = contig.isolate.individual.species.name_for_display
+        species_id = contig.isolate.individual.species.id
+        individual_name = contig.isolate.individual.specimen_id
+        individual_id = contig.isolate.individual.id
       end
 
       [
-          link_to(contig.name, edit_contig_path(contig)),
-          link_to(species_name, edit_species_path(species_id)),
-          link_to(individual_name, edit_individual_path(individual_id)),
-          assembled,
-          contig.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
-          link_to('Delete', contig, method: :delete, data: { confirm: 'Are you sure?' })
+        link_to(contig.name, edit_contig_path(contig)),
+        link_to(species_name, edit_species_path(species_id)),
+        link_to(individual_name, edit_individual_path(individual_id)),
+        assembled,
+        contig.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
+        link_to('Delete', contig, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end
 
   def contigs_data
-    @search_result ||= ContigSearch.find_by_id(@search_id).contigs.reorder("#{sort_column} #{sort_direction}")
+    @search_result ||= ContigSearch.find_by_id(@search_id).contigs.includes(isolate: [individual: :species]).reorder("#{sort_column} #{sort_direction}")
 
     @search_result = @search_result.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      @search_result = @search_result.where("contigs.name ILIKE :search", search: "%#{params[:sSearch]}%")
+      @search_result = @search_result.where('contigs.name ILIKE :search OR species.composed_name ILIKE :search OR individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
+                                     .references(isolate: [individual: :species])
     end
 
     @search_result
   end
 
   def page
-    params[:iDisplayStart].to_i/per_page + 1
+    params[:iDisplayStart].to_i / per_page + 1
   end
 
   def per_page
@@ -74,11 +71,11 @@ class ContigSearchResultDatatable
   end
 
   def sort_column
-    columns = %w[name species_id individual_id assembled updated_at]
+    columns = %w[contigs.name species.composed_name individuals.specimen_id contigs.assembled contigs.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
   def sort_direction
-    params[:sSortDir_0] == "desc" ? "desc" : "asc"
+    params[:sSortDir_0] == 'desc' ? 'desc' : 'asc'
   end
 end

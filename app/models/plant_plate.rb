@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PlantPlate < ApplicationRecord
   include ProjectRecord
 

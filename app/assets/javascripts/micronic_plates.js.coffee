@@ -4,11 +4,12 @@ jQuery ->
     bServerSide: true
     sAjaxSource: $('#micronic_plates').data('source')
     "columnDefs": [
-      { "orderable": false, "targets": 1 }
-      { "orderable": false, "targets": 2 }
-      { "orderable": false, "targets": 3 }
-      { "orderable": false, "targets": 4 }
       { "orderable": false, "targets": 6 }
     ]
     "order": [ 5, 'desc' ]
   } );
+
+  $('#micronic_plate_project_ids').chosen({
+    allow_single_deselect: true
+    no_results_text: 'No results matched'
+  });

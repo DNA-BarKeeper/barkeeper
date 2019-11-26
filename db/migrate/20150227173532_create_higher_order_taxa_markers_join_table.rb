@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateHigherOrderTaxaMarkersJoinTable < ActiveRecord::Migration
   def change
     create_table :higher_order_taxa_markers, id: false do |t|

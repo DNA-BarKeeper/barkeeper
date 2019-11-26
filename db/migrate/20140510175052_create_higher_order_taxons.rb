@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateHigherOrderTaxons < ActiveRecord::Migration
   def change
     create_table :higher_order_taxons do |t|

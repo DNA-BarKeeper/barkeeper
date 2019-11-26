@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeTypesInContigSearchToDate < ActiveRecord::Migration[5.0]
   def self.up
     change_column :contig_searches, :min_age, :date

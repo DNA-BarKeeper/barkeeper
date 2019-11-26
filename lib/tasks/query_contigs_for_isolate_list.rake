@@ -1,15 +1,15 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'nokogiri'
 
 namespace :data do
+  desc 'For given GBOL-Nrs, check which contigs exist.'
 
-  desc "For given GBOL-Nrs, check which contigs exist."
-
-  task :query_contigs_for_isolate_list => :environment do
-
+  task query_contigs_for_isolate_list: :environment do
     outputstr = "Isolate ID\tITS\ttrnK-matK\ttrnLF\trpl16\n"
 
-    list_with_gbol_nrs="GBoL3457
+    list_with_gbol_nrs = "GBoL3457
 GBoL3467
 GBoL3459
 GBoL3474
@@ -60,34 +60,25 @@ GBoL3541
 ".split("\n")
 
     list_with_gbol_nrs.each do |i|
-
       outputstr += "#{i}\t"
 
-      isolate = Isolate.where(:lab_nr => i).first
+      isolate = Isolate.where(lab_isolation_nr: i).first
 
       isolate.contigs.each do |c|
-
-        if c.verified_at.nil?
-          outputstr += "#{c.marker.name} "
-        else
-          outputstr += "#{c.marker.name} (verified)"
-        end
+        outputstr += if c.verified_at.nil?
+                       "#{c.marker.name} "
+                     else
+                       "#{c.marker.name} (verified)"
+                     end
 
         outputstr += "\t"
-
       end
 
-      outputstr+="\n"
-
-
+      outputstr += "\n"
     end
 
     puts outputstr
 
-    puts
-
-    puts "Done."
-
+    puts "\nDone."
   end
-
 end
