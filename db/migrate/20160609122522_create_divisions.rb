@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateDivisions < ActiveRecord::Migration
   def change
     create_table :divisions do |t|

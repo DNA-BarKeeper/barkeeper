@@ -16,11 +16,35 @@
       <br/>
       <div>
         <%= f.radio_button :verified, "verified" %>
-        <%= f.label :assembled, "Verified" %>
+        <%= f.label :verified, "Verified" %>
         <%= f.radio_button :verified, "unverified" %>
         <%= f.label :unverified, "Unverified" %>
         <%= f.radio_button :verified, "both", :checked => true %>
         <%= f.label :both_verify, "Both" %>
+      </div>
+      <div class="field">
+        <%= f.label :verified_by %><br />
+        <%= f.text_field :verified_by, data: { autocomplete_source: User.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+      </div>
+      <br/>
+      <div>
+        <%= f.check_box :has_species %>
+        <%= f.label :has_species, "Is assigned to a species" %>
+      </div>
+      <br/>
+      <div>
+        <%= f.check_box :no_isolate %>
+        <%= f.label :no_isolate, "Does not have an associated isolate" %>
+      </div>
+      <br/>
+      <div>
+        <%= f.label :has_warnings, 'Search for marker sequences with unsolved SATIVA warnings:' %><br>
+        <%= f.radio_button :has_warnings, "yes" %>
+        <%= f.label :yes, "Yes" %>
+        <%= f.radio_button :has_warnings, "no" %>
+        <%= f.label :no, "No" %>
+        <%= f.radio_button :has_warnings, "both", :checked => true %>
+        <%= f.label :both, "Search for both" %>
       </div>
       <br/>
       <div class="field">
@@ -40,6 +64,10 @@
         <%= f.text_field :family, data: { autocomplete_source: filter_families_path }, include_blank: true, class: 'form-control' %>
       </div>
       <div class="field">
+        <%= f.label :higher_order_taxon %><br />
+        <%= f.text_field :higher_order_taxon, data: { autocomplete_source: HigherOrderTaxon.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+      </div>
+      <div class="field">
         <%= f.label :order %><br />
         <%= f.text_field :order, data: { autocomplete_source: Order.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
       </div>
@@ -49,7 +77,16 @@
         <%= f.number_field :min_length, class: 'form-control' %> and <%= f.number_field :max_length, class: 'form-control' %>
       </div>
       <br>
-      <div class="actions"><%= f.submit "Search" %></div>
+      <div class="field">
+        <%= f.label :age, "Created between" %><br />
+        <%= f.text_field :min_age, class: 'form-control' %> and <%= f.text_field :max_age, class: 'form-control' %>
+      </div>
+      <div class="field">
+        <%= f.label :update, "Updated between" %><br />
+        <%= f.text_field :min_update, class: 'form-control' %> and <%= f.text_field :max_update, class: 'form-control' %>
+      </div>
+      <br>
+      <div class="actions"><%= f.submit "Search", class: 'btn btn-default'%></div>
     <% end %>
   </div>
 </div>

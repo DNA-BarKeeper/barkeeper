@@ -21,6 +21,10 @@
         <%= f.text_area :description, :autofocus => true, class: 'form-control' %>
       </div>
 
+      <div class="vertical-spacer"></div>
+
+      <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@issue) } %>
+
       <%= f.submit 'Update', :class => 'btn btn-default' %>
   <% end %></div>
   

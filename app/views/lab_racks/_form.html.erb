@@ -22,8 +22,10 @@
 
         <div class="form-group">
           <%= f.label 'Freezer' %>
-          <%= f.collection_select(:freezer_id, Freezer.all, :id, :freezercode) %>
+          <%= f.collection_select(:freezer_id, Freezer.all, :id, :freezercode, {}, { class: 'form-control' }) %>
         </div>
+
+      <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@lab_rack) } %>
 
         <%= f.submit 'Update', :class => 'btn btn-default' %>
     <% end %>

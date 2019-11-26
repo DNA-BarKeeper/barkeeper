@@ -1,20 +1,20 @@
+# frozen_string_literal: true
+
 class PlantPlateDatatable
-  
   include Rails.application.routes.url_helpers
   delegate :url_helpers, to: 'Rails.application.routes'
 
   delegate :params, :link_to, :h, to: :@view
-
 
   def initialize(view, current_default_project)
     @view = view
     @current_default_project = current_default_project
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: PlantPlate.count,
+      iTotalRecords: PlantPlate.in_project(@current_default_project).count,
       iTotalDisplayRecords: plant_plates.total_entries,
       aaData: data
     }
@@ -24,19 +24,15 @@ class PlantPlateDatatable
 
   def data
     plant_plates.map do |plant_plate|
-
-      name=''
-      if plant_plate.name
-        name = link_to plant_plate.name, edit_plant_plate_path(plant_plate)
-      end
+      name = ''
+      name = link_to plant_plate.name, edit_plant_plate_path(plant_plate) if plant_plate.name
 
       [
         name,
-        plant_plate.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        plant_plate.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
         link_to('Delete', plant_plate, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
-
   end
 
   def plant_plates
@@ -49,14 +45,14 @@ class PlantPlateDatatable
     plant_plates = plant_plates.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      plant_plates = plant_plates.where("plant_plates.name ILIKE :search", search: "%#{params[:sSearch]}%")
+      plant_plates = plant_plates.where('plant_plates.name ILIKE :search', search: "%#{params[:sSearch]}%")
     end
 
     plant_plates
   end
 
   def page
-    params[:iDisplayStart].to_i/per_page + 1
+    params[:iDisplayStart].to_i / per_page + 1
   end
 
   def per_page
@@ -69,6 +65,6 @@ class PlantPlateDatatable
   end
 
   def sort_direction
-    params[:sSortDir_0] == "desc" ? "desc" : "asc"
+    params[:sSortDir_0] == 'desc' ? 'desc' : 'asc'
   end
 end

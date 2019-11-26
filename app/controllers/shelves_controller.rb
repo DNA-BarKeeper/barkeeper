@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class ShelvesController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_shelf, only: [:show, :edit, :update, :destroy]
+  before_action :set_shelf, only: %i[show edit update destroy]
 
   # GET /shelves
   # GET /shelves.json
@@ -13,8 +15,7 @@ class ShelvesController < ApplicationController
 
   # GET /shelves/1
   # GET /shelves/1.json
-  def show
-  end
+  def show; end
 
   # GET /shelves/new
   def new
@@ -22,8 +23,7 @@ class ShelvesController < ApplicationController
   end
 
   # GET /shelves/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /shelves
   # POST /shelves.json
@@ -75,6 +75,6 @@ class ShelvesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def shelf_params
-    params.require(:shelf).permit(:name, :project_ids => [])
+    params.require(:shelf).permit(:name, project_ids: [])
   end
 end

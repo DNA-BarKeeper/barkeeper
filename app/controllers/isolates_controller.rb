@@ -1,30 +1,43 @@
+# frozen_string_literal: true
+
 class IsolatesController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_isolate, only: [:show, :edit, :update, :destroy]
+  before_action :set_isolate, only: %i[show edit update destroy]
 
   def index
     respond_to do |format|
       format.html
-      format.json { render json: IsolateDatatable.new(view_context, false, current_project_id) }
+      format.json { render json: IsolateDatatable.new(view_context, nil, current_project_id) }
     end
   end
 
   def duplicates
+    respond_to do |format|
+      format.html
+      format.json { render json: IsolateDatatable.new(view_context, 'duplicates', current_project_id) }
+    end
   end
 
   def no_specimen
     respond_to do |format|
       format.html
-      format.json { render json: IsolateDatatable.new(view_context, true, current_project_id) }
+      format.json { render json: IsolateDatatable.new(view_context, 'no_specimen', current_project_id) }
     end
   end
 
   def filter
-    @isolates = Isolate.in_project(current_project_id).select('lab_nr, id').where('lab_nr ILIKE ?', "%#{params[:term]}%").order(:lab_nr)
-    render json: @isolates.map(&:lab_nr)
+    @isolates = Isolate.select(:display_name, :id).where('display_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).limit(50)
+    size = Isolate.select(:display_name, :id).where('display_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).size
+
+    if size > 50
+      message = "and #{size - 50} more..."
+      render json: @isolates.map(&:display_name).push(message)
+    else
+      render json: @isolates.map(&:display_name)
+    end
   end
 
   def import
@@ -33,24 +46,23 @@ class IsolatesController < ApplicationController
     redirect_to isolates_path, notice: 'Imported.'
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @isolate = Isolate.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @isolate = Isolate.new(isolate_params)
     @isolate.add_project(current_project_id)
+    @isolate.assign_display_name(isolate_params.fetch('dna_bank_id'), isolate_params.fetch('lab_isolation_nr'))
 
     respond_to do |format|
       if @isolate.save
-        format.html { redirect_to isolates_path, notice: 'Isolate was successfully created.' }
-        format.json { render :show, status: :created, location: @isolate }
+        format.html { redirect_to edit_isolate_path(@isolate), notice: 'Isolate was successfully created.' }
+        format.json { render :edit, status: :created, location: @isolate }
       else
         format.html { render :new }
         format.json { render json: @isolate.errors, status: :unprocessable_entity }
@@ -61,8 +73,8 @@ class IsolatesController < ApplicationController
   def update
     respond_to do |format|
       if @isolate.update(isolate_params)
-        format.html { redirect_to isolates_path, notice: 'Isolate was successfully updated.' }
-        format.json { render :show, status: :ok, location: @isolate }
+        format.html { redirect_to edit_isolate_path(@isolate), notice: 'Isolate was successfully updated.' }
+        format.json { render :edit, status: :ok, location: @isolate }
       else
         format.html { render :edit }
         format.json { render json: @isolate.errors, status: :unprocessable_entity }
@@ -78,6 +90,13 @@ class IsolatesController < ApplicationController
     end
   end
 
+  def show_clusters
+    respond_to do |format|
+      format.html
+      format.json { render json: ClusterDatatable.new(view_context, params[:id], current_project_id) }
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -87,11 +106,11 @@ class IsolatesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def isolate_params
-    params.require(:isolate).permit(:comment_orig, :comment_copy, :micronic_tube_id_copy, :micronic_tube_id_orig, :concentration_copy, :concentration_orig, :well_pos_micronic_plate_copy, :well_pos_micronic_plate_orig, :micronic_plate_id_copy,:micronic_plate_id_orig, :isolation_date, :lab_id_copy, :lab_id_orig, :user_id, :well_pos_plant_plate, :lab_nr, :micronic_tube_id, :well_pos_micronic_plate, :concentration,
-                                    :tissue_id, :micronic_plate_id, :plant_plate_id, :term,
-                                    :file,
-                                    :individual_name,
-                                    :query,
-                                    :project_ids => [])
+    params.require(:isolate).permit(:id, :isolation_date, :user_id, :well_pos_plant_plate,
+                                    :lab_isolation_nr, :tissue_id, :plant_plate_id, :individual_name,
+                                    :dna_bank_id, :negative_control, project_ids: [],
+                                    aliquots_attributes: [:id, :comment, :concentration, :is_original, :lab_id,
+                                                          :well_pos_micronic_plate, :micronic_tube, :micronic_plate_id,
+                                                          :isolate_id, :_destroy])
   end
 end

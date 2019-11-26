@@ -1,23 +1,24 @@
+# frozen_string_literal: true
+
 class MicronicPlatesController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_micronic_plate, only: [:show, :edit, :update, :destroy]
+  before_action :set_micronic_plate, only: %i[show edit update destroy]
 
   # GET /micronic_plates
   # GET /micronic_plates.json
   def index
     respond_to do |format|
       format.html
-      format.json { render json: MicronicPlateDatatable.new(view_context, current_project_id)}
+      format.json { render json: MicronicPlateDatatable.new(view_context, current_project_id) }
     end
   end
 
   # GET /micronic_plates/1
   # GET /micronic_plates/1.json
-  def show
-  end
+  def show; end
 
   # GET /micronic_plates/new
   def new
@@ -25,8 +26,7 @@ class MicronicPlatesController < ApplicationController
   end
 
   # GET /micronic_plates/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /micronic_plates
   # POST /micronic_plates.json
@@ -78,6 +78,6 @@ class MicronicPlatesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def micronic_plate_params
-    params.require(:micronic_plate).permit(:location_in_rack, :micronic_plate_id, :name, :project_ids => [])
+    params.require(:micronic_plate).permit(:location_in_rack, :micronic_plate_id, :name, project_ids: [])
   end
 end

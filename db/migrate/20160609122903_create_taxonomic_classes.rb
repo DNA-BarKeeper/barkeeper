@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTaxonomicClasses < ActiveRecord::Migration
   def change
     create_table :taxonomic_classes do |t|

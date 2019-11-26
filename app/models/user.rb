@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User < ApplicationRecord
   include ProjectRecord
 
@@ -8,14 +10,16 @@ class User < ApplicationRecord
 
   belongs_to :lab
   has_many :contig_searches
+  has_many :individual_searches
+  has_many :marker_sequence_searches
   has_and_belongs_to_many :responsibilities
 
-  validates_presence_of :email # necessary for devise
+  validates_presence_of :email # Necessary for devise
   validates :projects, presence: true
 
   before_save :default_project
 
-  enum role: [:guest, :user, :supervisor, :admin]
+  enum role: %i[guest user supervisor admin]
 
   def default_project
     self.default_project_id ||= projects&.first&.id

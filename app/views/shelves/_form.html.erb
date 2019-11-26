@@ -1,16 +1,17 @@
 <div class="panel panel-default">
-
   <div class="panel-heading">
-    <h3 class="panel-title">Isolate <%= @shelf.name %></h3>
+    <h3 class="panel-title">Shelf <%= @shelf.name %></h3>
   </div>
-
 
   <div class="panel-body"><%= form_for(@shelf) do |f| %>
       <div class="form-group">
         <%= f.label :name %>
         <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
       </div>
-      <%= f.submit 'Update', :class => 'button right' %>
 
-  <% end %></div>
+      <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@shelf) } %>
+
+      <%= f.submit 'Update', :class => 'button right' %>
+    <% end %>
+  </div>
 </div>

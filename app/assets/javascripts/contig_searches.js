@@ -4,10 +4,10 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#contig_searches').data('source'),
         "columnDefs": [{
-            "targets": 2,
+            "targets": 3,
             "orderable": false
         }],
-        "order": [ 1, 'desc' ]
+        "order": [ 2, 'desc' ]
     });
 
     $('#contig_search_results').dataTable({
@@ -62,5 +62,9 @@ jQuery(function() {
 
     $('#contig_search_order').autocomplete({
         source: $('#contig_search_order').data('autocomplete-source')
+    });
+
+    $('#contig_search_verified_by').autocomplete({
+        source: $('#contig_search_verified_by').data('autocomplete-source')
     });
 });

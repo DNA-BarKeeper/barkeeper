@@ -1,9 +1,9 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <p><h3 class="panel-title">Contig Search Results <%= "- #{title(@contig_search)}" %></h3></p>
-    <p>Search parameters:<br>
-      <%= "Searched project: #{project(@contig_search)}" %>
-      <br>
+    <p><h3 class="panel-title">Contig Search Results <%= title(@contig_search) %></h3></p>
+    <b>Searched project: </b><%= project(@contig_search) %><br>
+    <p>
+      <b>Search parameters:</b><br>
       <%= attributes(@contig_search) %>
     </p>
   </div>
@@ -31,9 +31,25 @@
 </div>
 
 <p>
+  <%= link_to 'Download results as PDE', contig_search_export_as_pde_path(@contig_search), class: 'btn btn-default' %>
+
+  <%= link_to 'Create result archive file on server', contig_search_export_results_as_zip_path(@contig_search), class: 'btn btn-default' %>
+
+  <%= link_to 'Download result archive including pherograms (*.zip)', contig_search_download_results_path(@contig_search), class: 'btn btn-default' %>
+</p>
+
+<p>
   <%= link_to 'Start a new contig search', new_contig_search_path, class: 'btn btn-default' %>
 
   <%= link_to 'Go to your contig searches index', contig_searches_path, class: 'btn btn-default' %>
 
   <%= link_to 'Go to contigs index', contigs_path, class: 'btn btn-default' %>
+</p>
+
+<p>
+  <%= link_to 'Delete all found contigs', contig_search_delete_all_path(@contig_search),
+              method: 'get',
+              title: 'This will permanently delete all found contigs and their associated reads and marker sequences!',
+              class: 'btn btn-danger',
+              :data => { :confirm => 'Are you sure?' }%>
 </p>

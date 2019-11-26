@@ -1,7 +1,8 @@
-namespace :data do
+# frozen_string_literal: true
 
+namespace :data do
   desc 'Check if faulty isolates in db have primer reads associated'
-  task :check_faulty_isolates => :environment do
+  task check_faulty_isolates: :environment do
     puts 'Starting check for faulty isolates and plates...'
 
     plate_names = [*49..51]
@@ -9,7 +10,7 @@ namespace :data do
 
     plates_count = 0
 
-    plate_names.each do | name |
+    plate_names.each do |name|
       plates_count += 1 if PlantPlate.find_by_name(name.to_s)
     end
 
@@ -29,15 +30,15 @@ namespace :data do
 
     present = []
 
-    gbol_numbers.each do | name |
-      gbol_name = "gbol#{name.to_s}"
+    gbol_numbers.each do |name|
+      gbol_name = "gbol#{name}"
 
-      isolate = Isolate.where("lab_nr ilike ?", gbol_name).first
+      isolate = Isolate.where('lab_isolation_nr ilike ?', gbol_name).first
 
       isolates.add? isolate if isolate
       present << name if isolate
 
-      isolate&.contigs&.each do | contig |
+      isolate&.contigs&.each do |contig|
         contigs_cnt += 1
         primer_reads.add? isolate if contig&.primer_reads&.size&.nonzero?
       end
@@ -56,9 +57,9 @@ namespace :data do
       puts 'The same amount of isolates, contigs and marker sequences was found as expected.'
     end
 
-    if primer_reads.size > 0
+    unless primer_reads.empty?
       puts "#{primer_reads.size} isolates with associated primer reads were found:"
-      primer_reads.each {|isolate| print "#{isolate.lab_nr}, " }
+      primer_reads.each { |isolate| print "#{isolate.lab_isolation_nr}, " }
       puts "\n\n"
     end
 
@@ -66,22 +67,22 @@ namespace :data do
   end
 
   desc 'Delete incorrect isolate metadata'
-  task :delete_incorrect_isolate_metadata => :environment do
+  task delete_incorrect_isolate_metadata: :environment do
     'Starting deletion of incorrect metadata...'
 
     # Delete incorrect specimen associations of isolates
     gbol_numbers = [*4609..4896]
     gbol_numbers.concat [*5665..7008]
 
-    gbol_numbers.each do | name |
-      gbol_name = "GBoL#{name.to_s}"
-      isolate = Isolate.where("lab_nr ilike ?", gbol_name)
+    gbol_numbers.each do |name|
+      gbol_name = "GBoL#{name}"
+      isolate = Isolate.where('lab_isolation_nr ilike ?', gbol_name)
 
       if isolate.size > 1
         puts "More than one isolate with the name #{gbol_name} was found."
       else
         isolate = isolate.first
-        isolate&.update(:individual_id => nil)
+        isolate&.update(individual_id: nil)
       end
     end
 

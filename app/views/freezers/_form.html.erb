@@ -1,9 +1,10 @@
-
 <div class="panel panel-default">
-  <div class="panel-heading"><h3  class="panel-title"><%= @freezer.freezercode%></h3></div>
+  <div class="panel-heading">
+    <h3  class="panel-title"><%= @freezer.freezercode%></h3>
+  </div>
 
-<div class="panel-body"><%= form_for(@freezer) do |f| %>
-
+  <div class="panel-body">
+    <%= form_for(@freezer) do |f| %>
       <div class="form-group">
         <%= f.label :freezercode %>
         <%= f.text_field :freezercode,  class: 'form-control' %>
@@ -11,9 +12,12 @@
 
       <div class="form-group">
         <%= f.label 'Lab' %>
-        <%= f.collection_select(:lab_id, Lab.all, :id, :labcode) %>
+        <%= f.collection_select(:lab_id, Lab.all, :id, :labcode, {}, { class: 'form-control' }) %>
       </div>
 
+      <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@freezer) } %>
+
       <%= f.submit 'Update', :class => 'btn btn-default' %>
-<% end %></div>
+    <% end %>
+  </div>
 </div>

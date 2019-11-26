@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'boot'
 
 require 'csv'
@@ -9,7 +11,6 @@ Bundler.require(*Rails.groups)
 
 module GBOLapp
   class Application < Rails::Application
-
     config.generators do |g|
       g.test_framework :rspec,
                        :fixtures => true,

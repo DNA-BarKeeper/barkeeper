@@ -1,23 +1,24 @@
+# frozen_string_literal: true
+
 class PlantPlatesController < ApplicationController
   include ProjectConcern
 
   load_and_authorize_resource
 
-  before_action :set_plant_plate, only: [:show, :edit, :update, :destroy]
+  before_action :set_plant_plate, only: %i[show edit update destroy]
 
   # GET /plant_plates
   # GET /plant_plates.json
   def index
     respond_to do |format|
       format.html
-      format.json { render json: PlantPlateDatatable.new(view_context, current_project_id)}
+      format.json { render json: PlantPlateDatatable.new(view_context, current_project_id) }
     end
   end
 
   # GET /plant_plates/1
   # GET /plant_plates/1.json
-  def show
-  end
+  def show; end
 
   # GET /plant_plates/new
   def new
@@ -25,8 +26,7 @@ class PlantPlatesController < ApplicationController
   end
 
   # GET /plant_plates/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /plant_plates
   # POST /plant_plates.json
@@ -78,6 +78,6 @@ class PlantPlatesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def plant_plate_params
-    params.require(:plant_plate).permit(:name, :how_many, :project_ids => [])
+    params.require(:plant_plate).permit(:name, :how_many, project_ids: [])
   end
 end

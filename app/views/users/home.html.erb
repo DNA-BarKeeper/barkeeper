@@ -3,7 +3,7 @@
   <div class="panel-heading">
     <h3 class="panel-title">Profile information</h3>
   </div>
-  <div class="panel-body" id="main">
+  <div class="panel-body">
     <%= render 'show' %>
     <div><%= link_to 'Edit profile', edit_user_registration_path, :class => 'btn btn-default' %></div>
   </div>
@@ -13,24 +13,28 @@
   <div class="panel-heading">
     <h3 class="panel-title">Projects</h3>
   </div>
-  <div class="panel-body" id="main">
-    <div>
+  <div class="panel-body">
       <p>
         <strong>Projects:</strong>
         <%= @user.projects&.map { |project| project.name }.join(', ') %>
       </p>
 
       <%= form_for @user do |f| %>
-        <%= f.label 'Default project:' %>
-        <%= f.collection_select :default_project_id, @user.projects, :id, :name %>
+        <%= f.label 'Currently selected project:' %>
+        <%= f.collection_select :default_project_id, @user.projects, :id, :name %><br>
 
         <div class="form-actions">
-          <%= f.submit 'Change default project', :class => 'btn btn-warning' %>(This will influence what contents are shown throughout this web application.)
+          <%= f.submit 'Change selected project',
+                       :class => 'btn btn-warning',
+                       title: 'This will influence what contents are shown throughout this web application',
+                       'data-toggle' => 'tooltip',
+                       'data-placement' => 'right' %>
+
+          <%= link_to 'View projects', projects_path, class: 'btn btn-default' %>
         </div>
 
       <% end %>
       </p>
-    </div>
   </div>
 </div>
 
@@ -38,10 +42,11 @@
   <div class="panel-heading">
     <h3 class="panel-title">Saved searches</h3>
   </div>
-  <div class="panel-body" id="main">
+  <div class="panel-body">
     <div>
       <%= link_to 'Your past contig searches', contig_searches_path, :class => 'btn btn-default' %>
       <%= link_to 'Your past marker sequence searches', marker_sequence_searches_path, :class => 'btn btn-default' %>
+      <%= link_to 'Your past specimen searches', individual_searches_path, :class => 'btn btn-default' %>
     </div>
   </div>
 </div>

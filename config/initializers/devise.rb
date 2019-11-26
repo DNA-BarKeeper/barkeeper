@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
@@ -7,7 +9,6 @@ Devise.setup do |config|
   # config.secret_key = '44070e0c4542ccbb36e325f7d6902d5f522447f0c6d6f3a0591e30cc49eab9542fe051ece8ebbb47e482a8291478c956bcfce896bce0cb4993515ea9ab59a62e'
 
   config.secret_key = '422ed9a725773e72abb68813a794ffcc0659a7426fc1687bac085b61b10b1a0ac2a4440799d0e085b1baa622ed3a7d501931b96caaadcc4133021e94cb540c80'
-
 
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
@@ -44,12 +45,12 @@ Devise.setup do |config|
   # Configure which authentication keys should be case-insensitive.
   # These keys will be downcased upon creating or modifying a user and when used
   # to authenticate or find a user. Default is :email.
-  config.case_insensitive_keys = [ :email ]
+  config.case_insensitive_keys = [:email]
 
   # Configure which authentication keys should have whitespace stripped.
   # These keys will have whitespace before and after removed upon creating or
   # modifying a user and when used to authenticate or find a user. Default is :email.
-  config.strip_whitespace_keys = [ :email ]
+  config.strip_whitespace_keys = [:email]
 
   # Tell if authentication through request.params is enabled. True by default.
   # It can be set to an array that will enable params authentication only for the

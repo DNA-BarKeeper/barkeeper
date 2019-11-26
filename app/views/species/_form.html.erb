@@ -10,8 +10,6 @@
   <div class="panel-body">
 
     <%= form_for(@species) do |f| %>
-
-
         <!-- check if subsp.-->
         <% a=[] %>
 
@@ -32,9 +30,7 @@
 
         <!-- Tab panes -->
         <div class="tab-content">
-
           <div class="tab-pane active" id="description">
-
             <br>
             <div class="form-group">
               <%= f.label 'Genus' %>
@@ -46,19 +42,14 @@
               <%= f.text_field :species_epithet, class: 'form-control' %>
             </div>
 
-
             <div class="form-group">
               <%= f.label :author, 'Author' %>
-
               <%= f.text_field :author, class: 'form-control' %>
-
             </div>
 
             <div class="form-group">
               <%= f.label 'Subspecies' %>
-
               <%= f.text_field :infraspecific, class: 'form-control' %>
-
             </div>
 
             <div class="form-group">
@@ -76,22 +67,18 @@
 
             <div class="form-group">
               <%= f.label 'German name' %>
-
               <%= f.text_field :german_name, class: 'form-control' %>
-
             </div>
 
             <div class="form-group">
               <%= f.label 'Comment' %>
-
               <%= f.text_area :comment, class: 'form-control' %>
-
             </div>
 
+            <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@species) } %>
+
             <%= f.submit 'Update', :class =>  'btn btn-default'%>
-
           </div>
-
 
           <% if @species.id %>
             <% if a.count > 1 %>
@@ -119,7 +106,7 @@
                     <th>Species</th>
                     <th>Herbarium</th>
                     <th>Collector</th>
-                    <th>Collection Nr</th>
+                    <th>Collector's Field Number</th>
                     <th>Last updated</th>
                     <th></th>
                   </tr>
@@ -131,14 +118,14 @@
             </div>
             <div class="tab-pane" id="info">
               <br>
-              <% url="http://www.google.com/search?q=#{@species.genus_name}+#{@species.species_epithet}" %>
+              <% url="https://www.google.com/search?q=#{@species.genus_name}+#{@species.species_epithet}" %>
               <div>
                 <a target=”_blank” href=<%=url %>>Search Google ...</a>
               </div>
               <br>
               <% name_str=@species.species_component %>
               <% name_str=name_str.gsub!(' ', '_') %>
-              <% url="http://de.m.wikipedia.org/wiki/#{name_str}" %>
+              <% url="https://de.m.wikipedia.org/wiki/#{name_str}" %>
               <div class="wideTable">
                 <object id="wiki" type="text/html" data=<%= url %> width="800px" height="600px">
                 </object>

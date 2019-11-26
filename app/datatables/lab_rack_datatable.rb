@@ -1,5 +1,6 @@
-class LabRackDatatable
+# frozen_string_literal: true
 
+class LabRackDatatable
   include Rails.application.routes.url_helpers
   delegate :url_helpers, to: 'Rails.application.routes'
 
@@ -10,10 +11,10 @@ class LabRackDatatable
     @current_default_project = current_default_project
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: LabRack.count,
+      iTotalRecords: LabRack.in_project(@current_default_project).count,
       iTotalDisplayRecords: lab_racks.total_entries,
       aaData: data
     }
@@ -23,27 +24,19 @@ class LabRackDatatable
 
   def data
     lab_racks.map do |lab_rack|
+      rackcode = ''
 
-      rackcode=''
-
-      if lab_rack.rackcode
-        rackcode = link_to lab_rack.rackcode, edit_lab_rack_path(lab_rack)
-      end
-
+      rackcode = link_to lab_rack.rackcode, edit_lab_rack_path(lab_rack) if lab_rack.rackcode
 
       shelf = ''
-      if lab_rack.shelf
-        shelf = lab_rack.shelf
-      end
+      shelf = lab_rack.shelf if lab_rack.shelf
 
       freezer = ''
       lab = ''
 
       if lab_rack.freezer
-        freezer=link_to lab_rack.freezer.freezercode, edit_freezer_path(lab_rack.freezer)
-        if lab_rack.freezer.lab
-          lab = link_to lab_rack.freezer.lab.labcode, edit_lab_path(lab_rack.freezer.lab)
-        end
+        freezer = link_to lab_rack.freezer.freezercode, edit_freezer_path(lab_rack.freezer)
+        lab = link_to lab_rack.freezer.lab.labcode, edit_lab_path(lab_rack.freezer.lab) if lab_rack.freezer.lab
       end
 
       [
@@ -51,12 +44,10 @@ class LabRackDatatable
         shelf,
         freezer,
         lab,
-        lab_rack.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        lab_rack.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
         link_to('Delete', lab_rack, method: :delete, data: { confirm: 'Are you sure?' })
       ]
-
     end
-
   end
 
   def lab_racks
@@ -64,19 +55,21 @@ class LabRackDatatable
   end
 
   def fetch_lab_racks
-    lab_racks = LabRack.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+    lab_racks = LabRack.includes(freezer: [:lab, :shelves]).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     lab_racks = lab_racks.page(page).per_page(per_page)
 
-    if params[:sSearch].present?
-      lab_racks = lab_racks.where("rackcode ILIKE :search", search: "%#{params[:sSearch]}%")
-    end
+    lab_racks = lab_racks.where('lab_racks.rackcode ILIKE :search
+OR shelves.name ILIKE :search
+OR freezers.freezercode ILIKE :search
+OR labs.labcode ILIKE :search', search: "%#{params[:sSearch]}%")
+                    .references(freezer: [:lab, :shelves]) if params[:sSearch].present?
 
     lab_racks
   end
 
   def page
-    params[:iDisplayStart].to_i/per_page + 1
+    params[:iDisplayStart].to_i / per_page + 1
   end
 
   def per_page
@@ -84,12 +77,11 @@ class LabRackDatatable
   end
 
   def sort_column
-    columns = %w[rackcode shelf freezer lab updated_at]
+    columns = %w[lab_racks.rackcode shelves.name freezers.freezercode labs.labcode lab_racks.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
   def sort_direction
-    params[:sSortDir_0] == "desc" ? "desc" : "asc"
+    params[:sSortDir_0] == 'desc' ? 'desc' : 'asc'
   end
-
 end

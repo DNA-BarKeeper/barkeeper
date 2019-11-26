@@ -1,18 +1,23 @@
+# frozen_string_literal: true
+
 class ProjectsController < ApplicationController
   load_and_authorize_resource
 
-  before_action :set_project, only: [:show, :edit, :update, :destroy]
+  before_action :set_project, only: %i[show edit update destroy]
 
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all
+    @projects = if user_signed_in?
+                  current_user.admin? ? Project.all : current_user.projects
+                else
+                  []
+                end
   end
 
   # GET /projects/1
   # GET /projects/1.json
-  def show
-  end
+  def show; end
 
   # GET /projects/new
   def new
@@ -20,8 +25,7 @@ class ProjectsController < ApplicationController
   end
 
   # GET /projects/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /projects
   # POST /projects.json
@@ -63,14 +67,34 @@ class ProjectsController < ApplicationController
     end
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_project
-      @project = Project.find(params[:id])
-    end
+  def search_taxa
+    @result = PgSearch.multisearch(params[:query])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def project_params
-      params.require(:project).permit(:name, :description, :start, :due, :user_ids => [])
+  def add_to_taxa
+    taxa = {}
+    taxa[:hot] = params[:higherordertaxon][:id] if params[:higherordertaxon]
+    taxa[:order] = params[:order][:id] if params[:order]
+    taxa[:family] = params[:family][:id] if params[:family]
+    taxa[:species] = params[:species][:id] if params[:species]
+
+    Project.where(id: params[:project][:id]).each { |project| project.add_project_to_taxa(taxa) }
+
+    respond_to do |format|
+      format.html { redirect_to projects_url, notice: 'Added project(s) to all selected taxa.' }
+      format.json { head :no_content }
     end
+  end
+
+  private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_project
+    @project = Project.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def project_params
+    params.require(:project).permit(:name, :description, :start, :due, user_ids: [])
+  end
 end

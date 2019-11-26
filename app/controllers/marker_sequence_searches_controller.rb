@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 class MarkerSequenceSearchesController < ApplicationController
   load_and_authorize_resource
+
+  before_action :set_marker_sequence_search, only: %i[export_as_fasta export_as_pde]
 
   def index
     respond_to do |format|
@@ -15,8 +19,10 @@ class MarkerSequenceSearchesController < ApplicationController
   def create
     @marker_sequence_search = MarkerSequenceSearch.create!(marker_sequence_search_params)
 
-    @marker_sequence_search.update(:user_id => current_user.id)
-    @marker_sequence_search.update(:project_id => current_user.default_project_id)
+    if user_signed_in?
+      @marker_sequence_search.update(user_id: current_user.id)
+      @marker_sequence_search.update(project_id: current_user.default_project_id)
+    end
 
     redirect_to @marker_sequence_search
   end
@@ -32,6 +38,7 @@ class MarkerSequenceSearchesController < ApplicationController
 
   def destroy
     @marker_sequence_search.destroy
+
     respond_to do |format|
       format.html { redirect_to marker_sequence_searches_path, notice: 'Marker sequence search was successfully destroyed.' }
       format.json { head :no_content }
@@ -39,14 +46,26 @@ class MarkerSequenceSearchesController < ApplicationController
   end
 
   def export_as_fasta
-    @marker_sequence_search = MarkerSequenceSearch.find(params[:marker_sequence_search_id])
     file_name = @marker_sequence_search.title.empty? ? "marker_sequence_search_#{@marker_sequence_search.created_at}" : @marker_sequence_search.title
-    send_data(@marker_sequence_search.as_fasta, :filename => "#{file_name}.fasta", :type => "application/txt")
+    send_data(MarkerSequenceSearch.fasta(@marker_sequence_search.marker_sequences, metadata: true), filename: "#{file_name}.fasta", type: 'application/txt')
+  end
+
+  def export_as_pde
+    file_name = @marker_sequence_search.title.empty? ? "marker_sequence_search_#{@marker_sequence_search.created_at}" : @marker_sequence_search.title
+    send_data(MarkerSequenceSearch.pde(@marker_sequence_search.marker_sequences, {}), filename: "#{file_name}.pde", type: 'application/txt')
   end
 
   private
+
   # Never trust parameters from the scary internet, only allow the white list through.
   def marker_sequence_search_params
-    params.require(:marker_sequence_search).permit(:title, :name, :marker, :order, :species, :specimen, :family, :verified, :max_length, :min_length, :project_id)
+    params.require(:marker_sequence_search).permit(:title, :name, :has_species, :has_warnings, :marker, :order,
+                                                   :higher_order_taxon, :species, :specimen, :family, :verified,
+                                                   :verified_by, :max_length, :min_length, :max_age, :max_update,
+                                                   :min_age, :min_update, :project_id, :no_isolate)
+  end
+
+  def set_marker_sequence_search
+    @marker_sequence_search = MarkerSequenceSearch.find(params[:marker_sequence_search_id])
   end
 end

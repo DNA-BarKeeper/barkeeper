@@ -8,10 +8,17 @@ jQuery ->
     bServerSide: true
     sAjaxSource: $('#species').data('source')
     "columnDefs": [
-      { "orderable": false, "targets": 2 }
       { "orderable": false, "targets": 4 }
     ],
     "order": [ 3, 'desc' ]
   } );
-  $('#species_family_name').autocomplete source: $('#species_family_name').data('autocomplete-source')
+
+  $('#species_family_name').autocomplete
+    source: $('#species_family_name').data('autocomplete-source')
+
   $('#wiki').width($(document).width()).height($(document).height())
+
+  $('#species_project_ids').chosen({
+    allow_single_deselect: true
+    no_results_text: 'No results matched'
+  });

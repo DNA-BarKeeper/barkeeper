@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameLatitude < ActiveRecord::Migration
   def change
     rename_column :individuals, :latitude, :latitude_original

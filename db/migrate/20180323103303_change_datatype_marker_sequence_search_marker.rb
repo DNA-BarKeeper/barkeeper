@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeDatatypeMarkerSequenceSearchMarker < ActiveRecord::Migration[5.0]
   def up
     change_column :marker_sequence_searches, :marker, :string

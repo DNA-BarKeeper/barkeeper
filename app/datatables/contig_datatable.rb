@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContigDatatable
   include Rails.application.routes.url_helpers
 
@@ -10,10 +12,10 @@ class ContigDatatable
     @current_default_project = current_default_project
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: Contig.count,
+      iTotalRecords: Contig.in_project(@current_default_project).count,
       iTotalDisplayRecords: contigs.total_entries,
       aaData: data
     }
@@ -41,7 +43,7 @@ class ContigDatatable
         link_to(species_name, edit_species_path(species_id)),
         link_to(individual_name, edit_individual_path(individual_id)),
         assembled,
-        contig.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        contig.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
         link_to('Delete', contig, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
@@ -54,19 +56,19 @@ class ContigDatatable
   def fetch_contigs
     case @contigs_to_show
     when 'duplicates'
-      names_with_multiple = Contig.group(:name).having("count(name) > 1").count.keys
-      contigs = Contig.where(name: names_with_multiple).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      names_with_multiple = Contig.group(:name).having('count(name) > 1').count.keys
+      contigs = Contig.includes(isolate: [individual: :species]).where(name: names_with_multiple)
+                      .in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     when 'imported'
-      contigs = Contig.externally_edited.order("#{sort_column} #{sort_direction}")
+      contigs = Contig.includes(isolate: [individual: :species]).externally_edited.order("#{sort_column} #{sort_direction}")
     else
-      contigs = Contig.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      contigs = Contig.includes(isolate: [individual: :species]).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
     contigs = contigs.page(page).per_page(per_page)
 
-    if params[:sSearch].present?
-      contigs = contigs.where("contigs.name ILIKE :search", search: "%#{params[:sSearch]}%")
-    end
+    contigs = contigs.where('contigs.name ILIKE :search OR species.composed_name ILIKE :search OR individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
+                     .references(isolate: [individual: :species]) if params[:sSearch].present?
 
     contigs
   end
@@ -80,7 +82,7 @@ class ContigDatatable
   end
 
   def sort_column
-    columns = %w[name species_id individual_id assembled updated_at]
+    columns = %w[contigs.name species.composed_name individuals.specimen_id contigs.assembled contigs.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

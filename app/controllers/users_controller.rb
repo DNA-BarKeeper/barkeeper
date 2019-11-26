@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   load_and_authorize_resource
 
   def index
     @users = User.all.order(:id)
+    respond_to :html, :json
   end
 
   def new
@@ -26,11 +29,14 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
+    puts 'ATTENTION'
+    puts params[:id], current_user.id
+
     if @user.admin? && !current_user.admin?
       redirect_to users_path, alert: 'Permission denied.'
     else
       params[:user].delete(:password) if params[:user][:password].blank?
-      params[:user].delete(:password_confirmation) if params[:user][:password].blank? and params[:user][:password_confirmation].blank?
+      params[:user].delete(:password_confirmation) if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
 
       if @user.update(user_params)
         if current_user == @user
@@ -50,9 +56,7 @@ class UsersController < ApplicationController
     else
       @user = User.find(params[:id])
 
-      if @user.destroy
-        redirect_to users_path, notice: 'User was successfully destroyed.'
-      end
+      redirect_to users_path, notice: 'User was successfully destroyed.' if @user.destroy
     end
   end
 
@@ -61,7 +65,8 @@ class UsersController < ApplicationController
   end
 
   private
+
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :role, :lab_id, :default_project_id, :project_ids => [], :responsibility_ids => [])
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :role, :lab_id, :default_project_id, project_ids: [], responsibility_ids: [])
   end
 end

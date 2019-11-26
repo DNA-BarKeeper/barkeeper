@@ -10,17 +10,59 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180424090325) do
+ActiveRecord::Schema.define(version: 20191018124928) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
+  enable_extension "pg_trgm"
 
-  create_table "alignments", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.string   "URL",        limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  create_table "aliquots", force: :cascade do |t|
+    t.text     "comment"
+    t.decimal  "concentration"
+    t.string   "well_pos_micronic_plate"
+    t.integer  "lab_id"
+    t.integer  "micronic_plate_id"
+    t.integer  "isolate_id"
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.string   "micronic_tube"
+    t.boolean  "is_original",             default: false
+    t.index ["isolate_id"], name: "index_aliquots_on_isolate_id", using: :btree
+    t.index ["lab_id"], name: "index_aliquots_on_lab_id", using: :btree
+    t.index ["micronic_plate_id"], name: "index_aliquots_on_micronic_plate_id", using: :btree
+  end
+
+  create_table "blast_hits", force: :cascade do |t|
+    t.integer  "cluster_id"
+    t.string   "taxonomy"
+    t.decimal  "e_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cluster_id"], name: "index_blast_hits_on_cluster_id", using: :btree
+  end
+
+  create_table "clusters", force: :cascade do |t|
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "centroid_sequence"
+    t.integer  "sequence_count"
+    t.string   "fasta"
+    t.boolean  "reverse_complement"
+    t.integer  "isolate_id"
+    t.integer  "ngs_run_id"
+    t.integer  "marker_id"
+    t.integer  "running_number"
+    t.string   "name"
+    t.index ["isolate_id"], name: "index_clusters_on_isolate_id", using: :btree
+    t.index ["marker_id"], name: "index_clusters_on_marker_id", using: :btree
+    t.index ["ngs_run_id"], name: "index_clusters_on_ngs_run_id", using: :btree
+  end
+
+  create_table "clusters_projects", id: false, force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "project_id", null: false
+    t.index ["cluster_id", "project_id"], name: "index_clusters_projects_on_cluster_id_and_project_id", using: :btree
   end
 
   create_table "contig_pde_uploaders", force: :cascade do |t|
@@ -41,8 +83,8 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.string   "marker"
     t.string   "name"
     t.string   "assembled"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.date     "min_age"
     t.date     "max_age"
     t.date     "min_update"
@@ -50,6 +92,12 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.string   "title"
     t.integer  "user_id"
     t.integer  "project_id"
+    t.string   "search_result_archive_file_name"
+    t.string   "search_result_archive_content_type"
+    t.integer  "search_result_archive_file_size"
+    t.datetime "search_result_archive_updated_at"
+    t.integer  "has_warnings"
+    t.string   "verified_by"
     t.index ["project_id"], name: "index_contig_searches_on_project_id", using: :btree
   end
 
@@ -62,11 +110,7 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.integer  "isolate_id"
     t.integer  "marker_id"
     t.boolean  "assembled"
-    t.integer  "overlaps"
-    t.text     "partial_cons1"
-    t.text     "partial_cons2"
     t.boolean  "assembly_tried"
-    t.string   "aligned_cons",             limit: 255
     t.text     "fas"
     t.boolean  "verified",                             default: false
     t.integer  "verified_by"
@@ -152,12 +196,21 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.datetime "updated_at"
   end
 
+  create_table "herbaria", force: :cascade do |t|
+    t.string   "name"
+    t.string   "acronym"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "higher_order_taxa", force: :cascade do |t|
     t.string   "name",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "german_name", limit: 255
     t.integer  "position"
+    t.string   "ancestry"
+    t.index ["ancestry"], name: "index_higher_order_taxa_on_ancestry", using: :btree
   end
 
   create_table "higher_order_taxa_markers", id: false, force: :cascade do |t|
@@ -170,35 +223,58 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.integer "project_id"
   end
 
+  create_table "individual_searches", force: :cascade do |t|
+    t.string   "title"
+    t.integer  "has_species"
+    t.integer  "has_problematic_location"
+    t.integer  "has_issue"
+    t.string   "specimen_id"
+    t.string   "DNA_bank_id"
+    t.string   "species"
+    t.string   "family"
+    t.string   "order"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.integer  "project_id"
+    t.integer  "user_id"
+    t.string   "herbarium"
+    t.index ["project_id"], name: "index_individual_searches_on_project_id", using: :btree
+    t.index ["user_id"], name: "index_individual_searches_on_user_id", using: :btree
+  end
+
   create_table "individuals", force: :cascade do |t|
-    t.string   "specimen_id",        limit: 255
-    t.string   "DNA_bank_id",        limit: 255
-    t.string   "collector",          limit: 255
+    t.string   "specimen_id",             limit: 255
+    t.string   "DNA_bank_id",             limit: 255
+    t.string   "collector",               limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "silica_gel"
     t.date     "collected"
     t.integer  "species_id"
-    t.string   "herbarium",          limit: 255
-    t.string   "voucher",            limit: 255
-    t.string   "country",            limit: 255
-    t.string   "state_province",     limit: 255
+    t.string   "herbarium_code",          limit: 255
+    t.string   "country",                 limit: 255
+    t.string   "state_province",          limit: 255
     t.text     "locality"
-    t.string   "latitude_original",  limit: 255
-    t.string   "longitude_original", limit: 255
-    t.string   "elevation",          limit: 255
-    t.string   "exposition",         limit: 255
+    t.string   "latitude_original",       limit: 255
+    t.string   "longitude_original",      limit: 255
+    t.string   "elevation",               limit: 255
+    t.string   "exposition",              limit: 255
     t.text     "habitat"
-    t.string   "substrate",          limit: 255
-    t.string   "life_form",          limit: 255
-    t.string   "collection_nr",      limit: 255
-    t.string   "collection_date",    limit: 255
-    t.string   "determination",      limit: 255
-    t.string   "revision",           limit: 255
-    t.string   "confirmation",       limit: 255
+    t.string   "substrate",               limit: 255
+    t.string   "life_form",               limit: 255
+    t.string   "collectors_field_number", limit: 255
+    t.string   "collection_date",         limit: 255
+    t.string   "determination",           limit: 255
+    t.string   "revision",                limit: 255
+    t.string   "confirmation",            limit: 255
     t.text     "comments"
-    t.decimal  "latitude",                       precision: 15, scale: 5
-    t.decimal  "longitude",                      precision: 15, scale: 5
+    t.decimal  "latitude",                            precision: 15, scale: 6
+    t.decimal  "longitude",                           precision: 15, scale: 6
+    t.boolean  "has_issue"
+    t.integer  "herbarium_id"
+    t.integer  "tissue_id"
+    t.index ["herbarium_id"], name: "index_individuals_on_herbarium_id", using: :btree
+    t.index ["tissue_id"], name: "index_individuals_on_tissue_id", using: :btree
   end
 
   create_table "individuals_projects", id: false, force: :cascade do |t|
@@ -208,31 +284,31 @@ ActiveRecord::Schema.define(version: 20180424090325) do
 
   create_table "isolates", force: :cascade do |t|
     t.string   "well_pos_plant_plate",         limit: 255
-    t.string   "micronic_tube_id",             limit: 255
-    t.string   "well_pos_micronic_plate",      limit: 255
-    t.decimal  "concentration"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "isCopy"
     t.integer  "tissue_id"
-    t.integer  "micronic_plate_id"
     t.integer  "plant_plate_id"
     t.integer  "individual_id"
     t.string   "dna_bank_id",                  limit: 255
-    t.string   "lab_nr",                       limit: 255
-    t.boolean  "negative_control",                                                  default: false
-    t.integer  "lab_id_orig"
-    t.integer  "lab_id_copy"
+    t.string   "lab_isolation_nr",             limit: 255
+    t.boolean  "negative_control",                         default: false
     t.datetime "isolation_date"
-    t.integer  "micronic_plate_id_orig"
-    t.integer  "micronic_plate_id_copy"
-    t.string   "well_pos_micronic_plate_orig"
-    t.string   "well_pos_micronic_plate_copy"
-    t.decimal  "concentration_orig",                       precision: 15, scale: 2
-    t.decimal  "concentration_copy",                       precision: 15, scale: 2
-    t.string   "micronic_tube_id_orig"
-    t.string   "micronic_tube_id_copy"
     t.integer  "user_id"
+    t.string   "display_name"
+    t.string   "well_pos_micronic_plate_copy"
+    t.string   "well_pos_micronic_plate_orig"
+    t.string   "well_pos_micronic_plate"
+    t.string   "micronic_tube_id_copy"
+    t.string   "micronic_tube_id_orig"
+    t.string   "micronic_tube_id"
+    t.integer  "micronic_plate_id_copy"
+    t.integer  "micronic_plate_id_orig"
+    t.integer  "micronic_plate_id"
+    t.integer  "lab_id_copy"
+    t.integer  "lab_id_orig"
+    t.decimal  "concentration_copy"
+    t.decimal  "concentration_orig"
+    t.decimal  "concentration"
     t.text     "comment_orig"
     t.text     "comment_copy"
   end
@@ -288,8 +364,8 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.string   "species"
     t.string   "order"
     t.string   "specimen"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
     t.integer  "user_id"
     t.string   "title"
     t.string   "family"
@@ -297,6 +373,17 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.integer  "min_length"
     t.integer  "max_length"
     t.integer  "project_id"
+    t.boolean  "has_species"
+    t.string   "higher_order_taxon"
+    t.integer  "has_warnings"
+    t.date     "min_age"
+    t.date     "max_age"
+    t.date     "min_update"
+    t.date     "max_update"
+    t.string   "verified_by"
+    t.integer  "mislabel_analysis_id"
+    t.boolean  "no_isolate"
+    t.index ["mislabel_analysis_id"], name: "index_marker_sequence_searches_on_mislabel_analysis_id", using: :btree
     t.index ["project_id"], name: "index_marker_sequence_searches_on_project_id", using: :btree
   end
 
@@ -311,6 +398,12 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.string   "reference"
   end
 
+  create_table "marker_sequences_mislabel_analyses", id: false, force: :cascade do |t|
+    t.integer "marker_sequence_id",   null: false
+    t.integer "mislabel_analysis_id", null: false
+    t.index ["marker_sequence_id", "mislabel_analysis_id"], name: "index_marker_sequences_mislabel_analyses", using: :btree
+  end
+
   create_table "marker_sequences_projects", id: false, force: :cascade do |t|
     t.integer "marker_sequence_id", null: false
     t.integer "project_id",         null: false
@@ -321,8 +414,7 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.string   "name",           limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "expected_reads"
-    t.boolean  "is_gbol"
+    t.integer  "expected_reads",             default: 1
     t.string   "alt_name"
   end
 
@@ -330,6 +422,15 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.integer "marker_id",  null: false
     t.integer "project_id", null: false
     t.index ["marker_id", "project_id"], name: "index_markers_projects_on_marker_id_and_project_id", using: :btree
+  end
+
+  create_table "metaprojects", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.text     "legal_disclosure"
+    t.text     "privacy_policy"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   create_table "micronic_plates", force: :cascade do |t|
@@ -347,12 +448,88 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.index ["micronic_plate_id", "project_id"], name: "index_micronic_plates_projects", using: :btree
   end
 
+  create_table "mislabel_analyses", force: :cascade do |t|
+    t.string   "title"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.boolean  "automatic",        default: false
+    t.integer  "marker_id"
+    t.integer  "total_seq_number"
+    t.index ["marker_id"], name: "index_mislabel_analyses_on_marker_id", using: :btree
+  end
+
+  create_table "mislabels", force: :cascade do |t|
+    t.string   "level"
+    t.decimal  "confidence"
+    t.string   "proposed_label"
+    t.string   "proposed_path"
+    t.string   "path_confidence"
+    t.integer  "mislabel_analysis_id"
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.integer  "marker_sequence_id"
+    t.boolean  "solved",               default: false
+    t.integer  "solved_by"
+    t.datetime "solved_at"
+    t.index ["marker_sequence_id"], name: "index_mislabels_on_marker_sequence_id", using: :btree
+    t.index ["mislabel_analysis_id"], name: "index_mislabels_on_mislabel_analysis_id", using: :btree
+  end
+
   create_table "news", force: :cascade do |t|
     t.string   "title",      limit: 255
     t.text     "body"
     t.datetime "published"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "ngs_results", force: :cascade do |t|
+    t.integer  "isolate_id"
+    t.integer  "marker_id"
+    t.integer  "ngs_run_id"
+    t.integer  "hq_sequences"
+    t.integer  "incomplete_sequences"
+    t.integer  "cluster_count"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.integer  "total_sequences"
+    t.index ["isolate_id"], name: "index_ngs_results_on_isolate_id", using: :btree
+    t.index ["marker_id"], name: "index_ngs_results_on_marker_id", using: :btree
+    t.index ["ngs_run_id"], name: "index_ngs_results_on_ngs_run_id", using: :btree
+  end
+
+  create_table "ngs_runs", force: :cascade do |t|
+    t.integer  "quality_threshold"
+    t.integer  "tag_mismatches"
+    t.integer  "primer_mismatches"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.string   "comment"
+    t.integer  "higher_order_taxon_id"
+    t.string   "set_tag_map_file_name"
+    t.string   "set_tag_map_content_type"
+    t.integer  "set_tag_map_file_size"
+    t.datetime "set_tag_map_updated_at"
+    t.integer  "isolate_id"
+    t.string   "name"
+    t.integer  "sequences_pre"
+    t.integer  "sequences_filtered"
+    t.integer  "sequences_high_qual"
+    t.integer  "sequences_one_primer"
+    t.string   "results_file_name"
+    t.string   "results_content_type"
+    t.integer  "results_file_size"
+    t.datetime "results_updated_at"
+    t.integer  "sequences_short"
+    t.string   "fastq_location"
+    t.index ["higher_order_taxon_id"], name: "index_ngs_runs_on_higher_order_taxon_id", using: :btree
+    t.index ["isolate_id"], name: "index_ngs_runs_on_isolate_id", using: :btree
+  end
+
+  create_table "ngs_runs_projects", id: false, force: :cascade do |t|
+    t.integer "ngs_run_id", null: false
+    t.integer "project_id", null: false
+    t.index ["ngs_run_id", "project_id"], name: "index_ngs_runs_projects_on_ngs_run_id_and_project_id", using: :btree
   end
 
   create_table "oders", force: :cascade do |t|
@@ -383,6 +560,15 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.datetime "updated_at"
     t.integer  "contig_id"
     t.integer  "aligned_qualities", array: true
+  end
+
+  create_table "pg_search_documents", force: :cascade do |t|
+    t.text     "content"
+    t.string   "searchable_type"
+    t.integer  "searchable_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id", using: :btree
   end
 
   create_table "plant_plates", force: :cascade do |t|
@@ -445,6 +631,7 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.string   "comment"
     t.boolean  "overwritten",                           default: false
     t.integer  "aligned_peak_indices",                                  array: true
+    t.string   "chromatogram_fingerprint"
   end
 
   create_table "primer_reads_projects", id: false, force: :cascade do |t|
@@ -494,6 +681,12 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.integer "species_id"
   end
 
+  create_table "projects_tag_primer_maps", id: false, force: :cascade do |t|
+    t.integer "project_id",        null: false
+    t.integer "tag_primer_map_id", null: false
+    t.index ["project_id", "tag_primer_map_id"], name: "index_projects_tag_primer_maps", using: :btree
+  end
+
   create_table "projects_users", id: false, force: :cascade do |t|
     t.integer "project_id"
     t.integer "user_id"
@@ -536,20 +729,22 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.string   "species_component"
   end
 
-  create_table "species_xml_uploaders", force: :cascade do |t|
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.string   "uploaded_file_file_name"
-    t.string   "uploaded_file_content_type"
-    t.integer  "uploaded_file_file_size"
-    t.datetime "uploaded_file_updated_at"
+  create_table "species_exporters", force: :cascade do |t|
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.string   "species_export_file_name"
+    t.string   "species_export_content_type"
+    t.integer  "species_export_file_size"
+    t.datetime "species_export_updated_at"
   end
 
-  create_table "statuses", force: :cascade do |t|
-    t.string   "name",       limit: 255
+  create_table "specimen_exporters", force: :cascade do |t|
+    t.string   "specimen_export_file_name"
+    t.string   "specimen_export_content_type"
+    t.integer  "specimen_export_file_size"
+    t.datetime "specimen_export_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "contig_id"
   end
 
   create_table "subdivisions", force: :cascade do |t|
@@ -558,6 +753,19 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.datetime "updated_at",  null: false
     t.integer  "position"
     t.string   "german_name"
+  end
+
+  create_table "tag_primer_maps", force: :cascade do |t|
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.integer  "ngs_run_id"
+    t.string   "tag_primer_map_file_name"
+    t.string   "tag_primer_map_content_type"
+    t.integer  "tag_primer_map_file_size"
+    t.datetime "tag_primer_map_updated_at"
+    t.string   "name"
+    t.string   "tag"
+    t.index ["ngs_run_id"], name: "index_tag_primer_maps_on_ngs_run_id", using: :btree
   end
 
   create_table "taxonomic_classes", force: :cascade do |t|
@@ -604,19 +812,19 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
 
-  create_table "xml_uploaders", force: :cascade do |t|
-    t.string   "uploaded_file_file_name"
-    t.string   "uploaded_file_content_type"
-    t.integer  "uploaded_file_file_size"
-    t.datetime "uploaded_file_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   add_foreign_key "contig_searches", "projects"
+  add_foreign_key "individual_searches", "projects"
+  add_foreign_key "individual_searches", "users"
+  add_foreign_key "individuals", "herbaria"
+  add_foreign_key "individuals", "tissues"
+  add_foreign_key "marker_sequence_searches", "mislabel_analyses"
   add_foreign_key "marker_sequence_searches", "projects"
+  add_foreign_key "mislabel_analyses", "markers"
+  add_foreign_key "mislabels", "marker_sequences"
+  add_foreign_key "ngs_runs", "higher_order_taxa"
   add_foreign_key "plant_plates", "lab_racks"
   add_foreign_key "shelves", "freezers"
+<<<<<<< HEAD
 
   create_view "overview_all_taxa_matviews", materialized: true,  sql_definition: <<-SQL
       SELECT f.name AS family,
@@ -657,4 +865,6 @@ ActiveRecord::Schema.define(version: 20180424090325) do
     ORDER BY families.name;
   SQL
 
+=======
+>>>>>>> master
 end

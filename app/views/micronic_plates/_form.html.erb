@@ -1,30 +1,28 @@
-
-
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title"><%= @micronic_plate.micronic_plate_id%></h3>
-
   </div>
 
-  <div class="panel-body"><%= form_for(@micronic_plate) do |f| %>
+  <div class="panel-body">
+    <%= form_for(@micronic_plate) do |f| %>
+      <div class="form-group">
+        <%= f.label :micronic_plate_id %>
+        <%= f.text_field :micronic_plate_id, :autofocus => true, class: 'form-control' %>
+      </div>
 
-        <div class="form-group">
-          <%= f.label :micronic_plate_id %>
-          <%= f.text_field :micronic_plate_id, :autofocus => true, class: 'form-control' %>
-        </div>
+      <div class="form-group">
+        <%= f.label 'Rack' %>
+        <%= f.collection_select(:lab_rack_id, LabRack.all, :id, :rackcode, { :include_blank => '<no selection>' }, { class: 'form-control' } ) %>
+      </div>
 
-        <div class="form-group">
-          <%= f.label 'Rack' %>
-          <%= f.collection_select(:lab_rack_id, LabRack.all, :id, :rackcode, :include_blank => '<no selection>') %>
-        </div>
+      <div class="form-group">
+        <%= f.label :location_in_rack %>
+        <%= f.text_field :location_in_rack, :autofocus => true, class: 'form-control' %>
+      </div>
 
+      <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@micronic_plate) } %>
 
-        <div class="form-group">
-          <%= f.label :location_in_rack %>
-          <%= f.text_field :location_in_rack, :autofocus => true, class: 'form-control' %>
-        </div>
-
-        <%= f.submit 'Update', :class => 'btn btn-default' %>
+      <%= f.submit 'Update', :class => 'btn btn-default' %>
     <% end %>
   </div>
 </div>

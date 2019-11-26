@@ -1,26 +1,15 @@
 jQuery(function() {
-
-    function scroll_to(pos, id) {
-        var primer_read_div = document.getElementById('primer_read_' + id);
-
-        var div_id = '#' + primer_read_div.id;
-        var chromatogram = $(div_id).data('url');
-        var scroll_to = chromatogram.peak_indices[pos - 1];
-
-        var alignment_id = "#chromatogram_container_" + id;
-
-        $(alignment_id).animate({
-            scrollLeft: scroll_to - 7
-        }, 0);
-
-    }
+    $('#primer_read_project_ids').chosen({
+        allow_single_deselect: true,
+        no_results_text: 'No results matched'
+    });
 
     $('.go-to-button_primer_read').click( function () {
         var read_id = $(this).data('readId');
         var input_id = "#go-to-pos_" + $(this).data('readId');
         var pos = $(input_id).val();
 
-        scroll_to(pos, read_id);
+        scroll_with_highlight(pos, read_id);
     });
 
     $('.scroll-left-button').click( function () {
@@ -32,10 +21,11 @@ jQuery(function() {
     });
 
     $('.scroll-right-button').click( function () {
-        var id = "#chromatogram_container_" + $(this).data('readId');
+        var readID = $(this).data('readId');
+        var id = "#chromatogram_container_" + readID;
 
         //get div chromatogram & its current width
-        var el  = document.getElementById("chromatogram_svg"); // or other selector like querySelector()
+        var el  = document.getElementById("chromatogram_svg_primer_read_" + readID); // or other selector like querySelector()
         var rect = el.getBoundingClientRect(); // get the bounding rectangle
 
         $(id).animate({
@@ -49,10 +39,11 @@ jQuery(function() {
     });
 
     $('.scroll-right-slowly-button').click( function () {
-        var id = "#chromatogram_container_" + $(this).data('readId');
+        var readID = $(this).data('readId');
+        var id = "#chromatogram_container_" + readID;
 
         //get div chromatogram & its current width
-        var el  = document.getElementById("chromatogram_svg"); // or other selector like querySelector()
+        var el  = document.getElementById("chromatogram_svg_primer_read_" + readID); // or other selector like querySelector()
         var rect = el.getBoundingClientRect(); // get the bounding rectangle
 
         var curr_scroll_pos = $(id).scrollLeft();
@@ -87,7 +78,6 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#primer_reads').data('source'),
         "columnDefs": [
-            { "orderable": false, "targets": 2 },
             { "orderable": false, "targets": 4 }
         ],
         "order": [ 3, 'desc' ]
@@ -98,7 +88,6 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#primer_reads-duplicates').data('source'),
         "columnDefs": [
-            { "orderable": false, "targets": 2 },
             { "orderable": false, "targets": 4 }
         ],
         "order": [ 0, 'asc' ]
@@ -109,7 +98,6 @@ jQuery(function() {
         bServerSide: true,
         sAjaxSource: $('#reads_without_contigs').data('source'),
         "columnDefs": [
-            { "orderable": false, "targets": 2 },
             { "orderable": false, "targets": 4 }
         ],
         "order": [ 3, 'desc' ]
@@ -133,7 +121,7 @@ jQuery(function() {
         draw_chromatogram(div_id, chromatogram);
 
         if (pos > 0) {
-            scroll_to(pos, read_id);
+            scroll_with_highlight(pos, read_id);
         }
     }
 });
@@ -151,12 +139,14 @@ function draw_chromatogram(div_id, chromatogram){
         .append('svg')
         .attr('width', chromatogram.atrace.length)
         .attr('height', ymax)
-        .attr('id', 'chromatogram_svg');
+        .attr('id', 'chromatogram_svg_' + div_id);
 
+    var prev_drawn_position = 0;
     //adjust clipped areas:
     var drag_left = d3.drag()
         .on('start', function() {
             left_clip_area.style('fill', '#eeebb5');
+            prev_drawn_position = left_clip_area.attr('width');
         })
         .on('drag', function() {
             left_clip_area.attr('width', d3.event.x);
@@ -164,21 +154,24 @@ function draw_chromatogram(div_id, chromatogram){
         .on('end', function() {
             left_clip_area.style('fill', "#d3d3d3");
 
-            var drawn_position=left_clip_area.attr('width');
+            var drawn_position = left_clip_area.attr('width');
 
             // find  peak closest to new x -> in chromatogram1.peak_indices
             for(var g=0; g < chromatogram.peak_indices.length; g++) {
-                if (chromatogram.peak_indices[g]-drawn_position > 0) {
+                if (chromatogram.peak_indices[g] - drawn_position > 0) {
                     break;
                 }
             }
 
-            change_left_clip(g+1, chromatogram.id, div_id);
+            if(prev_drawn_position !== drawn_position) { // Avoid triggering action when user just clicks in clipped area
+                change_left_clip(g+1, chromatogram.id, div_id);
+            }
         });
 
     var drag_right = d3.drag()
         .on('start', function() {
             right_clip_area.style('fill', '#eeebb5');
+            prev_drawn_position = right_clip_area.attr('x');
         })
         .on('drag', function() {
             right_clip_area.attr('x', d3.event.x).attr('width', chromatogram.atrace.length - d3.event.x);
@@ -195,8 +188,9 @@ function draw_chromatogram(div_id, chromatogram){
                 }
             }
 
-            change_right_clip(g+1, chromatogram.id, div_id);
-
+            if(prev_drawn_position !== drawn_position) { // Avoid triggering action when user just clicks in clipped area
+                change_right_clip(g+1, chromatogram.id, div_id);
+            }
         });
 
     //draw clipped areas
@@ -241,7 +235,8 @@ function draw_chromatogram(div_id, chromatogram){
         .attr("y", 15)
         .attr("width", 12)
         .attr("height", 20)
-        .attr("fill", "#fcff00");
+        .attr("fill", "#fcff00")
+        .attr("class", "highlight");
 
 
     //draw traces
@@ -258,7 +253,7 @@ function draw_chromatogram(div_id, chromatogram){
         .attr("fill", "none");
     svg.append("path")
         .attr("d", lineFunction(chromatogram.gtrace))
-        .attr("stroke", "black")
+        .attr("stroke", "orange")
         .attr("stroke-width", 1)
         .attr("fill", "none");
     svg.append("path")
@@ -284,10 +279,10 @@ function draw_chromatogram(div_id, chromatogram){
 
             svg.append("text")
                 .attr("x", pos)
-                .attr("y", 10)
+                .attr("y", 12)
                 .text(disp)
                 .attr("font-family", "sans-serif")
-                .attr("font-size", "7px")
+                .attr("font-size", "10px")
                 .attr("fill", color)
                 .attr("text-anchor", ta);
             svg.append("text")
@@ -302,16 +297,40 @@ function draw_chromatogram(div_id, chromatogram){
 
         //base calls
         if (ch == 'A') {
-            color = 'green';
+            color = '#5AE45D';
         } else if (ch == 'C') {
-            color = 'blue';
+            color = '#5A5AE6';
         } else if (ch == 'G') {
-            color = 'black';
+            color = '#E2E65A';
         } else if (ch == 'T') {
-            color = 'red';
+            color = '#E65A5A';
         } else {
-            color = 'gray';
+            color = 'lightgray';
         }
+
+        if (chromatogram.peak_indices[i-1]) {
+            var left = (chromatogram.peak_indices[i - 1] + chromatogram.peak_indices[i]) / 2;
+        }
+        else {
+            var left = 0;
+        }
+
+        if (chromatogram.peak_indices[i+1]) {
+            var right = (chromatogram.peak_indices[i+1] + chromatogram.peak_indices[i]) / 2;
+        }
+        else {
+            var right = chromatogram.peak_indices[i] * 2;
+        }
+
+        var width = right - left;
+
+        svg.append('rect')
+            .attr("x", left)
+            .attr("y", 19)
+            .attr("width", width)
+            .attr("height", 15)
+            .attr("id", "background_" + i)
+            .attr("fill", color);
 
         svg.append("text")
             .attr("x", pos)
@@ -319,18 +338,19 @@ function draw_chromatogram(div_id, chromatogram){
             .text(ch)
             .attr("font-family", "sans-serif")
             .attr("font-size", "10px")
-            .attr("fill", color)
+            .attr("font-weight", '600')
+            .attr("fill", 'black')
             .attr("text-anchor", ta)
             .attr("id", i)
             .on('mouseover', function () {
                 d3.select(this)
                     .style('font-size', '14px')
-                    .style('font-weight', 'bold')
+                    .attr("font-weight", '800')
             })
             .on('mouseout', function () {
                 d3.select(this)
                     .style('font-size', '10px')
-                    .style('font-weight', 'normal')
+                    .attr("font-weight", '600')
             })
             .on('click', function () {
 
@@ -368,16 +388,18 @@ function draw_chromatogram(div_id, chromatogram){
 
                             selected_base.text(newBase);
 
+                            var base_background = d3.select('#background_' + base_index);
+
                             if (newBase == "A") {
-                                selected_base.attr("fill", 'green');
+                                base_background.attr("fill", '#5AE45D');
                             } else if (newBase == "C") {
-                                selected_base.attr("fill", 'blue');
+                                base_background.attr("fill", '#5A5AE6');
                             } else if (newBase == "G") {
-                                selected_base.attr("fill", 'black');
+                                base_background.attr("fill", '#E2E65A');
                             } else if (newBase == "T") {
-                                selected_base.attr("fill", 'red');
+                                base_background.attr("fill", '#E65A5A');
                             } else {
-                                selected_base.attr("fill", 'grey');
+                                base_background.attr("fill", 'grey');
                             }
 
                             frm.remove();
@@ -474,6 +496,38 @@ function change_right_clip(base_index, read_id, div_id) {
     return 0;
 }
 
+function scroll_with_highlight(position, read_id) {
+    var chromatogram_position = $('#primer_read_' + read_id).data('url').peak_indices[position - 1];
+
+    // Scroll to position
+    $("#chromatogram_container_" + read_id).animate({
+        scrollLeft: chromatogram_position - 7
+    }, 0);
+
+    // Position of elements depends on order in which they were added, so highlight has to be moved to the back
+    d3.selection.prototype.moveToBack = function() {
+        return this.each(function() {
+            var firstChild = this.parentNode.firstChild;
+            if (firstChild) {
+                this.parentNode.insertBefore(this, firstChild);
+            }
+        });
+    };
+
+    var svg = d3.select('#chromatogram_svg_primer_read_' + read_id);
+
+    svg.selectAll("rect.highlight").remove(); // Remove previous highlight
+
+    // Add new highlight and move it to the back
+    svg.append('rect')
+        .attr("x", chromatogram_position - 7)
+        .attr("y", 15)
+        .attr("width", 12)
+        .attr("height", 20)
+        .attr("fill", "#fcff00")
+        .attr("class", "highlight")
+        .moveToBack();
+}
 
 function tempAlert(msg, duration, div_id) {
     var parent = document.getElementById(div_id).parentNode.parentNode;

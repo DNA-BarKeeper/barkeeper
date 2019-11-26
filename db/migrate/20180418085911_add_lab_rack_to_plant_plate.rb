@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddLabRackToPlantPlate < ActiveRecord::Migration[5.0]
   def change
     add_reference :plant_plates, :lab_rack, foreign_key: true

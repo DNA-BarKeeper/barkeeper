@@ -1,12 +1,12 @@
-class IndividualDatatable
+# frozen_string_literal: true
 
-  #ToDo: fig out if this inclusion is necessary. Found on https://gist.github.com/jhjguxin/4544826, but unclear if makes sense. "delegate" statement alone does not work.
+class IndividualDatatable
+  # TODO: fig out if this inclusion is necessary. Found on https://gist.github.com/jhjguxin/4544826, but unclear if makes sense. "delegate" statement alone does not work.
 
   include Rails.application.routes.url_helpers
   delegate :url_helpers, to: 'Rails.application.routes'
 
   delegate :params, :link_to, :h, to: :@view
-
 
   def initialize(view, species_id, current_default_project)
     @view = view
@@ -14,10 +14,10 @@ class IndividualDatatable
     @current_default_project = current_default_project
   end
 
-  def as_json(options = {})
+  def as_json(_options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: Individual.count,
+      iTotalRecords: Individual.in_project(@current_default_project).count,
       iTotalDisplayRecords: individuals.total_entries,
       aaData: data
     }
@@ -29,17 +29,16 @@ class IndividualDatatable
     individuals.map do |individual|
       species = ''
 
-      if individual.species
-        species = link_to individual.species.name_for_display, edit_species_path(individual.species)
-      end
+      species = link_to individual.species.name_for_display, edit_species_path(individual.species) if individual.species
+      herbarium = link_to individual.herbarium.acronym, edit_herbarium_path(individual.herbarium) if individual.herbarium
 
       [
         link_to(individual.specimen_id, edit_individual_path(individual)),
         species,
-        individual.herbarium,
+        herbarium,
         individual.collector,
-        individual.collection_nr,
-        individual.updated_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S"),
+        individual.collectors_field_number,
+        individual.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
         link_to('Delete', individual, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
@@ -51,24 +50,28 @@ class IndividualDatatable
 
   def fetch_individuals
     if @species_id
-      individuals = Individual.includes(:species).where(:species_id => @species_id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      individuals = Individual.includes(:species, :herbarium).where(species_id: @species_id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     else
-      individuals = Individual.includes(:species).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      individuals = Individual.includes(:species, :herbarium).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
     individuals = individuals.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      individuals = individuals.where("specimen_id ILIKE :search OR herbarium ILIKE :search OR collector ILIKE :search OR collection_nr ILIKE :search", search: "%#{params[:sSearch]}%")
+      individuals = individuals.where('individuals.specimen_id ILIKE :search
+OR species.composed_name ILIKE :search
+OR herbaria.acronym ILIKE :search
+OR individuals.collector ILIKE :search
+OR individuals.collectors_field_number ILIKE :search', search: "%#{params[:sSearch]}%")
+      .references(:species)
       # individuals = Individual.quick_search(params[:sSearch])
     end
 
     individuals
-
   end
 
   def page
-    params[:iDisplayStart].to_i/per_page + 1
+    params[:iDisplayStart].to_i / per_page + 1
   end
 
   def per_page
@@ -76,11 +79,11 @@ class IndividualDatatable
   end
 
   def sort_column
-    columns = %w[specimen_id species_id herbarium collector collection_nr updated_at]
+    columns = %w[individuals.specimen_id species.composed_name herbaria.acronym individuals.collector individuals.collectors_field_number individuals.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
   def sort_direction
-    params[:sSortDir_0] == "desc" ? "desc" : "asc"
+    params[:sSortDir_0] == 'desc' ? 'desc' : 'asc'
   end
 end

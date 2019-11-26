@@ -34,8 +34,10 @@
 
             <div class="form-group">
               <%= f.label 'Belongs to' %>
-              <%= f.collection_select(:higher_order_taxon_id, HigherOrderTaxon.all, :id, :name) %>
+              <%= f.collection_select(:higher_order_taxon_id, HigherOrderTaxon.all, :id, :name, {}, { class: 'form-control' }) %>
             </div>
+
+            <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@order) } %>
           </div>
 
           <div class="tab-pane active" id="assigned_families">

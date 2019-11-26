@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Ability
   include CanCan::Ability
 
@@ -30,45 +32,58 @@ class Ability
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
     # Permissions for every user, even if not logged in
-    can [:edit, :index, :filter, :change_via_script, :compare_contigs, :as_fasq], Contig
-    can [:edit, :index, :filter, :show_species], Family
-    can [:edit, :index, :show_species], HigherOrderTaxon
-    can [:about, :overview, :impressum], :home
-    can [:edit, :index, :filter, :xls], Individual
-    can [:edit, :index, :filter], Isolate
+    can %i[edit index filter change_via_script compare_contigs as_fasq], Contig
+    can %i[edit index filter show_species], Family
+    can %i[edit index show_species], HigherOrderTaxon
+    can %i[about overview impressum privacy_policy], :home
+    can %i[edit index filter xls], Individual
+    can %i[edit index filter], Isolate
     can [:filter], MarkerSequence
-    can [:edit, :index, :filter], Order
+    can %i[edit index filter], Order
     can :manage, PartialCon
-    can [:edit, :index], PrimerRead
-    can [:edit, :index, :filter, :show_individuals, :xls], Species
-    # can :manage, SpeciesEpithet
+    can %i[edit index], PrimerRead
+    can %i[edit index filter show_individuals xls], Species
     can :manage, TxtUploader
     can :manage, :overview_diagram
+    can :download_results, MislabelAnalysis
+    can [:import, :revised_tpm], NgsRun
 
     # Additional permissions for logged in users
     if user.present?
       can :manage, :all
 
       cannot :manage, User
-      can [:home], User
       cannot :manage, Project
       cannot :manage, Responsibility
+      cannot %i[create destroy], MislabelAnalysis
+      cannot %i[create destroy], Mislabel
+      cannot :start_analysis, NgsRun # TODO: remove when feature is done
+
+      can %i[read search_taxa add_to_taxa], Project, id: user.project_ids
 
       # Additional permissions for guests
       if user.guest?
-        cannot [:change_base, :change_left_clip, :change_right_clip], PrimerRead
-        cannot [:create, :update, :destroy], :all
+        cannot %i[change_base change_left_clip change_right_clip], PrimerRead
+        cannot %i[create update destroy], :all
         can :edit, :all
       end
+
+      cannot :edit, Cluster
 
       # Additional permissions for administrators and supervisors
       if user.admin? || user.supervisor?
         can :manage, User
         can :manage, Project
         can :manage, Responsibility
+        can :manage, MislabelAnalysis
+        can :manage, Mislabel
+        can :manage, Cluster
+        can :manage, NgsRun
 
-        cannot [:create, :update, :destroy], User, role: 'admin' if user.supervisor?
+        cannot %i[create update destroy], User, role: 'admin' if user.supervisor?
       end
+
+      can %i[home show edit update destroy], User, id: user.id # User can see and edit own profile
 
       cannot :manage, ContigSearch
       can :create, ContigSearch
@@ -78,21 +93,20 @@ class Ability
       can :create, MarkerSequenceSearch
       can :manage, MarkerSequenceSearch, user_id: user.id # Users can only edit their own searches
 
-      # Restrictions for users in project "lab"
-      if user.projects.exists?(:name => "lab")
-        cannot [:create, :update, :destroy], [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
+      if user.responsibilities.exists?(name: 'lab') # Restrictions for users in project "lab"
+        cannot %i[create update destroy], [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
         can :edit, [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
-
-        # Restrictions for users in project "taxonomy"
-      elsif user.projects.exists?(:name => "taxonomy")
-        cannot [:create, :update, :destroy], [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker,
-                                              MarkerSequence, MicronicPlate, PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
+      elsif user.responsibilities.exists?(name: 'taxonomy') # Restrictions for users in project "taxonomy"
+        cannot %i[create update destroy], [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker,
+                                           MarkerSequence, MicronicPlate, PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
         can :edit, [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker, MarkerSequence, MicronicPlate,
                     PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
-        cannot [:change_base, :change_left_clip, :change_right_clip], PrimerRead
+        cannot %i[change_base change_left_clip change_right_clip], PrimerRead
         cannot :manage, ContigSearch
         cannot :manage, MarkerSequenceSearch
       end
+
+      cannot :delete_all, ContigSearch unless user.responsibilities.exists?(name: 'delete_contigs') || user.admin? || user.supervisor?
     end
   end
 end

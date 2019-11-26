@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddAttributesToMarkerSequenceSearch < ActiveRecord::Migration[5.0]
   def up
     add_column :marker_sequence_searches, :user_id, :integer

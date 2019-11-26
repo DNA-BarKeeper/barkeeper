@@ -1,8 +1,13 @@
+# frozen_string_literal: true
+
 class Order < ApplicationRecord
   include ProjectRecord
+  include PgSearch
+
+  multisearchable against: :name
 
   has_many :families
-  has_many :species, :through => :families
+  has_many :species, through: :families
   belongs_to :higher_order_taxon
   belongs_to :taxonomic_class
 
