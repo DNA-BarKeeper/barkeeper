@@ -824,47 +824,4 @@ ActiveRecord::Schema.define(version: 20191018124928) do
   add_foreign_key "ngs_runs", "higher_order_taxa"
   add_foreign_key "plant_plates", "lab_racks"
   add_foreign_key "shelves", "freezers"
-<<<<<<< HEAD
-
-  create_view "overview_all_taxa_matviews", materialized: true,  sql_definition: <<-SQL
-      SELECT f.name AS family,
-      count(sp.family_id) AS species_cnt
-     FROM (families f
-       LEFT JOIN species sp ON ((f.id = sp.family_id)))
-    GROUP BY f.id, f.name;
-  SQL
-
-  create_view "overview_finished_taxa_matviews", materialized: true,  sql_definition: <<-SQL
-      SELECT count(
-          CASE
-              WHEN (marker_sequences.marker_id = 4) THEN 1
-              ELSE NULL::integer
-          END) AS trnlf_cnt,
-      count(
-          CASE
-              WHEN (marker_sequences.marker_id = 5) THEN 1
-              ELSE NULL::integer
-          END) AS its_cnt,
-      count(
-          CASE
-              WHEN (marker_sequences.marker_id = 6) THEN 1
-              ELSE NULL::integer
-          END) AS rpl16_cnt,
-      count(
-          CASE
-              WHEN (marker_sequences.marker_id = 7) THEN 1
-              ELSE NULL::integer
-          END) AS trnk_matk_cnt,
-      families.name AS families_name
-     FROM ((((marker_sequences
-       JOIN isolates ON ((isolates.id = marker_sequences.isolate_id)))
-       JOIN individuals ON ((individuals.id = isolates.individual_id)))
-       JOIN species ON ((species.id = individuals.species_id)))
-       JOIN families ON ((families.id = species.family_id)))
-    GROUP BY families.name
-    ORDER BY families.name;
-  SQL
-
-=======
->>>>>>> master
 end
