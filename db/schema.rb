@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191018124928) do
+ActiveRecord::Schema.define(version: 20191113133715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
+  enable_extension "hstore"
 
   create_table "aliquots", force: :cascade do |t|
     t.text     "comment"
@@ -481,6 +482,25 @@ ActiveRecord::Schema.define(version: 20191018124928) do
     t.datetime "published"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "ngs_contigs", force: :cascade do |t|
+    t.string   "name"
+    t.text     "alignment"
+    t.text     "consensus"
+    t.text     "comment"
+    t.integer  "ngs_run_id"
+    t.integer  "marker_id"
+    t.integer  "isolate_id"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.hstore   "variants",   default: {}, null: false
+    t.integer  "coverage",   default: [],              array: true
+    t.index ["coverage"], name: "index_ngs_contigs_on_coverage", using: :gin
+    t.index ["isolate_id"], name: "index_ngs_contigs_on_isolate_id", using: :btree
+    t.index ["marker_id"], name: "index_ngs_contigs_on_marker_id", using: :btree
+    t.index ["ngs_run_id"], name: "index_ngs_contigs_on_ngs_run_id", using: :btree
+    t.index ["variants"], name: "ngs_contigs_variants_idx", using: :gin
   end
 
   create_table "ngs_results", force: :cascade do |t|

@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Freezer do
+  before(:all) { Project.create(name: 'All') }
+
   subject { FactoryBot.create(:freezer) }
 
   it "is valid with valid attributes" do

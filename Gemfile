@@ -72,18 +72,18 @@ group :development do
   gem 'capistrano-rails',   require: false
   gem 'capistrano-rbenv',   require: false
   gem 'capistrano-sidekiq', require: false, github: 'seuros/capistrano-sidekiq'
-  gem 'capistrano3-puma',   require: false, github: 'seuros/capistrano-puma' # TODO: remove github once fixed version is officially deployed
+  gem 'capistrano3-puma', '~> 3.1', require: false
   gem 'better_errors' # Better error page for Rack apps
   gem 'bullet' # Checks for n+1 queries
   gem 'binding_of_caller' # Extends features of better_errors
   gem 'meta_request' # Supporting gem for Google Chrome Rails Panel
-  gem 'spring' # Spring speeds up development by keeping your application running in the background
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  # gem 'spring' # Spring speeds up development by keeping your application running in the background
+  # gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'yard' # Documentation generation tool
 end
 
 group :test do
-  gem 'capybara'
+  gem 'capybara', '~> 2'
   gem 'faker'
   gem 'guard-rspec'
   gem 'launchy'
