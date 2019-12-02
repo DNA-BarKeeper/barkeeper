@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Order do
-  before(:all) { Project.create(name: 'All') }
-
   subject { FactoryBot.create(:order) }
 
   it "is valid with valid attributes" do
@@ -38,15 +36,15 @@ RSpec.describe Order do
     before(:each) { @hot = FactoryBot.create(:higher_order_taxon) }
 
     it "returns correct number of orders in higher order taxon" do
-      FactoryBot(:order, higer_order_taxon: @hot)
-      FactoryBot(:order, higer_order_taxon: @hot)
-      FactoryBot(:order, higer_order_taxon: @hot)
+      FactoryBot.create(:order, higher_order_taxon: @hot)
+      FactoryBot.create(:order, higher_order_taxon: @hot)
+      FactoryBot.create(:order, higher_order_taxon: @hot)
 
-      Order.in_higher_order_taxon(hot.id).should == 3
+      expect(Order.in_higher_order_taxon(@hot.id)).to be == 3
     end
 
     it "returns correct number for no orders in higher order taxon" do
-      Order.in_higher_order_taxon(hot.id).should == 0
+      expect(Order.in_higher_order_taxon(@hot.id)).to be == 0
     end
   end
 end

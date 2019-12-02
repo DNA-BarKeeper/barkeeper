@@ -13,4 +13,24 @@ RSpec.describe HigherOrderTaxon do
     subject.name = nil
     should_not be_valid
   end
+
+  it "has and belongs to many markers" do
+    assc = described_class.reflect_on_association(:markers)
+    expect(assc.macro).to eq :has_and_belongs_to_many
+  end
+
+  it "has many orders" do
+    assc = described_class.reflect_on_association(:orders)
+    expect(assc.macro).to eq :has_many
+  end
+
+  it "has many families" do
+    assc = described_class.reflect_on_association(:families)
+    expect(assc.macro).to eq :has_many
+  end
+
+  it "has many NGS runs" do
+    assc = described_class.reflect_on_association(:ngs_runs)
+    expect(assc.macro).to eq :has_many
+  end
 end
