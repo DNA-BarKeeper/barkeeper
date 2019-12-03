@@ -10,13 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191113133715) do
+ActiveRecord::Schema.define(version: 20191203115224) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "hstore"
+
+  create_table "alignments", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "URL",        limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "aliquots", force: :cascade do |t|
     t.text     "comment"
@@ -758,6 +765,15 @@ ActiveRecord::Schema.define(version: 20191113133715) do
     t.datetime "species_export_updated_at"
   end
 
+  create_table "species_xml_uploaders", force: :cascade do |t|
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.string   "uploaded_file_file_name"
+    t.string   "uploaded_file_content_type"
+    t.integer  "uploaded_file_file_size"
+    t.datetime "uploaded_file_updated_at"
+  end
+
   create_table "specimen_exporters", force: :cascade do |t|
     t.string   "specimen_export_file_name"
     t.string   "specimen_export_content_type"
@@ -767,12 +783,21 @@ ActiveRecord::Schema.define(version: 20191113133715) do
     t.datetime "updated_at"
   end
 
+  create_table "statuses", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "contig_id"
+  end
+
   create_table "subdivisions", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.integer  "position"
     t.string   "german_name"
+    t.integer  "division_id"
+    t.index ["division_id"], name: "index_subdivisions_on_division_id", using: :btree
   end
 
   create_table "tag_primer_maps", force: :cascade do |t|
@@ -832,6 +857,15 @@ ActiveRecord::Schema.define(version: 20191113133715) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
 
+  create_table "xml_uploaders", force: :cascade do |t|
+    t.string   "uploaded_file_file_name"
+    t.string   "uploaded_file_content_type"
+    t.integer  "uploaded_file_file_size"
+    t.datetime "uploaded_file_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   add_foreign_key "contig_searches", "projects"
   add_foreign_key "individual_searches", "projects"
   add_foreign_key "individual_searches", "users"
@@ -844,4 +878,5 @@ ActiveRecord::Schema.define(version: 20191113133715) do
   add_foreign_key "ngs_runs", "higher_order_taxa"
   add_foreign_key "plant_plates", "lab_racks"
   add_foreign_key "shelves", "freezers"
+  add_foreign_key "subdivisions", "divisions"
 end

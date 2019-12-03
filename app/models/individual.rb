@@ -9,7 +9,7 @@ class Individual < ApplicationRecord
   belongs_to :herbarium
   belongs_to :tissue
 
-  after_save :assign_dna_bank_info, :if => proc{ |ind| ind.specimen_id_changed? || ind.DNA_bank_id_changed? }
+  after_save :assign_dna_bank_info, if: :identifier_has_changed?
   after_save :update_isolate_tissue, if: :tissue_id_changed?
 
   pg_search_scope :quick_search, against: %i[specimen_id herbarium collector collectors_field_number]
@@ -49,6 +49,10 @@ class Individual < ApplicationRecord
     else
       self.species = Species.find_or_create_by(composed_name: name) if name.present? # TODO is it used? Add project if so
     end
+  end
+
+  def identifier_has_changed?
+    specimen_id_changed? || DNA_bank_id_changed?
   end
 
   def assign_dna_bank_info
