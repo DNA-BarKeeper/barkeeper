@@ -8,7 +8,6 @@ RSpec.describe BlastHit do
   end
 
   it "has one cluster" do
-    assc = described_class.reflect_on_association(:cluster)
-    expect(assc.macro).to eq :belongs_to
+    should belong_to(:cluster)
   end
 end

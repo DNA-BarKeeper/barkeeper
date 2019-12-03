@@ -1,6 +1,10 @@
 require 'rails_helper'
+require Rails.root.join "spec/concerns/project_record_spec.rb"
 
 RSpec.describe Order do
+  before(:all) { Project.create(name: 'All') }
+  it_behaves_like "project_record"
+
   subject { FactoryBot.create(:order) }
 
   it "is valid with valid attributes" do
@@ -8,28 +12,23 @@ RSpec.describe Order do
   end
 
   it "is not valid without a name" do
-    subject.name = nil
-    should_not be_valid
+    should validate_presence_of(:name)
   end
 
   it "has one higher order taxon" do
-    assc = described_class.reflect_on_association(:higher_order_taxon)
-    expect(assc.macro).to eq :belongs_to
+    should belong_to(:higher_order_taxon)
   end
 
   it "has one taxonomic class" do
-    assc = described_class.reflect_on_association(:taxonomic_class)
-    expect(assc.macro).to eq :belongs_to
+    should belong_to(:taxonomic_class)
   end
 
   it "has many families" do
-    assc = described_class.reflect_on_association(:families)
-    expect(assc.macro).to eq :has_many
+    should have_many(:families)
   end
 
   it "has many species" do
-    assc = described_class.reflect_on_association(:species)
-    expect(assc.macro).to eq :has_many
+    should have_many(:species)
   end
 
   context "returns number of orders in higher order taxon" do

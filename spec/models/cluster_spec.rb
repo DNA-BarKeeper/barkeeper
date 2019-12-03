@@ -3,7 +3,6 @@ require Rails.root.join "spec/concerns/project_record_spec.rb"
 
 RSpec.describe Cluster do
   before(:all) { Project.create(name: 'All') }
-
   it_behaves_like "project_record"
 
   subject { FactoryBot.create(:cluster) }
@@ -13,30 +12,19 @@ RSpec.describe Cluster do
   end
 
   it "has one isolate" do
-    assc = described_class.reflect_on_association(:isolate)
-    expect(assc.macro).to eq :belongs_to
+    should belong_to(:isolate)
   end
 
   it "has one ngs_run" do
-    assc = described_class.reflect_on_association(:ngs_run)
-    expect(assc.macro).to eq :belongs_to
+    should belong_to(:ngs_run)
   end
 
   it "has one marker" do
-    assc = described_class.reflect_on_association(:marker)
-    expect(assc.macro).to eq :belongs_to
+    should belong_to(:marker)
   end
 
-  it "has one blast hit" do
-    assc = described_class.reflect_on_association(:blast_hit)
-    expect(assc.macro).to eq :has_one
-  end
-
-  it "destroys dependent blast hits" do
-    blast_hit = FactoryBot.create(:blast_hit)
-    cluster = FactoryBot.create(:cluster, blast_hit: blast_hit)
-
-    expect { cluster.destroy }.to change { BlastHit.count }.by(-1)
+  it "has one blast hit and destroys it on deletion" do
+    should have_one(:blast_hit).dependent(:destroy)
   end
 
   context "returns associated isolate name" do

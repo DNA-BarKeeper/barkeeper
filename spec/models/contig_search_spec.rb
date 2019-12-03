@@ -8,12 +8,14 @@ RSpec.describe ContigSearch do
   end
 
   it "has one user" do
-    assc = described_class.reflect_on_association(:user)
-    expect(assc.macro).to eq :belongs_to
+    should belong_to(:user)
   end
 
   it "has one project" do
-    assc = described_class.reflect_on_association(:project)
-    expect(assc.macro).to eq :belongs_to
+    should belong_to(:project)
   end
+
+  xit "finds records in database"
+
+  xit "creates contig archive"
 end

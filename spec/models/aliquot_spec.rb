@@ -8,17 +8,14 @@ RSpec.describe Aliquot do
   end
 
   it "has one micronic plate" do
-    assc = described_class.reflect_on_association(:micronic_plate)
-    expect(assc.macro).to eq :belongs_to
+    should belong_to(:micronic_plate)
   end
 
   it "has one lab" do
-    assc = described_class.reflect_on_association(:lab)
-    expect(assc.macro).to eq :belongs_to
+    should belong_to(:lab)
   end
 
   it "has one isolate" do
-    assc = described_class.reflect_on_association(:isolate)
-    expect(assc.macro).to eq :belongs_to
+    should belong_to(:isolate)
   end
 end

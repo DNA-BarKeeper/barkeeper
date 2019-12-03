@@ -96,4 +96,5 @@ group :development, :test do
   gem 'poltergeist'
   gem 'rails_best_practices'
   gem 'rspec-rails'
+  gem 'shoulda-matchers'
 end
