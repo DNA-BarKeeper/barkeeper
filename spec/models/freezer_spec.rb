@@ -1,7 +1,9 @@
 require 'rails_helper'
+require Rails.root.join "spec/concerns/project_record_spec.rb"
 
 RSpec.describe Freezer do
   before(:all) { Project.create(name: 'All') }
+  it_behaves_like "project_record"
 
   subject { FactoryBot.create(:freezer) }
 
@@ -10,22 +12,18 @@ RSpec.describe Freezer do
   end
 
   it "is not valid without a freezercode" do
-    subject.freezercode = nil
-    should_not be_valid
+    should validate_presence_of(:freezercode)
   end
 
   it "has one lab" do
-    assc = described_class.reflect_on_association(:lab)
-    expect(assc.macro).to eq :belongs_to
+    should belong_to(:lab)
   end
 
   it "has many lab racks" do
-    assc = described_class.reflect_on_association(:lab_racks)
-    expect(assc.macro).to eq :has_many
+    should have_many(:lab_racks)
   end
 
   it "has many shelves" do
-    assc = described_class.reflect_on_association(:shelves)
-    expect(assc.macro).to eq :has_many
+    should have_many(:shelves)
   end
 end
