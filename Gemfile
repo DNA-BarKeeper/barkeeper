@@ -97,4 +97,5 @@ group :development, :test do
   gem 'rails_best_practices'
   gem 'rspec-rails'
   gem 'shoulda-matchers'
+  gem 'shoulda-callback-matchers'
 end
