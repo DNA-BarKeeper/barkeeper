@@ -60,6 +60,8 @@ RSpec.describe Individual do
 
   xit "returns csv" do; end
 
+  xit "assigns DNA bank info" do; end
+
   context "returns associated species name" do
     it "returns name of associated species if one exists" do
       species = FactoryBot.create(:species)
@@ -101,6 +103,16 @@ RSpec.describe Individual do
       individual = FactoryBot.create(:individual, species: species)
 
       expect { individual.species_name = '' }.to change { individual.species }.to nil
+    end
+  end
+
+  context "updates isolates tissue" do
+    it "updates tissue of all associated isolates" do
+      individual = FactoryBot.create(:individual)
+      isolate = FactoryBot.create(:isolate, individual: individual)
+      tissue = FactoryBot.create(:tissue)
+
+      expect { individual.update(tissue: tissue) }.to change { isolate.reload.tissue }.to(tissue)
     end
   end
 end
