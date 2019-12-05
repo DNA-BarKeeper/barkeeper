@@ -40,12 +40,15 @@ RSpec.describe User do
   end
 
   it "assigns a default project" do
+    subject.default_project_id = nil
+    subject.projects = []
+
     project1 = FactoryBot.create(:project)
     project2 = FactoryBot.create(:project)
 
-    subject.projects << project1
-    subject.projects << project2
+    subject.add_project(project1.id)
+    subject.add_project(project2.id)
 
-    expect { subject.save }.to change { subject.reload.default_project_id }.to(project1.id)
+    expect { subject.save }.to change { subject.default_project_id }.to(project1.id)
   end
 end
