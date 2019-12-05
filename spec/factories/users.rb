@@ -5,6 +5,24 @@ FactoryBot.define do
     u.default_project_id { 1 }
     u.email { Faker::Internet.email }
     u.name { Faker::Name.name }
-    u.role { Faker::Number.between(from: 0, to: 3) }
+    u.role { 'user' }
+
+    factory :admin do
+      after(:create) do
+        create(:user, role: 'admin')
+      end
+    end
+
+    factory :guest do
+      after(:create) do
+        create(:user, role: 'guest')
+      end
+    end
+
+    factory :supervisor do
+      after(:create) do
+        create(:user, role: 'supervisor')
+      end
+    end
   end
 end
