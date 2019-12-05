@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191203115224) do
+ActiveRecord::Schema.define(version: 20191205131128) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -619,6 +619,10 @@ ActiveRecord::Schema.define(version: 20191203115224) do
     t.integer  "position"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "primer_id"
+    t.integer  "species_id"
+    t.index ["primer_id"], name: "index_primer_pos_on_genomes_on_primer_id", using: :btree
+    t.index ["species_id"], name: "index_primer_pos_on_genomes_on_species_id", using: :btree
   end
 
   create_table "primer_reads", force: :cascade do |t|
@@ -877,6 +881,8 @@ ActiveRecord::Schema.define(version: 20191203115224) do
   add_foreign_key "mislabels", "marker_sequences"
   add_foreign_key "ngs_runs", "higher_order_taxa"
   add_foreign_key "plant_plates", "lab_racks"
+  add_foreign_key "primer_pos_on_genomes", "primers"
+  add_foreign_key "primer_pos_on_genomes", "species"
   add_foreign_key "shelves", "freezers"
   add_foreign_key "subdivisions", "divisions"
 end

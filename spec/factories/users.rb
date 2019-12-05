@@ -5,7 +5,9 @@ FactoryBot.define do
     u.default_project_id { 1 }
     u.email { Faker::Internet.email }
     u.name { Faker::Name.name }
+    u.password { Faker::Internet.password }
     u.role { 'user' }
+    u.projects { [FactoryBot.create(:project, name: 'All')] }
 
     factory :admin do
       after(:create) do
