@@ -37,8 +37,9 @@ class MarkerSequence < ApplicationRecord
   def isolate_display_name=(isolate_display_name)
     if isolate_display_name == ''
       self.isolate = nil
-    else
-      self.isolate = Isolate.find_by(display_name: isolate_display_name) if isolate_display_name.present?
+    elsif isolate_display_name.present?
+      iso = Isolate.find_by(display_name: isolate_display_name)
+      self.isolate = iso if iso
     end
   end
 

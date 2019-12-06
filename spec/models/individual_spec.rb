@@ -70,7 +70,7 @@ RSpec.describe Individual do
       expect(individual.species_name).to be == species.composed_name
     end
 
-    it "returns nil if no associated speices exists" do
+    it "returns nil if no associated species exists" do
       individual = FactoryBot.create(:individual, species: nil)
       expect(individual.species_name).to be == nil
     end
