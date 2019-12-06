@@ -18,13 +18,6 @@ ActiveRecord::Schema.define(version: 20191205131128) do
   enable_extension "pg_trgm"
   enable_extension "hstore"
 
-  create_table "alignments", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.string   "URL",        limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "aliquots", force: :cascade do |t|
     t.text     "comment"
     t.decimal  "concentration"
@@ -292,33 +285,33 @@ ActiveRecord::Schema.define(version: 20191205131128) do
 
   create_table "isolates", force: :cascade do |t|
     t.string   "well_pos_plant_plate",         limit: 255
+    t.string   "micronic_tube_id",             limit: 255
+    t.string   "well_pos_micronic_plate",      limit: 255
+    t.decimal  "concentration"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "tissue_id"
+    t.integer  "micronic_plate_id"
     t.integer  "plant_plate_id"
     t.integer  "individual_id"
     t.string   "dna_bank_id",                  limit: 255
     t.string   "lab_isolation_nr",             limit: 255
-    t.boolean  "negative_control",                         default: false
-    t.datetime "isolation_date"
-    t.integer  "user_id"
-    t.string   "display_name"
-    t.string   "well_pos_micronic_plate_copy"
-    t.string   "well_pos_micronic_plate_orig"
-    t.string   "well_pos_micronic_plate"
-    t.string   "micronic_tube_id_copy"
-    t.string   "micronic_tube_id_orig"
-    t.string   "micronic_tube_id"
-    t.integer  "micronic_plate_id_copy"
-    t.integer  "micronic_plate_id_orig"
-    t.integer  "micronic_plate_id"
-    t.integer  "lab_id_copy"
+    t.boolean  "negative_control",                                                  default: false
     t.integer  "lab_id_orig"
-    t.decimal  "concentration_copy"
-    t.decimal  "concentration_orig"
-    t.decimal  "concentration"
+    t.integer  "lab_id_copy"
+    t.datetime "isolation_date"
+    t.integer  "micronic_plate_id_orig"
+    t.integer  "micronic_plate_id_copy"
+    t.string   "well_pos_micronic_plate_orig"
+    t.string   "well_pos_micronic_plate_copy"
+    t.decimal  "concentration_orig",                       precision: 15, scale: 2
+    t.decimal  "concentration_copy",                       precision: 15, scale: 2
+    t.string   "micronic_tube_id_orig"
+    t.string   "micronic_tube_id_copy"
+    t.integer  "user_id"
     t.text     "comment_orig"
     t.text     "comment_copy"
+    t.string   "display_name"
   end
 
   create_table "isolates_projects", id: false, force: :cascade do |t|
@@ -430,15 +423,6 @@ ActiveRecord::Schema.define(version: 20191205131128) do
     t.integer "marker_id",  null: false
     t.integer "project_id", null: false
     t.index ["marker_id", "project_id"], name: "index_markers_projects_on_marker_id_and_project_id", using: :btree
-  end
-
-  create_table "metaprojects", force: :cascade do |t|
-    t.string   "name"
-    t.text     "description"
-    t.text     "legal_disclosure"
-    t.text     "privacy_policy"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
   end
 
   create_table "micronic_plates", force: :cascade do |t|
@@ -769,15 +753,6 @@ ActiveRecord::Schema.define(version: 20191205131128) do
     t.datetime "species_export_updated_at"
   end
 
-  create_table "species_xml_uploaders", force: :cascade do |t|
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.string   "uploaded_file_file_name"
-    t.string   "uploaded_file_content_type"
-    t.integer  "uploaded_file_file_size"
-    t.datetime "uploaded_file_updated_at"
-  end
-
   create_table "specimen_exporters", force: :cascade do |t|
     t.string   "specimen_export_file_name"
     t.string   "specimen_export_content_type"
@@ -785,13 +760,6 @@ ActiveRecord::Schema.define(version: 20191205131128) do
     t.datetime "specimen_export_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "statuses", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "contig_id"
   end
 
   create_table "subdivisions", force: :cascade do |t|
@@ -859,15 +827,6 @@ ActiveRecord::Schema.define(version: 20191205131128) do
     t.integer  "default_project_id"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-  end
-
-  create_table "xml_uploaders", force: :cascade do |t|
-    t.string   "uploaded_file_file_name"
-    t.string   "uploaded_file_content_type"
-    t.integer  "uploaded_file_file_size"
-    t.datetime "uploaded_file_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   add_foreign_key "contig_searches", "projects"

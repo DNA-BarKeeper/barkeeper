@@ -20,7 +20,7 @@ class Isolate < ApplicationRecord
   validates :display_name, presence: { message: "Either a DNA Bank Number or a lab isolation number must be provided!" }
   before_validation :assign_display_name
 
-  after_save :assign_specimen, :if => proc{ |iso| iso.lab_isolation_nr_changed? || iso.dna_bank_id_changed? }
+  after_save :assign_specimen
 
   scope :recent, -> { where('isolates.updated_at > ?', 1.hours.ago) }
   scope :no_controls, -> { where(negative_control: false) }
@@ -109,10 +109,12 @@ class Isolate < ApplicationRecord
   end
 
   def assign_specimen
-    if dna_bank_id
-      search_dna_bank(dna_bank_id)
-    else
-      search_dna_bank(lab_isolation_nr)
+    if lab_isolation_nr_changed? || dna_bank_id_changed?
+      if dna_bank_id
+        search_dna_bank(dna_bank_id)
+      else
+        search_dna_bank(lab_isolation_nr)
+      end
     end
   end
 

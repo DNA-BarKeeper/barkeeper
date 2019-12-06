@@ -42,7 +42,7 @@ RSpec.describe ContigSearch do
     end
   end
 
-  context "finds records in database" do
+  xit "finds records in database" do
 
   end
 
