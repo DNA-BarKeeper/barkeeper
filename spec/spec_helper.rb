@@ -93,4 +93,8 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   Kernel.srand config.seed
+
+  config.before(:each) do
+    Aws.config[:s3] = {stub_responses: true}
+  end
 end
