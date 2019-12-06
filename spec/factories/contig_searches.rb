@@ -1,10 +1,11 @@
 require 'faker'
+include ActionDispatch::TestProcess
 
 FactoryBot.define do
   factory :contig_search do |cs|
     cs.assembled { ["assembled", "unassembled", "both"].sample }
     cs.family { Faker::Lorem.word }
-    cs.has_warnings { Faker::Number.between(from: 0, to: 2) }
+    cs.has_warnings { ContigSearch.has_warnings.keys.sample }
     cs.marker { Faker::Lorem.word }
     cs.max_age { Faker::Time.backward(days: 176) }
     cs.max_update { Faker::Time.backward(days: 176) }
@@ -17,5 +18,6 @@ FactoryBot.define do
     cs.title { Faker::Lorem.word }
     cs.verified { ["verified", "unverified", "both"].sample }
     cs.verified_by { Faker::Name.name }
+    cs.search_result_archive { fixture_file_upload("#{Rails.root}/spec/support/fixtures/search_results.zip", 'application/zip') }
   end
 end
