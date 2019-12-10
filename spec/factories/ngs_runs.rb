@@ -6,7 +6,7 @@ FactoryBot.define do
     n.fastq_location { Faker::Lorem.word }
     n.name { Faker::Lorem.word }
     n.primer_mismatches { Faker::Number.within(range: 1..10) }
-    n.quality_thrshold { Faker::Number.within(range: 1..100) }
+    n.quality_threshold { Faker::Number.within(range: 1..100) }
     n.sequences_filtered { Faker::Number.within(range: 1..100) }
     n.sequences_high_qual { Faker::Number.within(range: 1..100) }
     n.sequences_one_primer { Faker::Number.within(range: 1..100) }
