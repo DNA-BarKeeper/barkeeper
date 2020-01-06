@@ -71,7 +71,7 @@ class SpecimenExporter < ApplicationRecord
                 cell_tag(xml, individual.collectors_field_number)
               end
 
-              cell_tag(xml, individual.herbarium) # Institut
+              cell_tag(xml, individual.herbarium_code) # Institut
 
               # Sammlungsnummer
               if individual.specimen_id == '<no info available in DNA Bank>'
