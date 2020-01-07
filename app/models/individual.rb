@@ -64,8 +64,7 @@ class Individual < ApplicationRecord
 
   def query_dna_bank(specimen_id)
     puts "Query for Specimen ID '#{specimen_id}'...\n"
-    # TODO: Fix query XML!
-    service_url = "http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/UnitID'>#{specimen_id}</like></filter><count>false</count></search></request>"
+    service_url = "http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar_BiNHum&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/UnitID'>#{specimen_id}</like></filter><count>false</count></search></request>"
 
     url = URI.parse(service_url)
     req = Net::HTTP::Get.new(url.to_s)
@@ -127,10 +126,10 @@ class Individual < ApplicationRecord
 
         self.update(species: species)
       end
-
-      puts 'Done.'
     rescue StandardError
       puts 'Could not read ABCD.'
+    else # No exceptions occurred
+      puts 'Successfully finished.'
     end
   end
 end

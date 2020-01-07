@@ -1,2 +1,0 @@
-#SampleID	BarcodeSequence	LinkerPrimerSequence	ReversePrimer	Region	Description	
-GBoL2691ITS	TCAGACGATGCGTCAT	GGAAGTAAAAGTCGTAACAAGG	TCCTCCGCTTATTGATATGC	ITS
