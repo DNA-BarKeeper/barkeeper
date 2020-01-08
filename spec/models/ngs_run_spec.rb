@@ -46,4 +46,6 @@ RSpec.describe NgsRun do
   it "parses package map after save" do
     should callback(:parse_package_map).after(:save)
   end
+
+  xit "other methods"
 end

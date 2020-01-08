@@ -47,7 +47,7 @@ RSpec.describe Marker do
     before(:all) { @marker = FactoryBot.create(:marker) }
     before(:each) { @hot = FactoryBot.create(:higher_order_taxon) }
 
-    it "returns correct number of orders in higher order taxon" do
+    it "returns correct number of species in higher order taxon" do
       order = FactoryBot.create(:order, higher_order_taxon: @hot)
       family1 = FactoryBot.create(:family, order: order)
       family2 = FactoryBot.create(:family, order: order)
@@ -67,7 +67,7 @@ RSpec.describe Marker do
       expect(@marker.spp_in_higher_order_taxon(@hot.id)).to be == [3, 3, 3]
     end
 
-    it "returns correct number for no orders in higher order taxon" do
+    it "returns zero if no species belong to higher order taxon" do
       expect(@marker.spp_in_higher_order_taxon(@hot.id)).to be == [0, 0, 0]
     end
   end

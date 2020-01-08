@@ -26,7 +26,7 @@ RSpec.describe Family do
   context "returns number of families in higher order taxon" do
     before(:each) { @hot = FactoryBot.create(:higher_order_taxon) }
 
-    it "returns correct number of orders in higher order taxon" do
+    it "returns correct number of families in higher order taxon" do
       order = FactoryBot.create(:order, higher_order_taxon: @hot)
 
       FactoryBot.create(:family, order: order)

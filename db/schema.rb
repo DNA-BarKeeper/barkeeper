@@ -475,25 +475,6 @@ ActiveRecord::Schema.define(version: 20191205131128) do
     t.datetime "updated_at"
   end
 
-  create_table "ngs_contigs", force: :cascade do |t|
-    t.string   "name"
-    t.text     "alignment"
-    t.text     "consensus"
-    t.text     "comment"
-    t.integer  "ngs_run_id"
-    t.integer  "marker_id"
-    t.integer  "isolate_id"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.hstore   "variants",   default: {}, null: false
-    t.integer  "coverage",   default: [],              array: true
-    t.index ["coverage"], name: "index_ngs_contigs_on_coverage", using: :gin
-    t.index ["isolate_id"], name: "index_ngs_contigs_on_isolate_id", using: :btree
-    t.index ["marker_id"], name: "index_ngs_contigs_on_marker_id", using: :btree
-    t.index ["ngs_run_id"], name: "index_ngs_contigs_on_ngs_run_id", using: :btree
-    t.index ["variants"], name: "ngs_contigs_variants_idx", using: :gin
-  end
-
   create_table "ngs_results", force: :cascade do |t|
     t.integer  "isolate_id"
     t.integer  "marker_id"
