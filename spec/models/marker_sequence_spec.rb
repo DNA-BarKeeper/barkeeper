@@ -76,4 +76,6 @@ RSpec.describe MarkerSequence do
       expect { ms.isolate_display_name = '' }.to change { ms.isolate }.to nil
     end
   end
+
+  xit "other methods"
 end

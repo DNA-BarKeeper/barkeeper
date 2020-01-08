@@ -65,4 +65,6 @@ RSpec.describe Isolate do
   it "assigns a specimen after save" do
     should callback(:assign_specimen).after(:save)
   end
+
+  xit "other methods"
 end
