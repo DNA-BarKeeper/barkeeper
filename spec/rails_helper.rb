@@ -13,8 +13,9 @@ require 'rspec/rails'
 
 require 'capybara/rspec'
 require 'capybara/poltergeist'
-
+require 'database_cleaner'
 require "paperclip/matchers"
+
 
 Capybara.javascript_driver = :poltergeist
 
