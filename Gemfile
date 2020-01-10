@@ -84,18 +84,15 @@ end
 
 group :test do
   gem 'capybara', '~> 2'
+  gem 'database_cleaner'
+  gem 'factory_bot_rails'
   gem 'faker'
   gem 'guard-rspec'
   gem 'launchy'
-  gem 'simplecov'
-end
-
-group :development, :test do
-  gem 'database_cleaner'
-  gem 'factory_bot_rails'
   gem 'poltergeist'
   gem 'rails_best_practices'
   gem 'rspec-rails'
   gem 'shoulda-matchers'
   gem 'shoulda-callback-matchers'
+  gem 'simplecov'
 end
