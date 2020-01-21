@@ -8,5 +8,6 @@ FactoryBot.define do
     c.reverse_complement { Faker::Boolean.boolean }
     c.running_number { Faker::Number.number(digits: 2) }
     c.sequence_count { Faker::Number.number(digits: 3) }
+    c.blast_hit
   end
 end

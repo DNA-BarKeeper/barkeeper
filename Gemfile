@@ -84,12 +84,13 @@ end
 
 group :test do
   gem 'capybara', '~> 2'
+  gem 'capybara-selenium'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'guard-rspec'
   gem 'launchy'
-  gem 'poltergeist'
+  gem 'webdrivers'
   gem 'rails_best_practices'
   gem 'rspec-rails'
   gem 'shoulda-matchers'

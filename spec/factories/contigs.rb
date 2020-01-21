@@ -15,5 +15,15 @@ FactoryBot.define do
     c.verified { Faker::Boolean.boolean }
     c.verified_at { Faker::Time.backward(days: 176) }
     c.verified_by { Faker::Name.name_with_middle }
+
+    factory :contig_with_primer_reads do
+      transient do
+        primer_reads_count { 10 }
+      end
+
+      after(:create) do |contig, evaluator|
+        create_list(:primer_reads, evaluator.primer_reads_count, contig: contig)
+      end
+    end
   end
 end

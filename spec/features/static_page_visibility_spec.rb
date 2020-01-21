@@ -34,4 +34,16 @@ RSpec.feature "Public access to static pages", type: :feature do
     expect(page).to have_content "5 Sharing and disclosure of personal data to third parties"
     expect(page).to have_content "10 Right of appeal at the regulating authority"
   end
+
+  scenario "visitor sees overview page" do
+    visit overview_path
+
+    within "h3" do
+      expect(page).to have_content "Overview"
+    end
+
+    within "th" do
+      expect(page).to have_content "Taxa"
+    end
+  end
 end
