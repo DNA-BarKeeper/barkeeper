@@ -12,5 +12,15 @@ FactoryBot.define do
     s.species_component { Faker::Lorem.word }
     s.species_epithet { Faker::Lorem.word }
     s.synonym { Faker::Lorem.word }
+
+    factory :species_with_individuals do
+      transient do
+        individual_count { 10 }
+      end
+
+      after(:create) do |species, evaluator|
+        create_list(:individual, evaluator.individual_count, species: species)
+      end
+    end
   end
 end

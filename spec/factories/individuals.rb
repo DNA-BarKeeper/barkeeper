@@ -26,5 +26,15 @@ FactoryBot.define do
     i.silica_gel { Faker::Boolean.boolean }
     i.state_province { Faker::Address.state }
     i.substrate { Faker::Lorem.word }
+
+    factory :individual_with_isolates do
+      transient do
+        isolate_count { 10 }
+      end
+
+      after(:create) do |individual, evaluator|
+        create_list(:isolate, evaluator.isolate_count, individual: individual)
+      end
+    end
   end
 end

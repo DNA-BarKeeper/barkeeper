@@ -8,16 +8,12 @@ ENV['RAILS_ENV'] = 'test'
 require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
-require 'rspec/rails'
-# Add additional requires below this line. Rails is not loaded until this point!
 
+require 'rspec/rails' # Add additional requires below this line. Rails is not loaded until this point!
 require 'capybara/rspec'
-require 'capybara/poltergeist'
 require 'database_cleaner'
 require "paperclip/matchers"
 
-
-Capybara.javascript_driver = :poltergeist
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -88,6 +84,8 @@ RSpec.configure do |config|
   end
 
   config.include Paperclip::Shoulda::Matchers
+
+  config.include Warden::Test::Helpers
 end
 
 Shoulda::Matchers.configure do |config|
@@ -96,3 +94,22 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+Capybara.register_driver :chrome do |app|
+  Capybara::Selenium::Driver.new(app, browser: :chrome)
+end
+
+Capybara.register_driver :headless_chrome do |app|
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+      chromeOptions: {
+          args: %w[headless enable-features=NetworkService,NetworkServiceInProcess]
+      }
+  )
+
+  Capybara::Selenium::Driver.new app,
+     browser: :chrome,
+     desired_capabilities: capabilities
+end
+
+Capybara.default_driver = :headless_chrome
+Capybara.javascript_driver = :headless_chrome
