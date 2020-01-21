@@ -48,6 +48,28 @@ namespace :data do
     csv.close
   end
 
+  task get_specimen_with_incorrect_ids: :environment do
+    individuals = Individual.joins(species: [family: [order: :higher_order_taxon]])
+        .in_project(5)
+        .where.not(herbarium_code: 'STU')
+        .where.not(species: { family: { order: { higher_order_taxa: { name: ["Coniferopsida", "Magnoliopsida"]}}}})
+
+    csv = CSV.open('specimen_incorrect_ids.csv', 'w+')
+    csv << @csv_header
+
+    stu_pattern = /SMNS-B-BR-\d{6}/
+    tissue_pattern = /B\sGT\s\d{7}/
+    herbar_pattern = /B\s10\s\d{7}/
+
+    individuals.each do |ind|
+      unless ind.specimen_id.match(stu_pattern) || ind.specimen_id.match(tissue_pattern) || ind.specimen_id.match(herbar_pattern)
+        csv << create_csv_line(ind)
+      end
+    end
+
+    csv.close
+  end
+
   def create_csv_line(individual)
     include ActionView::Helpers::NumberHelper
 
