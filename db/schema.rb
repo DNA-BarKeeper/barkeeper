@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191018124928) do
+ActiveRecord::Schema.define(version: 20200124153424) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -284,33 +284,33 @@ ActiveRecord::Schema.define(version: 20191018124928) do
 
   create_table "isolates", force: :cascade do |t|
     t.string   "well_pos_plant_plate",         limit: 255
+    t.string   "micronic_tube_id",             limit: 255
+    t.string   "well_pos_micronic_plate",      limit: 255
+    t.decimal  "concentration"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "tissue_id"
+    t.integer  "micronic_plate_id"
     t.integer  "plant_plate_id"
     t.integer  "individual_id"
     t.string   "dna_bank_id",                  limit: 255
     t.string   "lab_isolation_nr",             limit: 255
-    t.boolean  "negative_control",                         default: false
-    t.datetime "isolation_date"
-    t.integer  "user_id"
-    t.string   "display_name"
-    t.string   "well_pos_micronic_plate_copy"
-    t.string   "well_pos_micronic_plate_orig"
-    t.string   "well_pos_micronic_plate"
-    t.string   "micronic_tube_id_copy"
-    t.string   "micronic_tube_id_orig"
-    t.string   "micronic_tube_id"
-    t.integer  "micronic_plate_id_copy"
-    t.integer  "micronic_plate_id_orig"
-    t.integer  "micronic_plate_id"
-    t.integer  "lab_id_copy"
+    t.boolean  "negative_control",                                                  default: false
     t.integer  "lab_id_orig"
-    t.decimal  "concentration_copy"
-    t.decimal  "concentration_orig"
-    t.decimal  "concentration"
+    t.integer  "lab_id_copy"
+    t.datetime "isolation_date"
+    t.integer  "micronic_plate_id_orig"
+    t.integer  "micronic_plate_id_copy"
+    t.string   "well_pos_micronic_plate_orig"
+    t.string   "well_pos_micronic_plate_copy"
+    t.decimal  "concentration_orig",                       precision: 15, scale: 2
+    t.decimal  "concentration_copy",                       precision: 15, scale: 2
+    t.string   "micronic_tube_id_orig"
+    t.string   "micronic_tube_id_copy"
+    t.integer  "user_id"
     t.text     "comment_orig"
     t.text     "comment_copy"
+    t.string   "display_name"
   end
 
   create_table "isolates_projects", id: false, force: :cascade do |t|
@@ -325,6 +325,7 @@ ActiveRecord::Schema.define(version: 20191018124928) do
     t.datetime "updated_at"
     t.integer  "primer_read_id"
     t.integer  "contig_id"
+    t.integer  "ngs_run_id"
   end
 
   create_table "issues_projects", id: false, force: :cascade do |t|
@@ -422,15 +423,6 @@ ActiveRecord::Schema.define(version: 20191018124928) do
     t.integer "marker_id",  null: false
     t.integer "project_id", null: false
     t.index ["marker_id", "project_id"], name: "index_markers_projects_on_marker_id_and_project_id", using: :btree
-  end
-
-  create_table "metaprojects", force: :cascade do |t|
-    t.string   "name"
-    t.text     "description"
-    t.text     "legal_disclosure"
-    t.text     "privacy_policy"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
   end
 
   create_table "micronic_plates", force: :cascade do |t|
@@ -592,6 +584,10 @@ ActiveRecord::Schema.define(version: 20191018124928) do
     t.integer  "position"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "primer_id"
+    t.integer  "species_id"
+    t.index ["primer_id"], name: "index_primer_pos_on_genomes_on_primer_id", using: :btree
+    t.index ["species_id"], name: "index_primer_pos_on_genomes_on_species_id", using: :btree
   end
 
   create_table "primer_reads", force: :cascade do |t|
@@ -753,6 +749,8 @@ ActiveRecord::Schema.define(version: 20191018124928) do
     t.datetime "updated_at",  null: false
     t.integer  "position"
     t.string   "german_name"
+    t.integer  "division_id"
+    t.index ["division_id"], name: "index_subdivisions_on_division_id", using: :btree
   end
 
   create_table "tag_primer_maps", force: :cascade do |t|
@@ -823,5 +821,8 @@ ActiveRecord::Schema.define(version: 20191018124928) do
   add_foreign_key "mislabels", "marker_sequences"
   add_foreign_key "ngs_runs", "higher_order_taxa"
   add_foreign_key "plant_plates", "lab_racks"
+  add_foreign_key "primer_pos_on_genomes", "primers"
+  add_foreign_key "primer_pos_on_genomes", "species"
   add_foreign_key "shelves", "freezers"
+  add_foreign_key "subdivisions", "divisions"
 end

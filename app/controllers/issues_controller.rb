@@ -64,7 +64,7 @@ class IssuesController < ApplicationController
   def destroy
     @issue.destroy
     respond_to do |format|
-      format.html { redirect_to issues_url, notice: 'Issue was successfully destroyed.' }
+      format.html { redirect_back(fallback_location: issues_url, notice: 'Issue was successfully destroyed.') }
       format.json { head :no_content }
     end
   end
