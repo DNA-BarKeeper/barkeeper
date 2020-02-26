@@ -72,7 +72,7 @@ group :development do
   gem 'capistrano-rails',   require: false
   gem 'capistrano-rbenv',   require: false
   gem 'capistrano-sidekiq', require: false, github: 'seuros/capistrano-sidekiq'
-  gem 'capistrano3-puma',   require: false, github: 'seuros/capistrano-puma' # TODO: remove github once fixed version is officially deployed
+  gem 'capistrano3-puma', '~> 3.1', require: false #, github: 'seuros/capistrano-puma' # TODO: remove github once fixed version is officially deployed
 end
 
 group :test do
