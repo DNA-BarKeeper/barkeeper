@@ -10,13 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191205131128) do
+ActiveRecord::Schema.define(version: 20200124153424) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
-  enable_extension "hstore"
 
   create_table "aliquots", force: :cascade do |t|
     t.text     "comment"
@@ -326,6 +325,7 @@ ActiveRecord::Schema.define(version: 20191205131128) do
     t.datetime "updated_at"
     t.integer  "primer_read_id"
     t.integer  "contig_id"
+    t.integer  "ngs_run_id"
   end
 
   create_table "issues_projects", id: false, force: :cascade do |t|

@@ -38,12 +38,17 @@ RSpec.feature "Public access to static pages", type: :feature do
   scenario "visitor sees overview page" do
     visit overview_path
 
+    time = Time.now.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:") # Skipped seconds because tests will fail if not (time changes)
+
     within "h3" do
       expect(page).to have_content "Overview"
     end
 
-    within "th" do
-      expect(page).to have_content "Taxa"
-    end
+    expect(page).to have_content "Taxa"
+    expect(page).to have_content "GBOL5 Markers"
+    expect(page).to have_content "bp sequenced as of #{time}"
+    expect(page).to have_content "Total"
+
+    have_link("Back to overview diagrams", :href => overview_diagram_index_url)
   end
 end
