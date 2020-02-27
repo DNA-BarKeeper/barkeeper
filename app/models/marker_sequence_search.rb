@@ -13,10 +13,10 @@ class MarkerSequenceSearch < ApplicationRecord
     @marker_sequences ||= find_marker_sequences
   end
 
-  def analysis_fasta(include_singletons)
+  def analysis_fasta(include_singletons, label_warnings=false)
     sequences = include_singletons ? marker_sequences : remove_singletons(marker_sequences)
 
-    MarkerSequenceSearch.fasta(sequences, metadata: false)
+    MarkerSequenceSearch.fasta(sequences, { warnings: label_warnings, metadata: false })
   end
 
   def taxon_file(include_singletons)
