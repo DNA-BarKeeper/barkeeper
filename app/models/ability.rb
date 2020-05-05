@@ -52,6 +52,13 @@ class Ability
     if user.present?
       can :manage, :all
 
+      # Additional permissions for guests
+      if user.guest?
+        cannot %i[change_base change_left_clip change_right_clip], PrimerRead
+        cannot %i[create update destroy], :all
+        can :edit, :all
+      end
+
       cannot :manage, User
       cannot :manage, Project
       cannot :manage, Responsibility
@@ -60,13 +67,6 @@ class Ability
       cannot :start_analysis, NgsRun # TODO: remove when feature is done
 
       can %i[read search_taxa add_to_taxa], Project, id: user.project_ids
-
-      # Additional permissions for guests
-      if user.guest?
-        cannot %i[change_base change_left_clip change_right_clip], PrimerRead
-        cannot %i[create update destroy], :all
-        can :edit, :all
-      end
 
       cannot :edit, Cluster
 

@@ -9,7 +9,7 @@ class ProjectsController < ApplicationController
   # GET /projects.json
   def index
     @projects = if user_signed_in?
-                  current_user.admin? ? Project.all : current_user.projects
+                  current_user.admin? || current_user.supervisor? ? Project.all : current_user.projects
                 else
                   []
                 end

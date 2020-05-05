@@ -10,6 +10,7 @@ class NgsRun < ApplicationRecord
   has_many :ngs_results, dependent: :destroy
   has_many :isolates, through: :clusters
   has_many :markers, through: :ngs_results
+  has_many :issues
 
   has_attached_file :set_tag_map
   has_attached_file :results
@@ -113,7 +114,7 @@ class NgsRun < ApplicationRecord
       # Upload analysis input files
       session.scp.upload! "#{Rails.root}/#{tag_primer_maps.first.tag_primer_map_file_name}", tag_primer_map_path
 
-      # Start analysis on server #TODO uncomment when ready
+      # Start analysis on server # TODO uncomment when ready and add remaining parameters
       # session.exec!("ruby /data/data2/lara/Barcoding/barcoding_pipe.rb -m #{tag_primer_map_path} -f #{fastq_location} -o #{output_dir}")
 
       # Remove edited tag primer maps
@@ -124,35 +125,49 @@ class NgsRun < ApplicationRecord
   end
 
   def import(results_path)
-    # Download results from Xylocalyx
+    # Download results from Xylocalyx (action will be called at end of analysis script on Xylocalyx!)
     Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
       sftp.stat(results_path) do |response|
         if response.ok?
-          # Download result file
-          sftp.download!(results_path, "#{Rails.root}/#{self.name}_out.zip")
-
           # Delete older results
           results.clear
           Cluster.where(ngs_run_id: id).delete_all
           NgsResult.where(ngs_run_id: id).delete_all
+          FileUtils.rm_r("#{Rails.root}/#{self.name}_out.zip") if File.exists?("#{Rails.root}/#{self.name}_out.zip")
+          FileUtils.rm_r("#{Rails.root}/#{self.name}_out") if File.exists?("#{Rails.root}/#{self.name}_out")
+
+          # Download result file
+          sftp.download!(results_path, "#{Rails.root}/#{self.name}_out.zip")
 
           #TODO: Maybe add possibility to use AWS copy here in case of a reimport of data at a later point
+
           # Unzip results
           Zip::File.open("#{Rails.root}/#{self.name}_out.zip") do |zip_file|
             zip_file.each do |entry|
-              entry.extract("#{Rails.root}/#{entry.name}") # TODO: seems to extract to the wrong place???
+              entry.extract("#{Rails.root}/#{entry.name}")
             end
           end
 
           # Import data
           Marker.all.each do |marker|
-            import_clusters(marker)
+            begin
+              import_clusters(marker)
+            rescue
+              self.issues << Issue.new(title: "Import error",
+                                       description: "Something went wrong when importing clusters for marker #{marker.name}")
+            end
           end
 
           import_analysis_stats
 
           tag_primer_maps.each do |tpm|
-            import_results("#{tpm.tag_primer_map_file_name.gsub('.txt', '')}_expanded.txt")
+            begin
+              import_results("#{tpm.tag_primer_map_file_name.gsub('.txt', '')}_expanded.txt")
+            rescue Exception => e
+              self.issues << Issue.new(title: "Import error",
+                                       description: "Importing results for tag primer map #{tpm.tag_primer_map_file_name}
+                                                     resulted in error:\n#{e.message}")
+            end
           end
 
           # Store results on AWS
@@ -162,6 +177,9 @@ class NgsRun < ApplicationRecord
           # Remove temporary files from server
           FileUtils.rm_r("#{Rails.root}/#{self.name}_out.zip")
           FileUtils.rm_r("#{Rails.root}/#{self.name}_out")
+        else
+          self.issues << Issue.new(title: "Result file not found",
+                                   description: "The requested result file could not be found on the server.")
         end
       end
     end

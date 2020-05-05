@@ -41,17 +41,28 @@ class TagPrimerMap < ApplicationRecord
     tp_map = CSV.read(tpm_location, { col_sep: "\t", headers: true })
 
     tp_map.each do |row|
-      sample_id = row['#SampleID'].match(/\D+\d+|\D+\z/)[0]
-      isolate = Isolate.joins(individual: :species).find_by_lab_isolation_nr(sample_id)
+      sample_id = row['#SampleID']
 
-      if isolate
-        species = isolate.individual.species.composed_name.gsub(' ', '_')
-        row['Description'] = [sample_id, species, row['TagID'], row['Region']].join('_')
-      else
-        isolate = Isolate.joins(individual: :species).find_or_create_by(lab_isolation_nr: sample_id)
+      next unless sample_id
+
+      sample_id.match(/\D+\d+|\D+\z/)[0]
+
+      isolate = Isolate.includes(individual: :species).find_by_lab_isolation_nr(sample_id)
+      unless isolate
+        isolate = Isolate.includes(individual: :species).create(lab_isolation_nr: sample_id)
         isolate.add_projects(project_ids)
-        row['Description'] = [sample_id, row['TagID'], row['Region']].join('_')
+        isolate.save
       end
+
+      species = isolate&.individual&.species
+      species_name = species.composed_name.gsub(' ', '_') if species
+
+      description = [sample_id]
+      description << species_name if species_name
+      description << row['TagID'] if row['TagID']
+      description << row['Region'] if row['Region']
+
+      row['Description'] = description.join('_')
 
       # Adding indices to the region to indicate differing primer pairs, not necessary right now
       # region = row['Region']
