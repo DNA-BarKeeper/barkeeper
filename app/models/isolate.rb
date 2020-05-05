@@ -133,7 +133,6 @@ class Isolate < ApplicationRecord
   private
 
   def search_dna_bank(id_string, individual = nil)
-    individual ||= self.individual
     is_gbol_number = false
 
     if id_string.downcase.include? 'db'
@@ -159,27 +158,26 @@ class Isolate < ApplicationRecord
     res = Net::HTTP.start(url.host, url.port) { |http| http.request(req) }
     doc = Nokogiri::XML(res.body)
 
-    unit_id = nil
-    specimen_unit_id = nil
-
     begin
       unit = doc.at_xpath('//abcd21:Unit')
       unit_id = is_gbol_number ? doc.at_xpath('//abcd21:Unit/abcd21:UnitID').content : id_string # UnitID field contains DNA bank number
       specimen_unit_id = unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content
 
+      if specimen_unit_id
+        individual ||= self.individual
+        individual ||= Individual.find_or_create_by(specimen_id: specimen_unit_id)
+        individual.add_projects(projects.pluck(:id))
+
+        individual.update(DNA_bank_id: unit_id) if unit_id
+
+        # Specimen info will be retrieved from DNA bank if specimen ID has changed (or individual was newly created)
+
+        self.update_column(:individual_id, individual.id) # Does not trigger callbacks to avoid infinite loop
+      end
     rescue StandardError
       puts 'Could not read ABCD.'
+    else # No exceptions occurred
+      puts 'Successfully finished.'
     end
-
-    if specimen_unit_id
-      individual ||= Individual.find_or_create_by(specimen_id: specimen_unit_id)
-      individual.add_projects(projects.pluck(:id))
-
-      individual.update(DNA_bank_id: unit_id) if unit_id
-    end
-
-    self.update_column(:individual_id, individual.id) # Does not trigger callbacks to avoid infinite loop
-
-    puts 'Done.'
   end
 end

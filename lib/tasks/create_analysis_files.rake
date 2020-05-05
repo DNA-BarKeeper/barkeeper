@@ -2,7 +2,7 @@
 
 namespace :data do
   desc 'Create fasta and taxon file from marker sequence search for further analyses.'
-  task :create_analysis_files, [:title] => [:environment] do |_, args|
+  task :create_analysis_files, [:title, :include_singletons, :metadata, :label_warnings] => [:environment] do |_, args|
     title = args[:title]
 
     title_split = title.split('_')
@@ -14,12 +14,16 @@ namespace :data do
     sequences = "#{Rails.root}/#{title}.fasta"
     tax_file = "#{Rails.root}/#{title}.tax"
 
+    include_singletons = args[:include_singletons] == 'yes'
+    metadata = args[:metadata] == 'yes'
+    label_warnings = args[:label_warnings] == 'yes'
+
     File.open(sequences, 'w+') do |f|
-      f.write(search.analysis_fasta(false))
+      f.write(search.analysis_fasta(include_singletons, metadata, label_warnings))
     end
 
     File.open(tax_file, 'w+') do |f|
-      f.write(search.taxon_file(false))
+      f.write(search.taxon_file(include_singletons))
     end
   end
 

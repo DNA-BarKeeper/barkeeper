@@ -1,2 +1,0 @@
-#SampleID	BarcodeSequence	LinkerPrimerSequence	ReversePrimer	TagID  Region	Description
-GBoL2691ITS	TCAGACGATGCGTCAT	GGAAGTAAAAGTCGTAACAAGG	TCCTCCGCTTATTGATATGC	BC001  ITS	GBoL2691_Lunularia_cruciata_BC001_ITS

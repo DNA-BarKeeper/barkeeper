@@ -86,6 +86,8 @@ RSpec.configure do |config|
   config.include Paperclip::Shoulda::Matchers
 
   config.include Warden::Test::Helpers
+
+  config.include Devise::Test::IntegrationHelpers
 end
 
 Shoulda::Matchers.configure do |config|
