@@ -8,6 +8,10 @@ FactoryBot.define do
     i.negative_control { Faker::Boolean.boolean }
     i.well_pos_plant_plate { Faker::Lorem.word }
 
+    factory :isolate_with_taxonomy do
+      association :individual, factory: :individual_with_taxonomy
+    end
+
     factory :isolate_with_contigs do
       transient do
         contig_count { 4 }

@@ -13,6 +13,10 @@ FactoryBot.define do
     s.species_epithet { Faker::Lorem.word }
     s.synonym { Faker::Lorem.word }
 
+    factory :species_with_taxonomy do
+      association :family, factory: :family_with_taxonomy
+    end
+
     factory :species_with_individuals do
       transient do
         individual_count { 10 }
