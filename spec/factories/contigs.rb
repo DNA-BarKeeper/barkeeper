@@ -22,11 +22,11 @@ FactoryBot.define do
 
     factory :contig_with_primer_reads do
       transient do
-        primer_reads_count { 10 }
+        primer_reads_count { 4 }
       end
 
       after(:create) do |contig, evaluator|
-        create_list(:primer_reads, evaluator.primer_reads_count, contig: contig)
+        create_list(:primer_read, evaluator.primer_reads_count, contig: contig)
       end
     end
   end
