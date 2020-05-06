@@ -27,6 +27,10 @@ FactoryBot.define do
     i.state_province { Faker::Address.state }
     i.substrate { Faker::Lorem.word }
 
+    factory :individual_with_taxonomy do
+      association :species, factory: :species_with_taxonomy
+    end
+
     factory :individual_with_isolates do
       transient do
         isolate_count { 10 }

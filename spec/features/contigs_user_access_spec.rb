@@ -69,11 +69,11 @@ RSpec.feature "User access to contigs", type: :feature, js: true do
   end
 
   def visit_index_and_filter
-    species = FactoryBot.create(:species_with_individuals)
-    FactoryBot.create(:individual_with_isolates, species: species)
+    first_contig = FactoryBot.create(:contig_with_taxonomy, name: "first_contig")
+    second_contig = FactoryBot.create(:contig_with_taxonomy, name: "second_contig")
 
-    FactoryBot.create(:contig, name: "first_contig", isolate: Isolate.first)
-    FactoryBot.create(:contig, name: "second_contig")
+    species = first_contig.isolate.individual.species
+    individual = first_contig.isolate.individual
 
     visit contigs_path
 
@@ -81,26 +81,26 @@ RSpec.feature "User access to contigs", type: :feature, js: true do
       expect(page).to have_content "Contigs"
     end
 
-    expect(page).to have_content "first_contig"
-    expect(page).to have_content "second_contig"
+    expect(page).to have_content first_contig.name
+    expect(page).to have_content second_contig.name
 
     # Filter by contig name partial
     find(:xpath, '//input[@type="search"]').set('second')
 
-    expect(page).to_not have_content "first_contig"
-    expect(page).to have_content "second_contig"
+    expect(page).to_not have_content first_contig.name
+    expect(page).to have_content second_contig.name
 
     # Filter by species name
     find(:xpath, '//input[@type="search"]').set(species.name_for_display)
 
-    expect(page).to have_content "first_contig"
-    expect(page).to_not have_content "second_contig"
+    expect(page).to have_content first_contig.name
+    expect(page).to_not have_content second_contig.name
 
     # Filter by specimen identifier
-    find(:xpath, '//input[@type="search"]').set(Individual.first.DNA_bank_id)
+    find(:xpath, '//input[@type="search"]').set(individual.DNA_bank_id)
 
-    expect(page).to have_content "first_contig"
-    expect(page).to_not have_content "second_contig"
+    expect(page).to have_content first_contig.name
+    expect(page).to_not have_content second_contig.name
   end
 
   def can_edit

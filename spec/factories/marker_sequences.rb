@@ -6,5 +6,10 @@ FactoryBot.define do
     m.genbank { Faker::Lorem.word }
     m.name { Faker::Lorem.word }
     m.reference { Faker::Lorem.word }
+
+    factory :marker_sequence_with_taxonomy do
+      association :isolate, factory: :isolate_with_taxonomy
+      association :marker, factory: :marker
+    end
   end
 end

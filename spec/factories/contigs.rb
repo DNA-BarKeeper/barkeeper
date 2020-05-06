@@ -16,6 +16,10 @@ FactoryBot.define do
     c.verified_at { Faker::Time.backward(days: 176) }
     c.verified_by { Faker::Name.name_with_middle }
 
+    factory :contig_with_taxonomy do
+      association :isolate, factory: :isolate_with_taxonomy
+    end
+
     factory :contig_with_primer_reads do
       transient do
         primer_reads_count { 10 }

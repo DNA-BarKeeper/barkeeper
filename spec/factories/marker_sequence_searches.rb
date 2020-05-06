@@ -18,7 +18,7 @@ FactoryBot.define do
     ms.order { Faker::Lorem.word }
     ms.species { Faker::Lorem.word }
     ms.specimen { Faker::Lorem.word }
-    ms.title { Faker::Lorem.word }
+    ms.title { Faker::GreekPhilosophers.name }
     ms.verified { ["verified", "unverified", "both"].sample }
     ms.verified_by { Faker::Name.name }
   end
