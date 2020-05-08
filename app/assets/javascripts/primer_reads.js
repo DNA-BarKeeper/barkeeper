@@ -142,6 +142,7 @@ function draw_chromatogram(div_id, chromatogram){
         .attr('id', 'chromatogram_svg_' + div_id);
 
     var prev_drawn_position = 0;
+    var prev_width = 0;
     //adjust clipped areas:
     var drag_left = d3.drag()
         .on('start', function() {
@@ -164,7 +165,7 @@ function draw_chromatogram(div_id, chromatogram){
             }
 
             if(prev_drawn_position !== drawn_position) { // Avoid triggering action when user just clicks in clipped area
-                change_left_clip(g+1, chromatogram.id, div_id);
+                change_left_clip(g, prev_drawn_position, chromatogram.id, div_id);
             }
         });
 
@@ -172,6 +173,7 @@ function draw_chromatogram(div_id, chromatogram){
         .on('start', function() {
             right_clip_area.style('fill', '#eeebb5');
             prev_drawn_position = right_clip_area.attr('x');
+            prev_width = right_clip_area.attr('width');
         })
         .on('drag', function() {
             right_clip_area.attr('x', d3.event.x).attr('width', chromatogram.atrace.length - d3.event.x);
@@ -189,7 +191,7 @@ function draw_chromatogram(div_id, chromatogram){
             }
 
             if(prev_drawn_position !== drawn_position) { // Avoid triggering action when user just clicks in clipped area
-                change_right_clip(g+1, chromatogram.id, div_id);
+                change_right_clip(g, prev_width, prev_drawn_position, chromatogram.id, div_id);
             }
         });
 
@@ -203,6 +205,7 @@ function draw_chromatogram(div_id, chromatogram){
             .attr("width", chromatogram.peak_indices[chromatogram.trimmedReadStart - 1] - 5)
             .attr("height", ymax)
             .attr("fill", "#d3d3d3")
+            .attr('class', 'left_clip_area')
             .call(drag_left)
                 .on('mouseover', function(d) {
                     d3.select(this).style("cursor", "col-resize")
@@ -217,6 +220,7 @@ function draw_chromatogram(div_id, chromatogram){
             .attr("width", chromatogram.atrace.length - chromatogram.peak_indices[chromatogram.trimmedReadEnd - 1] + 5)
             .attr("height", ymax)
             .attr("fill", "#d3d3d3")
+            .attr('class', 'right_clip_area')
             .call(drag_right)
             .on('mouseover', function(d) {
                 d3.select(this).style("cursor", "col-resize")
@@ -341,7 +345,8 @@ function draw_chromatogram(div_id, chromatogram){
             .attr("font-weight", '600')
             .attr("fill", 'black')
             .attr("text-anchor", ta)
-            .attr("id", i)
+            .attr("id", "base_" + i)
+            .attr("index", i)
             .on('mouseover', function () {
                 d3.select(this)
                     .style('font-size', '14px')
@@ -360,7 +365,7 @@ function draw_chromatogram(div_id, chromatogram){
                 var current_x = selected_base.attr("x");
                 var current_y = selected_base.attr("y");
                 var current_char = selected_base.text();
-                var base_index = selected_base.attr("id");
+                var base_index = selected_base.attr("index");
 
                 var frm = p_el.append('foreignObject');
 
@@ -369,6 +374,7 @@ function draw_chromatogram(div_id, chromatogram){
                     .attr('y', 12)
                     .attr('width', 20)
                     .attr('height', 20)
+                    .attr('id', 'base_change')
                     .append("xhtml:form")
                     .append('xhtml:input')
                     .attr("value", current_char)
@@ -429,6 +435,7 @@ function draw_chromatogram(div_id, chromatogram){
 
 function change_base(base_index, base, read_id, div_id) {
     var change_base_primer_read_url = '/primer_reads/' + read_id + '/change_base';
+    var visible_index = parseInt(base_index) + 1;
 
     $.ajax({
         data: {
@@ -438,12 +445,10 @@ function change_base(base_index, base, read_id, div_id) {
         type: 'POST',
         url: change_base_primer_read_url,
         success: function () {
-            var visible_index = parseInt(base_index);
-            visible_index += 1;
             tempAlert("Changed base at position " + visible_index + " to " + base + "", 3000, div_id);
         },
         error: function (response) {
-            alert('Not authorized? Could not change base at index ' + base_index + ' to ' + base);
+            alert('Not authorized? Could not change base at position ' + visible_index + ' to ' + base);
         }
     });
 
@@ -451,7 +456,7 @@ function change_base(base_index, base, read_id, div_id) {
     return 0;
 }
 
-function change_left_clip(base_index, read_id, div_id) {
+function change_left_clip(base_index, prev_width, read_id, div_id) {
     var change_left_clip_read_url = '/primer_reads/' + read_id + '/change_left_clip';
 
     $.ajax({
@@ -466,14 +471,15 @@ function change_left_clip(base_index, read_id, div_id) {
             tempAlert("Set left clip position to " + base_index + "", 3000, div_id);
         },
         error: function () {
-            alert('Not authorized? Could not set left clip at index ' + base_index);
+            alert('Not authorized? Could not set left clip at position ' + base_index);
+            d3.select('.left_clip_area').attr('width', prev_width);
         }
     });
 
     return 0;
 }
 
-function change_right_clip(base_index, read_id, div_id) {
+function change_right_clip(base_index, prev_width, prev_x, read_id, div_id) {
     var change_right_clip_read_url = '/primer_reads/' + read_id + '/change_right_clip';
 
     $.ajax({
@@ -489,7 +495,9 @@ function change_right_clip(base_index, read_id, div_id) {
             tempAlert("Set right clip position to " + base_index + "", 3000, div_id);
         },
         error: function () {
-            alert('Not authorized? Could not set right clip at index '+base_index);
+            alert('Not authorized? Could not set right clip at position ' + base_index);
+            d3.select('.right_clip_area').attr('width', prev_width);
+            d3.select('.right_clip_area').attr('x', prev_x);
         }
     });
 
