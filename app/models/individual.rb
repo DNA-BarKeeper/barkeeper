@@ -2,7 +2,7 @@
 
 class Individual < ApplicationRecord
   include ProjectRecord
-  include PgSearch
+  include PgSearch::Model
 
   has_many :isolates
   belongs_to :species

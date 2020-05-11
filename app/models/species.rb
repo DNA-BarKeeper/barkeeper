@@ -3,7 +3,7 @@
 class Species < ApplicationRecord
   extend Import
   include ProjectRecord
-  include PgSearch
+  include PgSearch::Model
 
   multisearchable against: :composed_name
 

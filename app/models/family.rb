@@ -2,7 +2,7 @@
 
 class Family < ApplicationRecord
   include ProjectRecord
-  include PgSearch
+  include PgSearch::Model
 
   multisearchable against: :name
 
