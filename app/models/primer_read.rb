@@ -11,13 +11,10 @@ class PrimerRead < ApplicationRecord
   has_attached_file :chromatogram,
                     default_url: '/chromatograms/primer_read.scf'
 
+  validates_attachment_presence :chromatogram
   # Do_not_validate_attachment_file_type :chromatogram
-
-  # Validate content type
-  validates_attachment_content_type :chromatogram, content_type: /\Aapplication\/octet-stream/
-
-  # Validate filename
-  validates_attachment_file_name :chromatogram, matches: [/scf\Z/, /ab1\Z/]
+  validates_attachment_content_type :chromatogram, content_type: /\Aapplication\/octet-stream/ # Validate content type
+  validates_attachment_file_name :chromatogram, matches: [/scf\Z/, /ab1\Z/] # Validate filename
 
   before_create :default_name
 
@@ -33,8 +30,6 @@ class PrimerRead < ApplicationRecord
   scope :processed, -> { where(processed: true) }
   scope :unprocessed, -> { where(processed: false) }
   scope :contig_not_verified, -> { joins(:contig).where(contigs: { verified: false, verified_by: nil }) }
-
-  validates_attachment_presence :chromatogram
 
   def self.in_higher_order_taxon(higher_order_taxon_id)
     count = 0

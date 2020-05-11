@@ -1,11 +1,12 @@
 require 'faker'
+include ActionDispatch::TestProcess
 
 FactoryBot.define do
   factory :primer_read do |p|
     # p.aligned_peak_indices { integer_array(200) }
     # p.aligned_qualities { integer_array(200) }
     # p.aligned_seq { Faker::Lorem.characters(number: 200, min_alpha: 200) }
-    p.assembled { Faker::Boolean.boolean }
+    # p.assembled { Faker::Boolean.boolean }
     # p.atrace { integer_array(200) }
     # p.base_count { Faker::Number.within(range: 1..200) }
     p.comment { Faker::Lorem.sentence }
@@ -26,7 +27,8 @@ FactoryBot.define do
     # p.trimmedReadEnd { Faker::Number.within(range: 1..200) }
     # p.trimmedReadStart { Faker::Number.within(range: 1..200) }
     # p.ttrace { integer_array(200) }
-    p.used_for_con { Faker::Boolean.boolean }
+    # p.used_for_con { Faker::Boolean.boolean }
     p.window_size { Faker::Number.within(range: 1..20) }
+    p.chromatogram { fixture_file_upload(Rails.root.join('spec', 'fixtures', 'files', 'GBoL1000_cp148.scf')) }
   end
 end

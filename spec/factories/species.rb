@@ -5,8 +5,7 @@ FactoryBot.define do
     s.author { Faker::Name.name_with_middle }
     s.author_infra { Faker::Name.name_with_middle }
     s.comment { Faker::Lorem.paragraph }
-    s.composed_name { Faker::Lorem.word }
-    s.genus_name { Faker::Lorem.word }
+    s.genus_name { Faker::Space.planet }
     s.german_name { Faker::Lorem.word }
     s.infraspecific { Faker::Lorem.word }
     s.species_component { Faker::Lorem.word }

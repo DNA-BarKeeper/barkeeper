@@ -10,7 +10,7 @@ FactoryBot.define do
     i.confirmation { Faker::Lorem.word }
     i.country { Faker::Address.country }
     i.determination { Faker::Lorem.word }
-    i.DNA_bank_id { Faker::Lorem.word }
+    i.DNA_bank_id { Faker::Space.galaxy }
     i.elevation { Faker::Lorem.word }
     i.exposition { Faker::Lorem.word }
     i.habitat { Faker::Lorem.sentence }
@@ -24,6 +24,7 @@ FactoryBot.define do
     i.longitude_original { Faker::Address.longitude.to_s }
     i.revision { Faker::Lorem.word }
     i.silica_gel { Faker::Boolean.boolean }
+    i.specimen_id { Faker::Space.constellation }
     i.state_province { Faker::Address.state }
     i.substrate { Faker::Lorem.word }
 
