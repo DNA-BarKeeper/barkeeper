@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.shared_examples "project_record" do
-  before(:all) { @general_project = Project.find_or_create_by(name: 'All') }
-  before(:all) { @project = FactoryBot.create(:project) }
+  before(:each) { @general_project = Project.find_or_create_by(name: 'All') }
+  before(:each) { @project = FactoryBot.create(:project) }
 
   let(:record) { FactoryBot.create(described_class.name.underscore.to_sym) }
 

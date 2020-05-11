@@ -139,19 +139,19 @@ class Isolate < ApplicationRecord
       id_parts = id_string.match(/^([A-Za-z]+)[\s_]?([0-9]+)$/)
       dna_bank_id = id_parts ? "#{id_parts[1]} #{id_parts[2]}" : id_string # Ensure a space between 'DB' and the ID number
 
-      message = "Query for DNABank ID '#{dna_bank_id}'...\n"
+      # message = "Query for DNABank ID '#{dna_bank_id}'...\n"
       service_url = "http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/UnitID'>#{dna_bank_id}</like></filter><count>false</count></search></request>"
     elsif id_string.downcase.include? 'gbol'
       is_gbol_number = true
 
-      message = "Query for GBoL number '#{id_string}'...\n"
+      # message = "Query for GBoL number '#{id_string}'...\n"
       service_url = "http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/SpecimenUnit/Preparations/preparation/sampleDesignations/sampleDesignation'>#{id_string}</like></filter><count>false</count></search></request>"
     else
-      puts "The ID \"#{id_string}\" you provided is not valid."
+      # puts "The ID \"#{id_string}\" you provided is not valid."
       return
     end
 
-    puts message
+    # puts message
 
     url = URI.parse(service_url)
     req = Net::HTTP::Get.new(url.to_s)
@@ -175,9 +175,9 @@ class Isolate < ApplicationRecord
         self.update_column(:individual_id, individual.id) # Does not trigger callbacks to avoid infinite loop
       end
     rescue StandardError
-      puts 'Could not read ABCD.'
+      # puts 'Could not read ABCD.'
     else # No exceptions occurred
-      puts 'Successfully finished.'
+      # puts 'Successfully finished.'
     end
   end
 end

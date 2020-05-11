@@ -2,6 +2,7 @@ require 'faker'
 
 FactoryBot.define do
   factory :primer do |p|
+    p.name { Faker::Lorem.word }
     p.alt_name { Faker::Lorem.word }
     p.author { Faker::Name.name }
     p.labcode { Faker::Lorem.characters(number: 6) }

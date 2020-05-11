@@ -1,9 +1,7 @@
 require 'rails_helper'
-require Rails.root.join "spec/concerns/project_record_spec.rb"
 
 RSpec.describe Project do
   before(:all) { Project.create(name: 'All') }
-  it_behaves_like "project_record"
 
   subject { FactoryBot.create(:project) }
 

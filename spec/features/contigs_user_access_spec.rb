@@ -1,10 +1,41 @@
 require "rails_helper"
+require Rails.root.join "spec/support/wait_for_ajax.rb"
 
 RSpec.feature "User access to contigs", type: :feature, js: true do
   before(:each) { @general_project = Project.find_or_create_by(name: 'All') }
 
-  scenario "Visitor can access contigs index and filter records without login" do
-    visit_index_and_filter
+  context "access contigs index and filter" do
+    scenario "Visitor can access contigs index and filter records without login" do
+      visit_index_and_filter
+    end
+
+    scenario "Guest can access contigs index and filter records" do
+      user = create(:user, role: 'guest')
+      sign_in user
+
+      visit_index_and_filter
+    end
+
+    scenario "User can access contigs index and filter records" do
+      user = create(:user, role: 'user')
+      sign_in user
+
+      visit_index_and_filter
+    end
+
+    scenario "Supervisor can access contigs index and filter records" do
+      user = create(:user, role: 'supervisor')
+      sign_in user
+
+      visit_index_and_filter
+    end
+
+    scenario "Admin can access contigs index and filter records" do
+      user = create(:user, role: 'admin')
+      sign_in user
+
+      visit_index_and_filter
+    end
   end
 
   scenario "Visitor can access contigs edit page without login" do
@@ -84,20 +115,28 @@ RSpec.feature "User access to contigs", type: :feature, js: true do
     expect(page).to have_content first_contig.name
     expect(page).to have_content second_contig.name
 
+    search_input = find(:xpath, '//input[@type="search"]')
+
     # Filter by contig name partial
-    find(:xpath, '//input[@type="search"]').set('second')
+    search_input.set('second')
 
     expect(page).to_not have_content first_contig.name
     expect(page).to have_content second_contig.name
 
     # Filter by species name
-    find(:xpath, '//input[@type="search"]').set(species.name_for_display)
+    search_input.set('')
+    search_input.native.send_keys(:return)
+    expect(page).to have_content species.name_for_display
+    search_input.set(species.name_for_display)
 
     expect(page).to have_content first_contig.name
     expect(page).to_not have_content second_contig.name
 
     # Filter by specimen identifier
-    find(:xpath, '//input[@type="search"]').set(individual.DNA_bank_id)
+    search_input.set('')
+    search_input.native.send_keys(:return)
+    expect(page).to have_content individual.specimen_id
+    search_input.set(individual.specimen_id)
 
     expect(page).to have_content first_contig.name
     expect(page).to_not have_content second_contig.name

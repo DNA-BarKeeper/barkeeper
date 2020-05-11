@@ -2,13 +2,27 @@ require 'rails_helper'
 require Rails.root.join "spec/concerns/project_record_spec.rb"
 
 RSpec.describe PrimerRead do
-  before(:all) { Project.create(name: 'All') }
+  before(:each) { FactoryBot.create(:project, name: 'All') }
+
   it_behaves_like "project_record"
 
   subject { FactoryBot.create(:primer_read) }
 
   it "is valid with valid attributes" do
     should be_valid
+  end
+
+  it "has an attached chromatogram file" do
+    should have_attached_file(:chromatogram)
+  end
+
+  it "validates chromatogram presence" do
+    should validate_attachment_presence(:chromatogram)
+  end
+
+  it "validates chromatogram content type" do
+    should validate_attachment_content_type(:chromatogram)
+               .allowing('application/octet-stream')
   end
 
   it "belongs to a contig" do
