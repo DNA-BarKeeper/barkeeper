@@ -6,6 +6,7 @@ server '46.101.149.34', port: 1694, roles: %i[web app db], primary: true
 set :repo_url,        'ssh://Sarah_Wiechers@bitbucket.org/kai42/gbol5.git'
 set :application,     'gbol5'
 set :user,            'sarah'
+set :rbenv_ruby, '2.6.6'
 set :puma_threads,    [1, 5]
 set :puma_workers,    2
 
