@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/rweng/jquery-datatables-rails.git
+  remote: https://github.com/rweng/jquery-datatables-rails.git
   revision: d486b31b192a2924b1913e080ad23460e6b96d31
   specs:
     jquery-datatables-rails (3.4.0)
@@ -9,7 +9,7 @@ GIT
       sass-rails
 
 GIT
-  remote: git://github.com/seuros/capistrano-sidekiq.git
+  remote: https://github.com/seuros/capistrano-sidekiq.git
   revision: 92bf51eae4bdcc2eee2c1d0b2883d77e5e3f1ab8
   specs:
     capistrano-sidekiq (1.0.3)
@@ -1387,4 +1387,4 @@ RUBY VERSION
    ruby 2.6.6p146
 
 BUNDLED WITH
-   1.17.3
+   2.1.4
