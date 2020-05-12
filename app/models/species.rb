@@ -7,6 +7,8 @@ class Species < ApplicationRecord
 
   multisearchable against: :composed_name
 
+  before_save :assign_display_names
+
   has_many :individuals
   has_many :primer_pos_on_genomes
   belongs_to :family
@@ -151,6 +153,11 @@ class Species < ApplicationRecord
 
       taxonomic_class.update(subdivision_id: subdivision.id) if subdivision
     end
+  end
+
+  def assign_display_names
+    self.species_component = get_species_component
+    self.composed_name = full_name
   end
 
   def full_name

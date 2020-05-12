@@ -32,7 +32,7 @@ RSpec.describe Individual do
   end
 
   it "updates tissue after save" do
-    should callback(:update_isolate_tissue).after(:save).if :tissue_id_changed?
+    should callback(:update_isolate_tissue).after(:save).if :saved_change_to_tissue_id?
   end
 
   context "returns number of individuals in higher order taxon" do
@@ -80,6 +80,7 @@ RSpec.describe Individual do
     it "changes name of associated species if one exists" do
       species1 = FactoryBot.create(:species)
       species2 = FactoryBot.create(:species)
+
       individual = FactoryBot.create(:individual, species: species1)
 
       expect { individual.species_name = species2.composed_name }.to change { individual.species }.to species2

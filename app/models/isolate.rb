@@ -109,7 +109,7 @@ class Isolate < ApplicationRecord
   end
 
   def assign_specimen
-    if lab_isolation_nr_changed? || dna_bank_id_changed?
+    if saved_change_to_lab_isolation_nr? || saved_change_to_dna_bank_id?
       if dna_bank_id
         search_dna_bank(dna_bank_id)
       else

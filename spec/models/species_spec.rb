@@ -11,6 +11,10 @@ RSpec.describe Species do
     should be_valid
   end
 
+  it "assigns display names after save" do
+    should callback(:assign_display_names).before(:save)
+  end
+
   it "has many individuals" do
     should have_many(:individuals)
   end
@@ -30,9 +34,12 @@ RSpec.describe Species do
       order = FactoryBot.create(:order, higher_order_taxon: @hot)
       family1 = FactoryBot.create(:family, order: order)
       family2 = FactoryBot.create(:family, order: order)
-      FactoryBot.create(:species, family: family1)
-      FactoryBot.create(:species, family: family2, species_component: "some species", infraspecific: "sub_a")
-      FactoryBot.create(:species, family: family2, species_component: "some species", infraspecific: "sub_b")
+
+      species1 = FactoryBot.create(:species_with_taxonomy, family: family1, infraspecific: 'sub_a')
+      species2 = species1.dup
+      species2.update(infraspecific: 'sub_b')
+
+      FactoryBot.create(:species_with_taxonomy, family: family2)
 
       expect(Species.spp_in_higher_order_taxon(@hot.id)).to be == [2, 3]
     end

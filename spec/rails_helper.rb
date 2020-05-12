@@ -4,6 +4,10 @@ require 'spec_helper'
 # Factory Bot gem to create test objects w/o need for fixtures
 require 'support/factory_bot'
 
+# SimpleCov gem to get code coverage metrics
+require 'simplecov'
+SimpleCov.start 'rails'
+
 ENV['RAILS_ENV'] = 'test'
 require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
@@ -13,7 +17,6 @@ require 'rspec/rails' # Add additional requires below this line. Rails is not lo
 require 'capybara/rspec'
 require 'database_cleaner'
 require "paperclip/matchers"
-
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
