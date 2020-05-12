@@ -19,39 +19,39 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    actioncable (5.0.0)
-      actionpack (= 5.0.0)
-      nio4r (~> 1.2)
+    actioncable (5.1.5)
+      actionpack (= 5.1.5)
+      nio4r (~> 2.0)
       websocket-driver (~> 0.6.1)
-    actionmailer (5.0.0)
-      actionpack (= 5.0.0)
-      actionview (= 5.0.0)
-      activejob (= 5.0.0)
+    actionmailer (5.1.5)
+      actionpack (= 5.1.5)
+      actionview (= 5.1.5)
+      activejob (= 5.1.5)
       mail (~> 2.5, >= 2.5.4)
       rails-dom-testing (~> 2.0)
-    actionpack (5.0.0)
-      actionview (= 5.0.0)
-      activesupport (= 5.0.0)
+    actionpack (5.1.5)
+      actionview (= 5.1.5)
+      activesupport (= 5.1.5)
       rack (~> 2.0)
-      rack-test (~> 0.6.3)
+      rack-test (>= 0.6.3)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    actionview (5.0.0)
-      activesupport (= 5.0.0)
+    actionview (5.1.5)
+      activesupport (= 5.1.5)
       builder (~> 3.1)
-      erubis (~> 2.7.0)
+      erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
-      rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    activejob (5.0.0)
-      activesupport (= 5.0.0)
+      rails-html-sanitizer (~> 1.0, >= 1.0.3)
+    activejob (5.1.5)
+      activesupport (= 5.1.5)
       globalid (>= 0.3.6)
-    activemodel (5.0.0)
-      activesupport (= 5.0.0)
-    activerecord (5.0.0)
-      activemodel (= 5.0.0)
-      activesupport (= 5.0.0)
-      arel (~> 7.0)
-    activesupport (5.0.0)
+    activemodel (5.1.5)
+      activesupport (= 5.1.5)
+    activerecord (5.1.5)
+      activemodel (= 5.1.5)
+      activesupport (= 5.1.5)
+      arel (~> 8.0)
+    activesupport (5.1.5)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
       minitest (~> 5.1)
@@ -62,11 +62,11 @@ GEM
       sshkit (>= 1.6.1, != 1.7.0)
     ancestry (3.0.7)
       activerecord (>= 3.2.0)
-    arel (7.1.4)
+    arel (8.0.0)
     autoprefixer-rails (9.7.6)
       execjs
     aws-eventstream (1.1.0)
-    aws-partitions (1.312.0)
+    aws-partitions (1.313.0)
     aws-sdk (3.0.1)
       aws-sdk-resources (~> 3)
     aws-sdk-accessanalyzer (1.6.0)
@@ -186,7 +186,7 @@ GEM
     aws-sdk-codeguruprofiler (1.4.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-codegurureviewer (1.4.0)
+    aws-sdk-codegurureviewer (1.5.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-codepipeline (1.30.0)
@@ -272,7 +272,7 @@ GEM
     aws-sdk-docdb (1.16.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-dynamodb (1.46.0)
+    aws-sdk-dynamodb (1.46.1)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-dynamodbstreams (1.18.0)
@@ -281,7 +281,7 @@ GEM
     aws-sdk-ebs (1.3.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-ec2 (1.157.0)
+    aws-sdk-ec2 (1.158.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-ec2instanceconnect (1.5.0)
@@ -416,7 +416,7 @@ GEM
     aws-sdk-kafka (1.20.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-kendra (1.4.0)
+    aws-sdk-kendra (1.5.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-kinesis (1.22.0)
@@ -998,17 +998,18 @@ GEM
     capistrano-rbenv (2.1.6)
       capistrano (~> 3.1)
       sshkit (~> 1.3)
-    capistrano3-puma (3.1.1)
+    capistrano3-puma (4.0.0)
       capistrano (~> 3.7)
       capistrano-bundler
-      puma (~> 3.4)
-    capybara (2.18.0)
+      puma (~> 4.0)
+    capybara (3.32.1)
       addressable
       mini_mime (>= 0.1.3)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      xpath (>= 2.0, < 4.0)
+      nokogiri (~> 1.8)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      regexp_parser (~> 1.5)
+      xpath (~> 3.2)
     capybara-selenium (0.0.6)
       capybara
       selenium-webdriver
@@ -1020,8 +1021,6 @@ GEM
     chronic (0.10.2)
     cli (1.3.1)
     climate_control (0.2.0)
-    code_analyzer (0.5.1)
-      sexp_processor
     coderay (1.1.2)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
@@ -1044,7 +1043,6 @@ GEM
     diff-lcs (1.3)
     docile (1.3.2)
     erubi (1.9.0)
-    erubis (2.7.0)
     execjs (2.7.0)
     factory_bot (5.2.0)
       activesupport (>= 4.2.0)
@@ -1090,7 +1088,6 @@ GEM
       turbolinks
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
-    json (2.3.0)
     launchy (2.5.0)
       addressable (~> 2.7)
     listen (3.2.1)
@@ -1125,7 +1122,7 @@ GEM
     net-sftp (3.0.0)
       net-ssh (>= 5.0.0, < 7.0.0)
     net-ssh (6.0.2)
-    nio4r (1.2.1)
+    nio4r (2.5.2)
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
     nokogiri (1.10.9-x86-mingw32)
@@ -1140,8 +1137,8 @@ GEM
       mime-types
       mimemagic (~> 0.3.0)
       terrapin (~> 0.6.0)
-    pg (0.20.0)
-    pg (0.20.0-x86-mingw32)
+    pg (1.2.3)
+    pg (1.2.3-x86-mingw32)
     pg_search (2.3.0)
       activerecord (>= 4.2)
       activesupport (>= 4.2)
@@ -1149,42 +1146,35 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (4.0.5)
-    puma (3.12.4)
+    puma (4.3.3)
+      nio4r (~> 2.0)
     rack (2.0.9)
     rack-contrib (2.2.0)
       rack (~> 2.0)
     rack-protection (2.0.8.1)
       rack
-    rack-test (0.6.3)
-      rack (>= 1.0)
-    rails (5.0.0)
-      actioncable (= 5.0.0)
-      actionmailer (= 5.0.0)
-      actionpack (= 5.0.0)
-      actionview (= 5.0.0)
-      activejob (= 5.0.0)
-      activemodel (= 5.0.0)
-      activerecord (= 5.0.0)
-      activesupport (= 5.0.0)
-      bundler (>= 1.3.0, < 2.0)
-      railties (= 5.0.0)
+    rack-test (1.1.0)
+      rack (>= 1.0, < 3)
+    rails (5.1.5)
+      actioncable (= 5.1.5)
+      actionmailer (= 5.1.5)
+      actionpack (= 5.1.5)
+      actionview (= 5.1.5)
+      activejob (= 5.1.5)
+      activemodel (= 5.1.5)
+      activerecord (= 5.1.5)
+      activesupport (= 5.1.5)
+      bundler (>= 1.3.0)
+      railties (= 5.1.5)
       sprockets-rails (>= 2.0.0)
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.3.0)
       loofah (~> 2.3)
-    rails_best_practices (1.20.0)
-      activesupport
-      code_analyzer (>= 0.5.1)
-      erubis
-      i18n
-      json
-      require_all (~> 3.0)
-      ruby-progressbar
-    railties (5.0.0)
-      actionpack (= 5.0.0)
-      activesupport (= 5.0.0)
+    railties (5.1.5)
+      actionpack (= 5.1.5)
+      activesupport (= 5.1.5)
       method_source
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
@@ -1192,8 +1182,8 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    redis (3.3.5)
-    require_all (3.0.0)
+    redis (4.1.4)
+    regexp_parser (1.7.0)
     responders (3.0.0)
       actionpack (>= 5.0)
       railties (>= 5.0)
@@ -1226,20 +1216,10 @@ GEM
       rspec-support (~> 3.9)
     rspec-support (3.9.3)
     ruby-ole (1.2.12.2)
-    ruby-progressbar (1.10.1)
     ruby2_keywords (0.0.2)
     rubyzip (2.3.0)
-    sass (3.7.4)
-      sass-listen (~> 4.0.0)
-    sass-listen (4.0.0)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-    sass-rails (5.0.7)
-      railties (>= 4.0.0, < 6)
-      sass (~> 3.1)
-      sprockets (>= 2.8, < 4.0)
-      sprockets-rails (>= 2.0, < 4.0)
-      tilt (>= 1.1, < 3)
+    sass-rails (6.0.0)
+      sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.3.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -1253,7 +1233,6 @@ GEM
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
-    sexp_processor (4.14.1)
     shellany (0.0.1)
     shoulda-callback-matchers (1.1.4)
       activesupport (>= 3)
@@ -1286,7 +1265,7 @@ GEM
       tilt (>= 2.0.6, < 2.1)
     spreadsheet (1.2.6)
       ruby-ole (>= 1.0)
-    sprockets (3.7.2)
+    sprockets (4.0.0)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.2.1)
@@ -1337,7 +1316,7 @@ PLATFORMS
 DEPENDENCIES
   ancestry
   aws-sdk
-  bcrypt (~> 3.1.7)
+  bcrypt
   better_errors
   binding_of_caller
   bio
@@ -1352,17 +1331,17 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rbenv
   capistrano-sidekiq!
-  capistrano3-puma (~> 3.1)
-  capybara (~> 2)
+  capistrano3-puma
+  capybara
   capybara-selenium
   chosen-rails
-  coffee-rails (~> 4.2)
+  coffee-rails
   database_cleaner
   devise
   factory_bot_rails
   faker
   guard-rspec
-  jbuilder (~> 2.5)
+  jbuilder
   jquery-datatables-rails!
   jquery-fileupload-rails
   jquery-rails
@@ -1376,16 +1355,15 @@ DEPENDENCIES
   net-sftp
   net-ssh
   paperclip
-  pg (~> 0.20.0)
+  pg
   pg_search
-  puma (~> 3.0)
-  rails (= 5.0.0)
-  rails_best_practices
-  redis (~> 3.0)
+  puma
+  rails (= 5.1.5)
+  redis
   roo-xls
   rspec-rails
   rubyzip
-  sass-rails (~> 5.0)
+  sass-rails
   select2-rails
   shoulda-callback-matchers
   shoulda-matchers
@@ -1398,15 +1376,15 @@ DEPENDENCIES
   slim
   sprockets-rails
   tzinfo-data
-  uglifier (>= 1.3.0)
+  uglifier
   webdrivers
   whenever
-  will_paginate (> 3.0)
+  will_paginate
   will_paginate-bootstrap
   yard
 
 RUBY VERSION
-   ruby 2.4.0p0
+   ruby 2.6.6p146
 
 BUNDLED WITH
    1.17.3

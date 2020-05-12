@@ -10,7 +10,7 @@ class Individual < ApplicationRecord
   belongs_to :tissue
 
   after_save :assign_dna_bank_info, if: :identifier_has_changed?
-  after_save :update_isolate_tissue, if: :tissue_id_changed?
+  after_save :update_isolate_tissue, if: :saved_change_to_tissue_id?
 
   pg_search_scope :quick_search, against: %i[specimen_id herbarium collector collectors_field_number]
 
@@ -52,7 +52,7 @@ class Individual < ApplicationRecord
   end
 
   def identifier_has_changed?
-    specimen_id_changed? || DNA_bank_id_changed?
+    saved_change_to_specimen_id? || saved_change_to_DNA_bank_id?
   end
 
   def assign_dna_bank_info

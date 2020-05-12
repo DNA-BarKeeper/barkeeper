@@ -11,6 +11,7 @@ dump.rdb
 specimens.xls
 species.xls
 public/assets/
+public/system/
 latest.dump
 spec/examples.txt
 .rbenv-vars
