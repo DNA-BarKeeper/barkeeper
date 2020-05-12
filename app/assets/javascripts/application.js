@@ -1,7 +1,6 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
-// require turbolinks
 //= require dataTables/jquery.dataTables
 //= require dataTables/extras/dataTables.scroller
 //= require nested_form_fields
@@ -9,7 +8,6 @@
 //= require jquery-fileupload/basic
 //= require jquery-fileupload/vendor/tmpl
 //= require chosen.jquery
-//= require jquery.turbolinks
 //= require bootstrap
 //= require keyboard_shortcuts
 //= require d3.min

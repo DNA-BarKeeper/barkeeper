@@ -39,7 +39,6 @@ gem 'chosen-rails' # Javascript select boxes
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
 gem 'nested_form_fields'
 gem 'jquery-fileupload-rails'
-gem 'jquery-turbolinks'
 gem 'select2-rails' # Integrate Select2 Javascript library
 
 gem 'ancestry' # Self-related models
@@ -58,7 +57,6 @@ gem 'rubyzip' # Handle zip files
 gem 'simple_form'
 gem 'slim' # TODO: Used anywhere?
 gem 'sprockets-rails', require: 'sprockets/railtie'
-# gem 'turbolinks' # Turbolinks makes navigating your web application faster TODO: Does not work unless first changes to js code, in particular data-tables (see http://guides.rubyonrails.org/working_with_javascript_in_rails.html#turbolinks)
 gem 'whenever', require: false # Runs scheduled jobs via cron
 gem 'will_paginate'
 gem 'will_paginate-bootstrap'
