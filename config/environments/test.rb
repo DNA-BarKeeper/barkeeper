@@ -1,9 +1,4 @@
-# frozen_string_literal: true
-
 Rails.application.configure do
-  # for devise
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
-
   # Settings specified here will take precedence over those in config/application.rb.
 
   # The test environment is used exclusively to run your application's
@@ -20,7 +15,7 @@ Rails.application.configure do
   # Configure public file server for tests with Cache-Control for performance.
   config.public_file_server.enabled = true
   config.public_file_server.headers = {
-    'Cache-Control' => 'public, max-age=3600'
+    'Cache-Control' => "public, max-age=#{1.hour.to_i}"
   }
 
   # Show full error reports and disable caching.
@@ -32,6 +27,10 @@ Rails.application.configure do
 
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
+
+  # Store uploaded files on the local file system in a temporary directory
+  config.active_storage.service = :test
+
   config.action_mailer.perform_caching = false
 
   # Tell Action Mailer not to deliver emails to the real world.
@@ -45,7 +44,6 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
-  Rails.application.configure do
-    config.active_support.test_order = :sorted
-  end
+  # For Devise
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 end

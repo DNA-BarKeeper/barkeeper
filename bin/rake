@@ -1,11 +1,4 @@
-#!/usr/bin/env ruby.exe
-# frozen_string_literal: true
-
-begin
-  load File.expand_path('spring', __dir__)
-rescue LoadError
-end
-
+#!/usr/bin/env ruby
 require_relative '../config/boot'
 require 'rake'
 Rake.application.run
