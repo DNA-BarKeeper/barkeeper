@@ -5,7 +5,7 @@ class MislabelAnalysesController < ApplicationController
 
   before_action :set_mislabel_analysis, only: %i[show destroy import download_results]
 
-  http_basic_authenticate_with name: ENV['API_USER_NAME'], password: ENV['API_PASSWORD'], only: :download_results
+  http_basic_authenticate_with name: ENV['API_USER_NAME'], password: Rails.application.credentials.api_password, only: :download_results
   skip_before_action :verify_authenticity_token, only: :download_results
 
   def index

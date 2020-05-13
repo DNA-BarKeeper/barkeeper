@@ -12,17 +12,19 @@ RSpec.describe PrimerRead do
     should be_valid
   end
 
-  it "has an attached chromatogram file" do
-    should have_attached_file(:chromatogram)
-  end
+  context "paperclip file attachment" do
+    it "has an attached chromatogram file" do
+      should have_attached_file(:chromatogram)
+    end
 
-  it "validates chromatogram presence" do
-    should validate_attachment_presence(:chromatogram)
-  end
+    it "validates chromatogram presence" do
+      should validate_attachment_presence(:chromatogram)
+    end
 
-  it "validates chromatogram content type" do
-    should validate_attachment_content_type(:chromatogram)
-               .allowing('application/octet-stream')
+    it "validates chromatogram content type" do
+      should validate_attachment_content_type(:chromatogram)
+                 .allowing('application/octet-stream')
+    end
   end
 
   it "belongs to a contig" do
