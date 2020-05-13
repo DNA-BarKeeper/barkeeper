@@ -19,13 +19,5 @@ FactoryBot.define do
     cs.verified { ["verified", "unverified", "both"].sample }
     cs.verified_by { Faker::Name.name }
     cs.search_result_archive { fixture_file_upload(Rails.root.join('spec', 'fixtures', 'files', 'search_results.zip'), 'application/zip') }
-
-    factory :contig_search_incorrect_file_ending, parent: :contig_search do
-      search_result_archive { fixture_file_upload(Rails.root.join('spec', 'fixtures', 'files', 'search_results.txt'), 'application/zip') }
-    end
-
-    factory :contig_search_text_file, parent: :contig_search do
-      search_result_archive { fixture_file_upload(Rails.root.join('spec', 'fixtures', 'files', 'text_file.txt')) }
-    end
   end
 end

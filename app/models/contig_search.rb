@@ -15,7 +15,7 @@ class ContigSearch < ApplicationRecord
   validates_attachment_content_type :search_result_archive, :content_type => /\Aapplication\/zip/
 
   # Validate filename
-  validates_attachment_file_name :search_result_archive, :matches => [/zip\Z/]
+  validates_attachment_file_name :search_result_archive, :matches => %r{\.zip\Z}i
 
   def contigs
     @contigs ||= find_contigs

@@ -16,7 +16,7 @@ Rails.application.configure do
 
   # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
   # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
-  # config.require_master_key = true
+  config.require_master_key = true
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
@@ -39,7 +39,7 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
-  config.active_storage.service = :local
+  # config.active_storage.service = :local
 
   # Mount Action Cable outside main process or domain
   # config.action_cable.mount_path = nil
@@ -109,8 +109,8 @@ Rails.application.configure do
       path: '/:class/:attachment/:id_partition/:style/:filename',
       s3_credentials: {
           bucket: ENV['S3_BUCKET_NAME'],
-          access_key_id: ENV['AWS_ACCESS_KEY_ID'],
-          secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+          access_key_id: Rails.application.credentials.aws[:access_key_id],
+          secret_access_key: Rails.application.credentials.aws[:secret_access_key],
           s3_region: ENV['S3_REGION'],
           preserve_files: true
       }

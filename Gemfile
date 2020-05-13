@@ -45,6 +45,7 @@ gem 'select2-rails' # Integrate Select2 Javascript library
 gem 'ancestry' # Self-related models
 gem 'bcrypt', platforms: :ruby
 gem 'bio' # BioRuby
+gem 'bootsnap'
 gem 'bootstrap-sass'
 gem 'bootstrap_progressbar'
 gem 'builder'
@@ -56,7 +57,6 @@ gem 'net-ssh'
 gem 'roo-xls' # Handle excel files
 gem 'rubyzip' # Handle zip files
 gem 'simple_form'
-gem 'slim' # TODO: Used anywhere?
 gem 'sprockets-rails', require: 'sprockets/railtie'
 # gem 'turbolinks' # Turbolinks makes navigating your web application faster TODO: Does not work unless first changes to js code, in particular data-tables (see http://guides.rubyonrails.org/working_with_javascript_in_rails.html#turbolinks)
 gem 'whenever', require: false # Runs scheduled jobs via cron
@@ -77,8 +77,7 @@ group :development do
   gem 'bullet' # Checks for n+1 queries
   gem 'binding_of_caller' # Extends features of better_errors
   gem 'meta_request' # Supporting gem for Google Chrome Rails Panel
-  # gem 'spring' # Spring speeds up development by keeping your application running in the background
-  # gem 'spring-watcher-listen'
+  gem 'spring' # Spring speeds up development by keeping your application running in the background
   gem 'yard' # Documentation generation tool
 end
 

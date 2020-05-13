@@ -3,7 +3,7 @@ class NgsRunsController < ApplicationController
 
   load_and_authorize_resource
 
-  http_basic_authenticate_with name: ENV['API_USER_NAME'], password: ENV['API_PASSWORD'], only: [:import, :revised_tpm]
+  http_basic_authenticate_with name: ENV['API_USER_NAME'], password: Rails.application.credentials.api_password, only: [:import, :revised_tpm]
   skip_before_action :verify_authenticity_token, only: [:import, :revised_tpm]
 
   before_action :set_ngs_run, only: [:show, :edit, :update, :destroy, :import, :analysis_results]

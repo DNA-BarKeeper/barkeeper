@@ -20,21 +20,16 @@ RSpec.describe ContigSearch do
       should have_attached_file(:search_result_archive)
     end
 
-    it "validates content type zip" do
+    it "validates search result archive content type" do
       should validate_attachment_content_type(:search_result_archive)
                  .allowing('application/zip')
-                 .rejecting('text/plain', 'text/xml')
     end
 
-    it "does not accept file with incorrect file name ending" do
-      search = FactoryBot.build(:contig_search_incorrect_file_ending)
-      expect(search.errors.added?(:search_result_archive_file_name)).to be_truthy
-    end
-
-    it "does not accept file with incorrect content type" do
-      search = FactoryBot.build(:contig_search_text_file)
-      expect(search.errors.added?(:search_result_archive_content_type)).to be_truthy
-    end
+    # Validate file name
+    it { should allow_value("search_results.zip").for(:search_result_archive_file_name) }
+    it { should allow_value("search_results.ZIP").for(:search_result_archive_file_name) }
+    it { should_not allow_value("search_results.doc").for(:search_result_archive_file_name) }
+    it { should_not allow_value("search_results.txt").for(:search_result_archive_file_name) }
   end
 
   xit "finds records in database" do
