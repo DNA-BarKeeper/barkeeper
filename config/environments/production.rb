@@ -39,7 +39,7 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
-  # config.active_storage.service = :local
+  config.active_storage.service = :amazon
 
   # Mount Action Cable outside main process or domain
   # config.action_cable.mount_path = nil
@@ -103,16 +103,16 @@ Rails.application.configure do
       enable_starttls_auto: false
   }
 
-  config.paperclip_defaults = {
-      storage: :s3,
-      url: ':s3_domain_url',
-      path: '/:class/:attachment/:id_partition/:style/:filename',
-      s3_credentials: {
-          bucket: ENV['S3_BUCKET_NAME'],
-          access_key_id: Rails.application.credentials.aws[:access_key_id],
-          secret_access_key: Rails.application.credentials.aws[:secret_access_key],
-          s3_region: ENV['S3_REGION'],
-          preserve_files: true
-      }
-  }
+  # config.paperclip_defaults = {
+  #     storage: :s3,
+  #     url: ':s3_domain_url',
+  #     path: '/:class/:attachment/:id_partition/:style/:filename',
+  #     s3_credentials: {
+  #         bucket: ENV['S3_BUCKET_NAME'],
+  #         access_key_id: Rails.application.credentials.aws[:access_key_id],
+  #         secret_access_key: Rails.application.credentials.aws[:secret_access_key],
+  #         s3_region: ENV['S3_REGION'],
+  #         preserve_files: true
+  #     }
+  # }
 end
