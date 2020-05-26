@@ -1,11 +1,8 @@
 require 'rails_helper'
-require Rails.root.join "spec/concerns/project_record_spec.rb"
 
 RSpec.describe OverviewAllTaxa do
-  #before(:all) { Project.create(name: 'All') }
-  #it_behaves_like "project_record"
-
-  #subject { OverviewAllTaxa.new }
+  # subject { OverviewAllTaxa.new }
+  # There is no database table for this model
 
   xit "is valid with valid attributes" do
     should be_valid
