@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class OverviewFinishedTaxa < ApplicationRecord
-  include ProjectRecord
 
   def self.finished_taxa_json(current_project_id, marker_id)
     root = { :name => 'root', 'children' => [] }
