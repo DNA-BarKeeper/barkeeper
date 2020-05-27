@@ -9,6 +9,7 @@ public/system/
 config/database.yml
 config/secrets.yml
 config/application.yml
+
 # Ignore master key for decrypting credentials and more.
 config/master.key
 
@@ -20,5 +21,6 @@ specimens.xls
 species.xls
 spec/examples.txt
 
+# Ignore local env variables
 .rbenv-vars
 .env
