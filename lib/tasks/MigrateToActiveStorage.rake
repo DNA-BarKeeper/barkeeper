@@ -38,23 +38,27 @@ namespace :data do
               next
             end
 
-            ActiveRecord::Base.connection.raw_connection.exec_prepared(
-                'active_storage_blob_statement', [
-                key(instance),
-                instance.send("#{attachment}_file_name"),
-                instance.send("#{attachment}_content_type"),
-                instance.send("#{attachment}_file_size"),
-                checksum(instance.send(attachment)),
-                instance.updated_at.iso8601
-            ])
+            checksum = checksum(instance.send(attachment))
 
-            ActiveRecord::Base.connection.raw_connection.exec_prepared(
-                'active_storage_attachment_statement', [
-                attachment,
-                model.name,
-                instance.id,
-                instance.updated_at.iso8601,
-            ])
+            if checksum
+              ActiveRecord::Base.connection.raw_connection.exec_prepared(
+                  'active_storage_blob_statement', [
+                  key(instance),
+                  instance.send("#{attachment}_file_name"),
+                  instance.send("#{attachment}_content_type"),
+                  instance.send("#{attachment}_file_size"),
+                  checksum,
+                  instance.updated_at.iso8601
+              ])
+
+              ActiveRecord::Base.connection.raw_connection.exec_prepared(
+                  'active_storage_attachment_statement', [
+                  attachment,
+                  model.name,
+                  instance.id,
+                  instance.updated_at.iso8601,
+              ])
+            end
           end
         end
       end
@@ -68,12 +72,13 @@ namespace :data do
   end
 
   def checksum(attachment)
-    # local files stored on disk:
-    # url = attachment.path
-    # Digest::MD5.base64digest(File.read(url))
-
-    # remote files stored on another person's computer:
     url = attachment.url.gsub('/system', 'https://gbol5.s3.amazonaws.com')
-    Digest::MD5.base64digest(Net::HTTP.get(URI(url)))
+
+    begin
+      Digest::MD5.base64digest(Net::HTTP.get(URI(url)))
+    rescue Errno::ENOENT
+      p attachment
+      p url
+    end
   end
 end
