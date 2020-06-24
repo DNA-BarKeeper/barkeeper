@@ -14,7 +14,7 @@ install_plugin Capistrano::Puma
 install_plugin Capistrano::Puma::Monit
 
 require 'capistrano/sidekiq'
-require 'capistrano/sidekiq/monit'
+install_plugin Capistrano::Sidekiq::Monit
 
 require 'whenever/capistrano'
 

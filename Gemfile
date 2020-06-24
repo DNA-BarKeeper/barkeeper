@@ -69,7 +69,7 @@ group :development do
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails',   require: false
   gem 'capistrano-rbenv',   require: false
-  gem 'capistrano-sidekiq', require: false, github: 'seuros/capistrano-sidekiq'
+  gem 'capistrano-sidekiq', require: false
   gem 'capistrano3-puma', require: false
   gem 'better_errors' # Better error page for Rack apps
   gem 'bullet' # Checks for n+1 queries
