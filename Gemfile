@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 ruby '2.6.6'
 
-gem 'rails', '5.2.4.2'
+gem 'rails', '5.2.4.3'
 
 # Postgres
 gem 'pg'
@@ -30,7 +30,7 @@ gem 'cancancan'
 gem 'devise'
 
 # External file storage
-gem 'aws-sdk'
+gem 'aws-sdk-s3', require: false
 gem 'paperclip'
 
 # Javascript
