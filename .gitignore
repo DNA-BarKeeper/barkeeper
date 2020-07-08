@@ -5,6 +5,7 @@ tmp/
 log/
 public/assets/
 public/system/
+storage/
 
 config/database.yml
 config/secrets.yml
