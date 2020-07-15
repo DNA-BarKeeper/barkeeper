@@ -5,8 +5,8 @@ development:
   pool: 5
   host: localhost
   timeout: 5000
-  username: gbol5
-  password: passwordpsql
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -18,8 +18,8 @@ test: &test
   pool: 5
   host: localhost
   timeout: 5000
-  username: gbol5
-  password: passwordpsql
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
 
 production:
   host: localhost
@@ -27,5 +27,5 @@ production:
   encoding: unicode
   database: gbol_production
   pool: 5
-  username: <%= ENV["GBOL5_DATABASE_USER"] %>
-  password: <%= ENV["GBOL5_DATABASE_PASSWORD"] %>
+  username: <%= Rails.application.credentials.gbol5_database_user %>
+  password: <%= Rails.application.credentials.gbol5_database_password %>
