@@ -61,21 +61,27 @@ class ContigSearchesController < ApplicationController
 
     ContigSearchResultExport.perform_async(params[:contig_search_id])
     redirect_to @contig_search,
-                notice: "The result archive file is being written to the server in the background. May take a minute or so. Download with 'Download result archive' button."
+                notice: "The result archive file is being written to the server in the background. This may take some time. Download with 'Download result archive' button."
   end
 
   def download_results
     @contig_search = ContigSearch.find(params[:contig_search_id])
-    archive = @contig_search.search_result_archive
 
-    if archive.present?
-      data = Rails.env.development? ? File.open(archive.path) : open("http:#{archive.url}")
-      send_data(data.read,
-                filename: @contig_search.search_result_archive.filename,
-                type: 'application/zip')
+    if @contig_search.search_result_archive.attached?
+      archive = @contig_search.search_result_archive
+
+      begin
+        data = open(archive.service_url)
+        send_data(data.read,
+                  filename: @contig_search.search_result_archive.filename,
+                  type: 'application/zip')
+      rescue OpenURI::HTTPError # Results archive could not be found on server
+        redirect_to @contig_search,
+                    alert: 'The result archive file could not be opened. Please try to create it again or contact an administrator if the issue persists.'
+      end
     else
-      redirect_to @contig_search,
-                  notice: 'Please wait while the result archive is being written to the server.'
+      flash[:warning] = 'There is no search result archive available. Please create it on the server first (this may take some time to finish).' # Warning cannot be set directly in redirect
+      redirect_to @contig_search
     end
   end
 
