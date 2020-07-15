@@ -28,7 +28,7 @@ Rails.application.configure do
   end
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
-  config.active_storage.service = :local
+  config.active_storage.service = :amazondev
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
@@ -65,10 +65,6 @@ Rails.application.configure do
     Bullet.bullet_logger = true
     Bullet.rails_logger = true
   end
-
-  # config.paperclip_defaults = {
-  #     storage: 'filesystem'
-  # }
 
   # For Devise
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
