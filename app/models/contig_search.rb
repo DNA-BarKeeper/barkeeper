@@ -8,14 +8,13 @@ class ContigSearch < ApplicationRecord
 
   enum has_warnings: %i[both yes no]
 
-  has_attached_file :search_result_archive,
-                    :path => ":rails_root/contig_search_results/:filename"
+  has_one_attached :search_result_archive
 
   # Validate content type
-  validates_attachment_content_type :search_result_archive, :content_type => /\Aapplication\/zip/
-
-  # Validate filename
-  validates_attachment_file_name :search_result_archive, :matches => %r{\.zip\Z}i
+  # validates_attachment_content_type :search_result_archive, :content_type => /\Aapplication\/zip/
+  #
+  # # Validate filename
+  # validates_attachment_file_name :search_result_archive, :matches => %r{\.zip\Z}i
 
   def contigs
     @contigs ||= find_contigs
