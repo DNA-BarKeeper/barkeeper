@@ -54,7 +54,7 @@ class NgsRunsController < ApplicationController
     else
       params[:ngs_run][:tag_primer_map].each do |tpm|
         # Only add TPM if Package map is available or none was added before
-        if !params[:ngs_run][:set_tag_map].blank? || @ngs_run.set_tag_map_file_name || @ngs_run.tag_primer_maps.size.zero?
+        if !params[:ngs_run][:set_tag_map].blank? || @ngs_run.set_tag_map.filename || @ngs_run.tag_primer_maps.size.zero?
           map = TagPrimerMap.create(tag_primer_map: tpm)
           @ngs_run.tag_primer_maps << map
         else
