@@ -27,7 +27,7 @@ class ContigSearch < ApplicationRecord
 
     Dir.mkdir("#{temp_folder}") unless File.exists?(temp_folder)
     FileUtils.rm_r archive_file if File.exists?(archive_file)
-    search_result_archive.destroy
+    search_result_archive.purge if search_result_archive.attached?
     save!
 
     # Create archive file
@@ -50,12 +50,11 @@ class ContigSearch < ApplicationRecord
     end
 
     # Upload created archive
-    self.search_result_archive = File.open(archive_file)
+    self.search_result_archive.attach(io: File.open(archive_file), filename: "#{archive_name}.zip", content_type: 'application/zip')
     save!
 
-    # Remove temporary folders
+    # Remove temp directory
     FileUtils.rm_r temp_folder if File.exists?(temp_folder)
-    FileUtils.rm archive_file if File.exists?(archive_file)
   end
 
   private

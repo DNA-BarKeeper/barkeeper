@@ -12,14 +12,14 @@ class NgsRun < ApplicationRecord
   has_many :markers, through: :ngs_results
   has_many :issues
 
-  has_attached_file :set_tag_map
-  has_attached_file :results
+  has_one_attached :set_tag_map
+  has_one_attached :results
 
-  validates_attachment_content_type :set_tag_map, content_type: 'text/plain'
-  validates_attachment_content_type :results, content_type: 'application/zip'
-
-  validates_attachment_file_name :set_tag_map, :matches => /fasta\Z/
-  validates_attachment_file_name :results, :matches => /zip\Z/
+  # validates_attachment_content_type :set_tag_map, content_type: 'text/plain'
+  # validates_attachment_content_type :results, content_type: 'application/zip'
+  #
+  # validates_attachment_file_name :set_tag_map, :matches => /fasta\Z/
+  # validates_attachment_file_name :results, :matches => /zip\Z/
 
   attr_accessor :delete_set_tag_map
   before_validation :remove_set_tag_map
