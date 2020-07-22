@@ -55,11 +55,11 @@
           <%= @ngs_run.comment %>
         </p>
 
-        <% if @ngs_run.set_tag_map_file_name %>
+        <% if @ngs_run.set_tag_map.attached? %>
           <p>
             <strong>Platepool set</strong>
             <br>
-            <%= @ngs_run.set_tag_map_file_name %>
+            <%= @ngs_run.set_tag_map.filename %>
           </p>
         <% end %>
 

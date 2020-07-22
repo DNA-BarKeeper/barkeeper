@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TxtUploadersController < ApplicationController
+  load_and_authorize_resource
+
   before_action :set_txt_uploader, only: %i[show edit update destroy]
 
   # GET /txt_uploaders

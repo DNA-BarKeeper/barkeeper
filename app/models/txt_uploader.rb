@@ -17,7 +17,7 @@ class TxtUploader < ApplicationRecord
     file_to_upload.write(text)
     file_to_upload.close
 
-    self.uploaded_file = File.open('output.txt')
+    self.uploaded_file.attach(io: File.open('output.txt'), filename: 'output.txt', content_type: 'text/plain')
     save!
   end
 end
