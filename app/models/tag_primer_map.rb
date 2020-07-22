@@ -11,7 +11,7 @@ class TagPrimerMap < ApplicationRecord
   after_save :set_name
 
   def set_name
-    self.update_column(:name, tag_primer_map_file_name.split('_')[1].split('.').first) if tag_primer_map_file_name
+    self.update_column(:name, tag_primer_map.filename.split('_')[1].split('.').first) if tag_primer_map.attached?
   end
 
   def check_tag_primer_map

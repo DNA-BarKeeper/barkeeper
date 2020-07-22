@@ -149,7 +149,7 @@ class PrimerRead < ApplicationRecord
   end
 
   def default_name
-    self.name ||= chromatogram.original_filename
+    self.name ||= chromatogram.filename.to_s
   end
 
   def auto_assign
@@ -290,17 +290,18 @@ class PrimerRead < ApplicationRecord
   def auto_trim(write_to_db)
     msg = nil
     create_issue = false
+    chromatogram_filename = chromatogram.filename.to_s
 
     # Get local copy from s3
-    dest = Tempfile.new(chromatogram_file_name)
+    dest = Tempfile.new(chromatogram_filename)
     dest.binmode
-    chromatogram.copy_to_local_file(:original, dest.path)
+    dest.write open(chromatogram.service_url).read
 
     begin
       chromatogram_ff1 = nil
       p = /\.ab1$/
 
-      chromatogram_ff1 = if chromatogram_file_name.match(p)
+      chromatogram_ff1 = if chromatogram_filename.match(p)
                            Bio::Abif.open(dest.path)
                          else
                            Bio::Scf.open(dest.path)
