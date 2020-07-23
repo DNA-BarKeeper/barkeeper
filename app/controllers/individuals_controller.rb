@@ -22,15 +22,21 @@ class IndividualsController < ApplicationController
   def xls
     export = SpecimenExporter.last.specimen_export
 
-    if export.present?
-      data = Rails.env.development? ? File.open(File.join(Rails.root, export.path)) : open("http:#{export.url}")
-      send_data(data.read, filename: 'specimens_export.xls',
-                           type: 'application/vnd.ms-excel',
-                           disposition: 'attachment',
-                           stream: 'true',
-                           buffer_size: '4096')
+    if export.attached?
+      begin
+        data = open(export.service_url)
+        send_data(data.read, filename: 'specimens_export.xls',
+                  type: 'application/vnd.ms-excel',
+                  disposition: 'attachment',
+                  stream: 'true',
+                  buffer_size: '4096')
+      rescue OpenURI::HTTPError # Species XLS could not be found on server
+        redirect_to individuals_path,
+                    alert: 'The specimens XLS file could not be opened. Please try to export it again or contact an administrator if the issue persists.'
+      end
     else
-      redirect_to individuals_path, notice: 'Please wait while the file is being written to the server.'
+      redirect_to individuals_path,
+                  notice: 'Please wait while the file is being written to the server.'
     end
   end
 

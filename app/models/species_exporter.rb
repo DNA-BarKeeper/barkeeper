@@ -20,7 +20,7 @@ class SpeciesExporter < ApplicationRecord
     file_to_upload.write(xml_string(project_id))
     file_to_upload.close
 
-    self.species_export = File.open('species_export.xls')
+    self.species_export.attach(io: File.open('species_export.xls'), filename: 'species_export.xls', content_type: 'application/vnd.ms-excel')
     save!
   end
 
