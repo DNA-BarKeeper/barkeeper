@@ -15,10 +15,11 @@ class SpecimenExporter < ApplicationRecord
 
   def create_specimen_export(project_id)
     file_to_upload = File.open('specimens_export.xls', 'w')
+
     xml_file(file_to_upload, project_id)
     file_to_upload.close
 
-    self.specimen_export = File.open('specimens_export.xls')
+    self.specimen_export.attach(io: File.open('specimens_export.xls'), filename: 'specimens_export.xls', content_type: 'application/vnd.ms-excel')
     save!
   end
 
