@@ -34,17 +34,22 @@ class ContigSearch < ApplicationRecord
     Zip::File.open(archive_file, Zip::File::CREATE) do |archive|
       contigs.each do |contig|
         # Write contig PDE to a file and add this to the zip file
-        file_name = "#{contig.name}.pde"
-        File.open("#{temp_folder}/#{file_name}", 'w') { |file| file.write(Contig.pde([contig], add_reads: true)) }
-        archive.add(file_name, "#{temp_folder}/#{file_name}")
+        contig_filename = "#{contig.name}.pde"
+        File.open("#{temp_folder}/#{contig_filename}", 'w') do |file|
+          file.write(Contig.pde([contig], add_reads: true))
+        end
+        archive.add(contig_filename, "#{temp_folder}/#{contig_filename}")
 
-        # Write chromatogram to a file and add this to the zip file
+        # Write each chromatogram to a file and add this to the zip file
         contig.primer_reads.each do |read|
-          File.open("#{temp_folder}/#{read.file_name_id}", 'wb') do |file|
-            file.write(URI.parse("http:#{read.chromatogram.url}").read) unless Rails.env.development?
-            # TODO: copy files within AWS to increase performance: s3.buckets['bucket-name'].objects['source'].copy_to('target'‌​)
+          begin
+            chromatogram_filename = read.chromatogram.filename.to_s
+            File.create("#{temp_folder}/#{chromatogram_filename}", 'wb') do |file|
+              file.write(open(chromatogram.service_url).read)
+            end
+            archive.add(chromatogram_filename, "#{temp_folder}/#{chromatogram_filename}")
+          rescue OpenURI::HTTPError
           end
-          archive.add(read.file_name_id, "#{temp_folder}/#{read.file_name_id}")
         end
       end
     end
