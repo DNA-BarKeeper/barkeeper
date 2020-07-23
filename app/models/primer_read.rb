@@ -288,17 +288,16 @@ class PrimerRead < ApplicationRecord
   end
 
   def auto_trim(write_to_db)
-    msg = nil
     create_issue = false
-    chromatogram_filename = chromatogram.filename.to_s
-
-    # Get local copy from s3
-    dest = Tempfile.new(chromatogram_filename)
-    dest.binmode
-    dest.write open(chromatogram.service_url).read
 
     begin
-      chromatogram_ff1 = nil
+      chromatogram_filename = chromatogram.filename.to_s
+
+      # Get local copy from s3
+      dest = Tempfile.new(chromatogram_filename)
+      dest.binmode
+      dest.write(open(chromatogram.service_url).read)
+
       p = /\.ab1$/
 
       chromatogram_ff1 = if chromatogram_filename.match(p)
