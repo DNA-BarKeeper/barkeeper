@@ -18,6 +18,12 @@ FactoryBot.define do
     cs.title { Faker::Lorem.word }
     cs.verified { ["verified", "unverified", "both"].sample }
     cs.verified_by { Faker::Name.name }
-    cs.search_result_archive { fixture_file_upload(Rails.root.join('spec', 'fixtures', 'files', 'search_results.zip'), 'application/zip') }
+
+    factory :contig_search_valid_attachment do
+      after(:create) do
+        attachment = fixture_file_upload(Rails.root.join('spec', 'fixtures', 'files', 'search_results.zip'), 'application/zip')
+        create(:contig_search, search_result_archive: attachment)
+      end
+    end
   end
 end

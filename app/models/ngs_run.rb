@@ -13,13 +13,10 @@ class NgsRun < ApplicationRecord
   has_many :issues
 
   has_one_attached :set_tag_map
-  has_one_attached :results
+  validates :set_tag_map, content_type: :text
 
-  # validates_attachment_content_type :set_tag_map, content_type: 'text/plain'
-  # validates_attachment_content_type :results, content_type: 'application/zip'
-  #
-  # validates_attachment_file_name :set_tag_map, :matches => /fasta\Z/
-  # validates_attachment_file_name :results, :matches => /zip\Z/
+  has_one_attached :results
+  validates :results, content_type: :zip
 
   attr_accessor :delete_set_tag_map
   before_validation :remove_set_tag_map
@@ -62,7 +59,7 @@ class NgsRun < ApplicationRecord
         rescue OpenURI::HTTPError
         end
       else
-        nonexistent << "No file for Tag Primer Map #{tp_map.name} could not be found."
+        nonexistent << "No file for Tag Primer Map #{tp_map.name} could be found on the server."
       end
     end
 

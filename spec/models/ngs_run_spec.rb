@@ -47,5 +47,17 @@ RSpec.describe NgsRun do
     should callback(:parse_package_map).after(:save)
   end
 
+  context "active record attachment" do
+    it "validates content type of set tag map" do
+      is_expected.to validate_content_type_of(:set_tag_map)
+                         .allowing('text/plain')
+    end
+
+    it "validates content type of results" do
+      is_expected.to validate_content_type_of(:results)
+                         .allowing('application/zip')
+    end
+  end
+
   xit "other methods"
 end
