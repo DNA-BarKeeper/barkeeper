@@ -4,14 +4,12 @@ class TagPrimerMap < ApplicationRecord
   belongs_to :ngs_run
 
   has_one_attached :tag_primer_map
-
-  # validates_attachment_content_type :tag_primer_map, content_type: 'text/plain' # Using type text/csv leads to weird errors depending on file content
-  # validates_attachment_file_name :tag_primer_map, :matches => [/txt\Z/, /csv\Z/]
+  validates :tag_primer_map, attached: true, content_type: [:text, :csv] # Using only type text/csv leads to weird errors depending on file content
 
   after_save :set_name
 
   def set_name
-    self.update_column(:name, tag_primer_map.filename.split('_')[1].split('.').first) if tag_primer_map.attached?
+    self.update_column(:name, tag_primer_map.filename.to_s.split('_')[1].split('.').first) if tag_primer_map.attached?
   end
 
   def check_tag_primer_map

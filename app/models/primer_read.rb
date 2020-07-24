@@ -9,13 +9,7 @@ class PrimerRead < ApplicationRecord
   has_many :issues, dependent: :destroy
 
   has_one_attached :chromatogram
-  # ,
-  #                   default_url: '/chromatograms/primer_read.scf'
-
-  # validates_attachment_presence :chromatogram
-  # # Do_not_validate_attachment_file_type :chromatogram
-  # validates_attachment_content_type :chromatogram, content_type: /\Aapplication\/octet-stream/ # Validate content type
-  # validates_attachment_file_name :chromatogram, matches: [/scf\Z/, /ab1\Z/] # Validate filename
+  validates :chromatogram, attached: true, content_type: 'application/octet-stream'
 
   before_create :default_name
 
