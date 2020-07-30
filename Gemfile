@@ -32,7 +32,6 @@ gem 'devise'
 # External file storage
 gem 'aws-sdk-s3', require: false
 gem 'active_storage_validations'
-# gem 'paperclip'
 
 # Javascript
 gem 'bootstrap-multiselect_rails' # multi select boxes using bootstrap
