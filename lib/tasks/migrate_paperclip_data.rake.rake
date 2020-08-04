@@ -116,9 +116,10 @@ def insert_record(statement, values)
   )
 end
 
-def key(_instance)
-  # Get a new key
+def key(instance, attachment)
   SecureRandom.uuid
+  # Alternatively:
+  # instance.send("#{attachment}_file_name")
 end
 
 def checksum(attachment)
