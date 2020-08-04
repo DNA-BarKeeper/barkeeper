@@ -126,6 +126,6 @@ def checksum(attachment)
   # Get a checksum for the file (required for ActiveStorage)
 
   # remote files stored on a cloud service:
-  url = Rails.env.production? ? attachment.url : attachment.url.gsub('/system', 'https://gbol5.s3.amazonaws.com')
+  url = Rails.env.production? ? 'https:' + attachment.url : attachment.url.gsub('/system', 'https://gbol5.s3.amazonaws.com')
   Digest::MD5.base64digest(Net::HTTP.get(URI(url)))
 end
