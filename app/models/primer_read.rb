@@ -290,7 +290,7 @@ class PrimerRead < ApplicationRecord
       # Get local copy from s3
       dest = Tempfile.new(chromatogram_filename)
       dest.binmode
-      dest.write(open(chromatogram.service_url).read)
+      dest.write(chromatogram.blob.download)
 
       p = /\.ab1$/
 

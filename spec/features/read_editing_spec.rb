@@ -4,8 +4,8 @@ RSpec.feature "Primer read view and editing", type: :feature, js: true do
   before(:each) { @general_project = Project.find_or_create_by(name: 'All') }
 
   before :each do
-    chromatogram = fixture_file_upload('files/GBoL1000_cp148.scf')
-    @primer_read = FactoryBot.create(:primer_read, name: 'GBoL1000_cp148', chromatogram: chromatogram)
+    @primer_read = FactoryBot.create(:primer_read)
+
     @primer_read.auto_assign
     @primer_read.auto_trim(true)
     @primer_read.update(processed: true, used_for_con: true, assembled: false, comment: 'imported')
@@ -114,6 +114,9 @@ RSpec.feature "Primer read view and editing", type: :feature, js: true do
   end
 
   def can_view_primer_read
+    puts "TEST"
+    puts @primer_read.sequence
+
     visit primer_reads_path
 
     expect(page).to have_link @primer_read.name

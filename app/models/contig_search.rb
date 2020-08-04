@@ -37,14 +37,11 @@ class ContigSearch < ApplicationRecord
 
         # Write each chromatogram to a file and add this to the zip file
         contig.primer_reads.each do |read|
-          begin
-            chromatogram_filename = read.chromatogram.filename.to_s
-            File.create("#{temp_folder}/#{chromatogram_filename}", 'wb') do |file|
-              file.write(open(chromatogram.service_url).read)
-            end
-            archive.add(chromatogram_filename, "#{temp_folder}/#{chromatogram_filename}")
-          rescue OpenURI::HTTPError
+          chromatogram_filename = read.chromatogram.filename.to_s
+          File.open("#{temp_folder}/#{chromatogram_filename}", 'wb') do |file|
+            file.write(read.chromatogram.blob.download)
           end
+          archive.add(chromatogram_filename, "#{temp_folder}/#{chromatogram_filename}")
         end
       end
     end

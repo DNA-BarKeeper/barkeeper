@@ -24,8 +24,7 @@ class IndividualsController < ApplicationController
 
     if export.attached?
       begin
-        data = open(export.service_url)
-        send_data(data.read, filename: 'specimens_export.xls',
+        send_data(export.blob.download, filename: 'specimens_export.xls',
                   type: 'application/vnd.ms-excel',
                   disposition: 'attachment',
                   stream: 'true',

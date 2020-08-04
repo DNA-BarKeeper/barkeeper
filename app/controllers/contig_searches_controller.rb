@@ -71,8 +71,7 @@ class ContigSearchesController < ApplicationController
       archive = @contig_search.search_result_archive
 
       begin
-        data = open(archive.service_url)
-        send_data(data.read,
+        send_data(archive.blob.download,
                   filename: @contig_search.search_result_archive.filename,
                   type: 'application/zip')
       rescue OpenURI::HTTPError # Results archive could not be found on server
