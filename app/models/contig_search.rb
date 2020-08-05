@@ -41,7 +41,12 @@ class ContigSearch < ApplicationRecord
           File.open("#{temp_folder}/#{chromatogram_filename}", 'wb') do |file|
             file.write(read.chromatogram.blob.download)
           end
-          archive.add(chromatogram_filename, "#{temp_folder}/#{chromatogram_filename}")
+
+          begin
+            archive.add(chromatogram_filename, "#{temp_folder}/#{chromatogram_filename}")
+          rescue Zip::EntryExistsError
+            # Do not add duplicate files
+          end
         end
       end
     end
