@@ -65,6 +65,8 @@ class ContigSearchesController < ApplicationController
   end
 
   def download_results
+    require 'open-uri'
+
     @contig_search = ContigSearch.find(params[:contig_search_id])
 
     if @contig_search.search_result_archive.attached?
