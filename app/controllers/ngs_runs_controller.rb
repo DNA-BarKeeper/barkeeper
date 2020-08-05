@@ -54,7 +54,7 @@ class NgsRunsController < ApplicationController
     else
       params[:ngs_run][:tag_primer_map].each do |tpm|
         # Only add TPM if Package map is available or none was added before
-        if !params[:ngs_run][:set_tag_map].blank? || @ngs_run.set_tag_map_file_name || @ngs_run.tag_primer_maps.size.zero?
+        if !params[:ngs_run][:set_tag_map].blank? || @ngs_run.set_tag_map.attached? || @ngs_run.tag_primer_maps.size.zero?
           map = TagPrimerMap.create(tag_primer_map: tpm)
           @ngs_run.tag_primer_maps << map
         else
@@ -87,7 +87,7 @@ class NgsRunsController < ApplicationController
   end
 
   def start_analysis
-    if @ngs_run.check_tag_primer_maps
+    if @ngs_run.check_tag_primer_map_count
       isolates_not_in_db = @ngs_run.samples_exist
       if isolates_not_in_db.blank?
         running = @ngs_run.check_server_status # Check if barcoding pipe is already running
@@ -123,7 +123,7 @@ class NgsRunsController < ApplicationController
     tpm = TagPrimerMap.create(tag_primer_map: params[:tpm])
 
     if tpm.check_tag_primer_map
-      send_data(tpm.revised_tag_primer_map([5]), filename: tpm.tag_primer_map_file_name, type: 'application/txt')
+      send_data(tpm.revised_tag_primer_map([5]), filename: tpm.tag_primer_map.filename, type: 'application/txt')
     else
       render plain: "The Tag Primer Map is not properly formatted. Please try again after checking the file!\n"
     end

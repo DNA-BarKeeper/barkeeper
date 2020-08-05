@@ -4,20 +4,16 @@
 class SpecimenExporter < ApplicationRecord
   include ActionView::Helpers
 
-  has_attached_file :specimen_export,
-                    path: '/specimens_export.xls'
-
-  # Validate content type
-  validates_attachment_content_type :specimen_export, content_type: /\Aapplication\/xml/
-  # Validate filename
-  validates_attachment_file_name :specimen_export, matches: [/xls\Z/]
+  has_one_attached :specimen_export
+  validates :specimen_export, content_type: 'application/vnd.ms-excel'
 
   def create_specimen_export(project_id)
     file_to_upload = File.open('specimens_export.xls', 'w')
+
     xml_file(file_to_upload, project_id)
     file_to_upload.close
 
-    self.specimen_export = File.open('specimens_export.xls')
+    self.specimen_export.attach(io: File.open('specimens_export.xls'), filename: 'specimens_export.xls', content_type: 'application/vnd.ms-excel')
     save!
   end
 

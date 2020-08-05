@@ -12,18 +12,18 @@ RSpec.describe PrimerRead do
     should be_valid
   end
 
-  context "paperclip file attachment" do
-    it "has an attached chromatogram file" do
-      should have_attached_file(:chromatogram)
+  context "active record attachment" do
+    it "validates presence of a chromatogram" do
+      is_expected.to validate_attached_of(:chromatogram)
     end
 
-    it "validates chromatogram presence" do
-      should validate_attachment_presence(:chromatogram)
+    it "validates content type of chromatogram" do
+      is_expected.to validate_content_type_of(:chromatogram)
+                         .allowing('application/octet-stream')
     end
 
-    it "validates chromatogram content type" do
-      should validate_attachment_content_type(:chromatogram)
-                 .allowing('application/octet-stream')
+    it "is not valid without chromatogram" do
+      expect(FactoryBot.build(:primer_read, chromatogram: nil)).to_not be_valid
     end
   end
 
