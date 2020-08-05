@@ -15,6 +15,8 @@ class SpeciesController < ApplicationController
   end
 
   def xls
+    require 'open-uri'
+
     export = SpeciesExporter.last.species_export
 
     if export.attached?

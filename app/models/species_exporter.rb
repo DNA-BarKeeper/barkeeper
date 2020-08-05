@@ -3,7 +3,7 @@
 # Write SPECIMENS & STATUS to Excel-XML (xls) for use by ZFMK for their "Portal / db : bolgermany.de "
 class SpeciesExporter < ApplicationRecord
   has_one_attached :species_export
-  validates :species_export, content_type: 'application/vnd.ms-excel'
+  validates :species_export, content_type: [:xml]
 
   def create_species_export(project_id)
     file_to_upload = File.open('species_export.xls', 'w')
@@ -11,7 +11,7 @@ class SpeciesExporter < ApplicationRecord
     file_to_upload.write(xml_string(project_id))
     file_to_upload.close
 
-    self.species_export.attach(io: File.open('species_export.xls'), filename: 'species_export.xls', content_type: 'application/vnd.ms-excel')
+    self.species_export.attach(io: File.open('species_export.xls'), filename: 'species_export.xls', content_type: 'application/xml')
     save!
   end
 

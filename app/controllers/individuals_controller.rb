@@ -20,6 +20,8 @@ class IndividualsController < ApplicationController
   end
 
   def xls
+    require 'open-uri'
+
     export = SpecimenExporter.last.specimen_export
 
     if export.attached?
@@ -29,7 +31,7 @@ class IndividualsController < ApplicationController
                   disposition: 'attachment',
                   stream: 'true',
                   buffer_size: '4096')
-      rescue OpenURI::HTTPError # Species XLS could not be found on server
+      rescue OpenURI::HTTPError # Specimen XLS could not be found on server
         redirect_to individuals_path,
                     alert: 'The specimens XLS file could not be opened. Please try to export it again or contact an administrator if the issue persists.'
       end

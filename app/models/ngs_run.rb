@@ -1,4 +1,6 @@
 class NgsRun < ApplicationRecord
+  require 'open-uri'
+
   include ProjectRecord
 
   validates_presence_of :name

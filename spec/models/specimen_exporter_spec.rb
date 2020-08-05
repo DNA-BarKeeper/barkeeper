@@ -10,7 +10,7 @@ RSpec.describe SpecimenExporter do
   context "active record attachment" do
     it "validates content type of specimen export" do
       is_expected.to validate_content_type_of(:specimen_export)
-                         .allowing('application/vnd.ms-excel')
+                         .allowing('application/xml')
     end
   end
 

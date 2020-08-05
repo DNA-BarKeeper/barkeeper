@@ -103,6 +103,8 @@ class TagPrimerMap < ApplicationRecord
   private
 
   def open_tag_primer_map
+    require 'open-uri'
+
     begin
       open(tag_primer_map.service_url)
     rescue OpenURI::HTTPError # TPM file could not be found on server
