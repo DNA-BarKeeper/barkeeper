@@ -11,7 +11,6 @@ namespace :migrate_paperclip do
 
     # Loop through all the models found
     models.each do |model|
-      next unless model == PrimerRead
       puts 'Checking Model [' + model.to_s + '] for Paperclip attachment columns ...'
 
       errs = []
