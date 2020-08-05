@@ -114,7 +114,7 @@
           <div class="tab-pane" id="files">
             <br>
             <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download trimmed sequence as Fasta file',  fasta_primer_read_path %><br>
-            <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download chromatogram file',  @primer_read.chromatogram.url %><br>
+            <span class="glyphicon glyphicon-arrow-down"></span><%= link_to ' Download chromatogram file',  url_for(@primer_read.chromatogram) %><br>
             <br>
             <span class="glyphicon glyphicon-paperclip"></span> Attach scf/ab1 file:<%= f.file_field :chromatogram %>
             <br>

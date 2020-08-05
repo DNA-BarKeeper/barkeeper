@@ -42,9 +42,9 @@
         <%= f.label :set_tag_map, 'Platepool set (*.fasta)' %>
         <%= f.file_field :set_tag_map, class: 'form-control' %>
 
-        <% if @ngs_run.set_tag_map.path %>
+        <% if @ngs_run.set_tag_map.attached? %>
           <%= f.check_box(:delete_set_tag_map) %>
-          <%= "Remove current file ('#{@ngs_run.set_tag_map_file_name}')" %>
+          <%= "Remove current file ('#{@ngs_run.set_tag_map.filename}')" %>
         <% end %>
       </div>
 
@@ -56,10 +56,10 @@
         <%= f.file_field :tag_primer_map, class: 'form-control', multiple: true %>
 
         <% if @ngs_run.tag_primer_maps.size.positive? %>
-          <% @ngs_run.tag_primer_maps.each do |tpm| %>
-            <% if tpm.tag_primer_map.path %>
+          <% @ngs_run.tag_primer_maps.with_attached_tag_primer_map.each do |tpm| %>
+            <% if tpm.tag_primer_map.attached? %>
               <%= check_box 'delete_tag_primer_maps', tpm.id, {}, tpm.id %>
-              <%= "Remove current file ('#{tpm.tag_primer_map_file_name}')" %>
+              <%= "Remove current file ('#{tpm.tag_primer_map.filename}')" %>
               <br>
             <% end %>
           <% end %>

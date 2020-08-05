@@ -15,21 +15,16 @@ RSpec.describe ContigSearch do
     should belong_to(:project)
   end
 
-  context "has paperclip file attachment" do
-    it "has attached search result archive" do
-      should have_attached_file(:search_result_archive)
+  context "active record attachment" do
+    it "validates content type of search result archive" do
+      is_expected.to validate_content_type_of(:search_result_archive)
+                         .allowing('application/zip')
     end
 
-    it "validates search result archive content type" do
-      should validate_attachment_content_type(:search_result_archive)
-                 .allowing('application/zip')
+    it "is valid with valid search result archive" do
+      with_attachment = FactoryBot.create(:contig_search_valid_attachment)
+      expect(with_attachment).to be_valid
     end
-
-    # Validate file name
-    it { should allow_value("search_results.zip").for(:search_result_archive_file_name) }
-    it { should allow_value("search_results.ZIP").for(:search_result_archive_file_name) }
-    it { should_not allow_value("search_results.doc").for(:search_result_archive_file_name) }
-    it { should_not allow_value("search_results.txt").for(:search_result_archive_file_name) }
   end
 
   xit "finds records in database" do
