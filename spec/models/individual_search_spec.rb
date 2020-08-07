@@ -16,7 +16,7 @@ RSpec.describe IndividualSearch do
   end
 
   it "is not valid with a duplicate title" do
-    should validate_uniqueness_of(:title)
+    should validate_uniqueness_of(:title).scoped_to(:user_id)
   end
 
   xit "finds records in database"
