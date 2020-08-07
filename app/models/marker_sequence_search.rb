@@ -7,7 +7,8 @@ class MarkerSequenceSearch < ApplicationRecord
   belongs_to :project
   belongs_to :mislabel_analysis
 
-  validates :title, uniqueness: { :scope=> :user_id }
+  validates :title, uniqueness: { :allow_blank => true,
+                                  :scope=> :user_id }
 
   enum has_warnings: %i[both yes no]
 

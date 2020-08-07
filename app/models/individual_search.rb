@@ -4,7 +4,8 @@ class IndividualSearch < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
-  validates :title, uniqueness: { :scope=> :user_id }
+  validates :title, uniqueness: { :allow_blank => true,
+                                  :scope=> :user_id }
 
   enum has_issue: %i[all_issue issues no_issues]
   enum has_species: %i[all_species species no_species]
