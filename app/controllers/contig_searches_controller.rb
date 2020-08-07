@@ -19,8 +19,10 @@ class ContigSearchesController < ApplicationController
 
     respond_to do |format|
       if @contig_search.save
-        @contig_search.update(user_id: current_user.id)
-        @contig_search.update(project_id: current_user.default_project_id)
+        if user_signed_in?
+          @contig_search.update(user_id: current_user.id)
+          @contig_search.update(project_id: current_user.default_project_id)
+        end
 
         format.html { redirect_to @contig_search }
         format.json { render :show, status: :created, location: @contig_search }

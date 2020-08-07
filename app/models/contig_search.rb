@@ -6,7 +6,8 @@ class ContigSearch < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
-  validates :title, uniqueness: { :scope=> :user_id }
+  validates :title, uniqueness: { :allow_blank => true,
+                                  :scope=> :user_id }
 
   enum has_warnings: %i[both yes no]
 
