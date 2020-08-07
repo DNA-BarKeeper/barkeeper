@@ -1,3 +1,6 @@
+<% provide(:title, @contig_search.title) %>
+<%= show_val_errors(@contig_search)%>
+
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3  class="panel-title">Advanced Contig Search</h3>
@@ -19,7 +22,7 @@
           <%= f.label :assembled, "Assembled" %>
           <%= f.radio_button :assembled, "unassembled" %>
           <%= f.label :unassembled, "Unassembled" %>
-          <%= f.radio_button :assembled, "both", :checked => true %>
+          <%= f.radio_button :assembled, "both", :checked => radio_checked(@contig_search, 'assembled', 'both') %>
           <%= f.label :both_assembly, "Both" %>
         </div>
         <div>
@@ -27,7 +30,7 @@
           <%= f.label :assembled, "Verified" %>
           <%= f.radio_button :verified, "unverified" %>
           <%= f.label :unverified, "Unverified" %>
-          <%= f.radio_button :verified, "both", :checked => true %>
+          <%= f.radio_button :verified, "both", :checked => radio_checked(@contig_search, 'verified', 'both') %>
           <%= f.label :both_verify, "Both" %>
         </div>
         <div class="field">
@@ -41,7 +44,7 @@
           <%= f.label :yes, "Yes" %>
           <%= f.radio_button :has_warnings, "no" %>
           <%= f.label :no, "No" %>
-          <%= f.radio_button :has_warnings, "both", :checked => true %>
+          <%= f.radio_button :has_warnings, "both", :checked => radio_checked(@contig_search, 'has_warnings', 'both') %>
           <%= f.label :both, "Search for both" %>
         </div>
         <br/>

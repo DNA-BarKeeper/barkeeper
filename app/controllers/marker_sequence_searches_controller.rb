@@ -36,6 +36,20 @@ class MarkerSequenceSearchesController < ApplicationController
     end
   end
 
+  def edit; end
+
+  def update
+    respond_to do |format|
+      if @marker_sequence_search.update(marker_sequence_search_params)
+        format.html { redirect_to marker_sequence_search_path(@marker_sequence_search), notice: 'Search parameters were successfully updated.' }
+        format.json { render :show, status: :ok, location: @marker_sequence_search }
+      else
+        format.html { render :edit }
+        format.json { render json: @marker_sequence_search.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def destroy
     @marker_sequence_search.destroy
 
