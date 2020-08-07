@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_07_133714) do
+ActiveRecord::Schema.define(version: 2020_08_07_135624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -586,10 +586,8 @@ ActiveRecord::Schema.define(version: 2020_08_07_133714) do
 
   create_table "plant_plates", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255
-    t.integer "how_many"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "location_in_rack", limit: 255
     t.integer "lab_rack_id"
     t.index ["lab_rack_id"], name: "index_plant_plates_on_lab_rack_id"
   end
