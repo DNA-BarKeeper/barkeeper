@@ -25,6 +25,10 @@ RSpec.describe ContigSearch do
       with_attachment = FactoryBot.create(:contig_search_valid_attachment)
       expect(with_attachment).to be_valid
     end
+
+    it "is not valid with a duplicate title" do
+      should validate_uniqueness_of(:title)
+    end
   end
 
   xit "finds records in database" do

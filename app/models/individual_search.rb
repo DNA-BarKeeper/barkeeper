@@ -4,6 +4,8 @@ class IndividualSearch < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
+  validates_uniqueness_of :title
+
   enum has_issue: %i[all_issue issues no_issues]
   enum has_species: %i[all_species species no_species]
   enum has_problematic_location: %i[all_location bad_location location_okay]

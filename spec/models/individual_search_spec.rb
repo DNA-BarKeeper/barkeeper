@@ -15,5 +15,9 @@ RSpec.describe IndividualSearch do
     should belong_to(:project)
   end
 
+  it "is not valid with a duplicate title" do
+    should validate_uniqueness_of(:title)
+  end
+
   xit "finds records in database"
 end
