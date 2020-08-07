@@ -15,6 +15,9 @@ class SpecimenExporter < ApplicationRecord
 
     self.specimen_export.attach(io: File.open('specimens_export.xls'), filename: 'specimens_export.xls', content_type: 'application/xml')
     save!
+
+    # Remove local file after uploading it to S3
+    File.delete('specimens_export.xls') if File.exist?('specimens_export.xls')
   end
 
   def xml_file(file, project_id)

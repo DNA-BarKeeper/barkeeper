@@ -13,6 +13,9 @@ class SpeciesExporter < ApplicationRecord
 
     self.species_export.attach(io: File.open('species_export.xls'), filename: 'species_export.xls', content_type: 'application/xml')
     save!
+
+    # Remove local file after uploading it to S3
+    File.delete('species_export.xls') if File.exist?('species_export.xls')
   end
 
   def xml_string(project_id)
