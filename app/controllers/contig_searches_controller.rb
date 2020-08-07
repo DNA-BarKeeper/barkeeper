@@ -15,12 +15,20 @@ class ContigSearchesController < ApplicationController
   end
 
   def create
-    @contig_search = ContigSearch.create!(contig_search_params)
+    @contig_search = ContigSearch.new(contig_search_params)
 
-    @contig_search.update(user_id: current_user.id)
-    @contig_search.update(project_id: current_user.default_project_id)
+    respond_to do |format|
+      if @contig_search.save
+        @contig_search.update(user_id: current_user.id)
+        @contig_search.update(project_id: current_user.default_project_id)
 
-    redirect_to @contig_search
+        format.html { redirect_to @contig_search }
+        format.json { render :show, status: :created, location: @contig_search }
+      else
+        format.html { render :new }
+        format.json { render json: @contig_search.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   def show
@@ -29,6 +37,20 @@ class ContigSearchesController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: ContigSearchResultDatatable.new(view_context, params[:id]) }
+    end
+  end
+
+  def edit; end
+
+  def update
+    respond_to do |format|
+      if @contig_search.update(contig_search_params)
+        format.html { redirect_to contig_search_path(@contig_search), notice: 'Search parameters were successfully updated.' }
+        format.json { render :show, status: :ok, location: @contig_search }
+      else
+        format.html { render :edit }
+        format.json { render json: @contig_search.errors, status: :unprocessable_entity }
+      end
     end
   end
 

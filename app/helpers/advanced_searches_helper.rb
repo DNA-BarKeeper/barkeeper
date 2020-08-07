@@ -49,6 +49,16 @@ module AdvancedSearchesHelper
     output.join(', ')
   end
 
+  def radio_checked(search, attribute, value)
+    current_value = search.send(attribute)
+
+    if current_value && current_value != value
+      false
+    else
+      true
+    end
+  end
+
   private
 
   def format_date(date)

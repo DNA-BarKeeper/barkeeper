@@ -19,6 +19,20 @@ class IndividualSearchesController < ApplicationController
     end
   end
 
+  def edit; end
+
+  def update
+    respond_to do |format|
+      if @individual_search.update(individual_search_params)
+        format.html { redirect_to individual_search_path(@individual_search), notice: 'Search parameters were successfully updated.' }
+        format.json { render :show, status: :ok, location: @individual_search }
+      else
+        format.html { render :edit }
+        format.json { render json: @individual_search.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def new
     @individual_search = IndividualSearch.new
   end
