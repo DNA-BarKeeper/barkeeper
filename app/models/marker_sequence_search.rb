@@ -7,6 +7,8 @@ class MarkerSequenceSearch < ApplicationRecord
   belongs_to :project
   belongs_to :mislabel_analysis
 
+  validates_uniqueness_of :title
+
   enum has_warnings: %i[both yes no]
 
   def marker_sequences

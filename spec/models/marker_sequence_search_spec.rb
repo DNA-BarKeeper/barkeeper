@@ -19,5 +19,9 @@ RSpec.describe MarkerSequenceSearch do
     should belong_to(:mislabel_analysis)
   end
 
+  it "is not valid with a duplicate title" do
+    should validate_uniqueness_of(:title)
+  end
+
   xit "finds records in database"
 end
