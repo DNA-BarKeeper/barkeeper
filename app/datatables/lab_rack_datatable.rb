@@ -29,14 +29,14 @@ class LabRackDatatable
       rackcode = link_to lab_rack.rackcode, edit_lab_rack_path(lab_rack) if lab_rack.rackcode
 
       shelf = ''
-      shelf = lab_rack.shelf if lab_rack.shelf
+      shelf = lab_rack.shelf.name if lab_rack.shelf
 
       freezer = ''
       lab = ''
 
-      if lab_rack.freezer
-        freezer = link_to lab_rack.freezer.freezercode, edit_freezer_path(lab_rack.freezer)
-        lab = link_to lab_rack.freezer.lab.labcode, edit_lab_path(lab_rack.freezer.lab) if lab_rack.freezer.lab
+      if lab_rack.shelf&.freezer
+        freezer = link_to lab_rack.shelf.freezer.freezercode, edit_freezer_path(lab_rack.shelf.freezer)
+        lab = link_to lab_rack.shelf.freezer.lab.labcode, edit_lab_path(lab_rack.shelf.freezer.lab) if lab_rack.shelf.freezer.lab
       end
 
       [
@@ -55,7 +55,7 @@ class LabRackDatatable
   end
 
   def fetch_lab_racks
-    lab_racks = LabRack.includes(freezer: [:lab, :shelves]).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+    lab_racks = LabRack.includes(shelf: [freezer: :lab]).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     lab_racks = lab_racks.page(page).per_page(per_page)
 
@@ -63,7 +63,7 @@ class LabRackDatatable
 OR shelves.name ILIKE :search
 OR freezers.freezercode ILIKE :search
 OR labs.labcode ILIKE :search', search: "%#{params[:sSearch]}%")
-                    .references(freezer: [:lab, :shelves]) if params[:sSearch].present?
+                    .references(shelf: [freezer: :lab]) if params[:sSearch].present?
 
     lab_racks
   end

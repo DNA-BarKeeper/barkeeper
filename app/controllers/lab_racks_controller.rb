@@ -78,6 +78,6 @@ class LabRacksController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def lab_rack_params
-    params.require(:lab_rack).permit(:shelf, :rack_position, :rackcode, :freezer_id, project_ids: [])
+    params.require(:lab_rack).permit(:shelf_id, :rack_position, :rackcode, project_ids: [])
   end
 end

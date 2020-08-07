@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_13_121735) do
+ActiveRecord::Schema.define(version: 2020_08_07_131646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -358,9 +358,10 @@ ActiveRecord::Schema.define(version: 2020_05_13_121735) do
     t.string "rackcode", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer "freezer_id"
     t.string "rack_position"
-    t.string "shelf"
+    t.string "shelf_name"
+    t.bigint "shelf_id"
+    t.index ["shelf_id"], name: "index_lab_racks_on_shelf_id"
   end
 
   create_table "lab_racks_projects", id: false, force: :cascade do |t|
@@ -837,6 +838,7 @@ ActiveRecord::Schema.define(version: 2020_05_13_121735) do
   add_foreign_key "individual_searches", "users"
   add_foreign_key "individuals", "herbaria"
   add_foreign_key "individuals", "tissues"
+  add_foreign_key "lab_racks", "shelves"
   add_foreign_key "marker_sequence_searches", "mislabel_analyses"
   add_foreign_key "marker_sequence_searches", "projects"
   add_foreign_key "mislabel_analyses", "markers"
