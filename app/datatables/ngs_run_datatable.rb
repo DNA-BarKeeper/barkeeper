@@ -26,9 +26,9 @@ class NgsRunDatatable
     ngs_runs.map do |ngs_run|
 
       ngs_run_path = if ngs_run.results.attached?
-                       link_to(ngs_run.name, edit_ngs_run_path(ngs_run))
-                     else
                        link_to(ngs_run.name, ngs_run_path(ngs_run, anchor: "results"))
+                     else
+                       link_to(ngs_run.name, edit_ngs_run_path(ngs_run))
                      end
 
       [
