@@ -3,7 +3,6 @@ require 'faker'
 FactoryBot.define do
   factory :individual do |i|
     i.collected { Faker::Time.backward(days: 176) }
-    i.collection_date { Faker::Time.backward(days: 176) }
     i.collector { Faker::Name.name_with_middle }
     i.collectors_field_number { Faker::Lorem.word }
     i.comments { Faker::Lorem.paragraph }

@@ -14,8 +14,12 @@ jQuery(function() {
         no_results_text: 'No results matched'
     });
 
-    return $('#individual_species_name').autocomplete({
+    $('#individual_species_name').autocomplete({
         source: $('#individual_species_name').data('autocomplete-source')
+    });
+
+    $('#individual_collected').datepicker({
+        dateFormat: 'yy-mm-dd'
     });
 });
 

@@ -146,7 +146,7 @@ class IndividualsController < ApplicationController
                                        :substrate,
                                        :life_form,
                                        :collectors_field_number,
-                                       :collection_date,
+                                       :collected,
                                        :determination,
                                        :revision,
                                        :confirmation,

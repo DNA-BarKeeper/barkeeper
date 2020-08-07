@@ -87,6 +87,9 @@ class Isolate < ApplicationRecord
       individual.life_form = row['Life form']
       individual.collectors_field_number = row['Collection number']
       individual.collection_date = row['Date']
+      begin
+        individual.collected = Date.parse(row['Date'])
+      end
       individual.determination = row['Determination']
       individual.revision = row['Revision']
       individual.confirmation = row['Confirmation']
