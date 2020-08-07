@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_07_131646) do
+ActiveRecord::Schema.define(version: 2020_08_07_133714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -359,7 +359,6 @@ ActiveRecord::Schema.define(version: 2020_08_07_131646) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "rack_position"
-    t.string "shelf_name"
     t.bigint "shelf_id"
     t.index ["shelf_id"], name: "index_lab_racks_on_shelf_id"
   end
