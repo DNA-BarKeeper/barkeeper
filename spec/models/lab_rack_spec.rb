@@ -11,8 +11,8 @@ RSpec.describe LabRack do
     should be_valid
   end
 
-  it "belong to a freezer" do
-    should belong_to(:freezer)
+  it "belong to a shelf" do
+    should belong_to(:shelf)
   end
 
   it "have many plant plates" do

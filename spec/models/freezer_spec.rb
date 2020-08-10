@@ -19,10 +19,6 @@ RSpec.describe Freezer do
     should belong_to(:lab)
   end
 
-  it "has many lab racks" do
-    should have_many(:lab_racks)
-  end
-
   it "has many shelves" do
     should have_many(:shelves)
   end
