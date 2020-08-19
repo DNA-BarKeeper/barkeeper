@@ -115,7 +115,8 @@ var diagram_id;
 function createVisualization(json, id) {
     diagram_id = id;
 
-    vis = d3.select("#chart" + diagram_id).append("svg")
+    vis = d3.select("#chart" + diagram_id)
+        .append("svg")
         .attr("width", width)
         .attr("height", height)
         .append("g")
