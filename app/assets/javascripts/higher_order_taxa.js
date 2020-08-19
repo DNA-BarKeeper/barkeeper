@@ -30,9 +30,9 @@ jQuery(function() {
 
 // Main function to draw and set up the visualization, once we have the data.
 function drawHierarchy(data) {
-    var width = 600,
+    var width = 900,
         height = 500,
-        nodeRadius = 12,
+        nodeRadius = 10,
         margin = { left: 50, top: 10, bottom: 10, right: 50 };
 
     var svg = d3.select('#higher_order_taxa_tree')
