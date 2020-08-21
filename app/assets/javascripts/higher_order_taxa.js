@@ -30,19 +30,38 @@ jQuery(function() {
 
 // Main function to draw and set up the visualization, once we have the data.
 function drawHierarchy(data) {
-    var width = 900,
-        height = 500,
+    var parentDiv = document.getElementById("higher_order_taxa_tree");
+
+    var width = parentDiv.clientWidth,
+        height = parentDiv.clientHeight,
         nodeRadius = 10,
+        scale = 1,
         margin = { left: 50, top: 10, bottom: 10, right: 50 };
 
     var svg = d3.select('#higher_order_taxa_tree')
         .append('svg')
         .attr('id', 'higher_order_taxa_svg')
-        .attr("width", width)
-        .attr("height", height);
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 " + width + " " + height)
+        .classed("svg-content", true);
 
     var mainGroup = svg.append('g')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    // Enable zoom & pan
+    var zoom = d3.zoom()
+        .on("zoom", function() {
+            mainGroup.attr("transform", d3.event.transform)
+    });
+
+    svg.call(zoom);
+
+    // Button to reset zoom and position
+    d3.select("#reset_zoom")
+        .attr('style', 'margin: 5px')
+        .on("click", function() {
+        zoom.transform(svg, d3.zoomIdentity.translate(margin.left, margin.top).scale(scale));
+    });
 
     var tree = d3.tree()
         .size([
@@ -50,11 +69,22 @@ function drawHierarchy(data) {
             width - (margin.left + margin.right) - 100,
         ]);
 
-    // //  assigns the data to a hierarchy using parent-child relationships
+    // Assigns the data to a hierarchy using parent-child relationships
     var nodes = d3.hierarchy(data, function(d) {
         return d.children;
     });
 
+    nodes = tree(nodes);
+
+    // Calculate maximum number of hierarchy levels and resize tree
+    var tree_height = nodes.height;
+
+    tree.size([
+            height - (margin.bottom + margin.top),
+            Math.max(width - (margin.left + margin.right) - 100, tree_height * 150)
+        ]);
+
+    // Recalculate nodes
     nodes = tree(nodes);
 
     var linksGenerator = d3.linkHorizontal() // d3.linkVertical()
