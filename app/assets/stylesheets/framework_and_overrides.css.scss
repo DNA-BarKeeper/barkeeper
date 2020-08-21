@@ -406,5 +406,17 @@ div#ngs_run_results_wrapper div.dataTables_length {
 }
 
 .visualization {
-  overflow-x: auto;
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  padding-bottom: 35%;
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.svg-content {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
