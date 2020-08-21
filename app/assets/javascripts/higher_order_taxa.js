@@ -33,10 +33,15 @@ function drawHierarchy(data) {
     var parentDiv = document.getElementById("higher_order_taxa_tree");
 
     var width = parentDiv.clientWidth,
-        height = parentDiv.clientHeight,
+        height = Math.max(width * 0.5625, 500),
         nodeRadius = 10,
         scale = 1,
         margin = { left: 50, top: 10, bottom: 10, right: 50 };
+
+    d3.select('#higher_order_taxa_tree')
+        .attr('style', function() {
+            return (width * 0.5625 > 500) ? "padding-bottom: 56.25%;" : "padding-bottom: 100%;";
+        });
 
     var svg = d3.select('#higher_order_taxa_tree')
         .append('svg')
@@ -64,10 +69,7 @@ function drawHierarchy(data) {
     });
 
     var tree = d3.tree()
-        .size([
-            height - (margin.bottom + margin.top),
-            width - (margin.left + margin.right) - 100,
-        ]);
+        .size([1,1]);
 
     // Assigns the data to a hierarchy using parent-child relationships
     var nodes = d3.hierarchy(data, function(d) {
@@ -80,14 +82,14 @@ function drawHierarchy(data) {
     var tree_height = nodes.height;
 
     tree.size([
-            height - (margin.bottom + margin.top),
+            500,
             Math.max(width - (margin.left + margin.right) - 100, tree_height * 150)
         ]);
 
     // Recalculate nodes
     nodes = tree(nodes);
 
-    var linksGenerator = d3.linkHorizontal() // d3.linkVertical()
+    var linksGenerator = d3.linkHorizontal()
         .source(function(d) {return [d.parent.y, d.parent.x];})
         .target(function(d) {return [d.y, d.x];});
 
