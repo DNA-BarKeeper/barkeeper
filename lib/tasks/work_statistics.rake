@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 namespace :data do
-  desc 'Do work statistics for <year> and Lab with <labcode>'
+  desc 'Do work statistics for <year> and Lab with <labcode> for higher order taxa'
   task :work_statistics_yearly, %i[year labcode] => [:environment] do |_t, args|
     lab_prefixes = { nees: 'gbol', bgbm: 'db' }
 
@@ -93,5 +93,63 @@ namespace :data do
     primers_marker.keys.each { |k| primers_marker[Primer.find(k).name] = primers_marker[k]; primers_marker.delete(k) }
 
     puts Hash[primers_marker.sort_by { |_k, v| v }.reverse]
+  end
+
+  desc 'Do work statistics for <year> and Lab with <labcode> for all barcode regions'
+  task :work_statistics_regions_yearly, %i[year labcode] => [:environment] do |_t, args|
+    labcode = args[:labcode].downcase
+    year = args[:year].to_i
+
+    if labcode == 'nees' || labcode == 'bgbm'
+      lab_prefixes = { nees: 'gbol', bgbm: 'db' }
+
+      range = Time.new(year, 1, 1).all_year
+      prefix = lab_prefixes[labcode.to_sym]
+
+      isolates = Isolate.where('lab_isolation_nr ilike ?', "#{prefix}%")
+                     .where(created_at: range)
+                     .select(:id, :lab_isolation_nr)
+      contigs = Contig.where('contigs.name ilike ?', "#{prefix}%")
+                    .where(verified_at: range)
+                    .select(:id, :name)
+      reads = PrimerRead.where('primer_reads.name ilike ?', "#{prefix}%")
+                  .where(created_at: range)
+                  .select(:id, :name)
+      marker_sequences = MarkerSequence.where('marker_sequences.name ilike ?', "#{prefix}%")
+                             .where(created_at: range)
+                             .select(:id, :sequence, :name)
+
+      puts "Calculating activities for #{range.first.year} in lab #{args[:labcode]}...\n"
+
+      puts "Number of new isolates: #{isolates.size}"
+      puts "Number of new contigs: #{contigs.size}"
+      puts "Number of new primer reads: #{reads.size}"
+      puts "Number of new marker sequences: #{marker_sequences.size}"
+      puts ''
+
+      # Split output for markers
+      marker_ids = [4, 5, 6, 7]
+      markers = Marker.where(id: marker_ids).select(:id, :name)
+
+      markers.each do |marker|
+        isolates_for_marker = isolates.joins(marker_sequences: :marker).where(marker_sequences: { marker_id: marker.id })
+        puts "Newly created isolates for #{marker.name}: #{isolates_for_marker.distinct.size}"
+
+        contigs_for_marker = contigs.joins(marker_sequence: :marker).where(marker_sequences: { marker_id: marker.id })
+        puts "Newly verified contigs for #{marker.name}: #{contigs_for_marker.distinct.size}"
+
+        primer_reads_for_marker = reads.joins(contig: [ marker_sequence: :marker ])
+                                    .where(contigs: { marker_sequences: { marker_id: marker.id }})
+        puts "Newly uploaded primer reads for #{marker.name}: #{primer_reads_for_marker.distinct.size}"
+
+        marker_sequences_for_marker = marker_sequences.where(marker_id: marker.id)
+        base_count = marker_sequences_for_marker.sum('length(sequence)')
+        puts "Number of newly generated barcode sequences for #{marker.name}: #{marker_sequences_for_marker.distinct.size}"
+        puts "Sequenced base pairs for #{marker.name}: #{base_count}"
+        puts ''
+      end
+    else
+      puts 'Labcode must be one of BGBM or NEES.'
+    end
   end
 end
