@@ -1,17 +1,19 @@
 jQuery(function() {
-    $.ajax({
-        type: "GET",
-        contentType: "application/json; charset=utf-8",
-        url: 'higher_order_taxa/hierarchy_tree',
-        dataType: 'json',
-        processData: false,
-        success: function (data) {
-            drawHierarchy(data[0]);
-        },
-        error: function (result) {
-            console.error("Error getting data.");
-        }
-    });
+    if (document.getElementById("higher_order_taxa_tree") != null) {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: 'higher_order_taxa/hierarchy_tree',
+            dataType: 'json',
+            processData: false,
+            success: function (data) {
+                drawHierarchy(data[0]);
+            },
+            error: function (result) {
+                console.error("Error getting data.");
+            }
+        });
+    }
 
     $('#higher_order_taxon_marker_ids').chosen({
         allow_single_deselect: true,
