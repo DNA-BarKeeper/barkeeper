@@ -223,7 +223,8 @@ function drawHierarchy(data) {
             .insert('path', "g")
             .attr("class", "link")
             .attr("fill", 'none')
-            .attr("stroke", '#ccc')
+            .attr("stroke", 'lightgrey')
+            .attr("stroke-width", '2px')
             .attr('d', function(d){
                 var o = {
                     x: source.x0,
