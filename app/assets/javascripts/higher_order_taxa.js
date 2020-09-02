@@ -136,11 +136,13 @@ function drawHierarchy(data) {
             .attr('class', 'node')
             .attr("transform", function(d) {
                 return "translate(" + source.y0 + "," + source.x0 + ")";
-            })
+            });
+
+        var circleGroup = nodeEnter.append('g')
             .on('click', click);
 
         // Add Circle for the nodes
-        nodeEnter.append('circle')
+        circleGroup.append('circle')
             .attr('class', 'node')
             .attr("r", nodeRadius)
             .style("fill", function(d) {
