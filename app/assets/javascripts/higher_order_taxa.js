@@ -216,7 +216,7 @@ function drawHierarchy(data) {
 
         // Update the links...
         var link = mainGroup.selectAll('path.link')
-            .data(links);
+            .data(links, function(d) { return d.id; });
 
         // Enter any new links at the parent's previous position.
         var linkEnter = link.enter()
