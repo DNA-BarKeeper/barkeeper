@@ -88,14 +88,6 @@ function drawHierarchy(data) {
     root.x0 = height / 2;
     root.y0 = 0;
 
-    // Button to expand all nodes
-    d3.select("#expand_all")
-        .attr('style', 'margin: 5px')
-        .on("click", function() {
-            root.children.forEach(expand_all);
-            update(root);
-        });
-
     // Collapse after the second level
     root.children.forEach(collapse);
 
@@ -110,12 +102,22 @@ function drawHierarchy(data) {
         }
     }
 
-    // Expand the node and all it's children //TODO: Doesn't work properly yet
+    // Button to expand all nodes
+    d3.select("#expand_all")
+        .attr('style', 'margin: 5px')
+        .on("click", function() {
+            root.children.forEach(expand_all);
+        });
+
+    // Expand the node and all it's children
     function expand_all(d) {
         if(d._children) {
             d.children = d._children
-            d.children.forEach(expand_all)
             d._children = null
+            update(d)
+        }
+        if(d.children) {
+            d.children.forEach(expand_all)
         }
     }
 
