@@ -52,6 +52,13 @@ class Ability
     if user.present?
       can :manage, :all
 
+      # Additional permissions for guests
+      if user.guest?
+        cannot %i[change_base change_left_clip change_right_clip], PrimerRead
+        cannot %i[create update destroy], :all
+        can :edit, :all
+      end
+
       cannot :manage, User
       cannot :manage, Project
       cannot :manage, Responsibility
@@ -60,13 +67,6 @@ class Ability
       cannot :start_analysis, NgsRun # TODO: remove when feature is done
 
       can %i[read search_taxa add_to_taxa], Project, id: user.project_ids
-
-      # Additional permissions for guests
-      if user.guest?
-        cannot %i[change_base change_left_clip change_right_clip], PrimerRead
-        cannot %i[create update destroy], :all
-        can :edit, :all
-      end
 
       cannot :edit, Cluster
 
@@ -93,6 +93,10 @@ class Ability
       can :create, MarkerSequenceSearch
       can :manage, MarkerSequenceSearch, user_id: user.id # Users can only edit their own searches
 
+      cannot :manage, IndividualSearch
+      can :create, IndividualSearch
+      can :manage, IndividualSearch, user_id: user.id # Users can only edit their own searches
+
       if user.responsibilities.exists?(name: 'lab') # Restrictions for users in project "lab"
         cannot %i[create update destroy], [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
         can :edit, [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
@@ -102,8 +106,6 @@ class Ability
         can :edit, [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker, MarkerSequence, MicronicPlate,
                     PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
         cannot %i[change_base change_left_clip change_right_clip], PrimerRead
-        cannot :manage, ContigSearch
-        cannot :manage, MarkerSequenceSearch
       end
 
       cannot :delete_all, ContigSearch unless user.responsibilities.exists?(name: 'delete_contigs') || user.admin? || user.supervisor?

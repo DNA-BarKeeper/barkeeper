@@ -76,7 +76,12 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :collection_date, 'Collection Date' %>
+              <%= f.label :collected, 'Collection Date' %><br>
+              <%= f.text_field :collected, class: 'form-control' %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :collection_date, 'Collection Date (Original)' %><br>
               <%= f.text_field :collection_date, class: 'form-control' %>
             </div>
 

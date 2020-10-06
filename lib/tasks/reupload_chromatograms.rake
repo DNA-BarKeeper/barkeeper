@@ -10,7 +10,7 @@ namespace :data do
     # download chromatograms of records without sequence
     nil_reads.each do |r|
       open(r.name, 'wb') do |file|
-        file << open("http:#{r.chromatogram.url}").read
+        file << r.chromatogram.blob.download
       end
     end
 

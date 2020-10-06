@@ -11,9 +11,10 @@ Bundler.require(*Rails.groups)
 
 module GBOLapp
   class Application < Rails::Application
-    config.generators do |g|
-      g.test_framework :minitest
-    end
+    config.load_defaults 5.2
+
+    # Keep old default of not requiring belongs to associations
+    Rails.application.config.active_record.belongs_to_required_by_default = false
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -32,9 +33,15 @@ module GBOLapp
     config.autoload_paths << "#{Rails.root}/lib"
     config.eager_load_paths << "#{Rails.root}/lib"
 
-    logger           = ActiveSupport::Logger.new(STDOUT)
-    logger.formatter = config.log_formatter
-    config.log_tags  = [:subdomain, :uuid]
-    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+    config.generators do |g|
+      g.test_framework :rspec,
+                       :fixtures => true,
+                       :view_specs => false,
+                       :helper_specs => false,
+                       :routing_specs => false,
+                       :controller_specs => true,
+                       :request_specs => true
+      g.fixture_replacement :factory_bot, :dir => 'spec/factories'
+    end
   end
 end

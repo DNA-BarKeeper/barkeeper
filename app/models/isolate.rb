@@ -9,15 +9,18 @@ class Isolate < ApplicationRecord
   has_many :clusters
   has_many :ngs_results
   has_many :ngs_runs, through: :clusters
-  belongs_to :micronic_plate
+  has_many :aliquots
+  belongs_to :micronic_plate # TODO remove after all values are transferred to aliquots
   belongs_to :plant_plate
   belongs_to :tissue
   belongs_to :individual
 
+  accepts_nested_attributes_for :aliquots, allow_destroy: true
+
   validates :display_name, presence: { message: "Either a DNA Bank Number or a lab isolation number must be provided!" }
   before_validation :assign_display_name
 
-  after_save :assign_specimen, :if => proc{ |iso| iso.lab_isolation_nr_changed? || iso.dna_bank_id_changed? }
+  after_save :assign_specimen
 
   scope :recent, -> { where('isolates.updated_at > ?', 1.hours.ago) }
   scope :no_controls, -> { where(negative_control: false) }
@@ -84,6 +87,9 @@ class Isolate < ApplicationRecord
       individual.life_form = row['Life form']
       individual.collectors_field_number = row['Collection number']
       individual.collection_date = row['Date']
+      begin
+        individual.collected = Date.parse(row['Date'])
+      end
       individual.determination = row['Determination']
       individual.revision = row['Revision']
       individual.confirmation = row['Confirmation']
@@ -106,10 +112,12 @@ class Isolate < ApplicationRecord
   end
 
   def assign_specimen
-    if dna_bank_id
-      assign_specimen_info(Isolate.read_abcd(dna_bank_id))
-    else
-      assign_specimen_info(Isolate.read_abcd(lab_nr))
+    if saved_change_to_lab_isolation_nr? || saved_change_to_dna_bank_id?
+      if dna_bank_id
+        assign_specimen_info(Isolate.read_abcd(dna_bank_id))
+      else
+        assign_specimen_info(Isolate.read_abcd(lab_nr))
+      end
     end
   end
 

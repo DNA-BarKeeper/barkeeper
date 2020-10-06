@@ -8,16 +8,8 @@ class PrimerRead < ApplicationRecord
   belongs_to :primer
   has_many :issues, dependent: :destroy
 
-  has_attached_file :chromatogram,
-                    default_url: '/chromatograms/primer_read.scf'
-
-  # Do_not_validate_attachment_file_type :chromatogram
-
-  # Validate content type
-  validates_attachment_content_type :chromatogram, content_type: /\Aapplication\/octet-stream/
-
-  # Validate filename
-  validates_attachment_file_name :chromatogram, matches: [/scf\Z/, /ab1\Z/]
+  has_one_attached :chromatogram
+  validates :chromatogram, attached: true, content_type: 'application/octet-stream'
 
   before_create :default_name
 
@@ -33,8 +25,6 @@ class PrimerRead < ApplicationRecord
   scope :processed, -> { where(processed: true) }
   scope :unprocessed, -> { where(processed: false) }
   scope :contig_not_verified, -> { joins(:contig).where(contigs: { verified: false, verified_by: nil }) }
-
-  validates_attachment_presence :chromatogram
 
   def self.in_higher_order_taxon(higher_order_taxon_id)
     count = 0
@@ -153,7 +143,7 @@ class PrimerRead < ApplicationRecord
   end
 
   def default_name
-    self.name ||= chromatogram.original_filename
+    self.name ||= chromatogram.filename.to_s
   end
 
   def auto_assign
@@ -292,19 +282,19 @@ class PrimerRead < ApplicationRecord
   end
 
   def auto_trim(write_to_db)
-    msg = nil
     create_issue = false
 
-    # Get local copy from s3
-    dest = Tempfile.new(chromatogram_file_name)
-    dest.binmode
-    chromatogram.copy_to_local_file(:original, dest.path)
-
     begin
-      chromatogram_ff1 = nil
+      chromatogram_filename = chromatogram.filename.to_s
+
+      # Get local copy from s3
+      dest = Tempfile.new(chromatogram_filename)
+      dest.binmode
+      dest.write(chromatogram.blob.download)
+
       p = /\.ab1$/
 
-      chromatogram_ff1 = if chromatogram_file_name.match(p)
+      chromatogram_ff1 = if chromatogram_filename.match(p)
                            Bio::Abif.open(dest.path)
                          else
                            Bio::Scf.open(dest.path)

@@ -3,7 +3,7 @@
 class LabRack < ApplicationRecord
   include ProjectRecord
 
-  belongs_to :freezer
+  belongs_to :shelf
   has_many :plant_plates
   has_many :micronic_plates
 end

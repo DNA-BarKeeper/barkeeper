@@ -1,4 +1,6 @@
 class NgsRun < ApplicationRecord
+  require 'open-uri'
+
   include ProjectRecord
 
   validates_presence_of :name
@@ -10,15 +12,13 @@ class NgsRun < ApplicationRecord
   has_many :ngs_results, dependent: :destroy
   has_many :isolates, through: :clusters
   has_many :markers, through: :ngs_results
+  has_many :issues
 
-  has_attached_file :set_tag_map
-  has_attached_file :results
+  has_one_attached :set_tag_map
+  validates :set_tag_map, content_type: :text
 
-  validates_attachment_content_type :set_tag_map, content_type: 'text/plain'
-  validates_attachment_content_type :results, content_type: 'application/zip'
-
-  validates_attachment_file_name :set_tag_map, :matches => /fasta\Z/
-  validates_attachment_file_name :results, :matches => /zip\Z/
+  has_one_attached :results
+  validates :results, content_type: :zip
 
   attr_accessor :delete_set_tag_map
   before_validation :remove_set_tag_map
@@ -27,17 +27,20 @@ class NgsRun < ApplicationRecord
 
   def remove_set_tag_map
     if delete_set_tag_map == '1'
-      set_tag_map.clear
+      set_tag_map.purge
       tag_primer_maps.offset(1).destroy_all
     end
   end
 
   def parse_package_map
-    if set_tag_map.present?
-      package_map_file = Rails.env.development? ? File.open(set_tag_map.path) : open("http:#{set_tag_map.url}")
-      package_map = Bio::FastaFormat.open(package_map_file)
-      package_map.each do |entry|
-        tag_primer_maps.where(name: entry.definition)&.first&.update(tag: entry.seq)
+    if set_tag_map.attached?
+      begin
+        package_map_file = open(set_tag_map.service_url)
+        package_map = Bio::FastaFormat.open(package_map_file)
+        package_map.each do |entry|
+          tag_primer_maps.where(name: entry.definition)&.first&.update(tag: entry.seq)
+        end
+      rescue OpenURI::HTTPError
       end
     end
   end
@@ -50,12 +53,15 @@ class NgsRun < ApplicationRecord
   def samples_exist
     nonexistent = []
     tag_primer_maps.each do |tp_map|
-      if tp_map.tag_primer_map.present?
-        tpm_file = Rails.env.development? ? File.open(tp_map.path) : open("http:#{tp_map.url}")
-        tp_map = CSV.read(tpm_file, { col_sep: "\t", headers: true })
-        nonexistent << tp_map['#SampleID'].select { |id| !Isolate.exists?(lab_isolation_nr: id.match(/\D+\d+|\D+\z/)[0]) }
+      if tp_map.tag_primer_map.attached?
+        begin
+          tpm_file = open(tp_map.tag_primer_map.service_url)
+          tp_map = CSV.read(tpm_file, { col_sep: "\t", headers: true })
+          nonexistent << tp_map['#SampleID'].select { |id| !Isolate.exists?(lab_isolation_nr: id.match(/\D+\d+|\D+\z/)[0]) }
+        rescue OpenURI::HTTPError
+        end
       else
-        nonexistent << "Tag Primer Map #{tp_map.name} could not be found."
+        nonexistent << "No file for Tag Primer Map #{tp_map.name} could be found on the server."
       end
     end
 
@@ -71,12 +77,16 @@ class NgsRun < ApplicationRecord
     nonexistent
   end
 
-  def check_tag_primer_maps
+  def check_tag_primer_map_count
     # Check if the correct number of TPMs was uploaded
-    if set_tag_map.present?
-      set_tag_map_file = Rails.env.development? ? File.open(set_tag_map.path) : open("http:#{set_tag_map.url}")
-      package_cnt = Bio::FastaFormat.open(set_tag_map_file).entries.size
-      valid = (package_cnt == tag_primer_maps.size) && package_cnt.positive?
+    if set_tag_map.attached?
+      begin
+        set_tag_map_file = open(set_tag_map.service_url)
+        package_cnt = Bio::FastaFormat.open(set_tag_map_file).entries.size
+        valid = (package_cnt == tag_primer_maps.size) && package_cnt.positive?
+      rescue OpenURI::HTTPError
+        return false
+      end
     else
       valid = (tag_primer_maps.size == 1)
     end
@@ -100,68 +110,85 @@ class NgsRun < ApplicationRecord
 
       # Write edited tag primer maps
       tag_primer_maps.each do |tag_primer_map|
-        File.open("#{Rails.root}/#{tag_primer_map.tag_primer_map_file_name}", 'w') do |file|
+        File.open("#{Rails.root}/#{tag_primer_map.tag_primer_map.filename}", 'w') do |file|
           file << tag_primer_map.revised_tag_primer_map(projects.map(&:id))
         end
       end
 
-      tag_primer_map_path = "#{analysis_dir}/#{tag_primer_maps.first.tag_primer_map_file_name}"
+      tag_primer_map_path = "#{analysis_dir}/#{tag_primer_maps.first.tag_primer_map.filename}"
 
       # Create analysis directory
       session.exec!("mkdir #{analysis_dir}")
 
       # Upload analysis input files
-      session.scp.upload! "#{Rails.root}/#{tag_primer_maps.first.tag_primer_map_file_name}", tag_primer_map_path
+      session.scp.upload! "#{Rails.root}/#{tag_primer_maps.first.tag_primer_map.filename}", tag_primer_map_path
 
-      # Start analysis on server #TODO uncomment when ready
+      # Start analysis on server # TODO uncomment when ready and add remaining parameters
       # session.exec!("ruby /data/data2/lara/Barcoding/barcoding_pipe.rb -m #{tag_primer_map_path} -f #{fastq_location} -o #{output_dir}")
 
       # Remove edited tag primer maps
       tag_primer_maps.each do |tag_primer_map|
-        FileUtils.rm("#{Rails.root}/#{tag_primer_map.tag_primer_map_file_name}")
+        FileUtils.rm("#{Rails.root}/#{tag_primer_map.tag_primer_map.filename}")
       end
     end
   end
 
   def import(results_path)
-    # Download results from Xylocalyx
+    # Download results from Xylocalyx (action will be called at end of analysis script on Xylocalyx!)
     Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
       sftp.stat(results_path) do |response|
         if response.ok?
+          # Delete older results
+          results.purge
+          Cluster.where(ngs_run_id: id).delete_all
+          NgsResult.where(ngs_run_id: id).delete_all
+          FileUtils.rm_r("#{Rails.root}/#{self.name}_out.zip") if File.exists?("#{Rails.root}/#{self.name}_out.zip")
+          FileUtils.rm_r("#{Rails.root}/#{self.name}_out") if File.exists?("#{Rails.root}/#{self.name}_out")
+
           # Download result file
           sftp.download!(results_path, "#{Rails.root}/#{self.name}_out.zip")
 
-          # Delete older results
-          results.clear
-          Cluster.where(ngs_run_id: id).delete_all
-          NgsResult.where(ngs_run_id: id).delete_all
-
           #TODO: Maybe add possibility to use AWS copy here in case of a reimport of data at a later point
+
           # Unzip results
           Zip::File.open("#{Rails.root}/#{self.name}_out.zip") do |zip_file|
             zip_file.each do |entry|
-              entry.extract("#{Rails.root}/#{entry.name}") # TODO: seems to extract to the wrong place???
+              entry.extract("#{Rails.root}/#{entry.name}")
             end
           end
 
           # Import data
           Marker.all.each do |marker|
-            import_clusters(marker)
+            begin
+              import_clusters(marker)
+            rescue
+              self.issues << Issue.new(title: "Import error",
+                                       description: "Something went wrong when importing clusters for marker #{marker.name}")
+            end
           end
 
           import_analysis_stats
 
           tag_primer_maps.each do |tpm|
-            import_results("#{tpm.tag_primer_map_file_name.gsub('.txt', '')}_expanded.txt")
+            begin
+              import_results("#{tpm.tag_primer_map.filename.gsub('.txt', '')}_expanded.txt")
+            rescue Exception => e
+              self.issues << Issue.new(title: "Import error",
+                                       description: "Importing results for tag primer map #{tpm.tag_primer_map.filename}
+                                                     resulted in error:\n#{e.message}")
+            end
           end
 
           # Store results on AWS
-          update(results: File.open("#{Rails.root}/#{self.name}_out.zip"))
+          self.results.attach(io: File.open("#{Rails.root}/#{self.name}_out.zip"), filename: "#{self.name}_out.zip", content_type: 'application/zip')
           save!
 
           # Remove temporary files from server
           FileUtils.rm_r("#{Rails.root}/#{self.name}_out.zip")
           FileUtils.rm_r("#{Rails.root}/#{self.name}_out")
+        else
+          self.issues << Issue.new(title: "Result file not found",
+                                   description: "The requested result file could not be found on the server.")
         end
       end
     end

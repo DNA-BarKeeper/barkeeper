@@ -11,6 +11,7 @@
       <li class="active"><a href="#parameters" role="tab" data-toggle="tab">Parameters</a></li>
       <li><a href="#stats" role="tab" data-toggle="tab">Result stats</a></li>
       <li><a href="#results" role="tab" data-toggle="tab">Results</a></li>
+      <li><a href="#ngs_run_issues" role="tab" data-toggle="tab">Issues</a></li>
     </ul>
 
     <!-- Tab panes -->
@@ -54,11 +55,11 @@
           <%= @ngs_run.comment %>
         </p>
 
-        <% if @ngs_run.set_tag_map_file_name %>
+        <% if @ngs_run.set_tag_map.attached? %>
           <p>
             <strong>Platepool set</strong>
             <br>
-            <%= @ngs_run.set_tag_map_file_name %>
+            <%= @ngs_run.set_tag_map.filename %>
           </p>
         <% end %>
 
@@ -109,12 +110,14 @@
 
       </div>
 
+      <br>
+
       <div class="tab-pane" id="results">
         <div class="wideTable">
           <table id="ngs_run_results" data-source="<%= analysis_results_ngs_run_path(format: "json") %>" class="table table-striped table-hover table-bordered">
             <thead>
             <tr>
-              <th rowspan="2" style="vertical-align: middle;">Name</th>
+              <th rowspan="2" style="vertical-align: middle;">Isolate</th>
               <th rowspan="2" style="vertical-align: middle;">Species</th>
               <th rowspan="2" style="vertical-align: middle;">Family</th>
               <th rowspan="2" style="vertical-align: middle;">Total number of sequences</th>
@@ -129,11 +132,38 @@
           </table>
         </div>
       </div>
+
+      <div class="tab-pane" id="ngs_run_issues">
+        <br>
+        <table class="table table-striped table-hover table-bordered">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Created at</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% @ngs_run.issues.each do |i| %>
+              <tr>
+                <td><%= i.title %></td>
+                <td><%= i.description %></td>
+                <td><%= i.created_at %></td>
+                <td><%= link_to('Delete', i, method: :delete, data: { confirm: 'Are you sure?' }) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
 
 <%= link_to 'Go to NGS runs index', ngs_runs_path, method: :get, class: 'btn btn-default' %>
+
+<br><br>
 
 <table width="100%">
   <tr>

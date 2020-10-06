@@ -34,7 +34,9 @@ class PrimerReadsController < ApplicationController
 
   # GET /primer_reads/1
   # GET /primer_reads/1.json
-  def show; end
+  def show
+    redirect_to edit_primer_read_path, alert: "The view you were looking for does not exist."
+  end
 
   # GET /primer_reads/new
   def new
@@ -65,7 +67,7 @@ class PrimerReadsController < ApplicationController
     respond_to do |format|
       if @primer_read.update(primer_read_params)
         format.html { redirect_back(fallback_location: edit_primer_read_path(@primer_read), notice: 'Primer read was successfully updated.') }
-        format.json { render :show, status: :ok, location: @primer_read }
+        format.json { render :edit, status: :ok, location: @primer_read }
       else
         format.html { render :edit }
         format.json { render json: @primer_read.errors, status: :unprocessable_entity }
@@ -123,7 +125,10 @@ class PrimerReadsController < ApplicationController
 
   # Tries to extract associated primer and isolate from primer read name (in turn based on uploaded scf file name):
   def assign
+    previous_primer = @primer_read.primer
+
     msg_hash = @primer_read.auto_assign
+    @primer_read.auto_trim(true) if (previous_primer != @primer_read.primer)
 
     if msg_hash[:create_issue]
       redirect_to edit_primer_read_path, alert: msg_hash[:msg]

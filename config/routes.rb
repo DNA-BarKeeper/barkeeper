@@ -119,6 +119,10 @@ GBOLapp::Application.routes.draw do
   resources :issues
 
   resources :higher_order_taxa do
+    collection do
+      get 'hierarchy_tree', defaults: { format: 'json' }
+    end
+
     member do
       get 'show_species'
     end

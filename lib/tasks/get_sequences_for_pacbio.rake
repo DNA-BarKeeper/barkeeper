@@ -13,11 +13,11 @@ GBoL3626 GBoL3627 GBoL3635 GBoL3636 GBoL3606 GBoL3637 GBoL3541".split
       name_list_marker = name_list.collect { |name| name + "_#{marker.name}" }
       marker_sequences = MarkerSequence.in_project(5).order(:name).where(name: name_list_marker)
 
-      File.open("#{marker.name}_sanger.fasta", 'w') do |file|
-        file.puts MarkerSequenceSearch.fasta(marker_sequences,{ metadata: false, warnings: true })
+      File.open("Sanger_#{marker.name}.fasta", 'w') do |file|
+        file.puts MarkerSequenceSearch.fasta(marker_sequences,{ metadata: true, warnings: true })
       end
 
-      File.open("#{marker.name}_taxonomy.tax", 'w') do |file|
+      File.open("Taxonomy_#{marker.name}.tax", 'w') do |file|
         file.puts MarkerSequenceSearch.taxonomy_file(marker_sequences)
       end
     end

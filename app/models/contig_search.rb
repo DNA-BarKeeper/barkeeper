@@ -6,16 +6,13 @@ class ContigSearch < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
+  validates :title, uniqueness: { :allow_blank => true,
+                                  :scope=> :user_id }
+
   enum has_warnings: %i[both yes no]
 
-  has_attached_file :search_result_archive,
-                    :path => ":rails_root/contig_search_results/:filename"
-
-  # Validate content type
-  validates_attachment_content_type :search_result_archive, :content_type => /\Aapplication\/zip/
-
-  # Validate filename
-  validates_attachment_file_name :search_result_archive, :matches => [/zip\Z/]
+  has_one_attached :search_result_archive
+  validates :search_result_archive, content_type: :zip
 
   def contigs
     @contigs ||= find_contigs
@@ -28,35 +25,41 @@ class ContigSearch < ApplicationRecord
 
     Dir.mkdir("#{temp_folder}") unless File.exists?(temp_folder)
     FileUtils.rm_r archive_file if File.exists?(archive_file)
-    search_result_archive.destroy
+    search_result_archive.purge if search_result_archive.attached?
     save!
 
     # Create archive file
     Zip::File.open(archive_file, Zip::File::CREATE) do |archive|
       contigs.each do |contig|
         # Write contig PDE to a file and add this to the zip file
-        file_name = "#{contig.name}.pde"
-        File.open("#{temp_folder}/#{file_name}", 'w') { |file| file.write(Contig.pde([contig], add_reads: true)) }
-        archive.add(file_name, "#{temp_folder}/#{file_name}")
+        contig_filename = "#{contig.name}.pde"
+        File.open("#{temp_folder}/#{contig_filename}", 'w') do |file|
+          file.write(Contig.pde([contig], add_reads: true))
+        end
+        archive.add(contig_filename, "#{temp_folder}/#{contig_filename}")
 
-        # Write chromatogram to a file and add this to the zip file
+        # Write each chromatogram to a file and add this to the zip file
         contig.primer_reads.each do |read|
-          File.open("#{temp_folder}/#{read.file_name_id}", 'wb') do |file|
-            file.write(URI.parse("http:#{read.chromatogram.url}").read) unless Rails.env.development?
-            # TODO: copy files within AWS to increase performance: s3.buckets['bucket-name'].objects['source'].copy_to('target'‌​)
+          chromatogram_filename = read.chromatogram.filename.to_s
+          File.open("#{temp_folder}/#{chromatogram_filename}", 'wb') do |file|
+            file.write(read.chromatogram.blob.download)
           end
-          archive.add(read.file_name_id, "#{temp_folder}/#{read.file_name_id}")
+
+          begin
+            archive.add(chromatogram_filename, "#{temp_folder}/#{chromatogram_filename}")
+          rescue Zip::EntryExistsError
+            # Do not add duplicate files
+          end
         end
       end
     end
 
     # Upload created archive
-    self.search_result_archive = File.open(archive_file)
+    self.search_result_archive.attach(io: File.open(archive_file), filename: "#{archive_name}.zip", content_type: 'application/zip')
     save!
 
-    # Remove temporary folders
+    # Remove temp directory
     FileUtils.rm_r temp_folder if File.exists?(temp_folder)
-    FileUtils.rm archive_file if File.exists?(archive_file)
   end
 
   private

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 # Change these
-server CONFIG[:production_server_ip], port: CONFIG[:production_server_port], roles: %i[web app db], primary: true
+server '46.101.149.34', port: 1694, roles: %i[web app db], primary: true
 
-set :repo_url,        CONFIG[:repository_url]
+set :repo_url,        'ssh://Sarah_Wiechers@bitbucket.org/kai42/gbol5.git'
 set :application,     'gbol5'
+set :rbenv_ruby, '2.6.6'
 set :user,            CONFIG[:production_server_user]
 set :puma_threads,    [1, CONFIG[:rails_max_threads]]
 set :puma_workers,    CONFIG[:puma_workers]

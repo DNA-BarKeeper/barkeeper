@@ -25,22 +25,20 @@ class NgsRunResultDatatable
 
   def data
     isolates_data.map do |isolate|
-      species_name = ''
-      species_id = 0
-      family_name = ''
-      family_id = 0
+      species_path = ''
+      family_path = ''
 
       if isolate.try(:individual).try(:species).try(:family)
-        species_name = isolate.individual.species.name_for_display
         species_id = isolate.individual.species.id
-        family_name = isolate.individual.species.family.name
+        species_path = link_to(isolate.individual.species.name_for_display, edit_species_path(species_id)) if species_id
         family_id = isolate.individual.species.family.id
+        family_path = link_to(isolate.individual.species.family.name, edit_family_path(family_id)) if family_id
       end
 
       values = [
           link_to(isolate.display_name, edit_isolate_path(isolate)),
-          link_to(species_name, edit_species_path(species_id)),
-          link_to(family_name, edit_family_path(family_id)),
+          species_path,
+          family_path,
           NgsResult.where(ngs_run_id: @analysis_id, isolate: isolate).sum(:total_sequences)
       ]
 

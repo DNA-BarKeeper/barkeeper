@@ -10,16 +10,25 @@ if defined? rbenv_root
 end
 
 every 1.day, at: '11:30 pm' do
-  rake 'data:create_xls' # Create Specimen.xls file from current database
+  rake 'data:create_specimen_export' # Create specimen XML file from current database
+end
+
+every :saturday, at: '11:15 pm' do
+  rake 'data:create_species_export' # Create species XML file from current database
 end
 
 every 1.day, at: '0:30 am' do
   rake 'data:remove_old_searches' # Delete all untitled contig searches older than a month
 end
 
-every 1.day, at: '9:00 pm' do
-  rake 'data:check_new_marker_sequences' # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
+every :sunday, at: '11:15 am' do
+  rake 'data:remove_old_exports' # Delete all species exports older than a month and specimen exports older than a week
 end
+
+# TODO: Activate again, after whitelisting on Xylocalyx works
+# every 1.day, at: '9:00 pm' do
+#   rake 'data:check_new_marker_sequences' # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
+# end
 
 every 1.day, at: '3:10 am' do
   rake 'data:flag_specimen' # Places a warning on specimens with multiple sequences that have issues

@@ -2,23 +2,25 @@
 
 class Individual < ApplicationRecord
   include ProjectRecord
-  include PgSearch
+  include PgSearch::Model
 
   has_many :isolates
   belongs_to :species
   belongs_to :herbarium
   belongs_to :tissue
 
-  after_save :assign_dna_bank_info, :if => proc{ |ind| ind.specimen_id_changed? || ind.DNA_bank_id_changed? }
-  after_save :update_isolate_tissue, if: :tissue_id_changed?
+  after_save :assign_dna_bank_info, if: :identifier_has_changed?
+  after_save :update_isolate_tissue, if: :saved_change_to_tissue_id?
 
   pg_search_scope :quick_search, against: %i[specimen_id herbarium collector collectors_field_number]
 
   scope :without_species, -> { where(species: nil) }
   scope :without_isolates, -> { left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
   scope :no_species_isolates, -> { without_species.left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
-  scope :bad_longitude, -> { where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}') }
-  scope :bad_latitude, -> { where('individuals.latitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}') }
+  scope :bad_longitude, -> { where(longitude: nil).where.not(longitude_original: [nil, ''])
+                                 .where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}') }
+  scope :bad_latitude, -> { where(latitude: nil).where.not(latitude_original: [nil, ''])
+                                .where('individuals.latitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}') }
   scope :bad_location, -> { bad_latitude.or(Individual.bad_longitude) }
 
   def self.to_csv(options = {})
@@ -49,6 +51,10 @@ class Individual < ApplicationRecord
     end
   end
 
+  def identifier_has_changed?
+    saved_change_to_specimen_id? || saved_change_to_DNA_bank_id?
+  end
+
   def assign_dna_bank_info
     query_dna_bank(specimen_id) if specimen_id
   end
@@ -61,9 +67,8 @@ class Individual < ApplicationRecord
   private
 
   def query_dna_bank(specimen_id)
-    puts "Query for Specimen ID '#{specimen_id}'...\n"
-    # TODO: Fix query XML!
-    service_url = "http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/UnitID'>#{specimen_id}</like></filter><count>false</count></search></request>"
+    # puts "Query for Specimen ID '#{specimen_id}'...\n"
+    service_url = "http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar_BiNHum&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/UnitID'>#{specimen_id}</like></filter><count>false</count></search></request>"
 
     url = URI.parse(service_url)
     req = Net::HTTP::Get.new(url.to_s)
@@ -125,10 +130,10 @@ class Individual < ApplicationRecord
 
         self.update(species: species)
       end
-
-      puts 'Done.'
     rescue StandardError
-      puts 'Could not read ABCD.'
+      # puts 'Could not read ABCD.'
+    else # No exceptions occurred
+      # puts 'Successfully finished.'
     end
   end
 end
