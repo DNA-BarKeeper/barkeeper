@@ -4,7 +4,7 @@ namespace :data do
 
   desc 'Check how many sequences were created or updated since last analysis and redo analysis if necessary'
   task check_new_marker_sequences: :environment do
-    # TODO: Do analyses for all existing projects (except all_records)
+    # TODO: Do analyses for all existing projects separately (except all_records)
     Marker.gbol_marker.each do |marker|
       last_analysis = MislabelAnalysis.where(automatic: true, marker: marker).order(created_at: :desc).first
       count = -1
