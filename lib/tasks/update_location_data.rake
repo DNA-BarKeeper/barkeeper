@@ -44,6 +44,37 @@ namespace :data do
 "\nNo specimens are assigned to the following #{no_specimen.length} isolates: #{no_specimen}"
   end
 
+  task fix_coordinates: :environment do
+    Individual.where(latitude_original: [' ']).update_all(latitude_original: '')
+    Individual.where(longitude_original: [' ']).update_all(longitude_original: '')
+
+    bad_latitude = Individual.bad_latitude
+    bad_longitude = Individual.bad_longitude
+
+    puts "Trying to correct #{bad_latitude.size} records with bad latitude."
+    puts "Trying to correct #{bad_longitude.size} records with bad longitude."
+
+    updated = 0
+
+    bad_latitude.each do |ind|
+      latitude = degree_to_decimal(ind.latitude_original.strip)
+      latitude ||= north_east_to_decimal(ind.latitude_original.strip)
+
+      ind.update(latitude: latitude) if latitude
+      updated += 1 if latitude
+    end
+
+    bad_longitude.each do |ind|
+      longitude = degree_to_decimal(ind.longitude_original.strip)
+      longitude ||= north_east_to_decimal(ind.longitude_original.strip)
+
+      ind.update(longitude: longitude) if longitude
+      updated += 1 if longitude
+    end
+
+    puts "Done. Updated #{updated} coordinates."
+  end
+
   desc "Strips state/province field of spaces"
   task strip_state_province: :environment do
     puts "Before stripping:"
@@ -83,6 +114,47 @@ namespace :data do
     end
   end
 
+  desc "Fix java unicode characters in locality descriptions"
+  task fix_locality: :environment do
+    individuals = Individual.where('locality like ? OR locality like ? OR locality like ? OR locality like ?
+OR locality like ? OR locality like ?', '%á%', '%„%', '%”%', '%Ž%', '%™%', '%š%')
+
+    individuals_u_uml = Individual.where.not(locality: nil).select { |i| i.locality.match(/.*\u0081.*/) }
+
+    puts "#{individuals.size} individuals with buggy unicode characters found."
+    puts "#{individuals_u_uml.size} individuals with buggy ü found."
+
+    puts 'Replacing special characters...'
+
+    individuals.each do |ind|
+      locality = ind.locality
+                     .gsub('á', 'ß') # \u00E1
+                     .gsub('„', 'ä') # \u0084
+                     .gsub('”', 'ö') # \u0094
+                     .gsub('Ž', 'Ä') # \u008e
+                     .gsub('™', 'Ö') # \u0099
+                     .gsub('š', 'Ü') # \u009A
+      ind.update(locality: locality)
+      ind.save
+    end
+
+    # Replace ü
+    individuals_u_uml.each do |ind|
+      ind.update(locality: ind.locality.gsub("\u0081", "ü"))
+    end
+  end
+
+  task fix_country_languange: :environment do
+    Individual.where(country: 'Frankreich').update_all(country: 'France')
+    Individual.where(country: 'Sweden, Sterilkultur').update_all(country: 'Sweden')
+    Individual.where(country: 'Schweden').update_all(country: 'Sweden')
+    Individual.where(country: 'Belgien').update_all(country: 'Belgium')
+    Individual.where(country: 'Schweiz').update_all(country: 'Switzerland')
+    Individual.where(country: 'Schweiz').update_all(country: 'Switzerland')
+    Individual.where(country: nil).update_all(country: '')
+    Individual.where(country: ' -').update_all(country: '')
+  end
+
   def get_state(i)
     if i.locality
       regex = /^([A-Za-z0-9\-]+)\..+/
@@ -92,5 +164,30 @@ namespace :data do
         i.update(state_province: state_component)
       end
     end
+  end
+
+  def degree_to_decimal(degree_string)
+    locality_decimal = nil
+    match = degree_string.match(/(\d+)°\s*(\d+)'\s*(\d+,*\d*)''/)
+    match ||= degree_string.match(/(\d+)ø\s*(\d+)'\s*(\d+,*\d*)''/)
+    match ||= degree_string.match(/(\d+)ø\s*(\d+)'\s*(\d+.*\d*)"/)
+
+    if match
+      locality_decimal = match[1].to_f + match[2].to_f/60 + match[3].gsub(',', '.').to_f/3600 if match
+    else
+      match = degree_string.match(/(\d+)°\s*(\d+)'[NE]/)
+      locality_decimal = match[1].to_f + match[2].to_f/60 if match
+    end
+
+    locality_decimal
+  end
+
+  def north_east_to_decimal(degree_string)
+    locality_decimal = nil
+    match = degree_string.match(/(\d+,\d+).*/)
+
+    locality_decimal = match[1].gsub(',', '.').to_f if match
+
+    locality_decimal
   end
 end

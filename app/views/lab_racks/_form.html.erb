@@ -17,12 +17,7 @@
 
         <div class="form-group">
           <%= f.label :shelf %>
-          <%= f.text_field :shelf, class: 'form-control' %>
-        </div>
-
-        <div class="form-group">
-          <%= f.label 'Freezer' %>
-          <%= f.collection_select(:freezer_id, Freezer.all, :id, :freezercode, {}, { class: 'form-control' }) %>
+          <%= f.collection_select(:shelf_id, Shelf.all, :id, :name, {}, { class: 'form-control' }) %>
         </div>
 
       <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@lab_rack) } %>

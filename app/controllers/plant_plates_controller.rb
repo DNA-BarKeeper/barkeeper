@@ -78,6 +78,6 @@ class PlantPlatesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def plant_plate_params
-    params.require(:plant_plate).permit(:name, :how_many, project_ids: [])
+    params.require(:plant_plate).permit(:name, project_ids: [])
   end
 end

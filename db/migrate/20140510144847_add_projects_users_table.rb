@@ -7,8 +7,4 @@ class AddProjectsUsersTable < ActiveRecord::Migration
       t.references :user
     end
   end
-
-  def self.down
-    drop_table :projects_users
-  end
 end

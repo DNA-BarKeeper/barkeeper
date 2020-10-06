@@ -3,18 +3,20 @@
 class Species < ApplicationRecord
   extend Import
   include ProjectRecord
-  include PgSearch
+  include PgSearch::Model
 
   multisearchable against: :composed_name
+
+  before_save :assign_display_names
 
   has_many :individuals
   has_many :primer_pos_on_genomes
   belongs_to :family
 
   def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-    spp = Species.select(:species_component).joins(family: { order: :higher_order_taxon }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    subspp = Species.select(:id).joins(family: { order: :higher_order_taxon }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    [spp.distinct.count, subspp.count]
+    spp_cnt = Species.select(:species_component).joins(family: { order: :higher_order_taxon }).where(orders: { higher_order_taxon_id: higher_order_taxon_id }).distinct.count
+    subspp_cnt = Species.select(:id).joins(family: { order: :higher_order_taxon }).where(orders: { higher_order_taxon_id: higher_order_taxon_id }).distinct.count
+    [spp_cnt, subspp_cnt]
   end
 
   def self.import_species(file, valid_keys, project_id)
@@ -153,6 +155,11 @@ class Species < ApplicationRecord
     end
   end
 
+  def assign_display_names
+    self.species_component = get_species_component
+    self.composed_name = full_name
+  end
+
   def full_name
     "#{genus_name} #{species_epithet} #{infraspecific}".strip
   end
@@ -176,6 +183,10 @@ class Species < ApplicationRecord
   end
 
   def family_name=(name)
-    self.family = Family.find_or_create_by(name: name) if name.present? # TODO: Add project
+    if name == ''
+      self.family = nil
+    else
+      self.family = Family.find_or_create_by(name: name) if name.present? # TODO: Add project
+    end
   end
 end

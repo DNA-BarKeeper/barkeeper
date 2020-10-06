@@ -1,17 +1,25 @@
 /coverage
-.idea/
+.idea
+.bundle
 tmp/
 log/
 public/assets/
-public/system/
-config/application.yml
+storage/
+
 config/database.yml
-config/secrets.yml
-.env
-.rbenv-vars
+config/application.yml
+
+# Ignore master key for decrypting credentials and more.
+config/master.key
+
 .DS_Store
-rails_best_practices_output.html
-specimens.xls
-species.xls
+
 dump.rdb
 latest.dump
+specimens.xls
+species.xls
+spec/examples.txt
+
+# Ignore local env variables
+.rbenv-vars
+.env

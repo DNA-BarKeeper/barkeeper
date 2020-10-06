@@ -1,6 +1,6 @@
 class HigherOrderTaxon < ApplicationRecord
   include ProjectRecord
-  include PgSearch
+  include PgSearch::Model
 
   multisearchable :against => :name
 
@@ -12,4 +12,8 @@ class HigherOrderTaxon < ApplicationRecord
   has_and_belongs_to_many :markers
 
   validates_presence_of :name
+
+  def self.hierarchy_json()
+    HigherOrderTaxon.arrange_serializable(order: :position).to_json
+  end
 end

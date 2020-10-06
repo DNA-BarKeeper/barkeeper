@@ -26,12 +26,12 @@ module NgsRunsHelper
       tpms = '<ul>'.dup
 
       ngs_run.tag_primer_maps.each do |tpm|
-        tpms << "<li>#{tpm.tag_primer_map_file_name}</li>"
+        tpms << "<li>#{tpm.tag_primer_map.filename}</li>"
       end
 
       tpms << '</ul>'
     else
-      tpms = ngs_run.tag_primer_maps.first.tag_primer_map_file_name
+      tpms = ngs_run.tag_primer_maps.first.tag_primer_map.filename
     end
 
     tpms.html_safe

@@ -2,7 +2,7 @@
 
 class Order < ApplicationRecord
   include ProjectRecord
-  include PgSearch
+  include PgSearch::Model
 
   multisearchable against: :name
 

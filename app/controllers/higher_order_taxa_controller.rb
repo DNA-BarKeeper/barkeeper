@@ -12,6 +12,12 @@ class HigherOrderTaxaController < ApplicationController
     @higher_order_taxa = HigherOrderTaxon.order(:position).in_project(current_project_id)
   end
 
+  # returns hierarchy of top-level taxa as JSON
+  def hierarchy_tree
+    authorize! :all_species, :overview_diagram
+    render json: HigherOrderTaxon.hierarchy_json()
+  end
+
   def show_species
     respond_to do |format|
       format.html
@@ -71,6 +77,6 @@ class HigherOrderTaxaController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def higher_order_taxon_params
-    params.require(:higher_order_taxon).permit(:position, :name, :german_name, marker_ids: [], project_ids: [])
+    params.require(:higher_order_taxon).permit(:parent_id, :position, :name, :german_name, marker_ids: [], project_ids: [])
   end
 end

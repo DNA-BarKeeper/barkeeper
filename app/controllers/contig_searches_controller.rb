@@ -15,12 +15,22 @@ class ContigSearchesController < ApplicationController
   end
 
   def create
-    @contig_search = ContigSearch.create!(contig_search_params)
+    @contig_search = ContigSearch.new(contig_search_params)
 
-    @contig_search.update(user_id: current_user.id)
-    @contig_search.update(project_id: current_user.default_project_id)
+    respond_to do |format|
+      if @contig_search.save
+        if user_signed_in?
+          @contig_search.update(user_id: current_user.id)
+          @contig_search.update(project_id: current_user.default_project_id)
+        end
 
-    redirect_to @contig_search
+        format.html { redirect_to @contig_search }
+        format.json { render :show, status: :created, location: @contig_search }
+      else
+        format.html { render :new }
+        format.json { render json: @contig_search.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   def show
@@ -29,6 +39,20 @@ class ContigSearchesController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: ContigSearchResultDatatable.new(view_context, params[:id]) }
+    end
+  end
+
+  def edit; end
+
+  def update
+    respond_to do |format|
+      if @contig_search.update(contig_search_params)
+        format.html { redirect_to contig_search_path(@contig_search), notice: 'Search parameters were successfully updated.' }
+        format.json { render :show, status: :ok, location: @contig_search }
+      else
+        format.html { render :edit }
+        format.json { render json: @contig_search.errors, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -61,21 +85,28 @@ class ContigSearchesController < ApplicationController
 
     ContigSearchResultExport.perform_async(params[:contig_search_id])
     redirect_to @contig_search,
-                notice: "The result archive file is being written to the server in the background. May take a minute or so. Download with 'Download result archive' button."
+                notice: "The result archive file is being written to the server in the background. This may take some time. Download with 'Download result archive' button."
   end
 
   def download_results
-    @contig_search = ContigSearch.find(params[:contig_search_id])
-    archive = @contig_search.search_result_archive
+    require 'open-uri'
 
-    if archive.present?
-      data = Rails.env.development? ? File.open(archive.path) : open("http:#{archive.url}")
-      send_data(data.read,
-                filename: @contig_search.search_result_archive_file_name,
-                type: 'application/zip')
+    @contig_search = ContigSearch.find(params[:contig_search_id])
+
+    if @contig_search.search_result_archive.attached?
+      archive = @contig_search.search_result_archive
+
+      begin
+        send_data(archive.blob.download,
+                  filename: @contig_search.search_result_archive.filename,
+                  type: 'application/zip')
+      rescue OpenURI::HTTPError # Results archive could not be found on server
+        redirect_to @contig_search,
+                    alert: 'The result archive file could not be opened. Please try to create it again or contact an administrator if the issue persists.'
+      end
     else
-      redirect_to @contig_search,
-                  notice: 'Please wait while the result archive is being written to the server.'
+      flash[:warning] = 'There is no search result archive available. Please create it on the server first (this may take some time to finish).' # Warning cannot be set directly in redirect
+      redirect_to @contig_search
     end
   end
 

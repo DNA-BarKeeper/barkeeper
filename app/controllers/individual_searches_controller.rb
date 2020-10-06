@@ -19,6 +19,20 @@ class IndividualSearchesController < ApplicationController
     end
   end
 
+  def edit; end
+
+  def update
+    respond_to do |format|
+      if @individual_search.update(individual_search_params)
+        format.html { redirect_to individual_search_path(@individual_search), notice: 'Search parameters were successfully updated.' }
+        format.json { render :show, status: :ok, location: @individual_search }
+      else
+        format.html { render :edit }
+        format.json { render json: @individual_search.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def new
     @individual_search = IndividualSearch.new
   end
@@ -26,10 +40,20 @@ class IndividualSearchesController < ApplicationController
   def create
     @individual_search = IndividualSearch.new(individual_search_params)
 
-    @individual_search.update(user_id: current_user.id)
-    @individual_search.update(project_id: current_user.default_project_id)
+    respond_to do |format|
+      if @individual_search.save
+        if user_signed_in?
+          @individual_search.update(user_id: current_user.id)
+          @individual_search.update(project_id: current_user.default_project_id)
+        end
 
-    redirect_to @individual_search
+        format.html { redirect_to @individual_search }
+        format.json { render :show, status: :created, location: @individual_search }
+      else
+        format.html { render :new }
+        format.json { render json: @individual_search.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   def destroy

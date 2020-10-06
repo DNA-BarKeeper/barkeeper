@@ -1,3 +1,6 @@
+<% provide(:title, @marker_sequence_search.title) %>
+<%= show_val_errors(@marker_sequence_search)%>
+
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3  class="panel-title">Advanced Marker Sequence Search</h3>
@@ -19,7 +22,7 @@
         <%= f.label :verified, "Verified" %>
         <%= f.radio_button :verified, "unverified" %>
         <%= f.label :unverified, "Unverified" %>
-        <%= f.radio_button :verified, "both", :checked => true %>
+        <%= f.radio_button :verified, "both", :checked => radio_checked(@marker_sequence_search, 'verified', 'both') %>
         <%= f.label :both_verify, "Both" %>
       </div>
       <div class="field">
@@ -43,7 +46,7 @@
         <%= f.label :yes, "Yes" %>
         <%= f.radio_button :has_warnings, "no" %>
         <%= f.label :no, "No" %>
-        <%= f.radio_button :has_warnings, "both", :checked => true %>
+        <%= f.radio_button :has_warnings, "both", :checked => radio_checked(@marker_sequence_search, 'has_warnings', 'both') %>
         <%= f.label :both, "Search for both" %>
       </div>
       <br/>

@@ -3,19 +3,21 @@ class TagPrimerMap < ApplicationRecord
 
   belongs_to :ngs_run
 
-  has_attached_file :tag_primer_map
-  validates_attachment_content_type :tag_primer_map, content_type: 'text/plain' # Using type text/csv leads to weird errors depending on file content
-  validates_attachment_file_name :tag_primer_map, :matches => [/txt\Z/, /csv\Z/]
+  has_one_attached :tag_primer_map
+  validates :tag_primer_map, attached: true, content_type: [:text, :csv] # Using only type text/csv leads to weird errors depending on file content
 
   after_save :set_name
 
   def set_name
-    self.update_column(:name, tag_primer_map_file_name.split('_').last.split('.').first) if tag_primer_map_file_name
+    self.update_column(:name, tag_primer_map.filename.to_s.split('_')[1].split('.').first) if tag_primer_map.attached?
   end
 
   def check_tag_primer_map
-    tpm_location = Rails.env.development? ? tag_primer_map.path : open("http:#{tag_primer_map.url}")
-    tp_map = CSV.read(tpm_location, { col_sep: "\t", headers: true }) if tpm_location
+    tpm_file = open_tag_primer_map
+
+    return false unless tpm_file
+
+    tp_map = CSV.read(tpm_file, { col_sep: "\t", headers: true })
 
     # Check if file is actually of type CSV
     valid = tp_map.instance_of?(CSV::Table)
@@ -37,21 +39,35 @@ class TagPrimerMap < ApplicationRecord
   end
 
   def revised_tag_primer_map(project_ids)
-    tpm_location = Rails.env.development? ? tag_primer_map.path : open("http:#{tag_primer_map.url}")
-    tp_map = CSV.read(tpm_location, { col_sep: "\t", headers: true })
+    tpm_file = open_tag_primer_map
+
+    return nil unless tpm_file
+
+    tp_map = CSV.read(tpm_file, { col_sep: "\t", headers: true })
 
     tp_map.each do |row|
-      sample_id = row['#SampleID'].match(/\D+\d+|\D+\z/)[0]
-      isolate = Isolate.joins(individual: :species).find_by_lab_isolation_nr(sample_id)
+      sample_id = row['#SampleID']
 
-      if isolate
-        species = isolate.individual.species.composed_name.gsub(' ', '_')
-        row['Description'] = [sample_id, species, row['TagID'], row['Region']].join('_')
-      else
-        isolate = Isolate.joins(individual: :species).find_or_create_by(lab_isolation_nr: sample_id)
+      next unless sample_id
+
+      sample_id.match(/\D+\d+|\D+\z/)[0]
+
+      isolate = Isolate.includes(individual: :species).find_by_lab_isolation_nr(sample_id)
+      unless isolate
+        isolate = Isolate.includes(individual: :species).create(lab_isolation_nr: sample_id)
         isolate.add_projects(project_ids)
-        row['Description'] = [sample_id, row['TagID'], row['Region']].join('_')
+        isolate.save
       end
+
+      species = isolate&.individual&.species
+      species_name = species.composed_name.gsub(' ', '_') if species
+
+      description = [sample_id]
+      description << species_name if species_name
+      description << row['TagID'] if row['TagID']
+      description << row['Region'] if row['Region']
+
+      row['Description'] = description.join('_')
 
       # Adding indices to the region to indicate differing primer pairs, not necessary right now
       # region = row['Region']
@@ -83,4 +99,16 @@ class TagPrimerMap < ApplicationRecord
   #
   #   primer_pairs
   # end
+
+  private
+
+  def open_tag_primer_map
+    require 'open-uri'
+
+    begin
+      open(tag_primer_map.service_url)
+    rescue OpenURI::HTTPError # TPM file could not be found on server
+      nil
+    end
+  end
 end

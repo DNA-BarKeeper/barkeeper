@@ -1,3 +1,6 @@
+<% provide(:title, @individual_search.title) %>
+<%= show_val_errors(@individual_search)%>
+
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3  class="panel-title">Advanced Specimen Search</h3>
@@ -25,7 +28,7 @@
         <%= f.label :species, "Only with" %>
         <%= f.radio_button :has_species, "no_species" %>
         <%= f.label :no_species, "Only without" %>
-        <%= f.radio_button :has_species, "all_species", :checked => true %>
+        <%= f.radio_button :has_species, "all_species", :checked => radio_checked(@individual_search, 'has_species', 'all_species') %>
         <%= f.label :all_species, "Both" %>
       </div>
       <br/>
@@ -35,7 +38,7 @@
         <%= f.label :yes, "Only with" %>
         <%= f.radio_button :has_issue, "no_issues" %>
         <%= f.label :no, "Only without" %>
-        <%= f.radio_button :has_issue, "all_issue", :checked => true %>
+        <%= f.radio_button :has_issue, "all_issue", :checked => radio_checked(@individual_search, 'has_issue', 'all_issue') %>
         <%= f.label :both, "Both" %>
       </div>
       <br/>
@@ -45,7 +48,7 @@
         <%= f.label :bad_location, "Only with" %>
         <%= f.radio_button :has_problematic_location, "location_okay" %>
         <%= f.label :location_okay, "Only without" %>
-        <%= f.radio_button :has_problematic_location, "all_location", :checked => true %>
+        <%= f.radio_button :has_problematic_location, "all_location", :checked => radio_checked(@individual_search, 'has_problematic_location', 'all_location') %>
         <%= f.label :all_location, "Both" %>
       </div>
       <br/>

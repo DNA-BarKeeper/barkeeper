@@ -15,17 +15,25 @@ class SpeciesController < ApplicationController
   end
 
   def xls
+    require 'open-uri'
+
     export = SpeciesExporter.last.species_export
 
-    if export.present?
-      data = Rails.env.development? ? File.open(File.join(Rails.root, export.path)) : open("http:#{export.url}")
-      send_data(data.read, filename: 'species_export.xls',
-                           type: 'application/vnd.ms-excel',
-                           disposition: 'attachment',
-                           stream: 'true',
-                           buffer_size: '4096')
+    if export.attached?
+      begin
+        data = open(export.service_url)
+        send_data(data.read, filename: 'species_export.xls',
+                             type: 'application/vnd.ms-excel',
+                             disposition: 'attachment',
+                             stream: 'true',
+                             buffer_size: '4096')
+      rescue OpenURI::HTTPError # Species XLS could not be found on server
+        redirect_to species_index_path,
+                    alert: 'The species XLS file could not be opened. Please try to export it again or contact an administrator if the issue persists.'
+      end
     else
-      redirect_to species_index_path, notice: 'Please wait while the file is being written to the server.'
+      redirect_to species_index_path,
+                  notice: 'Please wait while the file is being written to the server.'
     end
   end
 
@@ -119,8 +127,6 @@ class SpeciesController < ApplicationController
 
     respond_to do |format|
       if @species.save
-        @species.update(species_component: @species.get_species_component)
-        @species.update(composed_name: @species.full_name)
         format.html { redirect_to species_index_path, notice: 'Species was successfully created.' }
         format.json { render :show, status: :created, location: @species }
       else
@@ -135,8 +141,6 @@ class SpeciesController < ApplicationController
   def update
     respond_to do |format|
       if @species.update(species_params)
-        @species.update(species_component: @species.get_species_component)
-        @species.update(composed_name: @species.full_name)
         format.html do
           issue = Issue.create(title: "#{@species.name_for_display} updated by #{current_user.name}")
           issue.add_projects(@species.projects.pluck(:id))
@@ -156,7 +160,7 @@ class SpeciesController < ApplicationController
   def destroy
     @species.destroy
     respond_to do |format|
-      format.html { redirect_to species_index_url, notice: 'Species was successfully destroyed.' }
+      format.html { redirect_to species_index_path, notice: 'Species was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

@@ -5,7 +5,7 @@ class ContigsController < ApplicationController
 
   load_and_authorize_resource
 
-  http_basic_authenticate_with name: ENV['API_USER_NAME'], password: ENV['API_PASSWORD'], only: [:as_fasq, :change_via_script, :compare_contigs]
+  http_basic_authenticate_with name: Rails.application.credentials.api_user, password: Rails.application.credentials.api_password, only: [:as_fasq, :change_via_script, :compare_contigs]
 
   skip_before_action :verify_authenticity_token, only: [:as_fasq, :change_via_script, :compare_contigs]
 
@@ -103,7 +103,7 @@ class ContigsController < ApplicationController
   end
 
   def analysis_output
-    redirect_to TxtUploader.last.uploaded_file.url
+    redirect_to TxtUploader.last.uploaded_file.service_url
   end
 
   def import
