@@ -12,8 +12,8 @@ gem 'pg_search'
 
 # Web server and background processing
 gem 'puma'
-gem 'redis' # Use Redis adapter to run Action Cable in production
-gem 'sidekiq', "~>5"
+gem 'redis-rails', '~> 5'
+gem 'sidekiq', "~> 5"
 gem 'sidekiq-client-cli'
 gem 'sidekiq-limit_fetch'
 gem 'sinatra', require: false # Needed to monitor sidekiq jobs

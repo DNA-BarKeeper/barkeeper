@@ -6,9 +6,9 @@ server '46.101.149.34', port: 1694, roles: %i[web app db], primary: true
 set :repo_url,        'ssh://Sarah_Wiechers@bitbucket.org/kai42/gbol5.git'
 set :application,     'gbol5'
 set :rbenv_ruby, '2.6.6'
-set :user,            CONFIG[:production_server_user]
-set :puma_threads,    [1, CONFIG[:rails_max_threads]]
-set :puma_workers,    CONFIG[:puma_workers]
+set :user,            'sarah'
+set :puma_threads,    [1, 5]
+set :puma_workers,    2
 
 # Always deploy currently checked out branch
 set :branch, Regexp.last_match(1) if `git branch` =~ /\* (\S+)\s/m
@@ -37,7 +37,7 @@ set :puma_worker_timeout, nil
 set :puma_init_active_record, true # Change to false when not using ActiveRecord
 set :puma_user, fetch(:user)
 
-set :ssh_options, port: CONFIG[:production_server_port], forward_agent: true, user: fetch(:user), keys: %w[CONFIG[:ssh_key_path]]
+set :ssh_options, port: 1694, forward_agent: true, user: fetch(:user), keys: %w['/home/sarah/.ssh/id_rsa']
 
 # Sidekiq setup
 set sidekiq_log: File.join(release_path, 'log', 'sidekiq.log')
