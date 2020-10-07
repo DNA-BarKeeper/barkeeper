@@ -16,17 +16,18 @@ services:
     volumes:
       - 'redis:/data'
 
-  web:
-    image: 'gbol5/bartender:latest'
+  app:
     command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
     volumes:
-      - .:/bartender
-      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/.env:/bartender/.env
-      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/application.yml:/bartender/config/application.yml
-      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/project_images:/bartender/app/assets/images/project_images
-      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/about.html.erb:/bartender/app/views/home/about.html.erb
-      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/impressum.html.erb:/bartender/app/views/home/impressum.html.erb
-      - /data1/sciebo/PhD/GBOL/WebApp/Docker/gbol5_config/privacy_policy.html.erb:/bartender/app/views/home/privacy_policy.html.erb
+      - .:/var/www/barcode_workflow_manager
+      - ${CONFIG_PATH}/application.yml:/var/www/barcode_workflow_manager/config/application.yml
+      - ${CONFIG_PATH}/project_images:/var/www/barcode_workflow_manager/app/assets/images/project_images
+      - ${CONFIG_PATH}/about.html.erb:/var/www/barcode_workflow_manager/app/views/home/about.html.erb
+      - ${CONFIG_PATH}/impressum.html.erb:/var/www/barcode_workflow_manager/app/views/home/impressum.html.erb
+      - ${CONFIG_PATH}/privacy_policy.html.erb:/var/www/barcode_workflow_manager/app/views/home/privacy_policy.html.erb
     ports:
       - "3000:3000"
     env_file:
@@ -42,9 +43,18 @@ services:
     build: .
     command: sidekiq -C config/sidekiq.yml
     volumes:
-      - '.:/bartender'
+      - '.:/var/www/barcode_workflow_manager'
     env_file:
       - '.env'
+
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/web/Dockerfile
+    depends_on:
+      - app
+    ports:
+      - 80:80
 
 volumes:
   redis:
