@@ -30,10 +30,11 @@ module NgsRunsHelper
       end
 
       tpms << '</ul>'
+      tpms = tpms.html_safe
     else
       tpms = ngs_run.tag_primer_maps.first.tag_primer_map.filename
     end
 
-    tpms.html_safe
+    tpms
   end
 end
