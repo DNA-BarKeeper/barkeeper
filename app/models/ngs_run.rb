@@ -113,6 +113,7 @@ class NgsRun < ApplicationRecord
     `echo "#{text}" | mail -s "#{subject}" #{recipients.join(',')}`
 
     self.analysis_requested = true
+    self.save!
   end
 
   def check_server_status
