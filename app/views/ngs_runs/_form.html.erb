@@ -15,16 +15,24 @@
 
       <div class="form-group">
         <%= f.label :quality_threshold %>
+        <br>
+        <%= 'Default: 25' %>
         <%= f.number_field :quality_threshold, min: 0, class: 'form-control' %>
       </div>
 
       <div class="form-group">
         <%= f.label :tag_mismatches %>
+        <br>
+        <%= 'Sets a threshold for the absolute number of allowed mismatching nucleotides in the tag (barcode).' %><br>
+        <%= 'Default: 2' %>
         <%= f.number_field :tag_mismatches, min: 0, class: 'form-control' %>
       </div>
 
       <div class="form-group">
         <%= f.label :primer_mismatches %>
+        <br>
+        <%= 'Sets a threshold for the relative number of allowed mismatching nucleotides in the primer.' %><br>
+        <%= 'If no value is provided, the exact value is calculated based on the primer length during analysis.' %><br>
         <%= f.number_field :primer_mismatches, in: 0..1, step: 0.1, class: 'form-control' %>
       </div>
 
@@ -35,7 +43,7 @@
 
       <div class="form-group">
         <%= f.label :comment %>
-        <%= f.text_field :comment, class: 'form-control' %>
+        <%= f.text_area :comment, class: 'form-control' %>
       </div>
 
       <div class="form-group">
