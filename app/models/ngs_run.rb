@@ -110,7 +110,7 @@ class NgsRun < ApplicationRecord
     text << "Taxon: #{higher_order_taxon.name}\n" if higher_order_taxon_id
     text << "Please visit #{route} to start the analysis."
 
-    `mail -s "#{subject}" #{recipients.join(',')} < #{text}`
+    `mail -s "#{subject}" #{recipients.join(',')} <<< #{text}`
 
     self.analysis_requested = true
   end
