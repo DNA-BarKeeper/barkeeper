@@ -127,6 +127,11 @@ class NgsRun < ApplicationRecord
       analysis_dir = "/data/data1/sarah/ngs_barcoding/#{name}"
       output_dir = "/data/data1/sarah/ngs_barcoding/#{name}_out"
 
+      # Write adapter file
+      File.open("#{Rails.root}/#{set_tag_map.filename}", 'w') do |file|
+        file << set_tag_map # TODO: properly download content
+      end
+
       # Write edited tag primer maps
       tag_primer_maps.each do |tag_primer_map|
         File.open("#{Rails.root}/#{tag_primer_map.tag_primer_map.filename}", 'w') do |file|
@@ -134,16 +139,32 @@ class NgsRun < ApplicationRecord
         end
       end
 
-      tag_primer_map_path = "#{analysis_dir}/#{tag_primer_maps.first.tag_primer_map.filename}"
-
       # Create analysis directory
       session.exec!("mkdir #{analysis_dir}")
 
       # Upload analysis input files
-      session.scp.upload! "#{Rails.root}/#{tag_primer_maps.first.tag_primer_map.filename}", tag_primer_map_path
+      tag_primer_maps.each do |tag_primer_map|
+        tag_primer_map_path = "#{analysis_dir}/#{tag_primer_map.filename}"
+        session.scp.upload! "#{Rails.root}/#{tag_primer_map.filename}", tag_primer_map_path
+      end
 
-      # Start analysis on server # TODO uncomment when ready and add remaining parameters
-      # session.exec!("ruby /data/data2/lara/Barcoding/barcoding_pipe.rb -m #{tag_primer_map_path} -f #{fastq_location} -o #{output_dir}")
+      # Start analysis on server
+      start_command = "ruby /data/data2/lara/Barcoding/barcoding_pipe.rb"
+      start_command << "-s #{analysis_dir}/#{set_tag_map.filename}" if set_tag_map.attached? # Path to adapter platepool file on server
+      tag_primer_maps.each do |tag_primer_map|
+        start_command << "-m #{"#{analysis_dir}/#{tag_primer_map.filename}"}" # Path to tag primer map on server
+      end
+      start_command << "-w #{fastq_location}" # WebDAV address of raw analysis files
+      start_command << "-o #{output_dir}" # Output directory
+      start_command << "-d #{self.id}"
+      start_command << "-t #{higher_order_taxon.name}"
+      start_command << "-t #{higher_order_taxon.name}"
+      start_command << "-q #{self.quality_threshold}"
+      start_command << "-p #{self.primer_mismatches}"
+      start_command << "-b #{self.tag_mismatches}"
+
+      puts start_command
+      # session.exec!(start_command)
 
       # Remove edited tag primer maps
       tag_primer_maps.each do |tag_primer_map|
