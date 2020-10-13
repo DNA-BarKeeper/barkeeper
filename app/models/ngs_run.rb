@@ -100,9 +100,9 @@ class NgsRun < ApplicationRecord
   def submit_request(current_user, route)
     subject = "NGS raw data analysis request by #{current_user.name}"
     # recipients = User.where(role: 'admin').map(&:email)
-    recipients = User.where(name: 'Sarah Wiechers') # TODO: nur für Testzwecke
+    recipients = User.where(name: 'Sarah Wiechers').map(&:email) # TODO: nur für Testzwecke
 
-    text = "#{current_user.name} is requesting to start a SMRT raw data analysis with the following parameters:\n"
+    text = "#{current_user.name} is requesting to start an SMRT raw data analysis with the following parameters:\n"
     text << "Quality threshold: #{quality_threshold}\n" if quality_threshold
     # text << "Identity threshold: #{identity_threshold}\n" if identity_threshold
     text << "Primer mismatches: #{primer_mismatches}\n" if primer_mismatches
@@ -110,7 +110,7 @@ class NgsRun < ApplicationRecord
     text << "Taxon: #{higher_order_taxon.name}\n" if higher_order_taxon_id
     text << "Please visit #{route} to start the analysis."
 
-    `echo "#{text}" | mail -s "#{subject}" #{recipients.join(',')}`
+    puts "echo \"#{text}\" | mail -s \"#{subject}\" #{recipients.join(',')}"
 
     self.analysis_requested = true
   end
