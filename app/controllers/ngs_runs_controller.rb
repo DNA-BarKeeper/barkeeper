@@ -86,6 +86,11 @@ class NgsRunsController < ApplicationController
     end
   end
 
+  def  submit_analysis_request
+    @ngs_run.submit_request(current_user, edit_ngs_run_path(@ngs_run))
+    redirect_to ngs_runs_path, notice: 'Request for analysis successfully submitted. An admin is informed. Please check in later to see results.'
+  end
+
   def start_analysis
     if @ngs_run.check_tag_primer_map_count
       isolates_not_in_db = @ngs_run.samples_exist
