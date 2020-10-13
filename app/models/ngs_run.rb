@@ -112,7 +112,7 @@ class NgsRun < ApplicationRecord
 
     `mail -s "#{subject}" #{recipients.join(',')} < #{text}`
 
-    this.analysis_requested = true
+    self.analysis_requested = true
   end
 
   def check_server_status
