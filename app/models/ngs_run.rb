@@ -97,6 +97,24 @@ class NgsRun < ApplicationRecord
     valid
   end
 
+  def submit_request(current_user, route)
+    subject = "NGS raw data analysis request by #{current_user.name}"
+    # recipients = User.where(role: 'admin').map(&:email)
+    recipients = User.where(name: 'Sarah Wiechers') # TODO: nur für Testzwecke
+
+    text = "#{current_user.name} is requesting to start a SMRT raw data analysis with the following parameters:\n"
+    text << "Quality threshold: #{quality_threshold}\n" if quality_threshold
+    # text << "Identity threshold: #{identity_threshold}\n" if identity_threshold
+    text << "Primer mismatches: #{primer_mismatches}\n" if primer_mismatches
+    text << "Barcode mismatches: #{tag_mismatches}\n" if tag_mismatches
+    text << "Taxon: #{higher_order_taxon.name}\n" if higher_order_taxon_id
+    text << "Please visit #{route} to start the analysis."
+
+    `mail -s "#{subject}" #{recipients.join(',')} < #{text}`
+
+    this.analysis_requested = true
+  end
+
   def check_server_status
     Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
       session.exec!("pgrep -f \"barcoding_pipe.rb\"")
