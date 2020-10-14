@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_13_133321) do
+ActiveRecord::Schema.define(version: 2020_10_14_112537) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -514,7 +514,7 @@ ActiveRecord::Schema.define(version: 2020_10_13_133321) do
   create_table "ngs_runs", id: :serial, force: :cascade do |t|
     t.integer "quality_threshold", default: 25
     t.integer "tag_mismatches", default: 2
-    t.decimal "primer_mismatches", default: "0.1"
+    t.decimal "primer_mismatches", default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "comment"
