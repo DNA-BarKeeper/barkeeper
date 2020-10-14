@@ -32,7 +32,7 @@
         <%= f.label :primer_mismatches %>
         <br>
         <%= 'Sets a threshold for the relative number of allowed mismatching nucleotides in the primer.' %><br>
-        <%= 'If no value is provided, the exact value is calculated based on the primer length during analysis.' %><br>
+        <%= 'If no value or 0 is chosen, the exact value is calculated based on the primer length during analysis.' %><br>
         <%= f.number_field :primer_mismatches, in: 0..1, step: 0.1, class: 'form-control' %>
       </div>
 

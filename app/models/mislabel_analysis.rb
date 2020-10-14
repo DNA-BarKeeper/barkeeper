@@ -11,7 +11,7 @@ class MislabelAnalysis < ApplicationRecord
   end
 
   def analyse_on_server
-    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
+    Net::SSH.start('141.20.65.52', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
       # Check if SATIVA.sh is already running
       running = session.exec!("pgrep -f \"SATIVA.sh\"")
 
@@ -53,7 +53,7 @@ class MislabelAnalysis < ApplicationRecord
     results = "#{Rails.root}/#{title}.mis"
 
     # Check if file exists before download
-    Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
+    Net::SFTP.start('141.20.65.52', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
       sftp.stat(results_remote) do |response|
         if response.ok?
           # Download result file

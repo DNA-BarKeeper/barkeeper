@@ -15,7 +15,7 @@ class NgsRun < ApplicationRecord
   has_many :issues
 
   has_one_attached :set_tag_map
-  validates :set_tag_map, content_type: :text
+  validates :set_tag_map, content_type: [:text, 'application/octet-stream']
 
   has_one_attached :results
   validates :results, content_type: :zip
@@ -99,12 +99,10 @@ class NgsRun < ApplicationRecord
 
   def submit_request(current_user, route)
     subject = "NGS raw data analysis request by #{current_user.name}"
-    # recipients = User.where(role: 'admin').map(&:email)
-    recipients = User.where(name: 'Sarah Wiechers').map(&:email) # TODO: nur für Testzwecke
+    recipients = User.where(role: 'admin').map(&:email)
 
     text = "#{current_user.name} is requesting to start an SMRT raw data analysis with the following parameters:\n"
     text << "Quality threshold: #{quality_threshold}\n" if quality_threshold
-    # text << "Identity threshold: #{identity_threshold}\n" if identity_threshold
     text << "Primer mismatches: #{primer_mismatches}\n" if primer_mismatches
     text << "Barcode mismatches: #{tag_mismatches}\n" if tag_mismatches
     text << "Taxon: #{higher_order_taxon.name}\n" if higher_order_taxon_id
@@ -117,65 +115,69 @@ class NgsRun < ApplicationRecord
   end
 
   def check_server_status
-    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
+    Net::SSH.start('141.20.65.52', 'kai', keys: ['/home/sarah/.ssh/id_rsa', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
       session.exec!("pgrep -f \"barcoding_pipe.rb\"")
     end
   end
 
   def run_pipe
-    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
+    Net::SSH.start('141.20.65.52', 'kai', keys: ['/home/sarah/.ssh/id_rsa', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
       analysis_dir = "/data/data1/sarah/ngs_barcoding/#{name}"
       output_dir = "/data/data1/sarah/ngs_barcoding/#{name}_out"
 
-      # Write adapter file
-      File.open("#{Rails.root}/#{set_tag_map.filename}", 'w') do |file|
-        file << set_tag_map # TODO: properly download content
-      end
-
-      # Write edited tag primer maps
-      tag_primer_maps.each do |tag_primer_map|
-        File.open("#{Rails.root}/#{tag_primer_map.tag_primer_map.filename}", 'w') do |file|
-          file << tag_primer_map.revised_tag_primer_map(projects.map(&:id))
-        end
-      end
-
-      # Create analysis directory
+      # Create analysis directory (and remove older versions)
+      session.exec!("rm -R #{analysis_dir}")
       session.exec!("mkdir #{analysis_dir}")
 
-      # Upload analysis input files
+      # Write and uplaod adapter platepool (set tag map) file
+      if set_tag_map.attached?
+        File.open("#{Rails.root}/#{set_tag_map.filename}", 'w') do |file|
+          file << set_tag_map.download
+        end
+
+        set_tag_map_path = "#{analysis_dir}/#{set_tag_map.filename}"
+        session.scp.upload! "#{Rails.root}/#{set_tag_map.filename}", set_tag_map_path
+      end
+
+      # Write and upload edited tag primer maps
       tag_primer_maps.each do |tag_primer_map|
-        tag_primer_map_path = "#{analysis_dir}/#{tag_primer_map.filename}"
-        session.scp.upload! "#{Rails.root}/#{tag_primer_map.filename}", tag_primer_map_path
+        tpm_filename = tag_primer_map.tag_primer_map.filename
+
+        File.open("#{Rails.root}/#{tpm_filename}", 'w') do |file|
+          file << tag_primer_map.revised_tag_primer_map(projects.map(&:id))
+        end
+
+        session.scp.upload! "#{Rails.root}/#{tpm_filename}", "#{analysis_dir}/#{tpm_filename}"
       end
 
       # Start analysis on server
-      start_command = "ruby /data/data2/lara/Barcoding/barcoding_pipe.rb"
-      start_command << "-s #{analysis_dir}/#{set_tag_map.filename}" if set_tag_map.attached? # Path to adapter platepool file on server
+      start_command = "ruby /data/data2/lara/Barcoding/barcoding_pipe.rb "
+      start_command << "-s #{analysis_dir}/#{set_tag_map.filename} " if set_tag_map.attached? # Path to adapter platepool file on server
       tag_primer_maps.each do |tag_primer_map|
-        start_command << "-m #{"#{analysis_dir}/#{tag_primer_map.filename}"}" # Path to tag primer map on server
+        start_command << "-m #{"#{analysis_dir}/#{tag_primer_map.tag_primer_map.filename}"} " # Path to tag primer map on server
       end
-      start_command << "-w #{fastq_location}" # WebDAV address of raw analysis files
-      start_command << "-o #{output_dir}" # Output directory
-      start_command << "-d #{self.id}"
-      start_command << "-t #{higher_order_taxon.name}"
-      start_command << "-t #{higher_order_taxon.name}"
-      start_command << "-q #{self.quality_threshold}"
-      start_command << "-p #{self.primer_mismatches}"
-      start_command << "-b #{self.tag_mismatches}"
+      start_command << "-w \"#{fastq_location}\" " # WebDAV address of raw analysis files
+      start_command << "-o #{output_dir} " # Output directory
+      start_command << "-d #{self.id} "
+      start_command << "-t #{higher_order_taxon.name} " if self.higher_order_taxon
+      start_command << "-q #{self.quality_threshold} "
+      start_command << "-p #{self.primer_mismatches} " if self.primer_mismatches && self.primer_mismatches != 0.0
+      start_command << "-b #{self.tag_mismatches} "
 
-      puts start_command
-      # session.exec!(start_command)
+      session.exec!(start_command)
 
-      # Remove edited tag primer maps
+      # Remove edited tag primer maps and set tag map
       tag_primer_maps.each do |tag_primer_map|
         FileUtils.rm("#{Rails.root}/#{tag_primer_map.tag_primer_map.filename}")
       end
+
+      FileUtils.rm("#{Rails.root}/#{set_tag_map.filename}") if set_tag_map.attached?
     end
   end
 
   def import(results_path)
     # Download results from Xylocalyx (action will be called at end of analysis script on Xylocalyx!)
-    Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
+    Net::SFTP.start('141.20.65.52', 'kai', keys: ['/home/sarah/.ssh/id_rsa', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
       sftp.stat(results_path) do |response|
         if response.ok?
           # Delete older results
