@@ -102,9 +102,10 @@ class NgsRun < ApplicationRecord
     recipients = User.where(role: 'admin').map(&:email)
 
     text = "#{current_user.name} is requesting to start an SMRT raw data analysis with the following parameters:\n"
-    text << "Quality threshold: #{quality_threshold}\n" if quality_threshold
-    text << "Primer mismatches: #{primer_mismatches}\n" if primer_mismatches
-    text << "Barcode mismatches: #{tag_mismatches}\n" if tag_mismatches
+    text << "Run Title: #{name}\n"
+    text << "Quality threshold: #{quality_threshold}\n"
+    text << "Primer mismatches: #{primer_mismatches}\n"
+    text << "Barcode mismatches: #{tag_mismatches}\n"
     text << "Taxon: #{higher_order_taxon.name}\n" if higher_order_taxon_id
     text << "Please visit #{route} to start the analysis."
 
