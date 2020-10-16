@@ -28,11 +28,14 @@ class NgsRunResultDatatable
       species_path = ''
       family_path = ''
 
-      if isolate.try(:individual).try(:species).try(:family)
-        species_id = isolate.individual.species.id
+      if isolate.try(:individual).try(:species)
+        species_id = isolate.individual.species_id
         species_path = link_to(isolate.individual.species.name_for_display, edit_species_path(species_id)) if species_id
-        family_id = isolate.individual.species.family.id
-        family_path = link_to(isolate.individual.species.family.name, edit_family_path(family_id)) if family_id
+
+        if isolate.try(:individual).try(:species).try(:family)
+          family_id = isolate.individual.species.family_id
+          family_path = link_to(isolate.individual.species.family.name, edit_family_path(family_id)) if family_id
+        end
       end
 
       values = [
