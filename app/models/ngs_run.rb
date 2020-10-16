@@ -214,7 +214,7 @@ class NgsRun < ApplicationRecord
 
           tag_primer_maps.each do |tpm|
             begin
-              import_results("#{tpm.tag_primer_map.filename.gsub('.txt', '')}_expanded.txt")
+              import_results("#{tpm.tag_primer_map.filename.to_s.gsub('.txt', '')}_expanded.txt")
             rescue Exception => e
               self.issues << Issue.new(title: "Import error",
                                        description: "Importing results for tag primer map #{tpm.tag_primer_map.filename}

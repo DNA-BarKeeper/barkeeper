@@ -30,8 +30,12 @@ class NgsRunsController < ApplicationController
     @ngs_run.add_project(current_project_id)
 
     unless params[:ngs_run][:tag_primer_map].blank?
-      params[:ngs_run][:tag_primer_map].each do |tpm|
-        @ngs_run.tag_primer_maps.build(tag_primer_map: tpm)
+      if params[:ngs_run][:set_tag_map].blank?
+        @ngs_run.tag_primer_maps.build(tag_primer_map: params[:ngs_run][:tag_primer_map].first)
+      else
+        params[:ngs_run][:tag_primer_map].each do |tpm|
+          @ngs_run.tag_primer_maps.build(tag_primer_map: tpm)
+        end
       end
     end
 

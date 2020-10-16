@@ -25,7 +25,7 @@ module NgsRunsHelper
     if ngs_run.tag_primer_maps.size > 1
       tpms = '<ul>'.dup
 
-      ngs_run.tag_primer_maps.each do |tpm|
+      ngs_run.tag_primer_maps.includes([tag_primer_map_attachment: :blob]).each do |tpm|
         tpms << "<li>#{tpm.tag_primer_map.filename}</li>"
       end
 
