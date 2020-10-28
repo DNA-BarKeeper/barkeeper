@@ -104,7 +104,7 @@ before 'deploy:assets:precompile', :symlink_config_files
 desc 'Link shared files'
 task :symlink_config_files do
   symlinks = {
-    "#{shared_path}/config/application.yml" => "#{release_path}/config/application.yml"
+      "#{shared_path}/config/database.yml" => "#{release_path}/config/database.yml"
   }
 
   on roles(:app) do
