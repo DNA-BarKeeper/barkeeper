@@ -1,4 +1,11 @@
 version: '3'
+
+volumes:
+  views:
+  image_assets:
+  redis:
+  postgres:
+
 services:
   postgres:
     image: 'postgres:9.5.14'
@@ -18,29 +25,29 @@ services:
 
   app:
     command: bundle exec rails s -p 3000 -b '0.0.0.0'
-    build:
-      context: .
-      dockerfile: ./docker/app/Dockerfile
+    image: gbol5/barcode_workflow_manager:app
+#    build:
+#      context: .
+#      dockerfile: ./docker/app/Dockerfile
     volumes:
       - .:/var/www/barcode_workflow_manager
-      - ${CONFIG_PATH}/application.yml:/var/www/barcode_workflow_manager/config/application.yml
-      - ${CONFIG_PATH}/project_images:/var/www/barcode_workflow_manager/app/assets/images/project_images
-      - ${CONFIG_PATH}/about.html.erb:/var/www/barcode_workflow_manager/app/views/home/about.html.erb
-      - ${CONFIG_PATH}/impressum.html.erb:/var/www/barcode_workflow_manager/app/views/home/impressum.html.erb
-      - ${CONFIG_PATH}/privacy_policy.html.erb:/var/www/barcode_workflow_manager/app/views/home/privacy_policy.html.erb
+      - views:/var/www/barcode_workflow_manager/app/views/home
+      - image_assets:/var/www/barcode_workflow_manager/app/assets/images/project_images
     ports:
       - "3000:3000"
     env_file:
       - '.env'
     depends_on:
       - 'postgres'
-      - 'redis'
+      - 'sidekiq'
 
   sidekiq:
+    image: gbol5/barcode_workflow_manager:sidekiq
+#    build:
+#      context: .
+#      dockerfile: ./docker/app/Dockerfile
     depends_on:
-      - 'postgres'
       - 'redis'
-    build: .
     command: sidekiq -C config/sidekiq.yml
     volumes:
       - '.:/var/www/barcode_workflow_manager'
@@ -48,14 +55,11 @@ services:
       - '.env'
 
   web:
-    build:
-      context: .
-      dockerfile: ./docker/web/Dockerfile
+    image: gbol5/barcode_workflow_manager:web
+#    build:
+#      context: .
+#      dockerfile: ./docker/web/Dockerfile
     depends_on:
-      - app
+      - 'app'
     ports:
       - 80:80
-
-volumes:
-  redis:
-  postgres:

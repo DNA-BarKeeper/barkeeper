@@ -24,6 +24,8 @@ module GBOLapp
         "redis://#{ENV.fetch('REDIS_HOST', 'localhost')}:6379/0/cache",
         { expires_in: 90.minutes }
 
+    config.serve_static_assets = true
+
     config.assets.paths << "#{Rails}/app/assets/fonts"
     config.assets.paths << "#{Rails}/vendor/assets/fonts"
 

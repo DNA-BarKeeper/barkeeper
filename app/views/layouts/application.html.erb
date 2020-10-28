@@ -4,7 +4,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <title><%= full_title(yield(:title)) %></title>
-    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "#{CONFIG[:main_project_name]} Web App" %>">
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "#{ENV.fetch('MAIN_PROJECT_NAME')} Web App" %>">
 
     <%= stylesheet_link_tag 'application', media: 'all'%>
     <%= javascript_include_tag 'application'%>
