@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 GBOLapp::Application.routes.draw do
-  root to: 'home#about'
+  root to: 'homes#about'
 
-  match 'about', to: 'home#about', via: 'get'
-  match 'impressum', to: 'home#impressum', via: 'get'
-  match 'privacy_policy', to: 'home#privacy_policy', via: 'get'
-  match 'overview', to: 'home#overview', via: 'get'
+  match 'about', to: 'homes#about', via: 'get'
+  match 'impressum', to: 'homes#impressum', via: 'get'
+  match 'privacy_policy', to: 'homes#privacy_policy', via: 'get'
+  match 'overview', to: 'homes#overview', via: 'get'
 
   get 'overview_diagram/index'
   get 'overview_diagram/all_species', defaults: { format: 'json' }
@@ -22,6 +22,8 @@ GBOLapp::Application.routes.draw do
   get 'partial_cons_pos/:id/:position/:width_in_bases', action: :show_position, controller: 'partial_cons', defaults: { format: 'json' }
 
   get 'primer_reads/:id/edit/:pos', action: :go_to_pos, controller: 'primer_reads'
+
+  resources :homes
 
   resources :contig_searches do
     get :delete_all
@@ -227,7 +229,7 @@ GBOLapp::Application.routes.draw do
   # HACK: avoid malicious users to directly type in the sign-up route
   # later: use authorization system to
   devise_scope :user do
-    get '/users/sign_up', to: 'home#about'
+    get '/users/sign_up', to: 'homes#about'
   end
 
   devise_for :users, controllers: { registrations: 'registrations' }, path_names: { sign_in: 'login', sign_out: 'logout' }

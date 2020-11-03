@@ -1,0 +1,52 @@
+<% provide(:title, @home.title) %>
+<%= show_val_errors(@home)%>
+
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= @home.title %></h3>
+  </div>
+
+  <div class="panel-body">
+    <%= form_for(@home) do |f| %>
+
+      <div class="form-group">
+        <%= f.label :title %>
+        <%= f.text_field :title,  class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :subtitle %>
+        <%= f.text_field :subtitle,  class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :description %>
+        <%= f.text_area :description,  class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :background_image, 'About page background image' %>
+        <%= f.file_field :background_image,  class: 'form-control' %>
+
+        <% if @home.background_image.attached? %>
+          <%= f.check_box(:delete_background_image) %>
+          <%= "Remove current image ('#{@home.background_image.filename}')" %>
+        <% end %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :project_logo, 'Project logo image'%>
+        <%= f.file_field :project_logo,  class: 'form-control' %>
+
+        <% if @home.project_logo.attached? %>
+          <%= f.check_box(:delete_project_logo) %>
+          <%= "Remove current image ('#{@home.project_logo.filename}')" %>
+        <% end %>
+      </div>
+
+      <%= f.submit 'Update', :class => 'btn btn-default' %>
+
+    <% end %>
+  </div>
+</div>

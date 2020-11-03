@@ -12,7 +12,7 @@ module MislabelAnalysesHelper
   end
 
   def mislabels(sequence)
-    html = +''
+    html = +''.html_safe
 
     if sequence
       sequence.mislabels.includes(:mislabel_analysis).order(:solved).each do |mislabel|
@@ -24,26 +24,26 @@ module MislabelAnalysesHelper
           end
           solved_by = "Solved by #{user} on #{mislabel.solved_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S')}"
         else
-          solved = "<span class='glyphicon glyphicon-exclamation-sign' style='color: red'></span>".html_safe
+          solved = content_tag(:span, '', class: %w(glyphicon glyphicon-exclamation-sign), style: 'color: red;')
           solved_by = link_to('Mark issue as solved', solve_mislabel_path(mislabel))
         end
 
         solved ||= ''
 
-        html << '<tr>'
-        html << content_tag(:td, solved, style: 'text-align: center')
-        html << content_tag(:td, mislabel.level)
-        html << content_tag(:td, mislabel.proposed_label)
-        html << content_tag(:td, mislabel.confidence)
-        html << content_tag(:td, mislabel.proposed_path)
-        html << content_tag(:td, mislabel.path_confidence)
-        html << content_tag(:td, (link_to mislabel.mislabel_analysis.title, mislabel_analysis_path(mislabel.mislabel_analysis)))
-        html << content_tag(:td, solved_by)
-        html << '</tr>'
+        html << content_tag(:tr) do
+          content_tag(:td, solved, style: 'text-align: center') +
+          content_tag(:td, mislabel.level) +
+          content_tag(:td, mislabel.proposed_label) +
+          content_tag(:td, mislabel.confidence) +
+          content_tag(:td, mislabel.proposed_path) +
+          content_tag(:td, mislabel.path_confidence) +
+          content_tag(:td, (link_to mislabel.mislabel_analysis.title, mislabel_analysis_path(mislabel.mislabel_analysis))) +
+          content_tag(:td, solved_by)
+        end
       end
     end
 
-    html.html_safe
+    html
   end
 
   def warnings_present(marker_sequences)
@@ -76,18 +76,18 @@ module MislabelAnalysesHelper
       end
     end
 
-    html = +''
+    html = +''.html_safe
     if list_elements.blank?
-      html << '<p>There are no SATIVA warnings associated with this record.</p>'
+      html << content_tag(:p, 'There are no SATIVA warnings associated with this record.')
     else
-      html << '<p>One or more contigs associated with this object contain warnings from a SATIVA analysis:</p>'
-      html << '<ul>'
-      list_elements.each { |li| html << li }
-      html << '</ul>'
-      html << '<p>Please visit the contig page(s) for more information.</p>'
+      html << content_tag(:p, 'One or more contigs associated with this object contain warnings from a SATIVA analysis:')
+      html << content_tag(:ul) do
+        list_elements.join.html_safe
+      end
+      html << content_tag(:p, "Please visit the contig #{'page'.pluralize(list_elements.size)} for more information.")
     end
 
-    html.html_safe
+    html
   end
 
   def contig_issues_individual(individual)
@@ -98,17 +98,17 @@ module MislabelAnalysesHelper
       list_elements << content_tag(:li, link_to(c.name, edit_contig_path(c))) if c.marker_sequence&.has_unsolved_mislabels
     end
 
-    html = +''
+    html = +''.html_safe
     if list_elements.blank?
-      html << '<p>No issues are present for this record.</p>'
+      html << content_tag(:p, 'No issues are present for this record.')
     else
-      html << '<p>Multiple contigs associated with this object contain warnings from a SATIVA analysis:</p>'
-      html << '<ul>'
-      list_elements.each { |li| html << li }
-      html << '</ul>'
-      html << '<p>Please visit the contig page for more information.</p>'
+      html << content_tag(:p, 'Multiple contigs associated with this object contain warnings from a SATIVA analysis:')
+      html << content_tag(:ul) do
+        list_elements.join.html_safe
+      end
+      html << content_tag(:p, "Please visit the contig #{'page'.pluralize(list_elements.size)} for more information.")
     end
 
-    html.html_safe
+    html
   end
 end

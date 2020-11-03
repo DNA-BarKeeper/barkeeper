@@ -4,6 +4,25 @@ module ApplicationHelper
   require 'net/http'
   require 'nokogiri'
 
+  def about_page_style(about_page)
+    styles = +''.html_safe
+
+    if about_page
+      styles += "class=\"about_page\" "
+
+      home = Home.where(active: true).first
+      if home.background_image.attached?
+        styles += "style=\"background: url('#{home.background_image.service_url}') no-repeat center fixed;\""
+      else
+        styles += "style=\"background-color: grey;\""
+      end
+    else
+      styles += "class=\"\""
+    end
+
+    styles
+  end
+
   def current_project_name
     if user_signed_in?
       Project.find(current_user.default_project_id).name
@@ -45,31 +64,28 @@ module ApplicationHelper
         compiled_message += (msg + '. ')
       end
 
-      html = <<-HTML
-      <div class="alert alert-danger">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        #{compiled_message}
-      </div>
-      HTML
-      html.html_safe
+      message_div = content_tag :div, class: ['alert', 'alert-danger'] do
+        content_tag(:button, "×", type: 'button', class: 'close', data: { dismiss: 'alert' }, 'aria-hidden' => true) +
+        compiled_message
+      end
+
+      message_div
     end
   end
 
   def display_base_errors(resource)
     return '' if resource.errors.empty? || resource.errors[:base].empty?
+
     messages = resource.errors[:base].map { |msg| content_tag(:p, msg) }.join
-    html = <<-HTML
-    <div class="alert alert-error alert-block">
-      <button type="button" class="close" data-dismiss="alert">&#215;</button>
-      #{messages}
-    </div>
-    HTML
-    html.html_safe
+
+    content_tag :div, class: %w(alert alert-error alert-block) do
+      content_tag(:button, "×", type: 'button', class: 'close',
+                  data: { dismiss: 'alert' }) +
+      messages
+    end
   end
 
   def alert_class(name)
-    # name == 'notice' ? 'success' : 'danger'
-
     case name
     when 'notice'
       'success'
