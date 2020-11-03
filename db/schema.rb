@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_02_091038) do
+ActiveRecord::Schema.define(version: 2020_11_03_140140) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -387,6 +387,14 @@ ActiveRecord::Schema.define(version: 2020_11_02_091038) do
   create_table "labs_projects", id: false, force: :cascade do |t|
     t.integer "lab_id"
     t.integer "project_id"
+  end
+
+  create_table "logos", force: :cascade do |t|
+    t.string "title"
+    t.string "url"
+    t.boolean "partner", default: true
+    t.bigint "home_id"
+    t.index ["home_id"], name: "index_logos_on_home_id"
   end
 
   create_table "marker_sequence_searches", id: :serial, force: :cascade do |t|
