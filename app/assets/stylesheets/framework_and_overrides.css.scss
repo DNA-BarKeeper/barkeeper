@@ -158,7 +158,8 @@ div.about-background {
 }
 
 body.about_page {
-  background: asset-data-url('project_images/background.jpg') fixed;
+  //background: asset-data-url('project_images/background.jpg') fixed;
+  background-size: cover;
   margin-bottom: 15px; /* Margin bottom by footer height */
 }
 

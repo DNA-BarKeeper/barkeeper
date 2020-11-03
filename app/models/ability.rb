@@ -79,6 +79,7 @@ class Ability
         can :manage, Mislabel
         can :manage, Cluster
         can :manage, NgsRun
+        can :update, Home # No user can add or destroy Home object, it's only created via seed
 
         cannot %i[create update destroy], User, role: 'admin' if user.supervisor?
       end

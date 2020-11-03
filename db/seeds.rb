@@ -9,6 +9,9 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 project = Project.create!(name: 'All')
+
+Home.create!(active: true, title: 'New Initiative')
+
 user = CreateAdminService.new.call([project])
 
 puts +'CREATED ADMIN USER: ' << user.email

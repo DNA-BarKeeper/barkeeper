@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_07_135624) do
+ActiveRecord::Schema.define(version: 2020_11_02_091038) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -242,6 +242,15 @@ ActiveRecord::Schema.define(version: 2020_08_07_135624) do
   create_table "higher_order_taxa_projects", id: false, force: :cascade do |t|
     t.integer "higher_order_taxon_id"
     t.integer "project_id"
+  end
+
+  create_table "homes", force: :cascade do |t|
+    t.string "title"
+    t.string "subtitle"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "active"
   end
 
   create_table "individual_searches", id: :serial, force: :cascade do |t|
@@ -512,9 +521,9 @@ ActiveRecord::Schema.define(version: 2020_08_07_135624) do
   end
 
   create_table "ngs_runs", id: :serial, force: :cascade do |t|
-    t.integer "quality_threshold"
-    t.integer "tag_mismatches"
-    t.integer "primer_mismatches"
+    t.integer "quality_threshold", default: 25
+    t.integer "tag_mismatches", default: 2
+    t.decimal "primer_mismatches", default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "comment"
@@ -535,6 +544,8 @@ ActiveRecord::Schema.define(version: 2020_08_07_135624) do
     t.datetime "results_updated_at"
     t.integer "sequences_short"
     t.string "fastq_location"
+    t.boolean "analysis_requested", default: false
+    t.boolean "analysis_started", default: false
     t.index ["higher_order_taxon_id"], name: "index_ngs_runs_on_higher_order_taxon_id"
     t.index ["isolate_id"], name: "index_ngs_runs_on_isolate_id"
   end
