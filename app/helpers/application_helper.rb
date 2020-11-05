@@ -5,7 +5,7 @@ module ApplicationHelper
   require 'nokogiri'
 
   def about_page_style(about_page)
-    styles = +''.html_safe
+    styles = +''
 
     if about_page
       styles += "class=\"about_page\" "
@@ -20,7 +20,7 @@ module ApplicationHelper
       styles += "class=\"\""
     end
 
-    styles
+    styles.html_safe
   end
 
   def current_project_name
