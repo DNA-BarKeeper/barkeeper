@@ -9,6 +9,8 @@ class Home < ApplicationRecord
   attr_accessor :delete_background_image
   before_validation :remove_background_image
 
+  accepts_nested_attributes_for :logos, allow_destroy: true
+
   def remove_background_image
     if delete_background_image == '1'
       background_image.purge

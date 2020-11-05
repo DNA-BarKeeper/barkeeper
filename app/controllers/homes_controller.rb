@@ -60,6 +60,7 @@ class HomesController < ApplicationController
   end
 
   def home_params
-    params.require(:home).permit(:active, :description, :subtitle, :title, :background_image, :delete_background_image)
+    params.require(:home).permit(:active, :description, :subtitle, :title, :background_image,
+                                 :delete_background_image, logos_attributes: [:id, :title, :url, :image, :delete_image])
   end
 end

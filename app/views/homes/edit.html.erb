@@ -9,7 +9,6 @@
 
   <div class="panel-body">
     <%= form_for(@home) do |f| %>
-
       <div class="form-group">
         <%= f.label :title %>
         <%= f.text_field :title,  class: 'form-control' %>
@@ -35,15 +34,53 @@
         <% end %>
       </div>
 
-      <div class="form-group">
-        <%= f.label :project_logo, 'Project logo image'%>
-        <%= f.file_field :project_logo,  class: 'form-control' %>
+      <%= f.nested_fields_for :logos, @home.logos.order(title: :desc) do |logos_form| %>
+        <table  class="table table-striped table-hover table-bordered">
+          <thead>
+          <tr>
+            <th>Title</th>
+            <th>URL</th>
+            <th>Image</th>
+            <th></th>
+          </tr>
+          </thead>
 
-        <% if @home.project_logo.attached? %>
-          <%= f.check_box(:delete_project_logo) %>
-          <%= "Remove current image ('#{@home.project_logo.filename}')" %>
-        <% end %>
-      </div>
+          <tbody>
+          <tr>
+            <td><%= logos_form.text_field :title, class: 'form-control' %></td>
+            <td><%= logos_form.text_field :url, class: 'form-control' %></td>
+            <td><%= logos_form.file_field :image, class: 'form-control' %></td>
+            <td><%= logos_form.remove_nested_fields_link 'Remove', data: { confirm: "Are you sure?\n(You need to update to permanently remove the logo.)" } %></td>
+          </tr>
+          </tbody>
+        </table>
+      <% end %>
+
+<!--        <div class="form-group">-->
+<!--          <div class="form-group">-->
+            <%#= logos_form.label :title %>
+            <%#= logos_form.text_area :title,  class: 'form-control' %>
+<!--          </div>-->
+
+          <%#= logos_form.label :image, 'Logo image' %>
+          <%#= logos_form.file_field :image,  class: 'form-control' %>
+
+          <%# if @home.logos.size.positive? %>
+            <%# @home.logos.with_attached_image.each do |logo| %>
+              <%# if logo.image.attached? %>
+                <%#= check_box 'delete_image', logo.id, {}, logo.id %>
+                <%#= "Remove current image ('#{logo.image.filename}')" %>
+<!--                <br>-->
+              <%# end %>
+            <%# end %>
+          <%# end %>
+<!--        </div>-->
+
+      <%= f.add_nested_fields_link :logos do %>
+        <span>Add new Logo</span>
+      <% end %>
+      (You need to update to permanently add or remove an image.)
+      <br><br>
 
       <%= f.submit 'Update', :class => 'btn btn-default' %>
 

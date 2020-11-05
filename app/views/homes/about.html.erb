@@ -1,6 +1,6 @@
 <div class="jumbotron about-background" style="opacity: 0.8;">
 
-  <%= project_logo(@home) %>
+  <%#= project_logo(@home) %>
 
   <h1>
     <%= @home.title %>
@@ -12,5 +12,7 @@
     <%= about_description(@home) %>
   </p>
 
-<!-- TODO: add partner logos -->
+  <div>
+    <%= display_project_logos(@home) %>
+  </div>
 </div>
