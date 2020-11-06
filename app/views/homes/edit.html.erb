@@ -24,6 +24,29 @@
         <%= f.text_area :description,  class: 'form-control' %>
       </div>
 
+      <%= f.fields_for :project_logo do |project_logo_form| %>
+        <div class="form-group">
+
+          <div class="form-group">
+            <%= project_logo_form.label :url, 'Project URL' %>
+            <%= project_logo_form.text_field :url,  class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+<!--            same id as project title field -->
+            <%= project_logo_form.label :title, 'Project Logo Title' %>
+            <%= project_logo_form.text_field :title,  class: 'form-control' %>
+          </div>
+
+          <%= project_logo_form.label :image, 'Project Logo Image' %>
+          <%= project_logo_form.file_field :image,  class: 'form-control' %>
+          <% if @home.project_logo.image.attached? %>
+            <%= "Current image ('#{@home.project_logo.image.filename}')" %>
+            <br>
+          <% end %>
+        </div>
+      <% end %>
+
       <div class="form-group">
         <%= f.label :background_image, 'About page background image' %>
         <%= f.file_field :background_image,  class: 'form-control' %>
@@ -56,28 +79,8 @@
         </table>
       <% end %>
 
-<!--        <div class="form-group">-->
-<!--          <div class="form-group">-->
-            <%#= logos_form.label :title %>
-            <%#= logos_form.text_area :title,  class: 'form-control' %>
-<!--          </div>-->
-
-          <%#= logos_form.label :image, 'Logo image' %>
-          <%#= logos_form.file_field :image,  class: 'form-control' %>
-
-          <%# if @home.logos.size.positive? %>
-            <%# @home.logos.with_attached_image.each do |logo| %>
-              <%# if logo.image.attached? %>
-                <%#= check_box 'delete_image', logo.id, {}, logo.id %>
-                <%#= "Remove current image ('#{logo.image.filename}')" %>
-<!--                <br>-->
-              <%# end %>
-            <%# end %>
-          <%# end %>
-<!--        </div>-->
-
       <%= f.add_nested_fields_link :logos do %>
-        <span>Add new Logo</span>
+        <span>Add new Partner Logo</span>
       <% end %>
       (You need to update to permanently add or remove an image.)
       <br><br>
