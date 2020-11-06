@@ -1,18 +1,20 @@
 <div class="jumbotron about-background" style="opacity: 0.8;">
 
-  <%#= project_logo(@home) %>
+  <%= project_logo %>
 
   <h1>
     <%= @home.title %>
     <br>
-    <%= about_subtitle(@home) %>
+    <%= about_subtitle %>
   </h1>
 
   <p>
-    <%= about_description(@home) %>
+    <%= about_description %>
   </p>
 
-  <div>
-    <%= display_project_logos(@home) %>
-  </div>
+  <hr>
+  <footer class="row">
+    <%= display_project_logos %>
+  </footer>
+  <hr>
 </div>

@@ -1,39 +1,40 @@
 # frozen_string_literal: true
 
 module HomesHelper
-  def project_logo(home)
-    if home.project_logo.attached?
-      logo_url = home.project_logo.service_url
-      content_tag :a, href: url_for(root_url) do
+  def project_logo
+    if @home.project_logo&.image.attached?
+      logo_url = @home.project_logo.image.service_url
+      content_tag :a, href: @home.project_logo.url do
         content_tag :img, '', alt: 'project_logo', width: 100, class: 'pull-right', src: logo_url.html_safe
       end
     end
   end
 
-  def about_subtitle(home)
-    if home.subtitle
-      content_tag :small, home.subtitle
+  def about_subtitle
+    if @home.subtitle
+      content_tag :small, @home.subtitle
     end
   end
 
-  def about_description(home)
-    if home.description
-      content_tag :small, home.description
+  def about_description
+    if @home.description
+      content_tag :small, @home.description
     end
   end
 
-  def display_project_logos(home)
+  def display_project_logos
     logos_html = +''.html_safe
+
     if @home.logos.size.positive?
-      logos_html << (tag :hr)
       @home.logos.with_attached_image.each do |logo|
         if logo.image.attached? && logo.url
-          logos_html << (content_tag :a, href: logo.url, target: '_blank' do
+          logos_html << (content_tag :div, style: 'height: 70px;', class: "col-sm-#{@home.logos.size}" do
+            content_tag :a, href: logo.url, target: '_blank' do
               image_tag logo.image, class: 'partner_logo'
+            end
           end)
         end
       end
-      logos_html << (tag :hr)
     end
 
     logos_html
