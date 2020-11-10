@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module HomesHelper
-  def project_logo
-    if @home.project_logo&.image.attached?
+  def main_project_logo
+    if @home.has_project_logo && @home.project_logo.image&.attached?
       logo_url = @home.project_logo.image.service_url
       content_tag :a, href: @home.project_logo.url do
         content_tag :img, '', alt: 'project_logo', width: 100, class: 'pull-right', src: logo_url.html_safe

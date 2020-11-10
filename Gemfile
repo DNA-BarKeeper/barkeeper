@@ -48,6 +48,7 @@ gem 'bootsnap'
 gem 'bootstrap-sass'
 gem 'bootstrap_progressbar'
 gem 'builder'
+gem 'image_processing'
 gem 'jbuilder' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'mime-types'
 gem 'net-scp'
