@@ -1,13 +1,15 @@
 class Home < ApplicationRecord
   has_many :logos, dependent: :destroy
+  belongs_to :main_logo, class_name: 'Logo', foreign_key: :main_logo_id, dependent: :destroy
 
   has_one_attached :background_image
   validates :background_image, content_type: [:jpg, :png, :svg]
 
   validates_presence_of :title
-  validates_length_of :logos, :maximum => 13
+  validates_length_of :logos, :maximum => 12, message: 'You can only add a maximum of 12 logos'
 
   after_save :process_variant
+  after_save :set_main_logo
 
   attr_accessor :delete_background_image
   before_validation :remove_background_image
@@ -26,11 +28,8 @@ class Home < ApplicationRecord
     end
   end
 
-  def has_project_logo
-    logos.where(partner: false).size.positive?
-  end
-
-  def project_logo
-    logos.where(partner: false).first
+  def set_main_logo
+    Logo.update_all(main: false)
+    main_logo.update(main: true) if main_logo
   end
 end

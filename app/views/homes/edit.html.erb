@@ -9,119 +9,97 @@
 
   <div class="panel-body">
     <%= form_for(@home) do |f| %>
-      <table  class="table table-striped table-hover table-bordered">
-        <tr>
-          <th><%= f.label :title %></th>
-          <td><%= f.text_field :title,  class: 'form-control' %></td>
-        </tr>
-        <tr>
-          <th><%= f.label :subtitle %></th>
-          <td><%= f.text_field :subtitle,  class: 'form-control' %></td>
-        </tr>
-        <tr>
-          <th><%= f.label :description %></th>
-          <td><%= f.text_area :description,  class: 'form-control' %></td>
-        </tr>
-        <tr>
-          <th><%= f.label :background_image, 'About Page Background' %></th>
-          <td>
+
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#home" role="tab" data-toggle="tab">Home</a></li>
+        <li><a href="#logos" role="tab" data-toggle="tab">Logos</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content">
+
+        <div class="tab-pane active" id="home">
+          <br>
+          <div class="form-group">
+            <%= f.label :title, 'Main Project Title' %>
+            <%= f.text_field :title,  class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :subtitle %>
+            <%= f.text_field :subtitle,  class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :description %>
+            <%= f.text_area :description,  class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :background_image, 'About Page Background' %><br>
             <% if @home.background_image.attached? %>
-              <%= image_tag @home.background_image.variant(resize: "100x100").processed.service_url %>
+              <%= image_tag @home.background_image.variant(resize: "100x100").processed.service_url %><br>
               <%= f.check_box(:delete_background_image) %>
               <%= "Remove current image ('#{@home.background_image.filename}')" %>
             <% end %>
             <%= f.file_field :background_image,  class: 'form-control' %>
-          </td>
-        </tr>
-      </table>
+          </div>
+        </div>
 
-<!--      <div class="form-group">-->
-        <%#= f.label :title %>
-        <%#= f.text_field :title,  class: 'form-control' %>
-<!--      </div>-->
+        <div class="tab-pane" id="logos">
+          <br>
 
-<!--      <div class="form-group">-->
-        <%#= f.label :subtitle %>
-        <%#= f.text_field :subtitle,  class: 'form-control' %>
-<!--      </div>-->
+          <div class="form-group">
+            <%= f.label :main_logo, 'Main Project Logo' %>
+            <%= f.collection_select(:main_logo_id, @home.logos.order(:title), :id, :title, {:include_blank => 'None'}, {class: 'form-control'})  %>
+          </div>
 
-<!--      <div class="form-group">-->
-        <%#= f.label :description %>
-        <%#= f.text_area :description,  class: 'form-control' %>
-<!--      </div>-->
+          <div class="form-group" style="overflow: scroll;">
+            <%= f.label :main_logo, 'Logos' %>
 
-<!--      <div class="form-group">-->
-<!--        <%#= f.label :background_image, 'About Page Background' %><br>-->
-        <%# if @home.background_image.attached? %>
-<!--          <%#= image_tag @home.background_image.variant(resize: "100x100").processed.service_url %><br>-->
-          <%#= f.check_box(:delete_background_image) %>
-          <%#= "Remove current image ('#{@home.background_image.filename}')" %>
-        <%# end %>
-        <%#= f.file_field :background_image,  class: 'form-control' %>
-<!--      </div>-->
+            <table style="overflow: scroll;" class="table table-striped table-hover table-bordered" >
+              <thead>
+              <tr>
+                <th>Display on About Page</th>
+                <th>Title</th>
+                <th>URL</th>
+                <th>Current logo</th>
+                <th>Upload new logo</th>
+                <th></th>
+              </tr>
+              </thead>
 
-      <%#= f.nested_fields_for :logos, @home.logos.where(partner: false).with_attached_image do |main_logo_form| %>
-<!--        <div class="form-group">-->
+              <tbody id='nested_logos'>
+                <tr>
+                  <%= f.nested_fields_for :logos, @home.logos.with_attached_image.order(:title), wrapper_tag: :tr do |logos_form| %>
+                    <td><%= logos_form.check_box :display, class: 'form-control' %></td>
+                    <td><%= logos_form.text_field :title, class: 'form-control' %></td>
+                    <td><%= logos_form.text_field :url, class: 'form-control' %></td>
+                    <td style="text-align: center;">
+                      <% if logos_form.object.image.attached? %>
+                        <%= image_tag logos_form.object.image.variant(resize: "100x100").processed.service_url %><br>
+                        <%= "'#{logos_form.object.image.filename}'" %>
+                      <% end %>
+                    </td>
+                    <td><%= logos_form.file_field :image, class: 'form-control' %></td>
+                    <td><%= logos_form.remove_nested_fields_link 'Remove', data: { confirm: "Are you sure?\n(You need to update to permanently remove the logo.)" } %></td>
+                  <% end %>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-<!--          <div class="form-group">-->
-            <%#= main_logo_form.label :url, 'Project URL' %>
-            <%#= main_logo_form.text_field :url,  class: 'form-control' %>
-<!--          </div>-->
-
-          <%#= main_logo_form.check_box :partner, active: true, hidden: true %>
-
-<!--          <div class="form-group">-->
-            <%#= main_logo_form.label :title, 'Project Logo Title' %>
-            <%#= main_logo_form.text_field :title,  class: 'form-control' %>
-<!--          </div>-->
-
-<!--          <%#= main_logo_form.label :image, 'Project Logo' %><br>-->
-          <%# if main_logo_form.object&.image&.attached? %>
-<!--            <%#= image_tag main_logo_form.object.image.variant(resize: "100x100").processed.service_url %><br>-->
-            <%#= main_logo_form.check_box(:delete_image) %>
-            <%#= "Remove current image ('#{main_logo_form.object.image.filename}')" %>
-          <%# end %>
-          <%#= main_logo_form.file_field :image,  class: 'form-control' %>
-<!--        </div>-->
-      <%# end %>
-
-      <table style="overflow: scroll;" class="table table-striped table-hover table-bordered">
-        <thead>
-        <tr>
-          <th>Title</th>
-          <th>URL</th>
-          <th>Current logo</th>
-          <th>Upload new logo</th>
-          <th></th>
-        </tr>
-        </thead>
-
-        <tbody>
-          <%= f.nested_fields_for :logos, @home.logos.where(partner: true).with_attached_image.order(title: :desc) do |logos_form| %>
-            <tr>
-              <td><%= logos_form.text_field :title, class: 'form-control' %></td>
-              <td><%= logos_form.text_field :url, class: 'form-control' %></td>
-              <td style="text-align: center;">
-                <% if logos_form.object.image.attached? %>
-                  <%= image_tag logos_form.object.image.variant(resize: "100x100").processed.service_url %><br>
-                  <%= logos_form.check_box(:delete_image) %>
-                  <%= "Remove current image ('#{logos_form.object.image.filename}')" %>
-                <% end %>
-              </td>
-              <td><%= logos_form.file_field :image, class: 'form-control' %></td>
-              <td><%= logos_form.remove_nested_fields_link 'Remove', data: { confirm: "Are you sure?\n(You need to update to permanently remove the logo.)" } %></td>
-            </tr>
-          <% end %>
-        <footer>
-          <td colspan=5>
+          <div>
             <%= f.add_nested_fields_link :logos do %>
-              <span>Add new Partner Logo</span>
+              <span>Add new Logo</span>
             <% end %>
-            (You need to update to permanently add or remove an image.)</td>
-        </footer>
-        </tbody>
-      </table>
-      <br><br>
+            (You need to update to permanently add or remove a logo.)<br>
+            Up to 12 partner logos can be added.
+          </div>
+          <br>
+        </div>
+      </div>
 
       <%= f.submit 'Update', :class => 'btn btn-default' %>
 

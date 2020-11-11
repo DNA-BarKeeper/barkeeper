@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_03_140140) do
+ActiveRecord::Schema.define(version: 2020_11_11_094430) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -251,6 +251,8 @@ ActiveRecord::Schema.define(version: 2020_11_03_140140) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "active"
+    t.bigint "main_logo_id"
+    t.index ["main_logo_id"], name: "index_homes_on_main_logo_id"
   end
 
   create_table "individual_searches", id: :serial, force: :cascade do |t|
@@ -392,8 +394,9 @@ ActiveRecord::Schema.define(version: 2020_11_03_140140) do
   create_table "logos", force: :cascade do |t|
     t.string "title"
     t.string "url"
-    t.boolean "partner", default: true
+    t.boolean "main", default: true
     t.bigint "home_id"
+    t.boolean "display", default: true
     t.index ["home_id"], name: "index_logos_on_home_id"
   end
 
@@ -850,6 +853,7 @@ ActiveRecord::Schema.define(version: 2020_11_03_140140) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "contig_searches", "projects"
+  add_foreign_key "homes", "logos", column: "main_logo_id"
   add_foreign_key "individual_searches", "projects"
   add_foreign_key "individual_searches", "users"
   add_foreign_key "individuals", "herbaria"
