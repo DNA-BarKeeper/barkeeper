@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class HomesController < ApplicationController
-  before_action :set_home, only: %i[show edit update destroy]
+  before_action :set_home, only: %i[show edit update]
 
   def overview
     authorize! :overview, :home
@@ -23,16 +23,8 @@ class HomesController < ApplicationController
     authorize! :privacy_policy, :home
   end
 
-  def new
-    @home = Home.new
-  end
-
   def edit;
     authorize! :edit, :home
-  end
-
-  def create
-    @home = Home.new(home_params)
   end
 
   def update
@@ -49,10 +41,6 @@ class HomesController < ApplicationController
     end
   end
 
-  def destroy
-    @home.destroy
-  end
-
   private
 
   def set_home
@@ -60,7 +48,7 @@ class HomesController < ApplicationController
   end
 
   def home_params
-    params.require(:home).permit(:active, :description, :subtitle, :title, :background_image, :delete_background_image,
-                                 logos_attributes: [:id, :title, :url, :image, :delete_image, :_destroy])
+    params.require(:home).permit(:description, :subtitle, :title, :background_image, :delete_background_image, :main_logo_id,
+                                 logos_attributes: [:title, :url, :image, :display, :_destroy, :id])
   end
 end
