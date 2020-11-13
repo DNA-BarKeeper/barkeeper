@@ -23,3 +23,6 @@ spec/examples.txt
 # Ignore local env variables
 .rbenv-vars
 .env
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
