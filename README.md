@@ -1,24 +1,24 @@
-# GBOL5 Web Application 
+# Barcode Workflow Manager
 
-- Home: https://gbol5.de
-- Code: https://bitbucket.org/kai42/gbol5
+A web framework to assemble, analyze and manage DNA barcode data and metadata.
 
-
-Web application for mass assembly of primer reads generated in the GBOL5 project into contigs, auto-assignment of reads to isolates, specimens, species and management of specimens, target species, etc.
+- Example usage: https://gbol5.de
 
 
 ### License
 
-GBOL5 Web App is Copyright (c) 2014-2017 Kai Müller.
+Copyright (C) 2020 Kai Müller <kaimueller@uni-muenster.de>, Sarah Wiechers <sarah.wiechers@uni-muenster.de>
 
-### Warranty
+Barcode Workflow Manager is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
-This software is provided "as is" and without any express or implied
-warranties, including, without limitation, the implied warranties of
-merchantability and fitness for a particular purpose.
+Barcode Workflow Manager is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
 
-
-### Setup
-
-Change project specific configuration in config/application.yml. Restart container after changes to this file.
-Add images to dir assets/project_images.
+You should have received a copy of the GNU Affero General Public License
+along with Barcode Workflow Manager.  If not, see
+<http://www.gnu.org/licenses/>.
