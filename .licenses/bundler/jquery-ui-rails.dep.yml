@@ -1,0 +1,13 @@
+---
+name: jquery-ui-rails
+version: 6.0.1
+type: bundler
+summary: jQuery UI packaged for the Rails asset pipeline
+homepage: https://github.com/joliss/jquery-ui-rails
+license: other
+licenses:
+- sources: License.txt
+  text: |
+    jQuery UI as well as this gem are licensed under the MIT license (see
+    jquery-ui/MIT-LICENSE.txt).
+notices: []

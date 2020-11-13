@@ -1,0 +1,32 @@
+sources:
+  bundler: true
+
+allowed:
+  - mit
+  - apache-2.0
+  - gpl-2.0
+  - gpl-3.0
+  - agpl-2.0
+  - agpl-3.0
+  - lgpl-2.0
+  - lgpl-3.0
+  - bsd-2-clause
+  - bsd-3-clause
+
+reviewed:
+  bundler:
+    - bcrypt # MIT License
+    - bio # 2-clause BSD License
+    - concurrent-ruby # MIT License
+    - ffi # MIT License
+    - jquery-ui-rails # MIT License
+    - mime-types # MIT License
+    - mime-types-data # MIT License
+    - pg # 2-clause BSD License
+    - puma # 3-clause BSD License
+    - ruby2_keywords  # 2-clause BSD License
+    - rubyzip # 2-clause BSD License
+    - sidekiq # LGPL 3.0
+    - warden # MIT license
+    - websocket-driver # Apache 2.0
+    - websocket-extensions # Apache 2.0
