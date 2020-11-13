@@ -1,0 +1,11 @@
+---
+name: sprockets
+version: 4.0.2
+type: bundler
+summary: Rack-based asset packaging system
+homepage: https://github.com/rails/sprockets
+license: mit
+licenses:
+- sources: README.md
+  text: Sprockets is released under the [MIT License](MIT-LICENSE).
+notices: []

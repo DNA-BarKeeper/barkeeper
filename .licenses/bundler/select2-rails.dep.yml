@@ -1,0 +1,11 @@
+---
+name: select2-rails
+version: 4.0.13
+type: bundler
+summary: Integrate Select2 javascript library with Rails asset pipeline
+homepage: https://github.com/argerim/select2-rails
+license: mit
+licenses:
+- sources: README.md
+  text: Selec2-Rails is released under the [MIT License](http://www.opensource.org/licenses/MIT).
+notices: []

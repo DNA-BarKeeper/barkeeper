@@ -1,0 +1,233 @@
+---
+name: bio
+version: 2.0.1
+type: bundler
+summary: Bioinformatics library
+homepage: http://bioruby.org/
+license: other
+licenses:
+- sources: COPYING
+  text: "BioRuby is copyrighted free software by Toshiaki Katayama <k@bioruby.org>.\nYou
+    can redistribute it and/or modify it under either the terms of the\n2-clause BSDL
+    (see the file BSDL), or the conditions below:\n\n  1. You may make and give away
+    verbatim copies of the source form of the\n     software without restriction,
+    provided that you duplicate all of the\n     original copyright notices and associated
+    disclaimers.\n\n  2. You may modify your copy of the software in any way, provided
+    that\n     you do at least ONE of the following:\n\n       a) place your modifications
+    in the Public Domain or otherwise\n          make them Freely Available, such
+    as by posting said\n\t  modifications to Usenet or an equivalent medium, or by
+    allowing\n\t  the author to include your modifications in the software.\n\n       b)
+    use the modified software only within your corporation or\n          organization.\n\n
+    \      c) give non-standard binaries non-standard names, with\n          instructions
+    on where to get the original software distribution.\n\n       d) make other distribution
+    arrangements with the author.\n\n  3. You may distribute the software in object
+    code or binary form,\n     provided that you do at least ONE of the following:\n\n
+    \      a) distribute the binaries and library files of the software,\n\t  together
+    with instructions (in the manual page or equivalent)\n\t  on where to get the
+    original distribution.\n\n       b) accompany the distribution with the machine-readable
+    source of\n\t  the software.\n\n       c) give non-standard binaries non-standard
+    names, with\n          instructions on where to get the original software distribution.\n\n
+    \      d) make other distribution arrangements with the author.\n\n  4. You may
+    modify and include the part of the software into any other\n     software (possibly
+    commercial).  But some files in the distribution\n     are not written by the
+    author, so that they are not under these terms.\n\n     For the list of those
+    files and their copying conditions, see the\n     file LEGAL.\n\n  5. The scripts
+    and library files supplied as input to or produced as \n     output from the software
+    do not automatically fall under the\n     copyright of the software, but belong
+    to whomever generated them, \n     and may be sold commercially, and may be aggregated
+    with this\n     software.\n\n  6. THIS SOFTWARE IS PROVIDED \"AS IS\" AND WITHOUT
+    ANY EXPRESS OR\n     IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED\n
+    \    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n     PURPOSE.\n"
+- sources: COPYING.ja
+  text: |
+    本プログラムはフリーソフトウェアです．2-clause BSDL
+    または以下に示す条件で本プログラムを再配布できます
+    2-clause BSDLについてはBSDLファイルを参照して下さい．
+
+      1. 複製は制限なく自由です．
+
+      2. 以下の条件のいずれかを満たす時に本プログラムのソースを
+         自由に変更できます．
+
+         (a) ネットニューズにポストしたり，作者に変更を送付する
+             などの方法で，変更を公開する．
+
+         (b) 変更した本プログラムを自分の所属する組織内部だけで
+             使う．
+
+         (c) 変更点を明示したうえ，ソフトウェアの名前を変更する．
+             そのソフトウェアを配布する時には変更前の本プログラ
+             ムも同時に配布する．または変更前の本プログラムのソー
+             スの入手法を明示する．
+
+         (d) その他の変更条件を作者と合意する．
+
+      3. 以下の条件のいずれかを満たす時に本プログラムをコンパイ
+         ルしたオブジェクトコードや実行形式でも配布できます．
+
+         (a) バイナリを受け取った人がソースを入手できるように，
+             ソースの入手法を明示する．
+
+         (b) 機械可読なソースコードを添付する．
+
+         (c) 変更を行ったバイナリは名前を変更したうえ，オリジナ
+             ルのソースコードの入手法を明示する．
+
+         (d) その他の配布条件を作者と合意する．
+
+      4. 他のプログラムへの引用はいかなる目的であれ自由です．た
+         だし，本プログラムに含まれる他の作者によるコードは，そ
+         れぞれの作者の意向による制限が加えられる場合があります．
+
+         それらファイルの一覧とそれぞれの配布条件などに付いては
+         LEGALファイルを参照してください．
+
+      5. 本プログラムへの入力となるスクリプトおよび，本プログラ
+         ムからの出力の権利は本プログラムの作者ではなく，それぞ
+         れの入出力を生成した人に属します．また，本プログラムに
+         組み込まれるための拡張ライブラリについても同様です．
+
+      6. 本プログラムは無保証です．作者は本プログラムをサポート
+         する意志はありますが，プログラム自身のバグあるいは本プ
+         ログラムの実行などから発生するいかなる損害に対しても責
+         任を持ちません．
+- sources: README.rdoc
+  text: |-
+    BioRuby can be freely distributed under the same terms as Ruby.
+    See the file COPYING (or COPYING.ja written in Japanese).
+
+    As written in the file COPYING, see the file LEGAL for files distributed
+    under different license.
+notices:
+- sources: LEGAL
+  text: |-
+    LEGAL NOTICE INFORMATION
+    ------------------------
+
+    All the files in this distribution are covered under either the Ruby's
+    license (see the file COPYING) or public-domain except some files
+    mentioned below.
+
+
+    sample/any2fasta.rb:
+
+       Copyright (C) 2006 Pjotr Prins <p@bioruby.org>
+
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+
+
+    sample/biofetch.rb:
+
+       Copyright (C) 2002-2004 KATAYAMA Toshiaki <k@bioruby.org>
+
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+
+
+    sample/enzymes.rb:
+
+       Copyright (C) 2006 Pjotr Prins <p@bioruby.org> and
+       Trevor Wennblom <trevor@corevx.com>
+
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+
+
+    sample/fasta2tab.rb:
+    sample/fsplit.rb:
+    sample/gb2tab.rb:
+    sample/genes2nuc.rb:
+    sample/genes2pep.rb:
+    sample/genes2tab.rb:
+    sample/genome2tab.rb:
+    sample/gt2fasta.rb:
+    sample/ssearch2tab.rb:
+    sample/tfastx2tab.rb:
+    sample/vs-genes.rb:
+
+       Copyright (C) 2001 KATAYAMA Toshiaki <k@bioruby.org>
+
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+
+
+    sample/fastagrep.rb:
+    sample/fastasort.rb:
+
+       Copyright (C) 2008 KATAYAMA Toshiaki <k@bioruby.org> & Pjotr Prins
+
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+
+
+    sample/gb2fasta.rb:
+
+       Copyright (C) 2001 KATAYAMA Toshiaki <k@bioruby.org>
+       Copyright (C) 2002 Yoshinori K. Okuji <o@bioruby.org>
+
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+
+
+    sample/gbtab2mysql.rb:
+    sample/genome2rb.rb:
+    sample/pmfetch.rb:
+    sample/pmsearch.rb:
+
+       Copyright (C) 2002 KATAYAMA Toshiaki <k@bioruby.org>
+
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+
+
+    sample/tdiary.rb:
+
+       Copyright (C) 2003 KATAYAMA Toshiaki <k@bioruby.org>
+                          Mitsuteru C. Nakao <n@bioruby.org>
+                          Itoshi NIKAIDO  <itoshi@gsc.riken.go.jp>
+                          Takeya KASUKAWA <kasukawa@gsc.riken.go.jp>
+
+      This library is free software; you can redistribute it and/or
+      modify it under the terms of the GNU Lesser General Public
+      License as published by the Free Software Foundation; either
+      version 2 of the License, or (at your option) any later version.
+
+
+    test/data/uniprot/p53_human.uniprot:
+
+       This Swiss-Prot entry is copyright. It is produced through a collaboration
+       between  the Swiss Institute of Bioinformatics  and the  EMBL outstation -
+       the European Bioinformatics Institute.  There are no  restrictions on  its
+       use as long as its content is in no way modified and this statement is not
+       removed.
+
+
+    GPL:
+
+     Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+                           59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+     Everyone is permitted to copy and distribute verbatim copies
+     of this license document, but changing it is not allowed.
+
+
+    LGPL:
+
+     Copyright (C) 1991, 1999 Free Software Foundation, Inc.
+         59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+     Everyone is permitted to copy and distribute verbatim copies
+     of this license document, but changing it is not allowed.

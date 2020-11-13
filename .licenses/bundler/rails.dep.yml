@@ -1,0 +1,11 @@
+---
+name: rails
+version: 5.2.4.4
+type: bundler
+summary: Full-stack web application framework.
+homepage: http://rubyonrails.org
+license: mit
+licenses:
+- sources: README.md
+  text: Ruby on Rails is released under the [MIT License](https://opensource.org/licenses/MIT).
+notices: []
