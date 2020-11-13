@@ -1,31 +1,20 @@
-development:
+default: &default
   adapter: postgresql
   encoding: unicode
-  database: gbol5_development
   pool: 5
   host: localhost
   timeout: 5000
-  username: <%= ENV['DB_USER'] %>
-  password: <%= ENV['DB_PASSWORD'] %>
-
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
-test: &test
-  adapter: postgresql
-  encoding: unicode
-  database: gbol5_test
-  pool: 5
-  host: localhost
-  timeout: 5000
-  username: <%= ENV['DB_USER'] %>
-  password: <%= ENV['DB_PASSWORD'] %>
-
-production:
-  host: localhost
-  adapter: postgresql
-  encoding: unicode
-  database: gbol_production
-  pool: 5
   username: <%= Rails.application.credentials.gbol5_database_user %>
   password: <%= Rails.application.credentials.gbol5_database_password %>
+
+development:
+  <<: *default
+  database: gbol5_development
+
+test:
+  <<: *default
+  database: gbol5_test
+
+production:
+  <<: *default
+  database: gbol5_production
