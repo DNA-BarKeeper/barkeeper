@@ -21,6 +21,10 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+/*
+Original code for collapsible tree hierarchy may be found here: https://bl.ocks.org/d3noob/43a860bc0024792f8803bba8ca0d5ecd
+ */
+
 jQuery(function() {
     if (document.getElementById("higher_order_taxa_tree") != null) {
         $.ajax({
