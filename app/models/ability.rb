@@ -57,7 +57,7 @@ class Ability
     can %i[edit index filter change_via_script compare_contigs as_fasq], Contig
     can %i[edit index filter show_species], Family
     can %i[edit index show_species], HigherOrderTaxon
-    can %i[about overview impressum privacy_policy], :home
+    can %i[about overview documentation impressum privacy_policy], :home
     can %i[edit index filter xls], Individual
     can %i[edit index filter], Isolate
     can [:filter], MarkerSequence
