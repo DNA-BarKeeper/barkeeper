@@ -124,9 +124,9 @@ class Ability
         cannot %i[create update destroy], [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
         can :edit, [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
       elsif user.responsibilities.exists?(name: 'taxonomy') # Restrictions for users in project "taxonomy"
-        cannot %i[create update destroy], [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker,
+        cannot %i[create update destroy], [Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker,
                                            MarkerSequence, MicronicPlate, PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
-        can :edit, [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker, MarkerSequence, MicronicPlate,
+        can :edit, [Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker, MarkerSequence, MicronicPlate,
                     PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
         cannot %i[change_base change_left_clip change_right_clip], PrimerRead
       end

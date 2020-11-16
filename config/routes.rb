@@ -150,8 +150,6 @@ GBOLapp::Application.routes.draw do
 
   resources :primer_pos_on_genomes
 
-  resources :alignments
-
   resources :projects do
     collection do
       get :search_taxa
