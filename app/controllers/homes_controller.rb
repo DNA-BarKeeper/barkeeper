@@ -35,6 +35,11 @@ class HomesController < ApplicationController
     authorize! :about, :home
   end
 
+  def documentation
+    @about_page = true
+    authorize! :documentation, :home
+  end
+
   def impressum
     @about_page = true
     authorize! :impressum, :home

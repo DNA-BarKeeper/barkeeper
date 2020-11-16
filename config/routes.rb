@@ -4,10 +4,11 @@ GBOLapp::Application.routes.draw do
   root to: 'homes#about'
 
   match 'about', to: 'homes#about', via: 'get'
+  match 'documentation', to: 'homes#documentation', via: 'get'
   match 'impressum', to: 'homes#impressum', via: 'get'
   match 'privacy_policy', to: 'homes#privacy_policy', via: 'get'
-  match 'overview', to: 'homes#overview', via: 'get'
 
+  match 'overview', to: 'homes#overview', via: 'get'
   get 'overview_diagram/index'
   get 'overview_diagram/all_species', defaults: { format: 'json' }
   get 'overview_diagram/finished_species_trnlf', defaults: { format: 'json' }
