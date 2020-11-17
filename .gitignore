@@ -18,5 +18,4 @@ species.xls
 spec/examples.txt
 
 # Ignore local env variables
-.rbenv-vars
 .env
