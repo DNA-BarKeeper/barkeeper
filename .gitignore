@@ -6,9 +6,6 @@ log/
 public/assets/
 storage/
 
-config/database.yml
-config/application.yml
-
 # Ignore master key for decrypting credentials and more.
 config/master.key
 
@@ -23,6 +20,3 @@ spec/examples.txt
 # Ignore local env variables
 .rbenv-vars
 .env
-
-# Ignore master key for decrypting credentials and more.
-/config/master.key

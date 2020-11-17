@@ -75,8 +75,8 @@ private
 def migrate_attachment(attachment, model, errs, err_ids)
   model.where.not("#{attachment}_file_name": nil).find_each do |instance|
     # Set the S3 Bucket based on environment
-    bucket = Rails.application.credentials.dig(:aws, :s3_bucket_name)
-    region = Rails.application.credentials.dig(:aws, :s3_region)
+    bucket = ENV['S3_BUCKET_NAME']
+    region = ENV['S3_REGION']
 
     # Set attachment details
     instance_id = instance.id
