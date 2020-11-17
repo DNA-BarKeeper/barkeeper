@@ -28,7 +28,7 @@ services:
     image: gbol5/barcode_workflow_manager:app
 #    build:
 #      context: .
-#      dockerfile: ./docker/app/Dockerfile
+#      dockerfile: ./docker/app/Dockerfile.nginx.backup.app
     volumes:
       - .:/var/www/barcode_workflow_manager
       - views:/var/www/barcode_workflow_manager/app/views/home
@@ -45,7 +45,7 @@ services:
     image: gbol5/barcode_workflow_manager:sidekiq
 #    build:
 #      context: .
-#      dockerfile: ./docker/app/Dockerfile
+#      dockerfile: ./docker/app/Dockerfile.nginx.backup.app
     depends_on:
       - 'redis'
     command: sidekiq -C config/sidekiq.yml
@@ -58,7 +58,7 @@ services:
     image: gbol5/barcode_workflow_manager:web
 #    build:
 #      context: .
-#      dockerfile: ./docker/web/Dockerfile
+#      dockerfile: ./docker/web/Dockerfile.nginx.backup.app
     depends_on:
       - 'app'
     ports:

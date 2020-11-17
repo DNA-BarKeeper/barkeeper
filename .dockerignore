@@ -1,9 +1,9 @@
 .git
+.dockerignore
 .env
+
 .idea
 .bundle
-
-config/master.key
 
 .rspec
 /db/*.sqlite3

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-GBOLapp::Application.routes.draw do
+BarcodeWorkflowManager::Application.routes.draw do
   root to: 'homes#about'
 
   match 'about', to: 'homes#about', via: 'get'
