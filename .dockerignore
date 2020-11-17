@@ -1,6 +1,21 @@
 .git
-.dockerignore
-.byebug_history
-log/*
-tmp/*
-.rbenv-vars
+.env
+.idea
+.bundle
+
+config/master.key
+
+.rspec
+/db/*.sqlite3
+/coverage/
+/spec/tmp
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Ignore uploaded files in development
+/storage/*
+!/storage/.keep
