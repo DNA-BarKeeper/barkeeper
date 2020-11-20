@@ -63,9 +63,6 @@ gem 'whenever', require: false # Runs scheduled jobs via cron
 gem 'will_paginate'
 gem 'will_paginate-bootstrap'
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-
 group :development do
   gem 'capistrano',         require: false
   gem 'capistrano-bundler', require: false

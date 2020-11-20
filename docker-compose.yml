@@ -1,65 +1,63 @@
-version: '3'
-
-volumes:
-  views:
-  image_assets:
-  redis:
-  postgres:
+version: '3.7'
 
 services:
   postgres:
     image: 'postgres:9.5.14'
     environment:
-      POSTGRES_USER: gbol5
-      POSTGRES_PASSWORD: passwordpsql
+      POSTGRES_USER: barcode_workflow_manager
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - '5432:5432'
     volumes:
-      - ./tmp/db:/var/lib/postgresql/data
-    env_file:
-      - '.env'
+      - bwm-postgres:/var/lib/postgresql/data
 
   redis:
     image: 'redis:3.2.9'
-    command: redis-server
+    ports:
+      - '6379:6379'
     volumes:
-      - 'redis:/data'
+      - bwm-redis:/var/lib/redis/data
 
   app:
-    command: bundle exec rails s -p 3000 -b '0.0.0.0'
-    image: gbol5/barcode_workflow_manager:app
-#    build:
-#      context: .
-#      dockerfile: ./docker/app/Dockerfile.nginx.backup.app
-    volumes:
-      - .:/var/www/barcode_workflow_manager
-      - views:/var/www/barcode_workflow_manager/app/views/home
-      - image_assets:/var/www/barcode_workflow_manager/app/assets/images/project_images
-    ports:
-      - "3000:3000"
-    env_file:
-      - '.env'
+    build:
+      context: .
+      args:
+        USER_ID: "${USER_ID:-1000}"
+        GROUP_ID: "${GROUP_ID:-1000}"
     depends_on:
       - 'postgres'
       - 'sidekiq'
+    volumes:
+      - .:/opt/app/barcode_workflow_manager
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
 
   sidekiq:
-    image: gbol5/barcode_workflow_manager:sidekiq
-#    build:
-#      context: .
-#      dockerfile: ./docker/app/Dockerfile.nginx.backup.app
+    build:
+      context: .
+      args:
+        USER_ID: "${USER_ID:-1000}"
+        GROUP_ID: "${GROUP_ID:-1000}"
+    command: bundle exec sidekiq
     depends_on:
-      - 'redis'
-    command: sidekiq -C config/sidekiq.yml
+      - postgres
+      - redis
     volumes:
-      - '.:/var/www/barcode_workflow_manager'
+      - .:/opt/app/barcode_workflow_manager
     env_file:
-      - '.env'
+      - .env
 
-  web:
-    image: gbol5/barcode_workflow_manager:web
-#    build:
-#      context: .
-#      dockerfile: ./docker/web/Dockerfile.nginx.backup.app
+  nginx:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.nginx
     depends_on:
-      - 'app'
+      - app
     ports:
-      - 80:80
+      - '80:80'
+
+volumes:
+  bwm-redis:
+  bwm-postgres:

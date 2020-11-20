@@ -30,9 +30,9 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-project = Project.create!(name: 'All')
+project = Project.create!(name: 'All records')
 
-Home.create!(active: true, title: 'New Initiative')
+Home.create!(active: true, title: ENV.fetch('MAIN_PROJECT_NAME', 'New initiative'))
 
 user = CreateAdminService.new.call([project])
 

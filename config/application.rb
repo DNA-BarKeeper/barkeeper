@@ -25,7 +25,9 @@ module BarcodeWorkflowManager
     # in the foreground.
     config.log_level = :debug
     config.log_tags  = [:subdomain, :uuid]
-    config.logger    = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
 
     # Since we're using Redis for Sidekiq, we might as well use Redis to back
     # our cache store. This keeps our application stateless as well.
