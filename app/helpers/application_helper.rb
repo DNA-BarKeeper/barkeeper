@@ -69,7 +69,7 @@ module ApplicationHelper
 
   # Returns the full title on a per-page basis.
   def full_title(page_title)
-    base_title = 'GBOL5'
+    base_title = ENV.fetch('MAIN_PROJECT_NAME', 'New initiative')
 
     if page_title.empty?
       base_title

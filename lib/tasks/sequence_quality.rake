@@ -25,23 +25,23 @@
 namespace :data do
   desc 'Get information about verified marker sequences (with associated species) and contigs in database'
   task sequence_info_verified: %i[environment general_info] do
-    marker_sequences = MarkerSequence.gbol.has_species.verified
-    contigs = Contig.gbol.verified.joins(:primer_reads)
+    marker_sequences = MarkerSequence.in_project(Project.find_by_name('GBOL5')).has_species.verified
+    contigs = Contig.in_project(Project.find_by_name('GBOL5')).verified.joins(:primer_reads)
 
     get_information(marker_sequences, contigs)
   end
 
   desc 'Get information about all gbol5 marker sequences and contigs in database'
   task sequence_info_gbol: %i[environment general_info] do
-    marker_sequences = MarkerSequence.gbol
-    contigs = Contig.joins(:primer_reads).gbol
+    marker_sequences = MarkerSequence.in_project(Project.find_by_name('GBOL5'))
+    contigs = Contig.joins(:primer_reads).in_project(Project.find_by_name('GBOL5'))
 
     get_information(marker_sequences, contigs)
   end
 
   desc 'Get general information about gbol5 marker sequences and contigs in database'
   task general_info: :environment do
-    marker_sequences = MarkerSequence.gbol
+    marker_sequences = MarkerSequence.in_project(Project.find_by_name('GBOL5'))
     puts "Number of marker sequences: #{marker_sequences.size}"
     puts "Number of verified marker sequences in database: #{marker_sequences.verified.size}"
     puts "Number of verified marker sequences with associated species in database: #{marker_sequences.has_species.verified.length}"
@@ -49,17 +49,17 @@ namespace :data do
     puts "Number of marker sequences without associated isolate: #{marker_sequences.left_outer_joins(:isolate).where(isolate: nil).size}"
     puts ''
 
-    contigs = Contig.gbol
+    contigs = Contig.in_project(Project.find_by_name('GBOL5'))
     puts "Number of contigs in database: #{contigs.size}"
     puts "Number of verified contigs in database: #{contigs.verified.size}"
     puts ''
 
-    puts "Number of specimen in database: #{Individual.gbol.size}"
+    puts "Number of specimen in database: #{Individual.in_project(Project.find_by_name('GBOL5')).size}"
     puts ''
   end
 
   task duplicate_sequences: :environment do
-    gbol_sequences = MarkerSequence.gbol
+    gbol_sequences = MarkerSequence.in_project(Project.find_by_name('GBOL5'))
     ms_with_contig = gbol_sequences.joins(:contigs).distinct
 
     duplicate_names = Hash[gbol_sequences.group('marker_sequences.name').count.select { |_k, v| v >= 2 }].keys
@@ -149,8 +149,8 @@ namespace :data do
   end
 
   task get_high_quality_sequences: :environment do
-    sequences = MarkerSequence.gbol # Only GBOL5 sequences
-    # sequences = MarkerSequence.gbol.joins(isolate: {individual: {species: {family: :order}}}).where("orders.name ilike ?", "%Caryophyllales%")
+    sequences = MarkerSequence.in_project(Project.find_by_name('GBOL5')) # Only GBOL5 sequences
+    # sequences = MarkerSequence.in_project(Project.find_by_name('GBOL5')).joins(isolate: {individual: {species: {family: :order}}}).where("orders.name ilike ?", "%Caryophyllales%")
     puts "Number of GBOL5 sequences: #{sequences.size}"
 
     sequences = sequences.has_species # Only sequences with assigned species
@@ -164,7 +164,7 @@ namespace :data do
     puts ''
 
     sequences_per_marker = {}
-    Marker.gbol.each do |marker|
+    Marker.in_project(Project.find_by_name('GBOL5')).each do |marker|
       sequences_per_marker[marker.name.to_sym] = sequences.where(marker_id: marker.id)
       puts "Number of sequences for #{marker.name}: #{sequences_per_marker[marker.name.to_sym].size}"
 
@@ -180,7 +180,7 @@ namespace :data do
 
     # Check sequences for stop codons
     stop_codons = %w[tag tga taa]
-    # sequence = Bio::Sequence::NA.new(MarkerSequence.gbol.first.sequence)
+    # sequence = Bio::Sequence::NA.new(MarkerSequence.in_project(Project.find_by_name('GBOL5')).first.sequence)
     # codons = sequence.codon_usage
     # stop_codons.each { |codon| puts codons[codon] }
   end
@@ -206,7 +206,7 @@ namespace :data do
     reads_per_contig_min = {}
     reads_per_contig_max = {}
 
-    Marker.gbol.each do |marker|
+    Marker.in_project(Project.find_by_name('GBOL5')).each do |marker|
       sequences = marker_sequences.where(marker_id: marker.id)
       contigs_marker = contigs.where(marker_id: marker.id)
 

@@ -121,7 +121,7 @@ class ContigsController < ApplicationController
 
     CompareContigs.perform_async(contig_names)
 
-    send_data("Comparison started as background process, may take a minute or so. View results under http://gbol5.de/analysis_output\n", filename: 'msg.txt', type: 'application/txt')
+    send_data("Comparison started as background process, may take a minute or so. View results under https://#{ENV['PROJECT_DOMAIN']}/analysis_output\n", filename: 'msg.txt', type: 'application/txt')
   end
 
   def analysis_output
@@ -440,7 +440,7 @@ class ContigsController < ApplicationController
           not_included_str += "#{contig_name}: not verified.\n"
         end
       else
-        not_included_str += "#{contig_name}: no record in GBOL5 Web App.\n"
+        not_included_str += "#{contig_name}: no record in Barcode Workflow Manager web app.\n"
       end
     end
 

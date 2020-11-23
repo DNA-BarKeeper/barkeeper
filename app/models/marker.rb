@@ -35,7 +35,7 @@ class Marker < ApplicationRecord
 
   validates_presence_of :name
 
-  scope :gbol_marker, -> { in_project(Project.find_by_name('GBOL5')) }
+  scope :gbol_marker, -> { in_project(Project.find_by_name('GBOL5')) } # TODO: Entfernen, sobald overview table angepasst wurde
 
   def spp_in_higher_order_taxon(higher_order_taxon_id)
     ms = MarkerSequence.select('species_id').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } })
