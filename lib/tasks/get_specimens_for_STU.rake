@@ -121,7 +121,7 @@ namespace :data do
     line << individual.determination # Name
     line << 'Blattmaterial' # Gewebetyp und Menge
     line << 'Silica gel' # Fixierungsmethode
-    line << "gbol5.de/individuals/#{individual.id}/edit" # evtl. Bemerkungen zur Probe
+    line << "#{ENV['PROJECT_DOMAIN']}/individuals/#{individual.id}/edit" # evtl. Bemerkungen zur Probe
     line << individual.locality # Fundortbeschreibung
 
     # Bundesland

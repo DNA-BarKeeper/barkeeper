@@ -27,7 +27,7 @@ namespace :data do
   task check_consensus_sequences: :environment do
     puts 'Checking contig consensus sequences...'
 
-    contigs = Contig.gbol.includes(:marker_sequence, :partial_cons).where.not(marker_sequence: nil).select(:id, :name, :marker_sequence_id)
+    contigs = Contig.in_project(Project.find_by_name('GBOL5')).includes(:marker_sequence, :partial_cons).where.not(marker_sequence: nil).select(:id, :name, :marker_sequence_id)
     alert = []
     no_sequence = []
     ms_blank = []

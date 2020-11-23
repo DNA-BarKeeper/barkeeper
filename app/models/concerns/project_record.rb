@@ -29,8 +29,6 @@ module ProjectRecord
   included do
     has_and_belongs_to_many :projects, -> { distinct }
 
-    scope :gbol, -> { in_project(Project.find_by_name('GBOL5')) }
-
     before_create do
       add_project(0)
     end
