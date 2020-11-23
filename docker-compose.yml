@@ -21,14 +21,11 @@ services:
   app:
     build:
       context: .
-      args:
-        USER_ID: "${USER_ID:-1000}"
-        GROUP_ID: "${GROUP_ID:-1000}"
     depends_on:
       - 'postgres'
       - 'sidekiq'
     volumes:
-      - .:/opt/app/barcode_workflow_manager
+      - .:/var/www/barcode_workflow_manager
     ports:
       - "3000:3000"
     env_file:
@@ -37,15 +34,12 @@ services:
   sidekiq:
     build:
       context: .
-      args:
-        USER_ID: "${USER_ID:-1000}"
-        GROUP_ID: "${GROUP_ID:-1000}"
     command: bundle exec sidekiq
     depends_on:
       - postgres
       - redis
     volumes:
-      - .:/opt/app/barcode_workflow_manager
+      - .:/var/www/barcode_workflow_manager
     env_file:
       - .env
 
@@ -53,8 +47,12 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile.nginx
+      args:
+        PROJECT_DOMAIN: ${PROJECT_DOMAIN}
     depends_on:
       - app
+    env_file:
+      - .env
     ports:
       - '80:80'
 

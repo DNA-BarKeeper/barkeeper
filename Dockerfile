@@ -2,30 +2,18 @@ FROM ruby:2.6.6
 
 LABEL maintainer="Barcode Workflow Manager (Kai Müller, Sarah Wiechers)"
 
-ARG USER_ID
-ARG GROUP_ID
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs cmake
 
-RUN addgroup --gid $GROUP_ID user
-RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
+ENV RAILS_ROOT /var/www/barcode_workflow_manager
+RUN mkdir -p $RAILS_ROOT
+WORKDIR $RAILS_ROOT
 
-ENV INSTALL_PATH /opt/app
-RUN mkdir -p $INSTALL_PATH
-
-# nodejs & yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg -o /root/yarn-pubkey.gpg && apt-key add /root/yarn-pubkey.gpg
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y --no-install-recommends nodejs yarn cmake
-
-# rails
 RUN gem install rails bundler
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
-
-WORKDIR /opt/app/barcode_workflow_manager
 RUN bundle install
 
-RUN chown -R user:user /opt/app
-USER $USER_ID
-VOLUME ["$INSTALL_PATH/public"]
+RUN bundle exec rails assets:precompile
+EXPOSE 3000
 
-CMD bundle exec puma -C config/puma.rb
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
