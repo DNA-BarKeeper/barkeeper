@@ -32,7 +32,7 @@ namespace :data do
   task create_completion_csv: :environment do
     require 'csv'
 
-    CSV.open('species_completion.csv', 'w') do |csv|
+    CSV.open('tmp/species_completion.csv', 'w') do |csv|
       headers =  %w(species family order has_specimen)
       headers += Marker.gbol.collect { |m| m.name + ' completed?' }
 
