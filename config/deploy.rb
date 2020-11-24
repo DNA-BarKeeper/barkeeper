@@ -52,7 +52,7 @@ set sidekiq_config: File.join(shared_path, 'config', 'sidekiq.yml')
 # set :keep_releases, 5
 
 ## Linked Files & Directories (Default None):
-# set :linked_files, %w{config/database.yml}
+set :linked_files, %w{config/master.key}
 # set :linked_dirs,  %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 namespace :puma do
@@ -105,8 +105,7 @@ before 'deploy:assets:precompile', :symlink_config_files
 desc 'Link shared files'
 task :symlink_config_files do
   symlinks = {
-    "#{shared_path}/config/database.yml" => "#{release_path}/config/database.yml",
-    # "#{shared_path}/config/local_env.yml" => "#{release_path}/config/local_env.yml"
+    "#{shared_path}/config/master.key" => "#{release_path}/config/master.key"
   }
 
   on roles(:app) do
