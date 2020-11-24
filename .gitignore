@@ -6,13 +6,6 @@ log/
 public/assets/
 storage/
 
-config/database.yml
-config/secrets.yml
-config/application.yml
-
-# Ignore master key for decrypting credentials and more.
-config/master.key
-
 .DS_Store
 
 dump.rdb
@@ -21,6 +14,8 @@ specimens.xls
 species.xls
 spec/examples.txt
 
+# Ignore master key for decrypting credentials and more.
+config/master.key
+
 # Ignore local env variables
 .rbenv-vars
-.env

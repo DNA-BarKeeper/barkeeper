@@ -1,0 +1,24 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  host: localhost
+  timeout: 5000
+
+test:
+  <<: *default
+  database: gbol5_test
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
+
+development:
+  <<: *default
+  database: gbol5_development
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
+
+production:
+  <<: *default
+  database: gbol_production
+  username: <%= Rails.application.credentials.gbol5_database_user %>
+  password: <%= Rails.application.credentials.gbol5_database_password %>
