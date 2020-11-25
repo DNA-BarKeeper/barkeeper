@@ -2,6 +2,8 @@ FROM ruby:2.6.6
 
 LABEL maintainer="Barcode Workflow Manager (Kai Müller, Sarah Wiechers)"
 
+ARG PUMA_PORT
+
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs cmake
 
 ENV RAILS_ROOT /var/www/barcode_workflow_manager
@@ -14,6 +16,6 @@ COPY Gemfile.lock Gemfile.lock
 RUN bundle install
 
 RUN bundle exec rails assets:precompile
-EXPOSE 3000
+EXPOSE $PUMA_PORT
 
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
