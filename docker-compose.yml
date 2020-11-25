@@ -4,8 +4,8 @@ services:
   postgres:
     image: 'postgres:9.5.14'
     environment:
-      POSTGRES_USER: barcode_workflow_manager
-      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - '5432:5432'
     volumes:
@@ -21,19 +21,23 @@ services:
   app:
     build:
       context: .
+      args:
+        PUMA_PORT: ${PUMA_PORT}
     depends_on:
       - 'postgres'
       - 'sidekiq'
     volumes:
       - .:/var/www/barcode_workflow_manager
     ports:
-      - "3000:3000"
+      - ${PUMA_PORT}:${PUMA_PORT}
     env_file:
       - .env
 
   sidekiq:
     build:
       context: .
+      args:
+        PUMA_PORT: ${PUMA_PORT}
     command: bundle exec sidekiq
     depends_on:
       - postgres
@@ -49,12 +53,14 @@ services:
       dockerfile: ./Dockerfile.nginx
       args:
         PROJECT_DOMAIN: ${PROJECT_DOMAIN}
+        PORT: ${PORT}
+        PUMA_PORT: ${PUMA_PORT}
     depends_on:
       - app
     env_file:
       - .env
     ports:
-      - '80:80'
+      - ${PORT}:${PORT}
 
 volumes:
   bwm-redis:
