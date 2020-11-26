@@ -4,6 +4,15 @@ A web framework to assemble, analyze and manage DNA barcode data and metadata.
 
 - Example usage: https://gbol5.de
 
+### Setup
+- Install Docker
+- Install Docker Compose
+- Clone BWM repository from GitHub
+- Find file .env-example, copy it to .env and modify to your needs
+- To generate secret keys for SECRET_KEY_BASE und DEVISE_KEY run make secret
+- Run (sudo) make install
+
+
 
 ### License
 
