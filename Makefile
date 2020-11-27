@@ -5,7 +5,7 @@ install:
 	@docker volume create --name bwm-postgres
 
 	@echo "Setting up database..."
-    @docker-compose run --user "$(id -u):$(id -g)" app rails db:reset
+	@docker-compose run --user "$(id -u):$(id -g)" app rails db:reset
 
 	@echo "Precompiling assets..."
 	@docker-compose run --user "$(id -u):$(id -g)" app rails assets:precompile
