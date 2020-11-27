@@ -1,20 +1,20 @@
 install:
 	@echo "Installing Barcode Workflow Manager..."
 	@echo "Creating volumes..."
-    @docker volume create --name bwm-redis
-    @docker volume create --name bwm-postgres
+	@docker volume create --name bwm-redis
+	@docker volume create --name bwm-postgres
 
 	@echo "Setting up database..."
     @docker-compose run --user "$(id -u):$(id -g)" app rails db:reset
 
 	@echo "Precompiling assets..."
-    @docker-compose run --user "$(id -u):$(id -g)" app rails assets:precompile
+	@docker-compose run --user "$(id -u):$(id -g)" app rails assets:precompile
 
 	@echo "Starting Barcode Workflow Manager..."
-    @docker-compose up
+	@docker-compose up
 
 secret:
-    @docker-compose run --user "$(id -u):$(id -g)" app rails secret
+	@docker-compose run --user "$(id -u):$(id -g)" app rails secret
 
 remove:
 	@echo "Stopping Barcode Workflow Manager..."
