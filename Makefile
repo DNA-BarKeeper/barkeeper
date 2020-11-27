@@ -14,6 +14,7 @@ install:
 	@docker-compose up
 
 secret:
+	@echo "Generating a secret key..."
 	@docker-compose run --user "$(id -u):$(id -g)" app rails secret
 
 remove:
@@ -22,7 +23,7 @@ remove:
 	@echo "Removing Barcode Workflow Manager containers..."
 	@docker-compose rm
 
-update: remove install
+restart: remove start
 
 stop:
 	@echo "Stopping Barcode Workflow Manager..."

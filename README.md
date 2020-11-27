@@ -8,9 +8,14 @@ A web framework to assemble, analyze and manage DNA barcode data and metadata.
 - Install Docker
 - Install Docker Compose
 - Clone BWM repository from GitHub
-- Find file .env-example, copy it to .env and modify to your needs
-- To generate secret keys for SECRET_KEY_BASE und DEVISE_KEY run make secret
-- Run (sudo) make install
+- Find file .env-example, copy it to .env in the main bwm directory and modify to your needs
+    - Make sure the ports used by redis and postgres are not already in use (redis: 6379, pg: 5432)
+    - After setting up all other env vars generate secret keys for SECRET_KEY_BASE und DEVISE_KEY by running make secret (two times)
+       - The first time you run the command, this will install all dependencies inside the app container. This can take some time. 
+       - Stop the container afterwards by running make stop
+- Run make install (an internet connection is needed)
+- You should be able to see the about page of your new app on your domain now
+- Use the admin credentials you added to the env file to initially log in and create records
 
 
 
