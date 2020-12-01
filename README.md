@@ -13,8 +13,9 @@ Here's what you need to prepare before you can start the setup process:
 - Create an [Amazon Web Storage](https://aws.amazon.com/de/products/storage/) bucket and have your credentials for it ready.
 - Make sure that you have a stable internet connection during all steps of the setup process.
 - Have a server set up with a user with sudo rights and suitable server security measures like a firewall established.
-- Install Docker (see the abovementioned guide for installation instructions).
-- Install Docker Compose. You can find detailed instructions [here](https://docs.docker.com/compose/gettingstarted/).
+- Install Docker (see the abovementioned guide for installation instructions). The installed Docker version needs to be 18.06 or higher.
+- Install Docker Compose. You can find detailed instructions [here](https://docs.docker.com/compose/gettingstarted/). 
+The installed Docker-Compose version needs to be 1.27 or higher.
 - Clone the code from this repository to a suitable location on your server.
 - Make sure the ports used by redis and postgres are not already in use on your machine (redis: 6379, Postgres: 5432).
 
