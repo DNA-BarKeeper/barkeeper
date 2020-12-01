@@ -18,10 +18,8 @@ secret:
 	@docker-compose run --user "$(id -u):$(id -g)" app rails secret
 
 remove:
-	@echo "Stopping Barcode Workflow Manager..."
-	@docker-compose down
 	@echo "Removing Barcode Workflow Manager containers..."
-	@docker-compose rm
+	@docker-compose rm -s -v -f
 
 restart: remove start
 

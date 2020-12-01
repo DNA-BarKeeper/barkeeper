@@ -12,8 +12,9 @@ If you don't know what Docker is, read their excellent [Get Started with Docker 
 Here's what you need to prepare before you can start the setup process:
 - Create an [Amazon Web Storage](https://aws.amazon.com/de/products/storage/) bucket and have your credentials for it ready.
 - Make sure that you have a stable internet connection during all steps of the setup process.
-- Have a server set up with a user with sudo rights and suitable server security measures like a firewall established.
-- Install Docker (see the abovementioned guide for installation instructions). The installed Docker version needs to be 18.06 or higher.
+- Have a server set up running Ubuntu 16.04 or higher versions. You will also need a user with sudo rights during the installation process. 
+It is highly recommended that you establish suitable server security measures like a properly configured firewall.
+- Install Docker (choose the appropriate tutorial for Ubuntu Linux [here](https://docs.docker.com/install/)). The installed Docker version needs to be 18.06 or higher.
 - Install Docker Compose. You can find detailed instructions [here](https://docs.docker.com/compose/gettingstarted/). 
 The installed Docker-Compose version needs to be 1.27 or higher.
 - Clone the code from this repository to a suitable location on your server.
@@ -24,6 +25,8 @@ The installed Docker-Compose version needs to be 1.27 or higher.
 - Modify the *.env* file to your project's needs. Values that you need to change are described as such in the file. 
 The same goes for variables that generally should not (or don't need to) be changed.
 You do not need to add values for `SECRET_KEY_BASE` and `DEVISE_KEY` yet!
+If you want the app to run on a port different to the standard port 80, please specify your desired port number in the 
+environment variable `PORT`. The value of the variable `PUMA_PORT` should generally not be changed.
     - After setting up **all other** environment variables and saving the file, generate secret keys for Rails and Devise
      by running `make secret` two times and copying the generated random keys from your command line. 
      Add the first key as the value for `SECRET_KEY_BASE` 
@@ -38,6 +41,9 @@ You do not need to add values for `SECRET_KEY_BASE` and `DEVISE_KEY` yet!
     - You can start by going to the **Admin area > Home configuration** page and change the About page background and 
     add a description of your project.
 - You are done! Now you and your team can use the new app and start uploading data!
+
+- To stop and restart the app use the commands `make stop` followed by `make start` or just `make restart`.
+- To remove BWM containers created on your system use `make remove`.
 
 ### License
 
