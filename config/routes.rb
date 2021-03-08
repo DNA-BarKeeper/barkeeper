@@ -12,10 +12,7 @@ GBOLapp::Application.routes.draw do
 
   get 'overview_diagram/index'
   get 'overview_diagram/all_species', defaults: { format: 'json' }
-  get 'overview_diagram/finished_species_trnlf', defaults: { format: 'json' }
-  get 'overview_diagram/finished_species_its', defaults: { format: 'json' }
-  get 'overview_diagram/finished_species_rpl16', defaults: { format: 'json' }
-  get 'overview_diagram/finished_species_trnk_matk', defaults: { format: 'json' }
+  get 'overview_diagram/finished_species_marker', defaults: { format: 'json' }
 
   get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'

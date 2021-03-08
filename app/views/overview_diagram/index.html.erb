@@ -6,85 +6,36 @@
   <div class="panel-body" id="main">
     <table>
       <tr>
+        <td width="650px" align="center"></td>
         <td width="650px" align="center">
-          <!-- Nav tabs -->
-          <ul class="nav nav-tabs" role="tablist">
-            <li class="active"><a href="#trnLF" role="tab" data-toggle="tab">trnLF</a></li>
-            <li><a href="#ITS" role="tab" data-toggle="tab">ITS</a></li>
-            <li><a href="#rpl16" role="tab" data-toggle="tab">rpl16</a></li>
-            <li><a href="#trnk_matk" role="tab" data-toggle="tab">trnK-matK</a></li>
-          </ul>
-
-          <!-- Tab panes -->
-          <div class="tab-content">
-            <div class="tab-pane active" id="trnLF">
-              <div class="overview_diagram" data-id="2">
-                <h4>Number of barcode sequences (trnLF) per taxon</h4>
-                <div id="sequence2" class="sequence"></div>
-                <div id="chart2" class="chart" data-id="2">
-                  <div id="explanation2" class="explanation" style="visibility: hidden;">
-                    <span id="percentage2" class="percentage"></span><br/>
-                    of all trnLF barcode sequences belong to this group
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-pane" id="ITS">
-              <div class="overview_diagram" data-id="3">
-                <h4>Number of barcode sequences (ITS) per taxon</h4>
-                <div id="sequence3" class="sequence"></div>
-                <div id="chart3" class="chart" data-id="3">
-                  <div id="explanation3" class="explanation" style="visibility: hidden;">
-                    <span id="percentage3" class="percentage"></span><br/>
-                    of all ITS barcode sequences belong to this group
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-pane" id="rpl16">
-              <div class="overview_diagram" data-id="4">
-                <h4>Number of barcode sequences (rpl16) per taxon</h4>
-                <div id="sequence4" class="sequence"></div>
-                <div id="chart4" class="chart" data-id="4">
-                  <div id="explanation4" class="explanation" style="visibility: hidden;">
-                    <span id="percentage4" class="percentage"></span><br/>
-                    of all rpl16 barcode sequences belong to this group
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-pane" id="trnk_matk">
-              <div class="overview_diagram" data-id="5">
-                <h4>Number of barcode sequences (trnK-matK) per taxon</h4>
-                <div id="sequence5" class="sequence"></div>
-                <div id="chart5" class="chart" data-id="5">
-                  <div id="explanation5" class="explanation" style="visibility: hidden;">
-                    <span id="percentage5" class="percentage"></span><br/>
-                    of all trnK-matK barcode sequences belong to this group
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="form-group">
+            Select a marker to show an overview diagram of finished sequences for this marker.
+            <%= select_tag('Marker', options_from_collection_for_select(Marker.in_project(current_project_id).order(:name), 'id', 'name'), prompt: "Select a Marker", class: 'form-control', id: 'overview_diagram_marker_select') %>
           </div>
         </td>
-
-        <td width="130px" align="center">
-          <div id="sidebar">
-            <div id="legend"></div>
-          </div>
-        </td>
-
+      </tr>
+      <tr>
         <td width="650px" align="center">
-          <div id="all_species" class="overview_diagram" data-id="1">
-            <h4>Number of species per taxon</h4>
-            <div id="sequence1" class="sequence"></div>
-            <div id="chart1" class="chart" data-id="1">
-              <div id="explanation1" class="explanation" style="visibility: hidden;">
-                <span id="percentage1" class="percentage"></span><br/>
+          <div id="all_species" class="overview_diagram" data-id="all">
+            <div id="diagram_title_all" class="diagram_title"></div>
+            <div id="sequence_all" class="sequence"></div>
+            <div id="chart_all" class="chart" data-id="all">
+              <div id="explanation_all" class="explanation" style="visibility: hidden;">
+                <span id="percentage_all" class="percentage"></span><br/>
                 of all species belong to this group
+              </div>
+            </div>
+          </div>
+        </td>
+
+        <td width="650px" align="center">
+          <div class="overview_diagram" data-id="finished">
+            <div id="diagram_title_finished" class="diagram_title"></div>
+            <div id="sequence_finished" class="sequence"></div>
+            <div id="chart_finished" class="chart" data-id="finished">
+              <div id="explanation_finished" class="explanation" style="visibility: hidden;">
+                <span id="percentage_finished" class="percentage"></span><br/>
+                of all ITS barcode sequences belong to this group
               </div>
             </div>
           </div>

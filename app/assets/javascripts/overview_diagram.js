@@ -7,8 +7,7 @@ jQuery(function() {
             dataType: 'json',
             processData: false,
             success: function (data) {
-                createVisualization(data, 1);
-                drawLegend(taxa_legend_entries);
+                createVisualization(data, 'all');
             },
             error: function (result) {
                 console.error("Error getting data.");
@@ -16,69 +15,22 @@ jQuery(function() {
         });
     }
 
-    if (document.getElementById("trnLF")) {
-        $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            url: 'finished_species_trnlf',
-            dataType: 'json',
-            processData: false,
-            success: function (data) {
-                createVisualization(data, 2);
-            },
-            error: function (result) {
-                console.error("Error getting data.");
-            }
-        });
-    }
-
-    if (document.getElementById("ITS")) {
-        $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            url: 'finished_species_its',
-            dataType: 'json',
-            processData: false,
-            success: function (data) {
-                createVisualization(data, 3);
-            },
-            error: function (result) {
-                console.error("Error getting data.");
-            }
-        });
-    }
-
-    if (document.getElementById("rpl16")) {
-        $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            url: 'finished_species_rpl16',
-            dataType: 'json',
-            processData: false,
-            success: function (data) {
-                createVisualization(data, 4);
-            },
-            error: function (result) {
-                console.error("Error getting data.");
-            }
-        });
-    }
-
-    if (document.getElementById("trnk_matk")) {
-        $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            url: 'finished_species_trnk_matk',
-            dataType: 'json',
-            processData: false,
-            success: function (data) {
-                createVisualization(data, 5);
-            },
-            error: function (result) {
-                console.error("Error getting data.");
-            }
-        });
-    }
+    $("#overview_diagram_marker_select").on("change", () => $.ajax({
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        url: "finished_species_marker",
+        dataType: "json",
+        data: {
+            marker_id: $('#overview_diagram_marker_select option:selected').val()
+        },
+        success: function (data) {
+            deleteVisualization('finished'); // delete old visualization
+            createVisualization(data, 'finished');
+        },
+        error: function (result) {
+            console.error("Error getting data.");
+        }
+    }));
 });
 
 // Dimensions of sunburst.
@@ -93,17 +45,6 @@ var b = {
 
 var color = d3.scaleOrdinal(d3.schemeSet2);
 
-var taxa_legend_entries = [
-    "Marchantiophytina",
-    "Bryophytina",
-    "Anthocerotophytina",
-    "Lycopodiophytina",
-    "Equisetophytina",
-    "Filicophytina",
-    "Coniferopsida",
-    "Magnoliopsida"
-];
-
 // Total size of all segments; we set this later, after loading the data.
 var totalSizes = [];
 
@@ -115,13 +56,20 @@ var diagram_id;
 function createVisualization(json, id) {
     diagram_id = id;
 
-    vis = d3.select("#chart" + diagram_id)
+    vis = d3.select("#chart_" + diagram_id)
         .append("svg")
         .attr("width", width)
         .attr("height", height)
         .append("g")
-        .attr("id", "container" + diagram_id)
+        .attr("id", "container_" + diagram_id)
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    // Set diagram title
+    header_text = (id == 'all') ? 'species' : 'barcode sequences';
+    d3.select("#diagram_title_" + diagram_id).append("text")
+        .attr("text-anchor", "middle")
+        .style("font-size", "18px")
+        .text("Number of " + header_text + " per taxon");
 
     var partition = d3.partition()
         .size([2 * Math.PI, radius * radius]);
@@ -139,7 +87,7 @@ function createVisualization(json, id) {
     // when the mouse leaves the parent g.
     vis.append("svg:circle")
         .attr("r", radius)
-        .attr("id", "circle" + diagram_id)
+        .attr("id", "circle_" + diagram_id)
         .style("opacity", 0);
 
     // Turn the data into a d3 hierarchy and calculate the sums.
@@ -164,7 +112,7 @@ function createVisualization(json, id) {
         .on("mouseover", mouseover);
 
     // Add the mouseleave handler to the bounding circle.
-    d3.select("#container" + diagram_id).on("mouseleave", mouseleave);
+    d3.select("#container_" + diagram_id).on("mouseleave", mouseleave);
 
     // Get total size of the tree = value of root node from partition.
     totalSizes[diagram_id] = path.datum().value;
@@ -174,7 +122,7 @@ function createVisualization(json, id) {
 function mouseover(d) {
     id = $(this).closest('.chart').data('id');
     totalSize = totalSizes[id];
-    var chart = d3.select("#chart" + id);
+    var chart = d3.select("#chart_" + id);
 
     var percentage = (100 * d.value / totalSize).toPrecision(3);
     var percentageString = percentage + "% (" + d.value + ")";
@@ -182,10 +130,10 @@ function mouseover(d) {
         percentageString = "< 0.1%";
     }
 
-    d3.select("#percentage" + id)
+    d3.select("#percentage_" + id)
         .text(percentageString);
 
-    d3.select("#explanation" + id)
+    d3.select("#explanation_" + id)
         .style("visibility", "");
 
     var sequenceArray = d.ancestors().reverse();
@@ -209,7 +157,7 @@ function mouseleave(d) {
     id = $(this).closest('.chart').data('id');
 
     // Hide the breadcrumb trail
-    d3.select("#trail" + id)
+    d3.select("#trail_" + id)
         .style("visibility", "hidden");
 
     // Deactivate all segments during transition.
@@ -224,26 +172,25 @@ function mouseleave(d) {
             d3.select(this).on("mouseover", mouseover);
         });
 
-    d3.select("#explanation" + id)
+    d3.select("#explanation_" + id)
         .style("visibility", "hidden");
 }
 
 function initializeBreadcrumbTrail() {
-
     // Add the svg area.
-    var trail = d3.select("#sequence" + diagram_id).append("svg:svg")
+    var trail = d3.select("#sequence_" + diagram_id).append("svg:svg")
         .attr("width", width)
         .attr("height", 50)
-        .attr("id", "trail" + diagram_id);
+        .attr("id", "trail_" + diagram_id);
+
     // Add the label at the end, for the percentage.
     trail.append("svg:text")
-        .attr("id", "endlabel" + diagram_id)
+        .attr("id", "endlabel_" + diagram_id)
         .style("fill", "#000");
 }
 
 // Generate a string that describes the points of a breadcrumb polygon.
 function breadcrumbPoints(d, i) {
-
     var points = [];
     points.push("0,0");
     points.push(b.w + ",0");
@@ -258,9 +205,8 @@ function breadcrumbPoints(d, i) {
 
 // Update the breadcrumb trail to show the current sequence and percentage.
 function updateBreadcrumbs(nodeArray, percentageString, id) {
-
     // Data join; key function combines name and depth (= position in sequence).
-    var trail = d3.select("#trail" + id)
+    var trail = d3.select("#trail_" + id)
         .selectAll("g")
         .data(nodeArray, function(d) { return d.data.name + d.depth; });
 
@@ -287,7 +233,7 @@ function updateBreadcrumbs(nodeArray, percentageString, id) {
     });
 
     // Now move and update the percentage at the end.
-    d3.select("#trail" + id).select("#endlabel" + id)
+    d3.select("#trail_" + id).select("#endlabel_" + id)
         .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
         .attr("y", b.h / 2)
         .attr("dy", "0.35em")
@@ -295,44 +241,11 @@ function updateBreadcrumbs(nodeArray, percentageString, id) {
         .text(percentageString);
 
     // Make the breadcrumb trail visible, if it's hidden.
-    d3.select("#trail" + id)
+    d3.select("#trail_" + id)
         .style("visibility", "");
-
 }
 
-function drawLegend(legend_entries) {
-
-    // Dimensions of legend item: width, height, spacing, radius of rounded rect.
-    var li = {
-        w: 125, h: 30, s: 4, r: 3
-    };
-
-    var legend = d3.select("#legend").append("svg:svg")
-        .attr("width", li.w)
-        .attr("height", legend_entries.length * (li.h + li.s));
-
-    var g = legend.selectAll("g")
-        .data(legend_entries)
-        .enter().append("svg:g")
-        .attr("transform", function(d, i) {
-            return "translate(0," + i * (li.h + li.s) + ")";
-        });
-
-    g.append("svg:rect")
-        .attr("rx", li.r)
-        .attr("ry", li.r)
-        .attr("width", li.w)
-        .attr("height", li.h)
-        .style("fill", function(d) { return color(d); });
-
-    g.append("svg:text")
-        .attr("x", li.w / 2)
-        .attr("y", li.h / 2)
-        .attr("dy", "0.35em")
-        .attr("text-anchor", "middle")
-        .text(function(d) { return d; });
-
-    // Add spacer between legends
-    d3.select("#legend").append("svg:svg")
-        .attr("height", 0.5 * li.h);
+function deleteVisualization(diagram_id) {
+    d3.select("#chart_" + diagram_id).selectAll("*").remove();
+    d3.select("#diagram_title_" + diagram_id).selectAll("*").remove();
 }
