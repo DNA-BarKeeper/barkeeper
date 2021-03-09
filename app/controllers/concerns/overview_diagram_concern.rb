@@ -33,9 +33,6 @@ module OverviewDiagramConcern
   end
 
   def finished_taxa_json(current_project_id, marker_id)
-    puts current_project_id
-    puts marker_id
-
     root = { :name => 'root', 'children' => [] }
     taxa = HigherOrderTaxon.in_project(current_project_id).includes(orders: [:families]).order(:position)
     marker_sequence_cnts = MarkerSequence.in_project(current_project_id).joins(isolate: [individual: [species: :family]]).where(marker: marker_id).order('families.name').group('families.name').count
