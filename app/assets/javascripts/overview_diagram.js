@@ -64,8 +64,11 @@ function createVisualization(json, id) {
         .attr("id", "container_" + diagram_id)
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
+
+
     // Set diagram title
-    header_text = (id == 'all') ? 'species' : 'barcode sequences';
+    var marker_name = $('#overview_diagram_marker_select option:selected')[0].label;
+    var header_text = (id == 'all') ? 'species' : ('barcode sequences (' + marker_name + ')');
     d3.select("#diagram_title_" + diagram_id).append("text")
         .attr("text-anchor", "middle")
         .style("font-size", "18px")
@@ -246,6 +249,6 @@ function updateBreadcrumbs(nodeArray, percentageString, id) {
 }
 
 function deleteVisualization(diagram_id) {
-    d3.select("#chart_" + diagram_id).selectAll("*").remove();
+    d3.select("#chart_" + diagram_id).selectAll("svg").remove();
     d3.select("#diagram_title_" + diagram_id).selectAll("*").remove();
 }

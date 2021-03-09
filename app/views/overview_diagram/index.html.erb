@@ -9,8 +9,9 @@
         <td width="650px" align="center"></td>
         <td width="650px" align="center">
           <div class="form-group">
-            Select a marker to show an overview diagram of finished sequences for this marker.
-            <%= select_tag('Marker', options_from_collection_for_select(Marker.in_project(current_project_id).order(:name), 'id', 'name'), prompt: "Select a Marker", class: 'form-control', id: 'overview_diagram_marker_select') %>
+            Select a marker to show a diagram visualizing the number of finished sequences for this marker.
+            <%= select_tag('Marker', options_from_collection_for_select(Marker.in_project(current_project_id).order(:name), 'id', 'name'),
+                           prompt: "Select a Marker", class: 'form-control', id: 'overview_diagram_marker_select') %>
           </div>
         </td>
       </tr>
@@ -35,7 +36,7 @@
             <div id="chart_finished" class="chart" data-id="finished">
               <div id="explanation_finished" class="explanation" style="visibility: hidden;">
                 <span id="percentage_finished" class="percentage"></span><br/>
-                of all ITS barcode sequences belong to this group
+                of all barcode sequences for this marker belong to this group
               </div>
             </div>
           </div>
