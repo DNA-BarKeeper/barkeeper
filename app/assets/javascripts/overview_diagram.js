@@ -64,11 +64,9 @@ function createVisualization(json, id) {
         .attr("id", "container_" + diagram_id)
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-
-
     // Set diagram title
     var marker_name = $('#overview_diagram_marker_select option:selected')[0].label;
-    var header_text = (id == 'all') ? 'species' : ('barcode sequences (' + marker_name + ')');
+    var header_text = (id == 'all') ? 'target species' : ('barcode sequences (' + marker_name + ')');
     d3.select("#diagram_title_" + diagram_id).append("text")
         .attr("text-anchor", "middle")
         .style("font-size", "18px")
