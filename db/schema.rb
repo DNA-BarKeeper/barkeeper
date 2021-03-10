@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_14_112537) do
+ActiveRecord::Schema.define(version: 2021_03_10_125218) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -244,6 +244,17 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
     t.integer "project_id"
   end
 
+  create_table "homes", force: :cascade do |t|
+    t.string "title"
+    t.string "subtitle"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "active"
+    t.bigint "main_logo_id"
+    t.index ["main_logo_id"], name: "index_homes_on_main_logo_id"
+  end
+
   create_table "individual_searches", id: :serial, force: :cascade do |t|
     t.string "title"
     t.integer "has_species"
@@ -378,6 +389,15 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
   create_table "labs_projects", id: false, force: :cascade do |t|
     t.integer "lab_id"
     t.integer "project_id"
+  end
+
+  create_table "logos", force: :cascade do |t|
+    t.string "title"
+    t.string "url"
+    t.boolean "main", default: true
+    t.bigint "home_id"
+    t.boolean "display", default: true
+    t.index ["home_id"], name: "index_logos_on_home_id"
   end
 
   create_table "marker_sequence_searches", id: :serial, force: :cascade do |t|
@@ -787,6 +807,19 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
     t.index ["ngs_run_id"], name: "index_tag_primer_maps_on_ngs_run_id"
   end
 
+  create_table "taxa", force: :cascade do |t|
+    t.string "scientific_name"
+    t.string "common_name"
+    t.string "position"
+    t.string "synonym"
+    t.string "author"
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "ancestry"
+    t.index ["ancestry"], name: "index_taxa_on_ancestry"
+  end
+
   create_table "taxonomic_classes", id: :serial, force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -833,6 +866,7 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "contig_searches", "projects"
+  add_foreign_key "homes", "logos", column: "main_logo_id"
   add_foreign_key "individual_searches", "projects"
   add_foreign_key "individual_searches", "users"
   add_foreign_key "individuals", "herbaria"
