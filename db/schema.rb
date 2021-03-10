@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_10_125218) do
+ActiveRecord::Schema.define(version: 2021_03_10_135537) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -724,6 +724,12 @@ ActiveRecord::Schema.define(version: 2021_03_10_125218) do
     t.index ["project_id", "tag_primer_map_id"], name: "index_projects_tag_primer_maps"
   end
 
+  create_table "projects_taxa", id: false, force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "taxon_id", null: false
+    t.index ["project_id", "taxon_id"], name: "index_projects_taxa_on_project_id_and_taxon_id"
+  end
+
   create_table "projects_users", id: false, force: :cascade do |t|
     t.integer "project_id"
     t.integer "user_id"
@@ -817,6 +823,7 @@ ActiveRecord::Schema.define(version: 2021_03_10_125218) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "ancestry"
+    t.integer "taxonomic_rank"
     t.index ["ancestry"], name: "index_taxa_on_ancestry"
   end
 
