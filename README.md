@@ -3,9 +3,7 @@
 - Home: https://gbol5.de
 - Code: https://github.com/SarahW91/gbol5
 
-
 Web application for mass assembly of primer reads generated in the GBOL5 project into contigs, auto-assignment of reads to isolates, specimens, species and management of specimens, target species, etc.
-
 
 ### License
 
