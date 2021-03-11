@@ -89,6 +89,7 @@ function drawHierarchy(data) {
     root.y0 = 0;
 
     // Collapse after the second level
+    console.log(root);
     root.children.forEach(collapse);
 
     update(root);
@@ -179,7 +180,7 @@ function drawHierarchy(data) {
         // Add labels for the nodes
         textGroup.append('text')
             .text(function (d) {
-                return d.data.name;
+                return d.data.scientific_name;
             })
             .attr('y', function (d) {
                 return d.children || d._children ?
