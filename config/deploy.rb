@@ -37,7 +37,6 @@ set :puma_worker_timeout, nil
 set :puma_init_active_record, true # Change to false when not using ActiveRecord
 set :puma_user, fetch(:user)
 
-# Set key location to 'C:/Users/Sarah/.ssh/id_rsa' when deploying from windows
 set :ssh_options, port: 1694, forward_agent: true, user: fetch(:user), keys: %w[/home/sarah/.ssh/id_rsa]
 
 # Sidekiq setup
