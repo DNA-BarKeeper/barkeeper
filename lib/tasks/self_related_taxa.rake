@@ -18,12 +18,18 @@ namespace :data do
   def transfer_higher_order_taxa
     puts "Transferring #{HigherOrderTaxon.all.size} higher order taxa into new data structure..."
 
+    # First, create all new Taxon records
     HigherOrderTaxon.all.each do | hot |
-      Taxon.create(ancestry: hot.ancestry,
-                   scientific_name: hot.name,
+      Taxon.create(scientific_name: hot.name,
                    common_name: hot.german_name,
                    position: hot.position,
                    taxonomic_rank: :is_unranked)
+    end
+
+    # Then connect them with the same relationships as before
+    HigherOrderTaxon.all.each do | hot |
+      parent = Taxon.find_by_scientific_name(hot.parent.name) if hot.parent
+      Taxon.find_by_scientific_name(hot.name).update(parent: parent)
     end
 
     puts "Done."

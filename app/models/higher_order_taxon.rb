@@ -14,6 +14,6 @@ class HigherOrderTaxon < ApplicationRecord
   validates_presence_of :name
 
   def self.hierarchy_json()
-    HigherOrderTaxon.arrange_serializable(order: :position).to_json
+    Taxon.where(taxonomic_rank: :is_unranked).arrange_serializable(order: :position).to_json
   end
 end
