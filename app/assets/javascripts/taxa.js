@@ -9,7 +9,7 @@ jQuery(function() {
             success: function (data) {
                 drawTaxonomy(data[0]);
             },
-            error: function (result) {
+            error: function (_result) {
                 console.error("Error getting data.");
             }
         });
@@ -22,7 +22,7 @@ function drawTaxonomy(data) {
 
     // Set the dimensions and margins of the diagram
     var width = parentDiv.clientWidth,
-        height = 2000,
+        height = 1000,
         margin = { left: 50, top: 10, bottom: 10, right: 50 },
         nodeRadius = 10,
         scale = 1;
@@ -65,7 +65,7 @@ function drawTaxonomy(data) {
         root;
 
     // // Declares a tree layout and assigns the size
-    var treemap = d3.tree().size([1, 1]);
+    var treemap = d3.tree().size([width, height]);
 
     // Assigns the data to a hierarchy using parent-child relationships
     root = d3.hierarchy(data, function(d) {
@@ -79,16 +79,21 @@ function drawTaxonomy(data) {
     update(root);
 
     function update(source) {
-        // Assigns the x and y position for the nodes
-        var treeData = treemap(root);
+        var levelWidth = [1];
+        var childCount = function(level, n) {
 
-        // Calculate maximum number of hierarchy levels and resize tree
-        var tree_height = treeData.height;
+            if (n.children && n.children.length > 0) {
+                if (levelWidth.length <= level + 1) levelWidth.push(0);
 
-        treemap.size([
-            1000,
-            Math.max(width - (margin.left + margin.right) - 100, tree_height * 150)
-        ]);
+                levelWidth[level + 1] += n.children.length;
+                n.children.forEach(function(d) {
+                    childCount(level + 1, d);
+                });
+            }
+        };
+        childCount(0, root);
+        var newHeight = d3.max(levelWidth) * 50; // 25 pixels per line
+        treemap = treemap.size([newHeight, width]);
 
         treeData = treemap(root);
 
@@ -110,7 +115,7 @@ function drawTaxonomy(data) {
         // Enter any new nodes at the parent's previous position.
         var nodeEnter = node.enter().append('g')
             .attr('class', 'node')
-            .attr("transform", function(d) {
+            .attr("transform", function(_d) {
                 return "translate(" + source.y0 + "," + source.x0 + ")";
             });
 
@@ -173,7 +178,7 @@ function drawTaxonomy(data) {
         // Remove any exiting nodes
         var nodeExit = node.exit().transition()
             .duration(duration)
-            .attr("transform", function(d) {
+            .attr("transform", function(_d) {
                 return "translate(" + source.y + "," + source.x + ")";
             })
             .remove();
@@ -199,7 +204,7 @@ function drawTaxonomy(data) {
             .attr("fill", 'none')
             .attr("stroke", 'lightgrey')
             .attr("stroke-width", '2px')
-            .attr('d', function(d){
+            .attr('d', function(_d){
                 var o = {
                     x: source.x0,
                     y: source.y0
@@ -218,9 +223,9 @@ function drawTaxonomy(data) {
             });
 
         // Remove any exiting links
-        var linkExit = link.exit().transition()
+        link.exit().transition()
             .duration(duration)
-            .attr('d', function(d) {
+            .attr('d', function(_d) {
                 var o = {x: source.x, y: source.y};
                 return diagonal(o, o)
             })
@@ -250,32 +255,21 @@ function drawTaxonomy(data) {
 
             if(promise !== undefined) circle.classed("spinner",true);
 
-            // Unload & collapse sibling
-            setTimeout(() => { collapse_unload(d); }, duration/4); // Wait a bit for asynchronous request to avoid wrong target for link update
-
             promise !== undefined ? $.when(promise).done(function() {
                 circle.classed("spinner",false);
                 toggle(d);
             }.bind(this)) : toggle(d);
         }
 
-
-        // Force collapse and unload siblings
-        function collapse_unload(d) {
-            //get all nodes
-            var nodes = mainGroup.selectAll("g.node").data();
-            var index = nodes.findIndex( // Find node that is already opened
-                function(element) {
-                    return ( element.depth === d.depth && element.children &&
-                        element.id !== d.id )
-                });
-
-            if (index !== -1) {
-                toggle(nodes[index]);
-
-                delete nodes[index].children;
-                delete nodes[index].loaded;
-            }
+        function centerNode(source) {
+            x = -source.y0;
+            y = -source.x0;
+            x = x  + width / 2;
+            y = y + height / 2;
+            d3.select('g').transition()
+                .duration(duration)
+                .attr("transform", "translate(" + x + "," + y + ")scale(" + 1 + ")");
+            zoom.transform(svg, d3.zoomIdentity.translate(x, y).scale(scale));
         }
 
         //	Toggle children on click.
@@ -288,6 +282,7 @@ function drawTaxonomy(data) {
                 d._children = null;
             }
             update(d);
+            centerNode(d);
         }
 
         function get_child_data(d) {
@@ -305,9 +300,7 @@ function drawTaxonomy(data) {
                     if(responseJson.length === 0)
                         return;
 
-                    var temp = responseJson;
-
-                    temp.forEach(function(element) {
+                    responseJson.forEach(function(element) {
                         var newNode = d3.hierarchy(element);
                         newNode.depth = d.depth + 1;
                         newNode.height = d.height - 1;
@@ -339,4 +332,4 @@ function drawTaxonomy(data) {
             return promise; //return a promise if async. requests
         }
     }
-};
+}
