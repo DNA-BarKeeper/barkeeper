@@ -1,0 +1,14 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Taxonomy</h3>
+  </div>
+  <button id='reset_zoom' class="btn btn-default">Reset zoom & center</button>
+<!--  <button id='expand_all' class="btn btn-default">Expand all nodes</button>-->
+  <div id='taxonomy_tree' class='visualization'></div>
+  <p style="margin: 5px;">
+    Filled grey circles can expand child taxa when clicked. Clicking on a taxon's name will open a page with more detailed information about it.
+  </p>
+</div>
+
+<%= link_to 'New taxon', new_taxon_path %>
+
