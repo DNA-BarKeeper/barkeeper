@@ -1,55 +1,41 @@
 jQuery(function() {
-    if (document.getElementById("higher_order_taxa_tree") != null) {
+    if (document.getElementById("taxonomy_tree") != null) {
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
-            url: 'higher_order_taxa/hierarchy_tree',
+            url: 'taxa/taxonomy_tree',
             dataType: 'json',
             processData: false,
             success: function (data) {
-                drawHierarchy(data[0]);
+                drawTaxonomy(data[0]);
             },
             error: function (result) {
                 console.error("Error getting data.");
             }
         });
     }
-
-    $('#higher_order_taxon_marker_ids').chosen({
-        allow_single_deselect: true,
-        no_results_text: 'No results matched'
-    });
-
-    $('#higher_order_taxon_project_ids').chosen({
-        allow_single_deselect: true,
-        no_results_text: 'No results matched'
-    });
-
-    return $('#higher_order_taxon_parent_id').autocomplete({
-        source: $('#higher_order_taxon_parent_id').data('autocomplete-source')
-    });
 });
 
 // Main function to draw and set up the visualization, once we have the data.
-function drawHierarchy(data) {
-    var parentDiv = document.getElementById("higher_order_taxa_tree");
+function drawTaxonomy(data) {
+    var parentDiv = document.getElementById("taxonomy_tree");
 
     // Set the dimensions and margins of the diagram
     var width = parentDiv.clientWidth,
-        height = Math.max(width * 0.5625, 500),
+        height = 2000,
         margin = { left: 50, top: 10, bottom: 10, right: 50 },
         nodeRadius = 10,
         scale = 1;
 
-    d3.select('#higher_order_taxa_tree')
+    d3.select('#taxonomy_tree')
         .attr('style', function() {
-            return (width * 0.5625 > 500) ? "padding-bottom: 56.25%;" : "padding-bottom: 100%;";
+            return (width * 0.5625 > 1000) ? "padding-bottom: 56.25%;" : "padding-bottom: 100%;";
         });
 
     // Append the SVG object to the parent div
-    var svg = d3.select('#higher_order_taxa_tree')
+    var svg = d3.select('#taxonomy_tree')
         .append("svg")
-        .attr('id', 'higher_order_taxa_svg')
+        .attr('id', 'taxa_svg')
         .attr("preserveAspectRatio", "xMinYMin meet")
         .attr("viewBox", "0 0 " + width + " " + height)
         .classed("svg-content", true);
@@ -63,7 +49,7 @@ function drawHierarchy(data) {
     var zoom = d3.zoom()
         .on("zoom", function() {
             mainGroup.attr("transform", d3.event.transform)
-    });
+        });
 
     svg.call(zoom);
 
@@ -71,8 +57,8 @@ function drawHierarchy(data) {
     d3.select("#reset_zoom")
         .attr('style', 'margin: 5px')
         .on("click", function() {
-        zoom.transform(svg, d3.zoomIdentity.translate(margin.left, margin.top).scale(scale));
-    });
+            zoom.transform(svg, d3.zoomIdentity.translate(margin.left, margin.top).scale(scale));
+        });
 
     var i = 0,
         duration = 750,
@@ -88,38 +74,9 @@ function drawHierarchy(data) {
     root.x0 = height / 2;
     root.y0 = 0;
 
-    // Collapse after the second level
-    root.children.forEach(collapse);
+    root.loaded = true;
 
     update(root);
-
-    // Collapse the node and all it's children
-    function collapse(d) {
-        if(d.children) {
-            d._children = d.children
-            d._children.forEach(collapse)
-            d.children = null
-        }
-    }
-
-    // Button to expand all nodes
-    d3.select("#expand_all")
-        .attr('style', 'margin: 5px')
-        .on("click", function() {
-            root.children.forEach(expand_all);
-        });
-
-    // Expand the node and all it's children
-    function expand_all(d) {
-        if(d._children) {
-            d.children = d._children
-            d._children = null
-            update(d)
-        }
-        if(d.children) {
-            d.children.forEach(expand_all)
-        }
-    }
 
     function update(source) {
         // Assigns the x and y position for the nodes
@@ -129,7 +86,7 @@ function drawHierarchy(data) {
         var tree_height = treeData.height;
 
         treemap.size([
-            500,
+            1000,
             Math.max(width - (margin.left + margin.right) - 100, tree_height * 150)
         ]);
 
@@ -140,7 +97,7 @@ function drawHierarchy(data) {
             links = treeData.descendants().slice(1);
 
         // Normalize for fixed-depth.
-        nodes.forEach(function(d){ d.y = d.depth * 180});
+        nodes.forEach(function(d) { d.y = d.depth * 180 });
 
         // ****************** Nodes section ***************************
 
@@ -150,48 +107,46 @@ function drawHierarchy(data) {
                 return d.id || (d.id = ++i);
             });
 
-        // Enter any new modes at the parent's previous position.
+        // Enter any new nodes at the parent's previous position.
         var nodeEnter = node.enter().append('g')
             .attr('class', 'node')
             .attr("transform", function(d) {
                 return "translate(" + source.y0 + "," + source.x0 + ")";
             });
 
-        var circleGroup = nodeEnter.append('g')
-            .on('click', click);
-
         // Add Circle for the nodes
-        circleGroup.append('circle')
-            .attr('class', 'node')
+        nodeEnter.append('circle')
             .attr("r", nodeRadius)
+            .classed("closed", function(d) { return d._children })
             .style("fill", function(d) {
-                return d._children ? "lightgrey" : "#fff";
+                return d.data.has_children ? "lightgrey" : "#fff";
             })
             .attr("stroke", '#616161')
-            .attr("stroke-width", '3');
+            .attr("stroke-width", '3')
+            .on('click', click);
 
         var textGroup = nodeEnter.append('g')
             .append("a")
             .attr("xlink:href", function(d) {
-                return "/higher_order_taxa/" + d.data.id + "/edit";
+                return "/taxa/" + d.data.id + "/edit";
             });
 
         // Add labels for the nodes
         textGroup.append('text')
             .text(function (d) {
-                return d.data.name;
+                return d.data.scientific_name;
             })
             .attr('y', function (d) {
-                return d.children || d._children ?
+                return d.data.has_children ?
                     nodeRadius * 2 : 0;
             })
             .attr('x', function (d) {
-                return d.children || d._children ?
+                return d.data.has_children ?
                     0 : nodeRadius * 1.5;
             })
             .attr("dy", '.35em')
             .attr("text-anchor", function (d) {
-                return d.children || d._children ?
+                return d.data.has_children ?
                     'middle' : 'left';
             })
             .attr("fill-opacity", 1)
@@ -211,7 +166,7 @@ function drawHierarchy(data) {
         nodeUpdate.select('circle.node')
             .attr("r", nodeRadius)
             .style("fill", function(d) {
-                return d._children ? "lightgrey" : "#fff";
+                return d.data.has_children ? "lightgrey" : "#fff";
             })
             .attr('cursor', 'pointer');
 
@@ -289,6 +244,42 @@ function drawHierarchy(data) {
 
         // Toggle children on click.
         function click(d) {
+            var circle = d3.select(this);
+
+            var promise = get_child_data(d);
+
+            if(promise !== undefined) circle.classed("spinner",true);
+
+            // Unload & collapse sibling
+            setTimeout(() => { collapse_unload(d); }, duration/4); // Wait a bit for asynchronous request to avoid wrong target for link update
+
+            promise !== undefined ? $.when(promise).done(function() {
+                circle.classed("spinner",false);
+                toggle(d);
+            }.bind(this)) : toggle(d);
+        }
+
+
+        // Force collapse and unload siblings
+        function collapse_unload(d) {
+            //get all nodes
+            var nodes = mainGroup.selectAll("g.node").data();
+            var index = nodes.findIndex( // Find node that is already opened
+                function(element) {
+                    return ( element.depth === d.depth && element.children &&
+                        element.id !== d.id )
+                });
+
+            if (index !== -1) {
+                toggle(nodes[index]);
+
+                delete nodes[index].children;
+                delete nodes[index].loaded;
+            }
+        }
+
+        //	Toggle children on click.
+        function toggle(d) {
             if (d.children) {
                 d._children = d.children;
                 d.children = null;
@@ -297,6 +288,55 @@ function drawHierarchy(data) {
                 d._children = null;
             }
             update(d);
+        }
+
+        function get_child_data(d) {
+            if(d.loaded !== undefined)
+                return;
+
+            var newNodes = [];
+
+            var promise = $.ajax({
+                url: "taxa/taxonomy_tree?parent_id=" + d.data.id,
+                dataType: 'json',
+                type: 'GET',
+                cache: false,
+                success: function(responseJson) {
+                    if(responseJson.length === 0)
+                        return;
+
+                    var temp = responseJson;
+
+                    temp.forEach(function(element) {
+                        var newNode = d3.hierarchy(element);
+                        newNode.depth = d.depth + 1;
+                        newNode.height = d.height - 1;
+                        newNode.parent = d;
+
+                        newNodes.push(newNode);
+                    });
+
+                    if (d.children) {
+                        newNodes.forEach(function(node) {
+                            d.children.push(node);
+                            d.data.children.push(node.data);
+                        })
+                    }
+                    else {
+                        d._children = [];
+                        d.data._children = [];
+
+                        newNodes.forEach(function(node) {
+                            d._children.push(node);
+                            d.data._children.push(node.data);
+                        })
+                    }
+
+                    d.loaded = true;
+                }
+            });
+
+            return promise; //return a promise if async. requests
         }
     }
 };

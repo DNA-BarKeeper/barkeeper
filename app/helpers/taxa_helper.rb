@@ -1,0 +1,2 @@
+module TaxaHelper
+end

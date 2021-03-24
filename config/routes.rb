@@ -128,6 +128,12 @@ GBOLapp::Application.routes.draw do
     end
   end
 
+  resources :taxa do
+    collection do
+      get 'taxonomy_tree', defaults: { format: 'json' }
+    end
+  end
+
   resources :species do
     collection do
       get :filter
