@@ -22,22 +22,20 @@ function drawTaxonomy(data) {
 
     // Set the dimensions and margins of the diagram
     var width = parentDiv.clientWidth,
-        height = 1000,
+        height = parentDiv.clientWidth / 2,
         margin = { left: 50, top: 10, bottom: 10, right: 50 },
         nodeRadius = 10,
         scale = 1;
 
     d3.select('#taxonomy_tree')
-        .attr('style', function() {
-            return (width * 0.5625 > 1000) ? "padding-bottom: 56.25%;" : "padding-bottom: 100%;";
-        });
+        .attr('style', "padding-bottom: " + height / width * 100 + "%");
 
     // Append the SVG object to the parent div
     var svg = d3.select('#taxonomy_tree')
         .append("svg")
         .attr('id', 'taxa_svg')
-        .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 " + width + " " + height)
+        // .attr("preserveAspectRatio", "xMinYMin slice")
+        // .attr("viewBox", "0 0 " + width + " " + height)
         .classed("svg-content", true);
 
     // Appends a 'group' element to 'svg'
