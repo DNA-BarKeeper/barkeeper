@@ -34,12 +34,11 @@ function drawTaxonomy(data) {
     var svg = d3.select('#taxonomy_tree')
         .append("svg")
         .attr('id', 'taxa_svg')
-        // .attr("preserveAspectRatio", "xMinYMin slice")
-        // .attr("viewBox", "0 0 " + width + " " + height)
+        .attr("preserveAspectRatio", "none")
+        .attr("viewBox", "0 0 " + width + " " + height)
         .classed("svg-content", true);
 
-    // Appends a 'group' element to 'svg'
-    // Moves the 'group' element to the top left margin
+    // Appends a 'group' element to 'svg' and moves it to the top left margin
     var mainGroup = svg.append('g')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
@@ -51,11 +50,18 @@ function drawTaxonomy(data) {
 
     svg.call(zoom);
 
-    // Button to reset zoom and position
-    d3.select("#reset_zoom")
+    // Button to reset zoom and reset tree to top left
+    d3.select("#reset_tree_pos")
         .attr('style', 'margin: 5px')
         .on("click", function() {
             zoom.transform(svg, d3.zoomIdentity.translate(margin.left, margin.top).scale(scale));
+        });
+
+    // Button to reset zoom and center root node
+    d3.select("#center_root")
+        .attr('style', 'margin: 5px')
+        .on("click", function() {
+            centerNode(root);
         });
 
     var i = 0,
@@ -75,6 +81,8 @@ function drawTaxonomy(data) {
     root.loaded = true;
 
     update(root);
+
+    centerNode(root);
 
     function update(source) {
         var levelWidth = [1];
@@ -234,100 +242,101 @@ function drawTaxonomy(data) {
             d.x0 = d.x;
             d.y0 = d.y;
         });
+    }
 
-        // Creates a curved (diagonal) path from parent to the child nodes
-        function diagonal(s, d) {
-            path = `M ${s.y} ${s.x}
+
+    // Creates a curved (diagonal) path from parent to the child nodes
+    function diagonal(s, d) {
+        path = `M ${s.y} ${s.x}
             C ${(s.y + d.y) / 2} ${s.x},
               ${(s.y + d.y) / 2} ${d.x},
               ${d.y} ${d.x}`;
 
-            return path
+        return path
+    }
+
+    // Toggle children on click.
+    function click(d) {
+        var circle = d3.select(this);
+
+        var promise = get_child_data(d);
+
+        if(promise !== undefined) circle.classed("spinner",true);
+
+        promise !== undefined ? $.when(promise).done(function() {
+            circle.classed("spinner",false);
+            toggle(d);
+        }.bind(this)) : toggle(d);
+    }
+
+    function centerNode(source) {
+        x = -source.y0;
+        y = -source.x0;
+        x = x  + width / 2;
+        y = y + height / 2;
+        d3.select('g').transition()
+            .duration(duration)
+            .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
+        zoom.transform(svg, d3.zoomIdentity.translate(x, y).scale(scale));
+    }
+
+    //	Toggle children on click.
+    function toggle(d) {
+        if (d.children) {
+            d._children = d.children;
+            d.children = null;
+        } else {
+            d.children = d._children;
+            d._children = null;
         }
+        update(d);
+        centerNode(d);
+    }
 
-        // Toggle children on click.
-        function click(d) {
-            var circle = d3.select(this);
+    function get_child_data(d) {
+        if(d.loaded !== undefined)
+            return;
 
-            var promise = get_child_data(d);
+        var newNodes = [];
 
-            if(promise !== undefined) circle.classed("spinner",true);
+        var promise = $.ajax({
+            url: "taxa/taxonomy_tree?parent_id=" + d.data.id,
+            dataType: 'json',
+            type: 'GET',
+            cache: false,
+            success: function(responseJson) {
+                if(responseJson.length === 0)
+                    return;
 
-            promise !== undefined ? $.when(promise).done(function() {
-                circle.classed("spinner",false);
-                toggle(d);
-            }.bind(this)) : toggle(d);
-        }
+                responseJson.forEach(function(element) {
+                    var newNode = d3.hierarchy(element);
+                    newNode.depth = d.depth + 1;
+                    newNode.height = d.height - 1;
+                    newNode.parent = d;
 
-        function centerNode(source) {
-            x = -source.y0;
-            y = -source.x0;
-            x = x  + width / 2;
-            y = y + height / 2;
-            d3.select('g').transition()
-                .duration(duration)
-                .attr("transform", "translate(" + x + "," + y + ")scale(" + 1 + ")");
-            zoom.transform(svg, d3.zoomIdentity.translate(x, y).scale(scale));
-        }
+                    newNodes.push(newNode);
+                });
 
-        //	Toggle children on click.
-        function toggle(d) {
-            if (d.children) {
-                d._children = d.children;
-                d.children = null;
-            } else {
-                d.children = d._children;
-                d._children = null;
-            }
-            update(d);
-            centerNode(d);
-        }
-
-        function get_child_data(d) {
-            if(d.loaded !== undefined)
-                return;
-
-            var newNodes = [];
-
-            var promise = $.ajax({
-                url: "taxa/taxonomy_tree?parent_id=" + d.data.id,
-                dataType: 'json',
-                type: 'GET',
-                cache: false,
-                success: function(responseJson) {
-                    if(responseJson.length === 0)
-                        return;
-
-                    responseJson.forEach(function(element) {
-                        var newNode = d3.hierarchy(element);
-                        newNode.depth = d.depth + 1;
-                        newNode.height = d.height - 1;
-                        newNode.parent = d;
-
-                        newNodes.push(newNode);
-                    });
-
-                    if (d.children) {
-                        newNodes.forEach(function(node) {
-                            d.children.push(node);
-                            d.data.children.push(node.data);
-                        })
-                    }
-                    else {
-                        d._children = [];
-                        d.data._children = [];
-
-                        newNodes.forEach(function(node) {
-                            d._children.push(node);
-                            d.data._children.push(node.data);
-                        })
-                    }
-
-                    d.loaded = true;
+                if (d.children) {
+                    newNodes.forEach(function(node) {
+                        d.children.push(node);
+                        d.data.children.push(node.data);
+                    })
                 }
-            });
+                else {
+                    d._children = [];
+                    d.data._children = [];
 
-            return promise; //return a promise if async. requests
-        }
+                    newNodes.forEach(function(node) {
+                        d._children.push(node);
+                        d.data._children.push(node.data);
+                    })
+                }
+
+                d.loaded = true;
+            }
+        });
+
+        return promise; //return a promise if async. requests
     }
 }
