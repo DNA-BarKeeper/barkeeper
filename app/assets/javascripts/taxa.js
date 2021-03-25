@@ -85,20 +85,20 @@ function drawTaxonomy(data) {
     centerNode(root);
 
     function update(source) {
-        var levelWidth = [1];
+        var levelHeight = [1];
         var childCount = function(level, n) {
-
             if (n.children && n.children.length > 0) {
-                if (levelWidth.length <= level + 1) levelWidth.push(0);
+                if (levelHeight.length <= level + 1) levelHeight.push(0);
 
-                levelWidth[level + 1] += n.children.length;
+                levelHeight[level + 1] += n.children.length;
                 n.children.forEach(function(d) {
                     childCount(level + 1, d);
                 });
             }
         };
         childCount(0, root);
-        var newHeight = d3.max(levelWidth) * 50; // 25 pixels per line
+        var newHeight = d3.max(levelHeight) === 2 ? 2 * 50 + (25 * levelHeight.length) : d3.max(levelHeight) * 50; // Account for diagonals in height calculation
+
         treemap = treemap.size([newHeight, width]);
 
         treeData = treemap(root);
