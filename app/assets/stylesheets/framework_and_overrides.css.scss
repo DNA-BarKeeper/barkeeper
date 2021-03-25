@@ -72,10 +72,11 @@ a.my-btn {
 // to make views framework-neutral
 main {
   @extend .container;
-  //  background-color: #eee;
-  padding-bottom: 80px;
+  padding-top: 20px;
+  padding-bottom: 20px;
   width: 100%;
-  margin-top: 51px; // accommodate the navbar
+  margin-top: 51px; // Accommodate the navbar
+  margin-bottom: 20px;
 }
 
 section {
@@ -409,12 +410,13 @@ div#ngs_run_results_wrapper div.dataTables_length {
   display: inline-block;
   position: relative;
   width: 100%;
+  height: auto;
   vertical-align: top;
   overflow: hidden;
 }
 
 .svg-content {
-  display: inline-block;
+  display: block;
   position: absolute;
   top: 0;
   left: 0;
@@ -422,4 +424,8 @@ div#ngs_run_results_wrapper div.dataTables_length {
 
 .diagram_title {
   margin-bottom: 10px;
+}
+
+.panel-default {
+  margin-bottom: 20px;
 }
