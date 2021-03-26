@@ -26,4 +26,16 @@ class Taxon < ApplicationRecord
       end.to_json
     end
   end
+
+  def parent_name
+    parent.try(:scientific_name)
+  end
+
+  def parent_name=(scientific_name)
+    if scientific_name == ''
+      self.parent = nil
+    else
+      self.parent = Taxon.find_by(scientific_name: scientific_name) if scientific_name.present?
+    end
+  end
 end

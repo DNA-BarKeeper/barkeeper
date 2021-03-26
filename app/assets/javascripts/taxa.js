@@ -14,6 +14,14 @@ jQuery(function() {
             }
         });
     }
+
+    $('#taxon_parent_name').autocomplete({
+        source: $('#taxon_parent_name').data('autocomplete-source')});
+
+    $('#taxon_project_ids').chosen({
+        allow_single_deselect: true,
+        no_results_text: 'No results matched'
+    });
 });
 
 // Main function to draw and set up the visualization, once we have the data.

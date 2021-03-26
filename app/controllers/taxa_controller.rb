@@ -3,7 +3,7 @@ class TaxaController < ApplicationController
 
   load_and_authorize_resource
 
-  before_action :set_taxon, only: %i[show edit update destroy]
+  before_action :set_taxon, only: %i[show edit update filter destroy]
 
   # returns taxonomic hierarchy as JSON
   def index
@@ -14,6 +14,15 @@ class TaxaController < ApplicationController
   def taxonomy_tree
     parent_id = params[:parent_id]
     render json: Taxon.subtree_json(parent_id)
+  end
+
+  def filter
+    # Only show taxa of same taxonomic rank or higher to reduce loading time
+    @taxa = Taxon.in_project(current_project_id)
+                 .where("taxonomic_rank <= ?", Taxon.taxonomic_ranks[@taxon.taxonomic_rank])
+                 .order(:taxonomic_rank, :scientific_name)
+                 .where('taxa.scientific_name ilike ?', "%#{params[:term]}%")
+    render json: @taxa.map(&:scientific_name)
   end
 
   def show; end
@@ -68,7 +77,7 @@ class TaxaController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def taxon_params
-    params.require(:taxon).permit(:parent_id, :position, :scientific_name, :common_name, :author, :comment, :synonym,
-                                  :taxonomic_rank, project_ids: [])
+    params.require(:taxon).permit(:parent_id, :parent_name, :position, :scientific_name, :common_name, :author,
+                                  :comment, :synonym, :taxonomic_rank, project_ids: [])
   end
 end
