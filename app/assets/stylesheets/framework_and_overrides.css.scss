@@ -412,12 +412,12 @@ div#ngs_run_results_wrapper div.dataTables_length {
   width: 100%;
   vertical-align: top;
   overflow: hidden;
+  padding: 5px;
 }
 
 .svg-content {
   display: block;
-  //position: absolute;
-  border: 1px solid gray;
+  border: 1px solid lightgrey;
   top: 0;
   left: 0;
 }
