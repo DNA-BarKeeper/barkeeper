@@ -22,19 +22,18 @@ function drawTaxonomy(data) {
 
     // Set the dimensions and margins of the diagram
     var width = parentDiv.clientWidth,
-        height = parentDiv.clientWidth / 2,
+        height = 650,
         margin = { left: 50, top: 10, bottom: 10, right: 50 },
         nodeRadius = 10,
         scale = 1;
-
-    d3.select('#taxonomy_tree')
-        .attr('style', "padding-bottom: " + height / width * 100 + "%");
 
     // Append the SVG object to the parent div
     var svg = d3.select('#taxonomy_tree')
         .append("svg")
         .attr('id', 'taxa_svg')
-        .attr("preserveAspectRatio", "none")
+        .attr('width', "100%")
+        .attr('height', height)
+        .attr("preserveAspectRatio", "xMinYMin slice")
         .attr("viewBox", "0 0 " + width + " " + height)
         .classed("svg-content", true);
 
@@ -272,8 +271,9 @@ function drawTaxonomy(data) {
     function centerNode(source) {
         x = -source.y0;
         y = -source.x0;
-        x = x  + width / 2;
+        x = x  + $("#taxa_svg").width() / 2; // Use current width of SVG
         y = y + height / 2;
+
         d3.select('g').transition()
             .duration(duration)
             .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");

@@ -416,7 +416,8 @@ div#ngs_run_results_wrapper div.dataTables_length {
 
 .svg-content {
   display: block;
-  position: absolute;
+  //position: absolute;
+  border: 1px solid gray;
   top: 0;
   left: 0;
 }
