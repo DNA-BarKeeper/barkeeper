@@ -1,0 +1,61 @@
+<% provide(:title, @taxon.scientific_name) %>
+<%= show_val_errors(@taxon)%>
+
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= @taxon.scientific_name %></h3>
+  </div>
+  <div class="panel-body">
+    <%= form_for(@taxon) do |f| %>
+      <br>
+      <div class="form-group">
+        <%= f.label :scientific_name %>
+        <%= f.text_field :scientific_name, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :common_name %>
+        <%= f.text_field :common_name, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :synonym %>
+        <%= f.text_field :synonym, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :author %>
+        <%= f.text_field :author, class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :parent_id, 'Parent taxon' %>
+        <% if @taxon.parent %>
+          <%= link_to '', edit_taxon_path(@taxon.parent), :class => "glyphicon glyphicon-share-alt" %>
+        <% end %>
+        <%= f.text_field :parent_name , data: { autocomplete_source: filter_taxon_path(@taxon) } , class: 'form-control'%>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :taxonomic_rank %>
+        <%= f.select :taxonomic_rank, Taxon.taxonomic_ranks.keys.map { |r| [r.split('_')[1].capitalize, r] }, {}, { class: 'form-control' } %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :position, 'Display position index' %>
+        <%= f.text_field :position,  class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :comment %>
+        <%= f.text_area :comment,  class: 'form-control' %>
+      </div>
+
+      <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@taxon) } %>
+
+      <%= f.submit 'Update', :class => 'btn btn-default' %>
+    <% end %>
+  </div>
+</div>
+
