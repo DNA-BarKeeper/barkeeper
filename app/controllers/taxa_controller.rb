@@ -3,7 +3,7 @@ class TaxaController < ApplicationController
 
   load_and_authorize_resource
 
-  before_action :set_taxon, only: %i[show edit update filter destroy]
+  before_action :set_taxon, only: %i[show edit update destroy]
 
   # returns taxonomic hierarchy as JSON
   def index
@@ -17,12 +17,14 @@ class TaxaController < ApplicationController
   end
 
   def filter
-    # Only show taxa of same taxonomic rank or higher to reduce loading time
-    @taxa = Taxon.in_project(current_project_id)
-                 .where("taxonomic_rank <= ?", Taxon.taxonomic_ranks[@taxon.taxonomic_rank])
-                 .order(:taxonomic_rank, :scientific_name)
-                 .where('taxa.scientific_name ilike ?', "%#{params[:term]}%")
-    render json: @taxa.map(&:scientific_name)
+    @taxa = Taxon.where('scientific_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:scientific_name).limit(100)
+    size = Taxon.where('scientific_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:scientific_name).size
+
+    if size > 100
+      render json: @taxa.map(&:scientific_name).push("and #{size} more...")
+    else
+      render json: @taxa.map(&:scientific_name)
+    end
   end
 
   def show; end

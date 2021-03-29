@@ -50,7 +50,7 @@ class MarkerSequenceSearch < ApplicationRecord
       marker_sequences = marker_sequences.not_verified if verified == 'unverified'
     end
 
-    marker_sequences = marker_sequences.has_species if has_species.present?
+    marker_sequences = marker_sequences.has_taxon if has_taxon.present?
 
     marker_sequences = marker_sequences.no_isolate if no_isolate.present?
 
@@ -61,13 +61,7 @@ class MarkerSequenceSearch < ApplicationRecord
 
     marker_sequences = marker_sequences.joins(:marker).where('markers.name ilike ?', "%#{marker}%") if marker.present?
 
-    marker_sequences = marker_sequences.joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where('higher_order_taxa.name ilike ?', "%#{higher_order_taxon}%") if higher_order_taxon.present?
-
-    marker_sequences = marker_sequences.joins(isolate: { individual: { species: { family: :order } } }).where('orders.name ilike ?', "%#{self.order}%") if self.order.present?
-
-    marker_sequences = marker_sequences.joins(isolate: { individual: { species: :family } }).where('families.name ilike ?', "%#{family}%") if family.present?
-
-    marker_sequences = marker_sequences.joins(isolate: { individual: :species }).where('species.composed_name ilike ?', "%#{species}%") if species.present?
+    marker_sequences = marker_sequences.joins(isolate: { individual: :taxon }).where('taxa.scientific_name ilike ?', "%#{taxon}%") if taxon.present?
 
     marker_sequences = marker_sequences.joins(isolate: :individual).where('individuals.specimen_id ilike ?', "%#{specimen}%") if specimen.present?
 
@@ -86,7 +80,7 @@ class MarkerSequenceSearch < ApplicationRecord
   end
 
   def remove_singletons(sequences)
-    cnt = sequences.joins(isolate: [individual: :species]).distinct.reorder('species.species_component').group('species.species_component').count
-    sequences.where(species: { species_component: cnt.select { |_, v| v > 1 }.keys })
+    cnt = sequences.joins(isolate: [individual: :taxon]).distinct.reorder('taxa.scientific_name').group('taxa.scientific_name').count
+    sequences.where(taxon: { scientific_name: cnt.select { |_, v| v > 1 }.keys })
   end
 end

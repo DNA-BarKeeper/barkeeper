@@ -51,21 +51,9 @@ jQuery(function() {
         minLength: 2
     });
 
-    $('#marker_sequence_search_species').autocomplete({
-        source: $('#marker_sequence_search_species').data('autocomplete-source'),
+    $('#marker_sequence_search_taxon').autocomplete({
+        source: $('#marker_sequence_search_taxon').data('autocomplete-source'),
         minLength: 2
-    });
-
-    $('#marker_sequence_search_family').autocomplete({
-        source: $('#marker_sequence_search_family').data('autocomplete-source')
-    });
-
-    $('#marker_sequence_search_order').autocomplete({
-        source: $('#marker_sequence_search_order').data('autocomplete-source')
-    })
-
-    $('#marker_sequence_search_higher_order_taxon').autocomplete({
-        source: $('#marker_sequence_search_higher_order_taxon').data('autocomplete-source')
     });
 
     $('#marker_sequence_search_verified_by').autocomplete({

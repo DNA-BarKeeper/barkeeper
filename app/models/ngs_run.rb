@@ -6,7 +6,8 @@ class NgsRun < ApplicationRecord
   validates_presence_of :name
   validates :name, uniqueness: true
 
-  belongs_to :higher_order_taxon
+  belongs_to :higher_order_taxon # TODO: Remove
+  belongs_to :taxon
   has_many :tag_primer_maps, dependent: :destroy
   has_many :clusters, dependent: :destroy
   has_many :ngs_results, dependent: :destroy
@@ -47,6 +48,18 @@ class NgsRun < ApplicationRecord
 
   def remove_tag_primer_maps(checked_values)
     checked_values.values.each { |id| TagPrimerMap.find(id).destroy unless id == '0' }
+  end
+
+  def taxon_name
+    self.try(:taxon)&.scientific_name
+  end
+
+  def taxon_name=(scientific_name)
+    if name == ''
+      self.taxon = nil
+    else
+      self.taxon = Taxon.find_by(scientific_name: scientific_name)
+    end
   end
 
   # Check if all samples exist in app database
@@ -106,7 +119,7 @@ class NgsRun < ApplicationRecord
     text << "Quality threshold: #{quality_threshold}\n"
     text << "Primer mismatches: #{primer_mismatches}\n"
     text << "Barcode mismatches: #{tag_mismatches}\n"
-    text << "Taxon: #{higher_order_taxon.name}\n" if higher_order_taxon_id
+    text << "Taxon: #{taxon.name}\n" if taxon
     text << "Please visit #{route} to start the analysis."
 
     `echo "#{text}" | mail -s "#{subject}" #{recipients.join(',')}`
@@ -160,7 +173,7 @@ class NgsRun < ApplicationRecord
       start_command << "-w \"#{fastq_location}\" " # WebDAV address of raw analysis files
       start_command << "-o #{output_dir} " # Output directory
       start_command << "-d #{self.id} "
-      start_command << "-t #{higher_order_taxon.name} " if self.higher_order_taxon
+      start_command << "-t #{taxon.scientific_name} " if self.taxon
       start_command << "-q #{self.quality_threshold} "
       start_command << "-p #{self.primer_mismatches} " if self.primer_mismatches && self.primer_mismatches != 0.0
       start_command << "-b #{self.tag_mismatches} "
