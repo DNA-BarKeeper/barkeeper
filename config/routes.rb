@@ -163,7 +163,6 @@ GBOLapp::Application.routes.draw do
 
   resources :projects do
     collection do
-      get :search_taxa
       get :add_to_taxa
     end
   end
