@@ -65,20 +65,14 @@ class IndividualsController < ApplicationController
     end
   end
 
-  # GET /individuals/1
-  # GET /individuals/1.json
   def show; end
 
-  # GET /individuals/new
   def new
     @individual = Individual.new
   end
 
-  # GET /individuals/1/edit
   def edit; end
 
-  # POST /individuals
-  # POST /individuals.json
   def create
     @individual = Individual.new(individual_params)
     @individual.add_project(current_project_id)
@@ -94,8 +88,6 @@ class IndividualsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /individuals/1
-  # PATCH/PUT /individuals/1.json
   def update
     respond_to do |format|
       if @individual.update(individual_params)
@@ -108,8 +100,6 @@ class IndividualsController < ApplicationController
     end
   end
 
-  # DELETE /individuals/1
-  # DELETE /individuals/1.json
   def destroy
     @individual.destroy
     respond_to do |format|
@@ -151,8 +141,8 @@ class IndividualsController < ApplicationController
                                        :revision,
                                        :confirmation,
                                        :comments,
-                                       :species_id,
-                                       :species_name,
+                                       :taxon_id,
+                                       :taxon_name,
                                        :tissue_id,
                                        project_ids: [])
   end

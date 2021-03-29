@@ -21,6 +21,7 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :families
   has_and_belongs_to_many :orders
   has_and_belongs_to_many :higher_order_taxa
+  has_and_belongs_to_many :taxa
 
   has_and_belongs_to_many :labs
   has_and_belongs_to_many :freezers

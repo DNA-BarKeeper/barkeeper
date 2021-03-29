@@ -147,6 +147,6 @@ class NgsRunsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def ngs_run_params
     params.require(:ngs_run).permit(:name, :analysis_requested, :analysis_started, :comment, :primer_mismatches, :quality_threshold, :tag_mismatches, :fastq_location,
-                                    :set_tag_map, :higher_order_taxon_id, :delete_set_tag_map, :results)
+                                    :set_tag_map, :taxon_id, :delete_set_tag_map, :results)
   end
 end

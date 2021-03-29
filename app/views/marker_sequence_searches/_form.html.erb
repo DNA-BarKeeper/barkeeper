@@ -31,8 +31,8 @@
       </div>
       <br/>
       <div>
-        <%= f.check_box :has_species %>
-        <%= f.label :has_species, "Is assigned to a species" %>
+        <%= f.check_box :has_taxon %>
+        <%= f.label :has_taxon, "Has an associated taxon" %>
       </div>
       <br/>
       <div>
@@ -54,25 +54,15 @@
         <%= f.label :marker %><br />
         <%= f.text_field :marker, data: { autocomplete_source: Marker.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
       </div>
+
       <div class="field">
         <%= f.label :specimen %><br />
         <%= f.text_field :specimen, data: { autocomplete_source: filter_individuals_path(format: 'json') }, include_blank: true, class: 'form-control' %>
       </div>
+
       <div class="field">
-        <%= f.label :species %><br />
-        <%= f.text_field :species, data: { autocomplete_source: filter_species_index_path }, include_blank: true, class: 'form-control' %>
-      </div>
-      <div class="field">
-        <%= f.label :family %><br />
-        <%= f.text_field :family, data: { autocomplete_source: filter_families_path }, include_blank: true, class: 'form-control' %>
-      </div>
-      <div class="field">
-        <%= f.label :higher_order_taxon %><br />
-        <%= f.text_field :higher_order_taxon, data: { autocomplete_source: HigherOrderTaxon.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
-      </div>
-      <div class="field">
-        <%= f.label :order %><br />
-        <%= f.text_field :order, data: { autocomplete_source: Order.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+        <%= f.label :taxon %><br />
+        <%= f.text_field :taxon, data: { autocomplete_source: filter_taxon_path }, include_blank: true, class: 'form-control' %>
       </div>
       <br>
       <div class="field">
@@ -84,6 +74,7 @@
         <%= f.label :age, "Created between" %><br />
         <%= f.text_field :min_age, class: 'form-control' %> and <%= f.text_field :max_age, class: 'form-control' %>
       </div>
+
       <div class="field">
         <%= f.label :update, "Updated between" %><br />
         <%= f.text_field :min_update, class: 'form-control' %> and <%= f.text_field :max_update, class: 'form-control' %>

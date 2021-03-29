@@ -1,11 +1,14 @@
 class Taxon < ApplicationRecord
   include ProjectRecord
 
+  has_many :individuals
+  has_many :ngs_runs
+
   has_ancestry  cache_depth: true, counter_cache: true
 
-  validates_presence_of :taxonomic_rank
   validates_presence_of :scientific_name
   validates_uniqueness_of :scientific_name
+  validates_presence_of :taxonomic_rank
 
   enum taxonomic_rank: %i[is_unranked is_division is_subdivision is_class is_order is_family is_genus is_species is_subspecies]
 
@@ -25,6 +28,18 @@ class Taxon < ApplicationRecord
           children: children}
       end.to_json
     end
+  end
+
+  def self.find_by_sci_name_or_synonym(identifier)
+    taxon = Taxon.find_by_scientific_name(identifier)
+    taxon ||= Taxon.find_by_synonym(identifier)
+    taxon
+  end
+
+  def self.find_or_create_by_sci_name_or_synonym(identifier, **attributes)
+    taxon = Taxon.find_by_sci_name_or_synonym(identifier)
+    taxon ||= Taxon.create(scientific_name: identifier, attributes: attributes)
+    taxon
   end
 
   def parent_name

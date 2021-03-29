@@ -30,16 +30,8 @@ jQuery(function() {
         source: $('#individual_search_herbarium').data('autocomplete-source')
     });
 
-    $('#individual_search_species').autocomplete({
-        source: $('#individual_search_species').data('autocomplete-source'),
+    $('#individual_search_taxon').autocomplete({
+        source: $('#individual_search_taxon').data('autocomplete-source'),
         minLength: 2
-    });
-
-    $('#individual_search_family').autocomplete({
-        source: $('#individual_search_family').data('autocomplete-source')
-    });
-
-    $('#individual_search_order').autocomplete({
-        source: $('#individual_search_order').data('autocomplete-source')
     });
 });

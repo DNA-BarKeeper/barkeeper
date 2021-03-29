@@ -34,7 +34,7 @@
         <% if @taxon.parent %>
           <%= link_to '', edit_taxon_path(@taxon.parent), :class => "glyphicon glyphicon-share-alt" %>
         <% end %>
-        <%= f.text_field :parent_name , data: { autocomplete_source: filter_taxon_path(@taxon) } , class: 'form-control'%>
+        <%= f.text_field :parent_name , data: { autocomplete_source: filter_taxa_path } , class: 'form-control'%>
       </div>
 
       <div class="form-group">

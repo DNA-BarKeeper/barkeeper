@@ -8,7 +8,7 @@ class IndividualSearch < ApplicationRecord
                                   :scope=> :user_id }
 
   enum has_issue: %i[all_issue issues no_issues]
-  enum has_species: %i[all_species species no_species]
+  enum has_taxon: %i[all_taxon taxon no_taxon]
   enum has_problematic_location: %i[all_location bad_location location_okay]
 
   def individuals
@@ -34,18 +34,14 @@ class IndividualSearch < ApplicationRecord
       individuals = individuals.where(has_issue: nil).or(individuals.where(has_issue: false)) if has_issue == 'no_issues'
     end
 
-    if has_species != 'all_species'
-      individuals = individuals.joins(:species) if has_species == 'species'
-      individuals = individuals.without_species if has_species == 'no_species'
+    if has_taxon != 'all_taxon'
+      individuals = individuals.joins(:taxon) if has_taxon == 'taxon'
+      individuals = individuals.without_taxon if has_taxon == 'no_taxon'
     end
 
     individuals = individuals.joins(:herbarium).where('herbaria.acronym ilike ?', "%#{herbarium}%") if herbarium.present?
 
-    individuals = individuals.joins(species: { family: :order }).where('orders.name ilike ?', "%#{self.order}%") if order.present?
-
-    individuals = individuals.joins(species: :family).where('families.name ilike ?', "%#{family}%") if family.present?
-
-    individuals = individuals.joins(:species).where('species.composed_name ilike ?', "%#{species}%") if species.present?
+    individuals = individuals.joins(:taxon).where('taxa.scientific_name ilike ?', "%#{taxon}%") if taxon.present?
 
     individuals
   end

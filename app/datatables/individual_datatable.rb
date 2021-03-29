@@ -8,9 +8,9 @@ class IndividualDatatable
 
   delegate :params, :link_to, :h, to: :@view
 
-  def initialize(view, species_id, current_default_project)
+  def initialize(view, taxon_id, current_default_project)
     @view = view
-    @species_id = species_id
+    @taxon_id = taxon_id
     @current_default_project = current_default_project
   end
 
@@ -27,14 +27,14 @@ class IndividualDatatable
 
   def data
     individuals.map do |individual|
-      species = ''
+      taxon = ''
 
-      species = link_to individual.species.name_for_display, edit_species_path(individual.species) if individual.species
+      taxon = link_to individual.taxon.scientific_name, edit_taxon_path(individual.taxon) if individual.taxon
       herbarium = link_to individual.herbarium.acronym, edit_herbarium_path(individual.herbarium) if individual.herbarium
 
       [
         link_to(individual.specimen_id, edit_individual_path(individual)),
-        species,
+        taxon,
         herbarium,
         individual.collector,
         individual.collectors_field_number,
@@ -49,22 +49,21 @@ class IndividualDatatable
   end
 
   def fetch_individuals
-    if @species_id
-      individuals = Individual.includes(:species, :herbarium).where(species_id: @species_id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+    if @taxon_id
+      individuals = Individual.includes(:taxon, :herbarium).where(taxon_id: @taxon_id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     else
-      individuals = Individual.includes(:species, :herbarium).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      individuals = Individual.includes(:taxon, :herbarium).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
     individuals = individuals.page(page).per_page(per_page)
 
     if params[:sSearch].present?
       individuals = individuals.where('individuals.specimen_id ILIKE :search
-OR species.composed_name ILIKE :search
+OR taxa.scientific_name ILIKE :search
 OR herbaria.acronym ILIKE :search
 OR individuals.collector ILIKE :search
 OR individuals.collectors_field_number ILIKE :search', search: "%#{params[:sSearch]}%")
-      .references(:species)
-      # individuals = Individual.quick_search(params[:sSearch])
+      .references(:taxon)
     end
 
     individuals
@@ -79,7 +78,7 @@ OR individuals.collectors_field_number ILIKE :search', search: "%#{params[:sSear
   end
 
   def sort_column
-    columns = %w[individuals.specimen_id species.composed_name herbaria.acronym individuals.collector individuals.collectors_field_number individuals.updated_at]
+    columns = %w[individuals.specimen_id taxa.scientific_name herbaria.acronym individuals.collector individuals.collectors_field_number individuals.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
