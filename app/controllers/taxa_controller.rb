@@ -16,6 +16,13 @@ class TaxaController < ApplicationController
     render json: Taxon.subtree_json(parent_id)
   end
 
+  def show_individuals
+    respond_to do |format|
+      format.html
+      format.json { render json: IndividualDatatable.new(view_context, params[:id], current_project_id) }
+    end
+  end
+
   def filter
     @taxa = Taxon.where('scientific_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:scientific_name).limit(100)
     size = Taxon.where('scientific_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:scientific_name).size
