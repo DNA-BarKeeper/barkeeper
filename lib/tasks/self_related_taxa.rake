@@ -7,11 +7,30 @@ namespace :data do
     transfer_orders
     transfer_families
     transfer_species
+
+    add_project_to_taxa
+
+    update_individuals
+    update_ngs_runs
   end
 
-  task add_project_to_taxa: :environment do
+  def add_project_to_taxa
     Taxon.all.each do | taxon |
       taxon.add_project(5) # Adds GBOL5 project (and "all records")
+    end
+  end
+
+  def update_individuals
+    Individual.all.each do | individual |
+      associated_taxon = Taxon.find_by_sci_name_or_synonym(individual.species.composed_name) if individual.species
+      individual.update!(taxon: associated_taxon)
+    end
+  end
+
+  def update_ngs_runs
+    NgsRun.all.each do | ngs_run |
+      associated_taxon = Taxon.find_by_sci_name_or_synonym(ngs_run.higher_order_taxon.name) if ngs_run.higher_order_taxon
+      ngs_run.update!(taxon: associated_taxon)
     end
   end
 
