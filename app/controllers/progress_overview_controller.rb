@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class OverviewDiagramController < ApplicationController
+class ProgressOverviewController < ApplicationController
   include ProjectConcern
-  include OverviewDiagramConcern
+  include ProgressOverviewConcern
 
   def index
     authorize! :index, :overview_diagram
