@@ -61,99 +61,99 @@ class Species < ApplicationRecord
     end
   end
 
-  def self.import_stuttgart(file, project_id)
-    # Only direct attributes; associations are extra
-    valid_keys = %w[genus_name
-                    species_epithet
-                    id
-                    author
-                    author_infra
-                    infraspecific
-                    comment
-                    german_name]
-
-    import_species(file, valid_keys, project_id)
-  end
-
-  def self.import_berlin(file, project_id)
-    valid_keys = %w[genus_name
-                    species_epithet
-                    id
-                    author
-                    infraspecific
-                    author_infra
-                    comment] # Only direct attributes; associations are extra
-
-    import_species(file, valid_keys, project_id)
-  end
-
-  # TODO: Does not assign a project to new records
-  def self.import_gbolII(file)
-    spreadsheet = Species.open_spreadsheet(file)
-    header = spreadsheet.row(1)
-
-    (2..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
-
-      next unless (row['GBOL 1 oder 2?'].include? 'GBOL2') || (row['GBOL 1 oder 2?'].include? 'Nachtrag') # Only add new species
-      # Add family or assign to existing:
-      family = Family.find_or_create_by(name: row['Familie (sensu APG)'])
-
-      # Add order or assign to existing
-      order = Order.find_or_create_by(name: row['Ordnung (sensu APG)'])
-      family.update(order_id: order.id)
-
-      full_name = row['Arten/Unterarten']
-      components = full_name.split(' ')
-
-      species = Species.find_or_create_by(composed_name: full_name)
-
-      species.update(family: family)
-      species.update(genus_name: components.first)
-
-      case components.size
-      when 2
-        species.update(species_epithet: components[1])
-      when 3
-        if components[1] == 'x'
-          species_ep = components[1] + ' ' + components.last
-          species.update(species_epithet: species_ep)
-        else
-          species.update(species_epithet: components[1], infraspecific: components.last)
-        end
-      when 4
-        if components[2] == 'subsp.'
-          species.update(species_epithet: components[1], infraspecific: components.last)
-        else
-          infraspecific = components[2] + ' ' + components.last
-          species.update(species_epithet: components[1], infraspecific: infraspecific)
-        end
-      end
-
-      species.update(species_component: species.get_species_component)
-    end
-  end
-
-  # TODO: Does not assign a project to new records
-  def self.import_stuttgart_set_class(file)
-    spreadsheet = Species.open_spreadsheet(file)
-
-    header = spreadsheet.row(1)
-    (2..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
-
-      order = Order.find_by_name(row['order'])
-
-      next unless order
-      taxonomic_class = TaxonomicClass.find_or_create_by(name: row['class'])
-
-      next unless taxonomic_class
-      order.update(taxonomic_class_id: taxonomic_class.id)
-      subdivision = Subdivision.find_or_create_by(name: row['subdivision'])
-
-      taxonomic_class.update(subdivision_id: subdivision.id) if subdivision
-    end
-  end
+  # def self.import_stuttgart(file, project_id)
+  #   # Only direct attributes; associations are extra
+  #   valid_keys = %w[genus_name
+  #                   species_epithet
+  #                   id
+  #                   author
+  #                   author_infra
+  #                   infraspecific
+  #                   comment
+  #                   german_name]
+  #
+  #   import_species(file, valid_keys, project_id)
+  # end
+  #
+  # def self.import_berlin(file, project_id)
+  #   valid_keys = %w[genus_name
+  #                   species_epithet
+  #                   id
+  #                   author
+  #                   infraspecific
+  #                   author_infra
+  #                   comment] # Only direct attributes; associations are extra
+  #
+  #   import_species(file, valid_keys, project_id)
+  # end
+  #
+  # # TODO: Does not assign a project to new records
+  # def self.import_gbolII(file)
+  #   spreadsheet = Species.open_spreadsheet(file)
+  #   header = spreadsheet.row(1)
+  #
+  #   (2..spreadsheet.last_row).each do |i|
+  #     row = Hash[[header, spreadsheet.row(i)].transpose]
+  #
+  #     next unless (row['GBOL 1 oder 2?'].include? 'GBOL2') || (row['GBOL 1 oder 2?'].include? 'Nachtrag') # Only add new species
+  #     # Add family or assign to existing:
+  #     family = Family.find_or_create_by(name: row['Familie (sensu APG)'])
+  #
+  #     # Add order or assign to existing
+  #     order = Order.find_or_create_by(name: row['Ordnung (sensu APG)'])
+  #     family.update(order_id: order.id)
+  #
+  #     full_name = row['Arten/Unterarten']
+  #     components = full_name.split(' ')
+  #
+  #     species = Species.find_or_create_by(composed_name: full_name)
+  #
+  #     species.update(family: family)
+  #     species.update(genus_name: components.first)
+  #
+  #     case components.size
+  #     when 2
+  #       species.update(species_epithet: components[1])
+  #     when 3
+  #       if components[1] == 'x'
+  #         species_ep = components[1] + ' ' + components.last
+  #         species.update(species_epithet: species_ep)
+  #       else
+  #         species.update(species_epithet: components[1], infraspecific: components.last)
+  #       end
+  #     when 4
+  #       if components[2] == 'subsp.'
+  #         species.update(species_epithet: components[1], infraspecific: components.last)
+  #       else
+  #         infraspecific = components[2] + ' ' + components.last
+  #         species.update(species_epithet: components[1], infraspecific: infraspecific)
+  #       end
+  #     end
+  #
+  #     species.update(species_component: species.get_species_component)
+  #   end
+  # end
+  #
+  # # TODO: Does not assign a project to new records
+  # def self.import_stuttgart_set_class(file)
+  #   spreadsheet = Species.open_spreadsheet(file)
+  #
+  #   header = spreadsheet.row(1)
+  #   (2..spreadsheet.last_row).each do |i|
+  #     row = Hash[[header, spreadsheet.row(i)].transpose]
+  #
+  #     order = Order.find_by_name(row['order'])
+  #
+  #     next unless order
+  #     taxonomic_class = TaxonomicClass.find_or_create_by(name: row['class'])
+  #
+  #     next unless taxonomic_class
+  #     order.update(taxonomic_class_id: taxonomic_class.id)
+  #     subdivision = Subdivision.find_or_create_by(name: row['subdivision'])
+  #
+  #     taxonomic_class.update(subdivision_id: subdivision.id) if subdivision
+  #   end
+  # end
 
   def assign_display_names
     self.species_component = get_species_component
