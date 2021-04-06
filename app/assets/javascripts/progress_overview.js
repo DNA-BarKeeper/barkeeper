@@ -1,252 +1,128 @@
 jQuery(function() {
-    if (document.getElementById("all_species") != null) {
+    if (document.getElementById("progress_tree") != null) {
         $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
-            url: 'all_species',
+            url: 'progress_tree',
             dataType: 'json',
             processData: false,
             success: function (data) {
-                createVisualization(data, 'all');
+                drawProgressTree(data[0]);
             },
             error: function (result) {
                 console.error("Error getting data.");
             }
         });
     }
-
-    $("#overview_diagram_marker_select").on("change", () => $.ajax({
-        type: "GET",
-        contentType: "application/json; charset=utf-8",
-        url: "finished_species_marker",
-        dataType: "json",
-        data: {
-            marker_id: $('#overview_diagram_marker_select option:selected').val()
-        },
-        success: function (data) {
-            deleteVisualization('finished'); // delete old visualization
-            createVisualization(data, 'finished');
-        },
-        error: function (result) {
-            console.error("Error getting data.");
-        }
-    }));
 });
 
-// Dimensions of sunburst.
-var width = 550;
-var height = 500;
-var radius = Math.min(width, height) / 2;
-
-// Breadcrumb dimensions: width, height, spacing, width of tip/tail.
-var b = {
-    w: 125, h: 30, s: 4, t: 10
-};
-
-var color = d3.scaleOrdinal(d3.schemeSet2);
-
-// Total size of all segments; we set this later, after loading the data.
-var totalSizes = [];
-
-var vis;
-
-var diagram_id;
-
 // Main function to draw and set up the visualization, once we have the data.
-function createVisualization(json, id) {
-    diagram_id = id;
+function drawProgressTree(data) {
+    var parentDiv = document.getElementById("progress_tree");
 
-    vis = d3.select("#chart_" + diagram_id)
+    var width = parentDiv.clientWidth,
+        height = 650,
+        scale = 1,
+        nodeRadius = 5,
+        radius = width / 2 - 50,
+        duration = 750;
+
+    var treeLayout = d3.cluster().size([2 * Math.PI, radius - 100]);
+
+    var root = treeLayout(d3.hierarchy(data)
+        .sort((a, b) => d3.ascending(a.data.scientific_name, b.data.scientific_name)));
+
+    var svg = d3.select('#progress_tree')
         .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .append("g")
-        .attr("id", "container_" + diagram_id)
-        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        .attr('id', 'progress_svg')
+        .attr('width', "100%")
+        .attr('height', height)
+        .attr("preserveAspectRatio", "xMinYMin slice")
+        .attr("viewBox", "0 0 " + width + " " + height)
+        .classed("svg-content", true);
 
-    // Set diagram title
-    var marker_name = $('#overview_diagram_marker_select option:selected')[0].label;
-    var header_text = (id == 'all') ? 'target species' : ('barcode sequences (' + marker_name + ')');
-    d3.select("#diagram_title_" + diagram_id).append("text")
-        .attr("text-anchor", "middle")
-        .style("font-size", "18px")
-        .text("Number of " + header_text + " per taxon");
+    var mainGroup = svg.append('g')
+        .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
-    var partition = d3.partition()
-        .size([2 * Math.PI, radius * radius]);
-
-    var arc = d3.arc()
-        .startAngle(function(d) { return d.x0; })
-        .endAngle(function(d) { return d.x1; })
-        .innerRadius(function(d) { return Math.sqrt(d.y0); })
-        .outerRadius(function(d) { return Math.sqrt(d.y1); });
-
-    // Basic setup of page elements.
-    initializeBreadcrumbTrail();
-
-    // Bounding circle underneath the sunburst, to make it easier to detect
-    // when the mouse leaves the parent g.
-    vis.append("svg:circle")
-        .attr("r", radius)
-        .attr("id", "circle_" + diagram_id)
-        .style("opacity", 0);
-
-    // Turn the data into a d3 hierarchy and calculate the sums.
-    var root = d3.hierarchy(json)
-        .sum(function(d) { return d.size; });
-        // .sort(function(a, b) { return b.value - a.value; }); //disabled sorting to maintain taxonomic order
-
-    // For efficiency, filter nodes to keep only those large enough to see.
-    var nodes = partition(root).descendants()
-        .filter(function(d) {
-            return (d.x1 - d.x0 > 0.005); // 0.005 radians = 0.29 degrees
+    // Enable zoom & pan
+    var zoom = d3.zoom()
+        .on("zoom", function() {
+            mainGroup.attr("transform", d3.event.transform)
         });
 
-    var path = vis.data([json]).selectAll("path")
-        .data(nodes)
-        .enter().append("svg:path")
-        .attr("display", function(d) { return d.depth ? null : "none"; })
-        .attr("d", arc)
-        .attr("fill-rule", "evenodd")
-        .style("fill", function(d) { return color((d.children ? d : d.parent).data.name); })
-        .style("opacity", 1)
-        .on("mouseover", mouseover);
+    svg.call(zoom);
 
-    // Add the mouseleave handler to the bounding circle.
-    d3.select("#container_" + diagram_id).on("mouseleave", mouseleave);
-
-    // Get total size of the tree = value of root node from partition.
-    totalSizes[diagram_id] = path.datum().value;
-};
-
-// Fade all but the current sequence, and show it in the breadcrumb trail.
-function mouseover(d) {
-    id = $(this).closest('.chart').data('id');
-    totalSize = totalSizes[id];
-    var chart = d3.select("#chart_" + id);
-
-    var percentage = (100 * d.value / totalSize).toPrecision(3);
-    var percentageString = percentage + "% (" + d.value + ")";
-    if (percentage < 0.1) {
-        percentageString = "< 0.1%";
-    }
-
-    d3.select("#percentage_" + id)
-        .text(percentageString);
-
-    d3.select("#explanation_" + id)
-        .style("visibility", "");
-
-    var sequenceArray = d.ancestors().reverse();
-    sequenceArray.shift(); // remove root node from the array
-    updateBreadcrumbs(sequenceArray, percentageString, id);
-
-    // Fade all the segments.
-    chart.selectAll("path")
-        .style("opacity", 0.3);
-
-    // Then highlight only those that are an ancestor of the current segment.
-    chart.selectAll("path")
-        .filter(function(node) {
-            return (sequenceArray.includes(node));
-        })
-        .style("opacity", 1);
-}
-
-// Restore everything to full opacity when moving off the visualization.
-function mouseleave(d) {
-    id = $(this).closest('.chart').data('id');
-
-    // Hide the breadcrumb trail
-    d3.select("#trail_" + id)
-        .style("visibility", "hidden");
-
-    // Deactivate all segments during transition.
-    d3.selectAll("path").on("mouseover", null);
-
-    // Transition each segment to full opacity and then reactivate it.
-    d3.selectAll("path")
-        .transition()
-        .duration(1000)
-        .style("opacity", 1)
-        .on("end", function() {
-            d3.select(this).on("mouseover", mouseover);
+    // Button to reset zoom and position
+    d3.select("#reset_zoom")
+        .attr('style', 'margin: 5px')
+        .on("click", function() {
+            centerNode(root);
         });
 
-    d3.select("#explanation_" + id)
-        .style("visibility", "hidden");
-}
+    // draw links
+    mainGroup.append('g')
+        .attr("fill", "none")
+        .attr("stroke", "#555")
+        .attr("stroke-opacity", 0.4)
+        .attr("stroke-width", 1.5)
+        .selectAll('path.link')
+        .data(root.links())
+        .enter()
+        .append("line")
+        .attr("class", "link")
+        .attr("x1", function(d) { return radialPoint(d.source.x,d.source.y)[0]; })
+        .attr("y1", function(d) { return radialPoint(d.source.x,d.source.y)[1]; })
+        .attr("x2", function(d) { return radialPoint(d.target.x,d.target.y)[0]; })
+        .attr("y2", function(d) { return radialPoint(d.target.x,d.target.y)[1]; }) ;;
 
-function initializeBreadcrumbTrail() {
-    // Add the svg area.
-    var trail = d3.select("#sequence_" + diagram_id).append("svg:svg")
-        .attr("width", width)
-        .attr("height", 50)
-        .attr("id", "trail_" + diagram_id);
+    // draw nodes
+    mainGroup.append('g')
+        .selectAll('circle.node')
+        .data(root.descendants())
+        .enter()
+        .append('circle')
+        .attr('r', d => d.children ? nodeRadius : ((d.data.size / 5) + 1))
+        .style("stroke", "#555")
+        .attr("fill", d => d.children ? "#555" : "#999")
+        .attr("transform", d => `
+        rotate(${d.x * 180 / Math.PI - 90})
+        translate(${d.y},0)
+      `);
 
-    // Add the label at the end, for the percentage.
-    trail.append("svg:text")
-        .attr("id", "endlabel_" + diagram_id)
-        .style("fill", "#000");
-}
+    // draw labels
+    mainGroup.append('g')
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 20)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-width", 1)
+        .selectAll('text.label')
+        .data(root.descendants())
+        .enter()
+        .append('text')
+        .attr("transform", d => `
+      rotate(${d.x * 180 / Math.PI - 90}) 
+      translate(${d.y},0) 
+      rotate(${d.x >= Math.PI ? 180 : 0})
+		`)
+        .attr("dy", "0.31em")
+        .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
+        .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
+        .text(d => d.data.scientific_name);
 
-// Generate a string that describes the points of a breadcrumb polygon.
-function breadcrumbPoints(d, i) {
-    var points = [];
-    points.push("0,0");
-    points.push(b.w + ",0");
-    points.push(b.w + b.t + "," + (b.h / 2));
-    points.push(b.w + "," + b.h);
-    points.push("0," + b.h);
-    if (i > 0) { // Leftmost breadcrumb; don't include 6th vertex.
-        points.push(b.t + "," + (b.h / 2));
+
+    function radialPoint(x, y) {
+        return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
     }
-    return points.join(" ");
-}
 
-// Update the breadcrumb trail to show the current sequence and percentage.
-function updateBreadcrumbs(nodeArray, percentageString, id) {
-    // Data join; key function combines name and depth (= position in sequence).
-    var trail = d3.select("#trail_" + id)
-        .selectAll("g")
-        .data(nodeArray, function(d) { return d.data.name + d.depth; });
+    function centerNode(source) {
+        // x = -source.y0;
+        // y = -source.x0;
+        x = $("#progress_svg").width() / 2; // Use current width of SVG
+        y = height / 2;
 
-    // Remove exiting nodes.
-    trail.exit().remove();
-
-    // Add breadcrumb and label for entering nodes.
-    var entering = trail.enter().append("svg:g");
-
-    entering.append("svg:polygon")
-        .attr("points", breadcrumbPoints)
-        .style("fill", function(d) { return color((d.children ? d : d.parent).data.name); })
-
-    entering.append("svg:text")
-        .attr("x", (b.w + b.t) / 2)
-        .attr("y", b.h / 2)
-        .attr("dy", "0.35em")
-        .attr("text-anchor", "middle")
-        .text(function(d) { return d.data.name; });
-
-    // Merge enter and update selections; set position for all nodes.
-    entering.merge(trail).attr("transform", function(d, i) {
-        return "translate(" + i * (b.w + b.s) + ", 0)";
-    });
-
-    // Now move and update the percentage at the end.
-    d3.select("#trail_" + id).select("#endlabel_" + id)
-        .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
-        .attr("y", b.h / 2)
-        .attr("dy", "0.35em")
-        .attr("text-anchor", "middle")
-        .text(percentageString);
-
-    // Make the breadcrumb trail visible, if it's hidden.
-    d3.select("#trail_" + id)
-        .style("visibility", "");
-}
-
-function deleteVisualization(diagram_id) {
-    d3.select("#chart_" + diagram_id).selectAll("svg").remove();
-    d3.select("#diagram_title_" + diagram_id).selectAll("*").remove();
+        d3.select('g').transition()
+            .duration(duration)
+            .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
+        zoom.transform(svg, d3.zoomIdentity.translate(x, y).scale(scale));
+    }
 }

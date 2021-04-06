@@ -3,7 +3,20 @@
 module ProgressOverviewConcern
   extend ActiveSupport::Concern
 
-  def self.progress_table(current_project_id)
+  def progress_tree_json(current_project_id)
+    taxa = Taxon.roots.where(taxonomic_rank: :is_unranked).first.subtree.where.not(taxonomic_rank: [:is_genus, :is_species, :is_subspecies])
+    taxa.arrange_serializable do | parent, children |
+      { id: parent.id,
+        scientific_name: parent.scientific_name,
+        size: parent.descendants_count,
+        children: children
+      }
+    end.to_json
+
+    # taxa.arrange_serializable.to_json
+  end
+
+  def progress_table(current_project_id)
     individual_cnts = Individual.in_project(current_project_id)
                                 .joins(:taxon)
                                 .order('taxa.scientific_name')
@@ -115,4 +128,10 @@ module ProgressOverviewConcern
 
     root
   end
+
+  # private
+  #
+  # def node_size(node)
+  #   Taxon.descendants_of(node).where(children_count: 0).size
+  # end
 end

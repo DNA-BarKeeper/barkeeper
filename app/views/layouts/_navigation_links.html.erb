@@ -8,7 +8,7 @@
   <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_project_name %> <b class="caret"></b></a>
   <ul class="dropdown-menu">
     <li><%= link_to 'About', about_path %></li>
-    <li><%= link_to 'Overview', overview_diagram_index_path %></li>
+    <li><%= link_to 'Progress status', progress_overview_index_path %></li>
     <li class="divider"></li>
     <% if user_signed_in? %>
       <li ><%= link_to 'Advanced contig search', new_contig_search_path %></li>
@@ -17,12 +17,10 @@
       <li class="divider"></li>
       <li><%= link_to 'SATIVA mislabel analyses', mislabel_analyses_path %></li>
       <li ><%= link_to 'Duplicate contigs', duplicates_contigs_path %></li>
-      <!--<li ><%= link_to 'Externally verified contigs', externally_verified_contigs_path %></li>-->
       <li ><%= link_to 'Reads without contig', reads_without_contigs_path %></li>
       <li ><%= link_to 'Duplicate reads', duplicates_primer_reads_path %></li>
       <li ><%= link_to 'Isolates without specimens', no_specimen_isolates_path %></li>
       <li ><%= link_to 'Duplicate Isolates', duplicates_isolates_path %></li>
-<!--      <li ><%#= link_to 'Last analysis output', analysis_output_path %></li>-->
       <li ><%= link_to 'Notifications', issues_path %></li>
     <% end %>
   </ul>
