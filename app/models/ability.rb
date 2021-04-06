@@ -35,7 +35,7 @@ class Ability
     can %i[edit index filter change_via_script compare_contigs as_fasq], Contig
     can %i[edit index filter show_species], Family
     can %i[edit index show_species], HigherOrderTaxon
-    can %i[about overview impressum privacy_policy], :home
+    can %i[about progress impressum privacy_policy], :home
     can %i[edit index filter xls], Individual
     can %i[edit index filter], Isolate
     can [:filter], MarkerSequence
@@ -44,7 +44,7 @@ class Ability
     can %i[edit index], PrimerRead
     can %i[edit index filter show_individuals xls], Species
     can :manage, TxtUploader
-    can :manage, :overview_diagram
+    can :manage, :progress_overview
     can :download_results, MislabelAnalysis
     can [:import, :revised_tpm], NgsRun
 

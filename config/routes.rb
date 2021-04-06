@@ -8,11 +8,12 @@ GBOLapp::Application.routes.draw do
   match 'impressum', to: 'home#impressum', via: 'get'
   match 'privacy_policy', to: 'home#privacy_policy', via: 'get'
   match 'contact', to: 'home#contact', via: 'get'
-  match 'overview', to: 'home#overview', via: 'get'
+  match 'progress', to: 'home#progress', via: 'get'
 
-  get 'overview_diagram/index'
-  get 'overview_diagram/all_species', defaults: { format: 'json' }
-  get 'overview_diagram/finished_species_marker', defaults: { format: 'json' }
+  get 'progress_overview/index'
+  get 'progress_overview/progress_tree', defaults: { format: 'json' }
+  get 'progress_overview/all_species', defaults: { format: 'json' }
+  get 'progress_overview/finished_species_marker', defaults: { format: 'json' }
 
   get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'
