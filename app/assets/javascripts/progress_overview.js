@@ -79,12 +79,14 @@ function drawProgressTree(data) {
         .append("div")
         .style("opacity", 0)
         .attr("class", "tooltip")
-        .style("background-color", "lightgrey")
-        .style("border-color", "red")
-        .style("border", "solid")
-        .style("border-width", "1px")
+        .style("border", "1px solid #555")
         .style("border-radius", "5px")
         .style("padding", "5px")
+
+    // Build color scale
+    var nodeColor = d3.scaleSequential()
+        .interpolator(d3.interpolateRdYlGn)
+        .domain([1,100]);
 
     // Draw nodes
     nodes = mainGroup.append('g')
@@ -96,8 +98,11 @@ function drawProgressTree(data) {
         .attr("font-family", "sans-serif")
         .attr("font-size", 14)
         .attr("stroke-linejoin", "round")
-        .on("mouseover",  function mouseover() {
+        .on("mouseover",  function(d) {
             tooltip.transition()
+                .style("fill-opacity", .2)
+                .style("background-color", 'lightgrey')
+                .style("border", "3px solid " + nodeColor(d.data.size))
                 .duration(300)
                 .style("opacity", 1);
 
@@ -125,7 +130,8 @@ function drawProgressTree(data) {
     nodeEnter.append('circle')
       .attr('r', d => d.children ? nodeRadius : ((d.data.size / 5) + 1))
       .style("stroke", "#555")
-      .attr("fill", d => d.children ? "#555" : "#999")
+        .attr("fill", function(d) { return nodeColor(d.data.size)})
+      // .attr("fill", d => d.children ? "#555" : "#999")
       .attr("transform", d => `
          rotate(${d.x * 180 / Math.PI - 90})
          translate(${d.y},0)
