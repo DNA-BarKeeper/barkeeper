@@ -23,7 +23,7 @@ function drawProgressTree(data) {
     var width = parentDiv.clientWidth,
         height = 650,
         scale = 1,
-        nodeRadius = 5,
+        nodeRadius = 2,
         radius = width / 2 - 50,
         duration = 750;
 
@@ -73,50 +73,85 @@ function drawProgressTree(data) {
         .attr("x1", function(d) { return radialPoint(d.source.x,d.source.y)[0]; })
         .attr("y1", function(d) { return radialPoint(d.source.x,d.source.y)[1]; })
         .attr("x2", function(d) { return radialPoint(d.target.x,d.target.y)[0]; })
-        .attr("y2", function(d) { return radialPoint(d.target.x,d.target.y)[1]; }) ;;
+        .attr("y2", function(d) { return radialPoint(d.target.x,d.target.y)[1]; });
 
-    // draw nodes
-    mainGroup.append('g')
+    var tooltip = d3.select('#progress_tree')
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "lightgrey")
+        .style("border-color", "red")
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "5px")
+        .style("padding", "5px")
+
+    // Draw nodes
+    nodes = mainGroup.append('g')
         .selectAll('circle.node')
-        .data(root.descendants())
-        .enter()
-        .append('circle')
-        .attr('r', d => d.children ? nodeRadius : ((d.data.size / 5) + 1))
-        .style("stroke", "#555")
-        .attr("fill", d => d.children ? "#555" : "#999")
-        .attr("transform", d => `
-        rotate(${d.x * 180 / Math.PI - 90})
-        translate(${d.y},0)
+        .data(root.descendants());
+
+    nodeEnter = nodes.enter()
+        .append("g")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 14)
+        .attr("stroke-linejoin", "round")
+        .on("mouseover",  function mouseover() {
+            tooltip.transition()
+                .duration(300)
+                .style("opacity", 1);
+
+            d3.select(this)
+                .style("stroke-width", '2px')
+                .style("font-weight", 'bold')
+                .raise();
+        })
+        .on("mousemove", function(d) {
+            tooltip
+                .html(d.data.scientific_name + ":<br>" + d.data.size + " terminal nodes")
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY + 28) + "px");
+        })
+        .on("mouseout", function mouseout() {
+            tooltip.transition()
+                .duration(300)
+                .style("opacity", 1e-6);
+
+            d3.select(this)
+                .style("stroke-width", '1px')
+                .style("font-weight", 'normal');
+        });
+
+    nodeEnter.append('circle')
+      .attr('r', d => d.children ? nodeRadius : ((d.data.size / 5) + 1))
+      .style("stroke", "#555")
+      .attr("fill", d => d.children ? "#555" : "#999")
+      .attr("transform", d => `
+         rotate(${d.x * 180 / Math.PI - 90})
+         translate(${d.y},0)
       `);
 
-    // draw labels
-    mainGroup.append('g')
-        .attr("font-family", "sans-serif")
-        .attr("font-size", 20)
-        .attr("stroke-linejoin", "round")
-        .attr("stroke-width", 1)
-        .selectAll('text.label')
-        .data(root.descendants())
-        .enter()
+    // Draw labels
+    nodeEnter
         .append('text')
         .attr("transform", d => `
-      rotate(${d.x * 180 / Math.PI - 90}) 
-      translate(${d.y},0) 
-      rotate(${d.x >= Math.PI ? 180 : 0})
+          rotate(${d.x * 180 / Math.PI - 90}) 
+          translate(${d.y},0) 
+          rotate(${d.x >= Math.PI ? 180 : 0})
 		`)
         .attr("dy", "0.31em")
-        .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
+        .attr("x", function(d) {
+            r = d.children ? nodeRadius : ((d.data.size / 5) + 1);
+            return d.x < Math.PI === !d.children ? (r + 6) : (0 - r - 6);
+        })
         .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
         .text(d => d.data.scientific_name);
-
 
     function radialPoint(x, y) {
         return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
     }
 
     function centerNode(source) {
-        // x = -source.y0;
-        // y = -source.x0;
         x = $("#progress_svg").width() / 2; // Use current width of SVG
         y = height / 2;
 
