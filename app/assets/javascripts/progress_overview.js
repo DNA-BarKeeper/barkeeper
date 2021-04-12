@@ -99,9 +99,10 @@ function drawProgressTree(data) {
         .attr("font-size", 14)
         .attr("stroke-linejoin", "round")
         .on("mouseover",  function(d) {
+            var d3NodeColor = d3.color(nodeColor(d.data.size));
             tooltip.transition()
                 .style("fill-opacity", .2)
-                .style("background-color", 'lightgrey')
+                .style("background-color", "rgba(" + d3NodeColor.r + ", " + d3NodeColor.g + ", " + d3NodeColor.b + ", 0.5)")
                 .style("border", "3px solid " + nodeColor(d.data.size))
                 .duration(300)
                 .style("opacity", 1);
