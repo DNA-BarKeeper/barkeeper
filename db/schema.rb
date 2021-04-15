@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_06_125410) do
+ActiveRecord::Schema.define(version: 2021_04_12_112651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -824,6 +824,8 @@ ActiveRecord::Schema.define(version: 2021_04_06_125410) do
     t.integer "ancestry_depth", default: 0
     t.integer "children_count"
     t.integer "descendants_count"
+    t.boolean "finished", default: false
+    t.integer "finished_count", default: 0
     t.index ["ancestry"], name: "index_taxa_on_ancestry"
   end
 

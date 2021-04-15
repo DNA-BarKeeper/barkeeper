@@ -10,7 +10,7 @@ class ProgressOverviewController < ApplicationController
 
   def progress_tree
     authorize! :progress_tree, :progress_overview
-    render json: progress_tree_json(current_project_id)
+    render json: progress_tree_json(current_project_id, params[:marker_id])
   end
 
   # returns JSON containing the number of target species for each family
