@@ -1,20 +1,29 @@
 jQuery(function() {
     if (document.getElementById("progress_tree") != null) {
-        $.ajax({
+        $("#progress_diagram_marker_select").on("change", () => $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
             url: 'progress_tree',
             dataType: 'json',
-            processData: false,
+            data: {
+                marker_id: $('#progress_diagram_marker_select option:selected').val()
+            },
             success: function (data) {
+                deleteVisualization();
                 drawProgressTree(data[0]);
             },
             error: function (result) {
                 console.error("Error getting data.");
             }
-        });
+        }));
     }
 });
+
+// Delete previous progress diagram
+function deleteVisualization() {
+    d3.select("#progress_tree").selectAll("svg").remove();
+    d3.select("#reset_zoom").style('visibility', 'hidden');
+}
 
 // Main function to draw and set up the visualization, once we have the data.
 function drawProgressTree(data) {
@@ -24,7 +33,7 @@ function drawProgressTree(data) {
         height = 650,
         scale = 1,
         nodeRadius = 2,
-        radius = width / 2 - 50,
+        radius = width/2 - 50,
         duration = 750;
 
     var treeLayout = d3.cluster().size([2 * Math.PI, radius - 100]);
@@ -54,9 +63,9 @@ function drawProgressTree(data) {
 
     // Button to reset zoom and position
     d3.select("#reset_zoom")
-        .attr('style', 'margin: 5px')
+        .style('visibility', 'visible')
         .on("click", function() {
-            centerNode(root);
+            centerTree();
         });
 
     // draw links
@@ -102,7 +111,7 @@ function drawProgressTree(data) {
             tooltip.transition()
                 .style("fill-opacity", .2)
                 .style("background-color", 'lightgrey')
-                .style("border", "3px solid " + nodeColor(d.data.size))
+                .style("border", "3px solid " + nodeColor((d.data.finished_size / d.data.size) * 100))
                 .duration(300)
                 .style("opacity", 1);
 
@@ -112,8 +121,10 @@ function drawProgressTree(data) {
                 .raise();
         })
         .on("mousemove", function(d) {
+            var finished_percent = d.data.size == 0 ? '' : " (" + ((d.data.finished_size / d.data.size) * 100).toFixed(2) + "%)";
             tooltip
-                .html(d.data.scientific_name + ":<br>" + d.data.size + " terminal nodes")
+                .html(d.data.scientific_name + ":<br>" + d.data.size + " terminal nodes<br>" + d.data.finished_size
+                    + " finished" + finished_percent)
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY + 28) + "px");
         })
@@ -130,8 +141,7 @@ function drawProgressTree(data) {
     nodeEnter.append('circle')
       .attr('r', d => d.children ? nodeRadius : ((d.data.size / 5) + 1))
       .style("stroke", "#555")
-        .attr("fill", function(d) { return nodeColor(d.data.size)})
-      // .attr("fill", d => d.children ? "#555" : "#999")
+        .attr("fill", function(d) { return nodeColor((d.data.finished_size / d.data.size) * 100) })
       .attr("transform", d => `
          rotate(${d.x * 180 / Math.PI - 90})
          translate(${d.y},0)
@@ -157,7 +167,7 @@ function drawProgressTree(data) {
         return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
     }
 
-    function centerNode(source) {
+    function centerTree() {
         x = $("#progress_svg").width() / 2; // Use current width of SVG
         y = height / 2;
 

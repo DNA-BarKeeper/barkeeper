@@ -4,11 +4,12 @@
     <h3 class="panel-title">Overview diagrams</h3>
   </div>
   <div class="panel-body" id="main">
-    <button id='reset_zoom'>Reset zoom & center</button>
+    <div class="form-group" style="font-size: 14px;">
+      Select a marker to show a tree visualizing the completion status of all families for this marker.
+      <%= select_tag('Marker', options_from_collection_for_select(Marker.in_project(current_project_id).order(:name), 'id', 'name'),
+                     prompt: "Select a Marker", class: 'form-control', id: 'progress_diagram_marker_select') %>
+    </div>
+    <button id='reset_zoom' class="btn btn-default" style="margin: 5px; visibility: hidden;">Reset zoom & center</button>
     <div id="progress_tree"></div>
   </div>
-</div>
-
-<div>
-  <%= link_to 'View overview tables', progress_path %>
 </div>

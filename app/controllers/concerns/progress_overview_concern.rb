@@ -3,17 +3,25 @@
 module ProgressOverviewConcern
   extend ActiveSupport::Concern
 
-  def progress_tree_json(current_project_id)
-    taxa = Taxon.roots.where(taxonomic_rank: :is_unranked).first.subtree.where.not(taxonomic_rank: [:is_genus, :is_species, :is_subspecies])
+  def progress_tree_json(current_project_id, marker_id)
+    taxa = Taxon.in_project(current_project_id).roots
+                .where(taxonomic_rank: :is_unranked).first
+                .subtree
+                .where.not(taxonomic_rank: [:is_genus, :is_species, :is_subspecies])
+
+    marker_seq_cnts = MarkerSequence.joins(isolate: [individual: :taxon])
+                                    .where(marker: marker_id)
+                                    .select("taxa.id as id, taxa.ancestry as ancestry,count(*) as count")
+                                    .group('taxa.id')
+
     taxa.arrange_serializable do | parent, children |
       { id: parent.id,
         scientific_name: parent.scientific_name,
         size: parent.descendants_count,
+        finished_size: marker_seq_cnts.sum { |t| (t.ancestry.include?(parent.id.to_s) && t.count.positive?) ? 1 : 0 },
         children: children
       }
     end.to_json
-
-    # taxa.arrange_serializable.to_json
   end
 
   def progress_table(current_project_id)

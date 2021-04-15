@@ -13,6 +13,9 @@ class Taxon < ApplicationRecord
   after_save :update_descendants_counter_cache
   after_destroy :update_descendants_counter_cache
 
+  after_save :update_finished_counter_cache
+  after_destroy :update_finished_counter_cache
+
   enum taxonomic_rank: %i[is_unranked is_division is_subdivision is_class is_order is_family is_genus is_species is_subspecies]
 
   def self.subtree_json(parent_id=nil)
@@ -45,8 +48,16 @@ class Taxon < ApplicationRecord
     taxon
   end
 
+  def has_marker_sequence?
+    self.individuals.joins(isolates: :marker_sequences).present? # TODO: Make marker specific
+  end
+
   def update_descendants_counter_cache
-    self.update_column(:descendants_count, self.descendants.where(children_count: 0).size)
+    self.update_column(:descendants_count, self.descendants.where(taxonomic_rank: [:is_species, :is_subspecies]).size)
+  end
+
+  def update_finished_counter_cache
+    self.update_column(:finished_count, self.descendants.where(finished: true).size)
   end
 
   def parent_name
