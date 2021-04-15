@@ -14,11 +14,16 @@ module ProgressOverviewConcern
                                     .select("taxa.id as id, taxa.ancestry as ancestry,count(*) as count")
                                     .group('taxa.id')
 
+    taxa_counts = Hash.new(0)
+    marker_seq_cnts.map do |t|
+      t.ancestry.split('/').each { |a| taxa_counts[a.to_i] += 1 }
+    end
+
     taxa.arrange_serializable do | parent, children |
       { id: parent.id,
         scientific_name: parent.scientific_name,
         size: parent.descendants_count,
-        finished_size: marker_seq_cnts.sum { |t| (t.ancestry.include?(parent.id.to_s) && t.count.positive?) ? 1 : 0 },
+        finished_size: taxa_counts[parent.id],
         children: children
       }
     end.to_json
