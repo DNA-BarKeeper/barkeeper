@@ -32,9 +32,8 @@ function drawProgressTree(data) {
     var width = parentDiv.clientWidth,
         height = 650,
         scale = 1,
-        nodeRadius = 2,
         radius = width/2 - 50,
-        duration = 750;
+        nodeRadius = 2;
 
     var treeLayout = d3.cluster().size([2 * Math.PI, radius - 100]);
 
@@ -51,7 +50,7 @@ function drawProgressTree(data) {
         .classed("svg-content", true);
 
     var mainGroup = svg.append('g')
-        .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+        .attr('transform', 'translate(' + width / 2 + ',' + radius + ')');
 
     // Enable zoom & pan
     var zoom = d3.zoom()
@@ -61,11 +60,15 @@ function drawProgressTree(data) {
 
     svg.call(zoom);
 
+    // Trigger tha initial zoom with an initial transform
+    zoom.transform(svg, d3.zoomIdentity.translate(width / 2, radius).scale(scale));
+
     // Button to reset zoom and position
     d3.select("#reset_zoom")
         .style('visibility', 'visible')
         .on("click", function() {
-            centerTree();
+            var current_width = $("#progress_svg").width();
+            zoom.transform(svg, d3.zoomIdentity.translate(current_width / 2, radius).scale(scale));
         });
 
     // draw links
@@ -165,15 +168,5 @@ function drawProgressTree(data) {
 
     function radialPoint(x, y) {
         return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
-    }
-
-    function centerTree() {
-        x = $("#progress_svg").width() / 2; // Use current width of SVG
-        y = height / 2;
-
-        d3.select('g').transition()
-            .duration(duration)
-            .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
-        zoom.transform(svg, d3.zoomIdentity.translate(x, y).scale(scale));
     }
 }
