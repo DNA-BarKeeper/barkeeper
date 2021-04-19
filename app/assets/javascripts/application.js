@@ -14,5 +14,6 @@
 //= require bootstrap-multiselect
 //= require_tree .
 
+
 // Make datatables warning more meaningful
 $.fn.dataTable.ext.errMode = () => alert('An error occurred while loading the data table. Please contact an admin if the error persists.');
