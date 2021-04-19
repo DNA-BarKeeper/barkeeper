@@ -48,7 +48,7 @@ namespace :data do
                                                     marker: marker,
                                                     marker_sequence_search: search)
 
-        puts 'Starting analysis on Xylocalyx...'
+        puts 'Starting analysis on external server...'
         mislabel_analysis.analyse_on_server
       else
         puts 'Nothing to analyse.'

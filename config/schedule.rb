@@ -25,10 +25,9 @@ every :sunday, at: '11:15 am' do
   rake 'data:remove_old_exports' # Delete all species exports older than a month and specimen exports older than a week
 end
 
-# TODO: Activate again, after whitelisting on Xylocalyx works
-# every 1.day, at: '9:00 pm' do
-#   rake 'data:check_new_marker_sequences' # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
-# end
+every 1.day, at: '9:00 pm' do
+  rake 'data:check_new_marker_sequences' # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
+end
 
 every 1.day, at: '3:10 am' do
   rake 'data:flag_specimen' # Places a warning on specimens with multiple sequences that have issues

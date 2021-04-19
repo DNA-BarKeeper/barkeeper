@@ -120,13 +120,13 @@ class NgsRun < ApplicationRecord
   end
 
   def check_server_status
-    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
+    Net::SSH.start(ENV['EXTERNAL_SERVER_PATH'], ENV['EXTERNAL_USER'], keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
       session.exec!("pgrep -f \"barcoding_pipe.rb\"")
     end
   end
 
   def run_pipe
-    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
+    Net::SSH.start(ENV['EXTERNAL_SERVER_PATH'], ENV['EXTERNAL_USER'], keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
       analysis_dir = "/data/data1/sarah/ngs_barcoding/#{name}"
       output_dir = "/data/data1/sarah/ngs_barcoding/#{name}_out"
 
@@ -156,8 +156,8 @@ class NgsRun < ApplicationRecord
   end
 
   def import(results_path)
-    # Download results from Xylocalyx (action will be called at end of analysis script on Xylocalyx!)
-    Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
+    # Download results from external server (action will be called at end of analysis script on server!)
+    Net::SFTP.start(ENV['EXTERNAL_SERVER_PATH'], ENV['EXTERNAL_USER'], keys: ['/home/sarah/.ssh/xylocalyx', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
       sftp.stat(results_path) do |response|
         if response.ok?
           # Delete older results
