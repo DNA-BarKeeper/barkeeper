@@ -96,9 +96,15 @@ function drawProgressTree(data) {
         .style("padding", "5px")
 
     // Build color scale
-    var nodeColor = d3.scaleSequential()
-        .interpolator(d3.interpolateRdYlGn)
-        .domain([1,100]);
+    var step = d3.scaleLinear()
+        .domain([1, 8])
+        .range([0, 100]);
+
+    // Scale from red to green in 8 steps
+    var nodeColor = d3.scaleLinear()
+        .domain([0, step(2), step(3), step(4), step(5), step(6), step(7), 100])
+        .range(['#d73027', '#f46d43', '#fdae61', '#fee08b', '#d9ef8b', '#a6d96a', '#66bd63', '#1a9850'])
+        .interpolate(d3.interpolateHcl);
 
     // Draw nodes
     nodes = mainGroup.append('g')
@@ -126,7 +132,7 @@ function drawProgressTree(data) {
         .on("mousemove", function(d) {
             var finished_percent = d.data.size == 0 ? '' : " (" + ((d.data.finished_size / d.data.size) * 100).toFixed(2) + "%)";
             tooltip
-                .html(d.data.scientific_name + ":<br>" + d.data.size + " terminal nodes<br>" + d.data.finished_size
+                .html(d.data.scientific_name + ":<br>" + d.data.size + " species (incl. subspecies)<br>" + d.data.finished_size
                     + " finished" + finished_percent)
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY + 28) + "px");
@@ -165,6 +171,92 @@ function drawProgressTree(data) {
         })
         .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
         .text(d => d.data.scientific_name);
+
+    // Add a legend for the heat map color values
+    var legendSvgHeight = 70;
+    var legendWidth = Math.min(width*0.8, 400);
+    var legendHeight = 15;
+
+    var legendSvg = d3.select('#progress_legend')
+        .append("svg")
+        .attr("viewBox", "0 0 " + width + " " + legendSvgHeight);
+
+    // Append a defs (for definition) element to SVG
+    var defs = legendSvg.append("defs");
+
+    // Append a linearGradient element to the defs and give it a unique id
+    var linearGradient = defs.append("linearGradient")
+        .attr("id", "progress-gradient");
+
+    // Horizontal gradient
+    linearGradient
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "0%");
+
+    //Extra scale since the color scale is interpolated
+    var progressScale = d3.scaleLinear()
+        .domain([0, 100])
+        .range([0, width])
+
+    //Calculate the variables for the temp gradient
+    var numStops = 10;
+    progressRange = progressScale.domain();
+    progressRange[2] = progressRange[1] - progressRange[0];
+    countPoint = [];
+    for(var i = 0; i < numStops; i++) {
+        countPoint.push(i * progressRange[2]/(numStops-1) + progressRange[0]);
+    }
+
+    //Append multiple color stops by using D3's data/enter step
+    linearGradient.selectAll("stop")
+        .data(d3.range(numStops))
+        .enter().append("stop")
+        .attr("offset", function(d,i) {
+            return progressScale(countPoint[i])/width;
+        })
+        .attr("stop-color", function(d,i) {
+            return nodeColor(countPoint[i]);
+        });
+
+    //Color Legend container
+    var legendSvgGroup = legendSvg.append("g")
+        .attr("class", "legendWrapper")
+        .attr("transform", "translate(" + (width/2) + "," + (legendHeight * 2) + ")");
+
+    //Draw the Rectangle
+    legendSvgGroup.append("rect")
+        .attr("class", "legendRect")
+        .attr("x", -legendWidth/2)
+        .attr("y", 0)
+        .attr("width", legendWidth)
+        .attr("height", legendHeight)
+        .style("fill", "url(#progress-gradient)");
+
+    //Append title
+    legendSvgGroup.append("text")
+        .attr("class", "legendTitle")
+        .attr("x", 0)
+        .attr("y", -legendHeight)
+        .style("text-anchor", "middle")
+        .text("Species with at least one barcode");
+
+    //Set scale for x-axis
+    var xScale = d3.scaleLinear()
+        .range([-legendWidth/2, legendWidth/2])
+        .domain([0, 100]);
+
+    //Define x-axis
+    var xAxis = d3.axisBottom(xScale)
+        .ticks(5)
+        .tickFormat(function(d) { return d + "%"; });
+
+    //Set up X axis
+    legendSvgGroup.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + legendHeight + ")")
+        .call(xAxis);
 
     function radialPoint(x, y) {
         return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];

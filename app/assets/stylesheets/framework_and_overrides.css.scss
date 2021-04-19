@@ -429,3 +429,23 @@ div#ngs_run_results_wrapper div.dataTables_length {
 .panel-default {
   margin-bottom: 20px;
 }
+
+// Progress tree legend
+.axis path, .axis tick, .axis line {
+  fill: none;
+  stroke: none;
+}
+
+text {
+  font-size: 1.2rem;
+  fill: #AAAAAA;
+  font-weight: 400;
+}
+
+.legendTitle {
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+  font-size: 1.6rem;
+  fill: #4F4F4F;
+  font-weight: 300;
+}

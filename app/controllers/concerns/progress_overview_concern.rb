@@ -16,7 +16,7 @@ module ProgressOverviewConcern
 
     taxa_counts = Hash.new(0)
     marker_seq_cnts.map do |t|
-      t.ancestry.split('/').each { |a| taxa_counts[a.to_i] += 1 }
+      t.ancestry.split('/').each { |a| taxa_counts[a.to_i] += 1 if t.count.positive? }
     end
 
     taxa.arrange_serializable do | parent, children |
