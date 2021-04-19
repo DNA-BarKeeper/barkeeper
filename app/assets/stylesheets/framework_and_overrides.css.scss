@@ -436,16 +436,15 @@ div#ngs_run_results_wrapper div.dataTables_length {
   stroke: none;
 }
 
-text {
+.tick text {
   font-size: 1.2rem;
-  fill: #AAAAAA;
+  fill: #555;
   font-weight: 400;
 }
 
 .legendTitle {
-  font-family: 'Open Sans', sans-serif;
   text-align: center;
-  font-size: 1.6rem;
-  fill: #4F4F4F;
-  font-weight: 300;
+  font-size: 1.5rem;
+  fill: #555;
+  font-weight: 400;
 }

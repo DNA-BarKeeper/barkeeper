@@ -32,7 +32,7 @@ function drawProgressTree(data) {
     var width = parentDiv.clientWidth,
         height = 650,
         scale = 1,
-        radius = width/2 - 50,
+        radius = Math.max(width/2 - 50, 500),
         nodeRadius = 2;
 
     var treeLayout = d3.cluster().size([2 * Math.PI, radius - 100]);
@@ -50,7 +50,7 @@ function drawProgressTree(data) {
         .classed("svg-content", true);
 
     var mainGroup = svg.append('g')
-        .attr('transform', 'translate(' + width / 2 + ',' + radius + ')');
+        .attr('transform', 'translate(' + (width / 2) + ',' + radius + ')');
 
     // Enable zoom & pan
     var zoom = d3.zoom()
@@ -173,27 +173,22 @@ function drawProgressTree(data) {
         .text(d => d.data.scientific_name);
 
     // Add a legend for the heat map color values
-    var legendSvgHeight = 70;
-    var legendWidth = Math.min(width*0.8, 400);
-    var legendHeight = 15;
-
-    var legendSvg = d3.select('#progress_legend')
-        .append("svg")
-        .attr("viewBox", "0 0 " + width + " " + legendSvgHeight);
+    var legendWidth = 20;
+    var legendHeight = 250;
 
     // Append a defs (for definition) element to SVG
-    var defs = legendSvg.append("defs");
+    var defs = svg.append("defs");
 
     // Append a linearGradient element to the defs and give it a unique id
     var linearGradient = defs.append("linearGradient")
         .attr("id", "progress-gradient");
 
-    // Horizontal gradient
+    //Vertical gradient
     linearGradient
         .attr("x1", "0%")
         .attr("y1", "0%")
-        .attr("x2", "100%")
-        .attr("y2", "0%");
+        .attr("x2", "0%")
+        .attr("y2", "100%");
 
     //Extra scale since the color scale is interpolated
     var progressScale = d3.scaleLinear()
@@ -221,12 +216,12 @@ function drawProgressTree(data) {
         });
 
     //Color Legend container
-    var legendSvgGroup = legendSvg.append("g")
+    var legendsvg = svg.append("g")
         .attr("class", "legendWrapper")
-        .attr("transform", "translate(" + (width/2) + "," + (legendHeight * 2) + ")");
+        .attr("transform", "translate(" + 50 + "," + 20 + ")");
 
     //Draw the Rectangle
-    legendSvgGroup.append("rect")
+    legendsvg.append("rect")
         .attr("class", "legendRect")
         .attr("x", -legendWidth/2)
         .attr("y", 0)
@@ -235,27 +230,29 @@ function drawProgressTree(data) {
         .style("fill", "url(#progress-gradient)");
 
     //Append title
-    legendSvgGroup.append("text")
+    legendsvg.append("text")
         .attr("class", "legendTitle")
-        .attr("x", 0)
-        .attr("y", -legendHeight)
+        .attr("transform", "rotate(-90)")
+        .attr("y", -legendWidth*2)
+        .attr("x",0 - (legendHeight / 2))
+        .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text("Species with at least one barcode");
+        .text("Subtaxa with finished barcodes");
 
     //Set scale for x-axis
     var xScale = d3.scaleLinear()
-        .range([-legendWidth/2, legendWidth/2])
+        .range([0, legendHeight])
         .domain([0, 100]);
 
     //Define x-axis
-    var xAxis = d3.axisBottom(xScale)
+    var xAxis = d3.axisRight(xScale)
         .ticks(5)
         .tickFormat(function(d) { return d + "%"; });
 
     //Set up X axis
-    legendSvgGroup.append("g")
+    legendsvg.append("g")
         .attr("class", "axis")
-        .attr("transform", "translate(0," + legendHeight + ")")
+        .attr("transform", "translate(" + legendWidth/2 + ",0)")
         .call(xAxis);
 
     function radialPoint(x, y) {
