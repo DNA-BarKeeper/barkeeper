@@ -33,7 +33,7 @@ class MislabelAnalysis < ApplicationRecord
   end
 
   def analyse_on_server
-    Net::SSH.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |session|
+    Net::SSH.start(ENV['EXTERNAL_SERVER_PATH'], ENV['EXTERNAL_USER'], keys: [ENV['EXTERNAL_KEY']]) do |session|
       # Check if SATIVA.sh is already running
       running = session.exec!("pgrep -f \"SATIVA.sh\"")
 
@@ -41,7 +41,7 @@ class MislabelAnalysis < ApplicationRecord
         sequences = "#{Rails.root}/#{title}.fasta"
         tax_file = "#{Rails.root}/#{title}.tax"
 
-        analysis_dir = "/data/data1/sarah/SATIVA/#{title}"
+        analysis_dir = "#{ENV['SATIVA_RESULTS_PATH']}/#{title}"
 
         File.open(sequences, 'w+') do |f|
           f.write(marker_sequence_search.analysis_fasta(true))
@@ -63,7 +63,7 @@ class MislabelAnalysis < ApplicationRecord
         FileUtils.rm(tax_file)
 
         # Start analysis on server
-        session.exec!("/home/kai/analysis-scripts/SATIVA.sh #{title} #{id}")
+        session.exec!("#{ENV['SATIVA_PATH']} #{title} #{id}")
       end
     end
   end
@@ -71,11 +71,11 @@ class MislabelAnalysis < ApplicationRecord
   # Check if recent SATIVA results exist and download them
   def download_results
     exists = false
-    results_remote = "/data/data1/sarah/SATIVA/#{title}/#{title}.mis"
+    results_remote = "#{ENV['SATIVA_RESULTS_PATH']}/#{title}/#{title}.mis"
     results = "#{Rails.root}/#{title}.mis"
 
     # Check if file exists before download
-    Net::SFTP.start('xylocalyx.uni-muenster.de', 'kai', keys: ['/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
+    Net::SFTP.start(ENV['EXTERNAL_SERVER_PATH'], ENV['EXTERNAL_USER'], keys: [ENV['EXTERNAL_KEY']]) do |sftp|
       sftp.stat(results_remote) do |response|
         if response.ok?
           # Download result file
@@ -123,9 +123,6 @@ class MislabelAnalysis < ApplicationRecord
 
       name = row['SeqID'].split('_')[0..1].join('_')
       marker_sequence = MarkerSequence.find_by_name(name)
-      if marker_sequence.nil? && name.start_with?('DB')
-        marker_sequence = MarkerSequence.find_by_name(name.gsub('DB', 'DB '))
-      end
 
       if marker_sequence
         marker_sequence.mislabels << mislabel
