@@ -19,6 +19,9 @@ It is highly recommended that you establish suitable server security measures li
 The installed Docker-Compose version needs to be 1.27 or higher.
 - Clone the code from this repository to a suitable location on your server.
 - Make sure the ports used by redis and postgres are not already in use on your machine (redis: 6379, Postgres: 5432).
+- If you want to run mislabel analyses on the sequences stored in your database on a remote server (SSH address can be specified in .env file)
+make sure that the SATIVA files are available and the alignment tool MAFFT is installed there. More information about SATIVA can be found [here](https://github.com/amkozlov/sativa).
+  
 
 ### Setup
 - Find the file *.env-example* and copy it to a new file *.env* in the main directory of the repository you just cloned.
