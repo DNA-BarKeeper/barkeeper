@@ -26,7 +26,7 @@ every :sunday, at: '11:15 am' do
 end
 
 every 1.day, at: '9:00 pm' do
-  rake 'data:check_new_marker_sequences' # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
+  rake 'analyses:sativa_analysis' # Checks amount of new/updated sequences and runs SATIVA analysis if necessary
 end
 
 every 1.day, at: '3:10 am' do

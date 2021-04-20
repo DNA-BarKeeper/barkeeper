@@ -32,75 +32,147 @@ class MislabelAnalysis < ApplicationRecord
     ((mislabels.size / total_seq_number.to_f) * 100).round(2) if total_seq_number&.positive?
   end
 
-  def analyse_on_server
+  def self.start_analysis
+    Marker.all.each do | marker |
+      if new_sequences?(marker)
+        marker_name = marker.name
+        project = Project.where('name like ?', 'All%').first
+        search = MarkerSequenceSearch.create(has_species: true, has_warnings: 'both', marker: marker_name, project_id: project.id)
+
+        title = "all_taxa_#{marker_name}_#{search.created_at.to_date}"
+        mislabel_analysis = MislabelAnalysis.create(title: title,
+                                                    automatic: true,
+                                                    total_seq_number: search.marker_sequences.size,
+                                                    marker: marker,
+                                                    marker_sequence_search: search)
+
+        if ENV['EXTERNAL_SERVER_PATH'] && server_available?
+          mislabel_analysis.analyse_remotely
+        else
+          mislabel_analysis.analyse_locally
+        end
+      end
+    end
+  end
+
+  private
+
+  def self.new_sequences?(marker)
+      last_analysis = MislabelAnalysis.where(automatic: true, marker: marker).order(created_at: :desc).first
+      count = -1
+
+      # Checking if new sequences for this marker exist
+      if last_analysis
+        count = MarkerSequence.where(marker_id: marker.id).where('marker_sequences.updated_at >= ?', last_analysis.created_at).size
+      end
+
+      ((count > 50) || (count == -1)) # More than 50 new seqs OR no analysis was done before
+  end
+
+  def analyse_locally
+    analysis_dir = "#{Rails.root}/SATIVA_analyses/#{title}"
+
+    # Create analysis directory
+    system("mkdir #{analysis_dir}")
+
+    sequences = "#{analysis_dir}/#{title}.fasta"
+    tax_file = "#{analysis_dir}/#{title}.tax"
+
+    File.open(sequences, 'w+') do |f|
+      f.write(marker_sequence_search.analysis_fasta(true))
+    end
+
+    File.open(tax_file, 'w+') do |f|
+      f.write(marker_sequence_search.taxon_file(true))
+    end
+
+    # Run MAFFT to create an alignment
+    alignment = "#{analysis_dir}/#{title}_mafft.fasta"
+    system("mafft --thread 10 --maxiterate 1000 #{sequences} > #{alignment}")
+
+    # Run SATIVA (only takes file names, not paths!)
+    system("cd #{analysis_dir}")
+    system("python #{ENV['SATIVA_PATH']} -s #{alignment} -t #{tax_file} -x BOT -T 10") # TODO Replace BOT
+
+    results = "#{analysis_dir}/#{title}.mis"
+
+    if File.exist?(results)
+      import(results)
+
+      # Remove last automated analysis for this marker from web app
+      last_analysis = MislabelAnalysis.where(automatic: true, marker: marker_sequence_search.marker).order(created_at: :desc).last
+      last_analysis.destroy unless last_analysis.id == id # Avoid self-destruct!
+    end
+  end
+
+  # Check if SATIVA is already running on the server
+  def server_available?
     Net::SSH.start(ENV['EXTERNAL_SERVER_PATH'], ENV['EXTERNAL_USER'], keys: [ENV['EXTERNAL_KEY']]) do |session|
-      # Check if SATIVA.sh is already running
-      running = session.exec!("pgrep -f \"SATIVA.sh\"")
+      return session.exec!("pgrep -f \"SATIVA.sh\"").empty? # TODO: Change to check for actual sativa.py script
+    end
+  end
 
-      if running.empty?
-        sequences = "#{Rails.root}/#{title}.fasta"
-        tax_file = "#{Rails.root}/#{title}.tax"
+  # Start a SATIVA mislabel analysis
+  def analyse_remotely
+    Net::SSH.start(ENV['EXTERNAL_SERVER_PATH'], ENV['EXTERNAL_USER'], keys: [ENV['EXTERNAL_KEY']]) do |session|
+      local_analysis_dir = "#{Rails.root}/SATIVA_analyses/#{title}"
 
-        analysis_dir = "#{ENV['SATIVA_RESULTS_PATH']}/#{title}"
+      sequences = "#{local_analysis_dir}/#{title}.fasta"
+      tax_file = "#{local_analysis_dir}/#{title}.tax"
 
-        File.open(sequences, 'w+') do |f|
-          f.write(marker_sequence_search.analysis_fasta(true))
-        end
+      File.open(sequences, 'w+') do |f|
+        f.write(marker_sequence_search.analysis_fasta(true))
+      end
 
-        File.open(tax_file, 'w+') do |f|
-          f.write(marker_sequence_search.taxon_file(true))
-        end
+      File.open(tax_file, 'w+') do |f|
+        f.write(marker_sequence_search.taxon_file(true))
+      end
 
-        # Create analysis directory
-        session.exec!("mkdir #{analysis_dir}")
+      # Create remote analysis directory
+      analysis_dir = "#{ENV['SATIVA_RESULTS_PATH']}/#{title}"
+      session.exec!("mkdir #{analysis_dir}")
 
-        # Upload analysis input files
-        session.scp.upload! tax_file, analysis_dir
-        session.scp.upload! sequences, analysis_dir
+      # Upload analysis input files
+      session.scp.upload! tax_file, analysis_dir
+      session.scp.upload! sequences, analysis_dir
 
-        # Delete local files
-        FileUtils.rm(sequences)
-        FileUtils.rm(tax_file)
+      # Run MAFFT to create an alignment
+      alignment = "#{analysis_dir}/#{title}_mafft.fasta"
+      session.exec!("mafft --thread 10 --maxiterate 1000 #{sequences} > #{alignment}")
 
-        # Start analysis on server
-        session.exec!("#{ENV['SATIVA_PATH']} #{title} #{id}")
+      # Run SATIVA (only takes file names, not paths!)
+      session.exec!("cd #{analysis_dir}")
+      session.exec!("python #{ENV['SATIVA_PATH']} -s #{alignment} -t #{tax_file} -x BOT -T 10") # TODO Replace BOT
+
+      # Download results
+      download_results(analysis_dir, local_analysis_dir)
+
+      # Import analysis results
+      results_path = "#{local_analysis_dir}/#{title}.mis"
+      if File.exist?(results_path)
+        import(results_path)
+
+        # Remove last automated analysis for this marker from web app
+        last_analysis = MislabelAnalysis.where(automatic: true, marker: marker_sequence_search.marker).order(created_at: :desc).last
+        last_analysis.destroy unless last_analysis.id == id # Avoid self-destruct!
       end
     end
   end
 
   # Check if recent SATIVA results exist and download them
-  def download_results
-    exists = false
-    results_remote = "#{ENV['SATIVA_RESULTS_PATH']}/#{title}/#{title}.mis"
-    results = "#{Rails.root}/#{title}.mis"
+  def download_results(remote_dir, local_dir)
+    results_remote = "#{remote_dir}/#{title}.mis"
+    results = "#{local_dir}/#{title}.mis"
 
     # Check if file exists before download
     Net::SFTP.start(ENV['EXTERNAL_SERVER_PATH'], ENV['EXTERNAL_USER'], keys: [ENV['EXTERNAL_KEY']]) do |sftp|
       sftp.stat(results_remote) do |response|
         if response.ok?
-          # Download result file
           sftp.download!(results_remote, results)
-          exists = true
         end
       end
     end
-
-    # Import analysis result and then remove them
-    if exists
-      import(results)
-      FileUtils.rm(results)
-
-      # Also remove last automated analysis for this marker from web app
-      last_analysis = MislabelAnalysis.where(automatic: true, marker: marker).order(created_at: :desc).last
-      last_analysis.destroy unless last_analysis.id == id # Avoid self-destruct!
-
-      return true
-    else
-      return false
-    end
   end
-
-  private
 
   # Import SATIVA result table (*.mis)
   def import(file)
