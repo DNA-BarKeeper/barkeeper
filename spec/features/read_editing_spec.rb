@@ -193,19 +193,19 @@ RSpec.feature "Primer read view and editing", type: :feature, js: true do
     left_clip = find('rect.left_clip_area')
     left_drop_base = find('text', id: 'base_119')
     left_clip.drag_to(left_drop_base)
-    expect(page).to have_content "Set left clip position to 119"
+    expect(page).to have_content "Set left clip position to 120"
 
     right_clip = find('rect.right_clip_area')
     right_drop_base = find('text', id: 'base_239')
     right_clip.drag_to(right_drop_base)
     expect(page).to have_content "Set right clip position to 238"
 
-    expect(find("input#left_clip_#{@primer_read.id}")['value']).to eql '119'
+    expect(find("input#left_clip_#{@primer_read.id}")['value']).to eql '120'
     expect(find("input#right_clip_#{@primer_read.id}")['value']).to eql '238'
 
     # New trimmed area should be persisted after page refresh
     page.driver.browser.navigate.refresh
-    expect(find("input#left_clip_#{@primer_read.id}")['value']).to eql '119'
+    expect(find("input#left_clip_#{@primer_read.id}")['value']).to eql '120'
     expect(find("input#right_clip_#{@primer_read.id}")['value']).to eql '238'
   end
 
@@ -237,7 +237,7 @@ RSpec.feature "Primer read view and editing", type: :feature, js: true do
 
     sleep(0.1) # Otherwise alert is not opened yet
     alert = page.driver.browser.switch_to.alert
-    expect(alert.text).to eql "Not authorized? Could not set left clip at position 119"
+    expect(alert.text).to eql "Not authorized? Could not set left clip at position 120"
     alert.accept
 
     initial_right_clip = find("input#right_clip_#{@primer_read.id}")['value']

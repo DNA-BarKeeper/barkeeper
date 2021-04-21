@@ -52,8 +52,12 @@ class NgsRunsController < ApplicationController
     @ngs_run.add_project(current_project_id)
 
     unless params[:ngs_run][:tag_primer_map].blank?
-      params[:ngs_run][:tag_primer_map].each do |tpm|
-        @ngs_run.tag_primer_maps.build(tag_primer_map: tpm)
+      if params[:ngs_run][:set_tag_map].blank?
+        @ngs_run.tag_primer_maps.build(tag_primer_map: params[:ngs_run][:tag_primer_map].first)
+      else
+        params[:ngs_run][:tag_primer_map].each do |tpm|
+          @ngs_run.tag_primer_maps.build(tag_primer_map: tpm)
+        end
       end
     end
 
@@ -108,6 +112,11 @@ class NgsRunsController < ApplicationController
     end
   end
 
+  def  submit_analysis_request
+    @ngs_run.submit_request(current_user, edit_ngs_run_url(@ngs_run))
+    redirect_to ngs_runs_path, notice: 'Request for analysis successfully submitted. An admin is informed. Please check in later to see results.'
+  end
+
   def start_analysis
     if @ngs_run.check_tag_primer_map_count
       isolates_not_in_db = @ngs_run.samples_exist
@@ -159,7 +168,7 @@ class NgsRunsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def ngs_run_params
-    params.require(:ngs_run).permit(:name, :primer_mismatches, :quality_threshold, :tag_mismatches, :fastq_location,
+    params.require(:ngs_run).permit(:name, :analysis_requested, :analysis_started, :comment, :primer_mismatches, :quality_threshold, :tag_mismatches, :fastq_location,
                                     :set_tag_map, :higher_order_taxon_id, :delete_set_tag_map, :results)
   end
 end

@@ -3,10 +3,10 @@
 # Change these
 server '46.101.149.34', port: 1694, roles: %i[web app db], primary: true
 
-set :repo_url,        'ssh://Sarah_Wiechers@bitbucket.org/kai42/gbol5.git'
+set :repo_url,        'git@github.com:SarahW91/gbol5.git'
 set :application,     'gbol5'
-set :rbenv_ruby, '2.6.6'
 set :user,            'sarah'
+set :rbenv_ruby,      '2.6.6'
 set :puma_threads,    [1, 5]
 set :puma_workers,    2
 
@@ -37,7 +37,7 @@ set :puma_worker_timeout, nil
 set :puma_init_active_record, true # Change to false when not using ActiveRecord
 set :puma_user, fetch(:user)
 
-set :ssh_options, port: 1694, forward_agent: true, user: fetch(:user), keys: %w['/home/sarah/.ssh/id_rsa']
+set :ssh_options, port: 1694, forward_agent: true, user: fetch(:user), keys: %w[/home/sarah/.ssh/id_rsa]
 
 # Sidekiq setup
 set sidekiq_log: File.join(release_path, 'log', 'sidekiq.log')
@@ -51,7 +51,7 @@ set sidekiq_config: File.join(shared_path, 'config', 'sidekiq.yml')
 # set :keep_releases, 5
 
 ## Linked Files & Directories (Default None):
-# set :linked_files, %w{config/database.yml}
+set :linked_files, %w{config/master.key}
 # set :linked_dirs,  %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 namespace :puma do
@@ -104,7 +104,7 @@ before 'deploy:assets:precompile', :symlink_config_files
 desc 'Link shared files'
 task :symlink_config_files do
   symlinks = {
-      "#{shared_path}/config/database.yml" => "#{release_path}/config/database.yml"
+    "#{shared_path}/config/master.key" => "#{release_path}/config/master.key"
   }
 
   on roles(:app) do
