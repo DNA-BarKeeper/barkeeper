@@ -4,16 +4,26 @@
     <h3 class="panel-title">Overview diagrams</h3>
   </div>
   <div class="panel-body" id="main">
-    <div class="form-group" style="font-size: 14px;">
-      Select a marker to show a phylogenetic diagram visualizing the completion status of all families for this marker.<br>
-      The number of species (including subspecies) in each family is represented by the size of the corresponding node.<br>
-      Node colors represent the relative amount of species (including subspecies) within this family with at least one finished marker sequence.<br><br>
-      <%= select_tag('Marker', options_from_collection_for_select(Marker.in_project(current_project_id).order(:name), 'id', 'name'),
-                     prompt: "Select a Marker", class: 'form-control', id: 'progress_diagram_marker_select') %>
-    </div>
-    <div id="progress_legend"></div>
-    <div id="progress_tree">
-      <button id='reset_zoom' class="btn btn-default" style="margin: 5px; visibility: hidden;">Reset zoom & center</button>
-    </div>
+    <table>
+      <tr>
+        <td class="form-group" width="15%" style="font-size: 14px; vertical-align: top;">
+          Select a marker to show a phylogenetic diagram visualizing the completion status of all families for this marker.<br>
+          <%= select_tag('Marker', options_from_collection_for_select(Marker.in_project(current_project_id).order(:name), 'id', 'name'),
+                         prompt: "Select a Marker", class: 'form-control', id: 'progress_diagram_marker_select') %>
+        </td>
+        <td rowspan=2 >
+          <div id="progress_tree" style="margin-left: 10px"></div>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-size: 14px; vertical-align: top;">
+          The number of species (including subspecies) in each family is represented by the size of the corresponding node.<br>
+          Node colors represent the relative amount of species (including subspecies) within this family with at least one finished marker sequence.<br><br>
+          <button id='reset_zoom' class="btn btn-default" title="Reset zoom & recenter"style="margin: 5px; visibility: hidden;">
+            <span class="glyphicon glyphicon-screenshot"></span>
+          </button>
+        </td>
+      </tr>
+    </table>
   </div>
 </div>
