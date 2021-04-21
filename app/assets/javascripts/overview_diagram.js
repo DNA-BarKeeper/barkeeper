@@ -1,26 +1,3 @@
-/*
-Copyright 2013 Google Inc. All Rights Reserved.
-
-Modifications copyright (C) 2020 Kai Müller <kaimueller@uni-muenster.de>, Sarah Wiechers
-<sarah.wiechers@uni-muenster.de>
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
-
-/*
-Original code for sunburst diagram may be found here: https://bl.ocks.org/kerryrodden/766f8f6d31f645c39f488a0befa1e3c8
- */
-
 jQuery(function() {
     if (document.getElementById("all_species") != null) {
         $.ajax({
@@ -47,7 +24,7 @@ jQuery(function() {
             marker_id: $('#overview_diagram_marker_select option:selected').val()
         },
         success: function (data) {
-            deleteVisualization('finished'); // Delete previous visualization
+            deleteVisualization('finished'); // delete old visualization
             createVisualization(data, 'finished');
         },
         error: function (result) {
@@ -117,7 +94,7 @@ function createVisualization(json, id) {
     // Turn the data into a d3 hierarchy and calculate the sums.
     var root = d3.hierarchy(json)
         .sum(function(d) { return d.size; });
-    // .sort(function(a, b) { return b.value - a.value; }); //disabled sorting to maintain taxonomic order
+        // .sort(function(a, b) { return b.value - a.value; }); //disabled sorting to maintain taxonomic order
 
     // For efficiency, filter nodes to keep only those large enough to see.
     var nodes = partition(root).descendants()

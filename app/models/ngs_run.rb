@@ -1,25 +1,3 @@
-#
-# Barcode Workflow Manager - A web framework to assemble, analyze and manage DNA
-# barcode data and metadata.
-# Copyright (C) 2020 Kai Müller <kaimueller@uni-muenster.de>, Sarah Wiechers
-# <sarah.wiechers@uni-muenster.de>
-#
-# This file is part of Barcode Workflow Manager.
-#
-# Barcode Workflow Manager is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
-#
-# Barcode Workflow Manager is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-# along with Barcode Workflow Manager.  If not, see
-# <http://www.gnu.org/licenses/>.
-#
 class NgsRun < ApplicationRecord
   require 'open-uri'
 
@@ -37,7 +15,7 @@ class NgsRun < ApplicationRecord
   has_many :issues
 
   has_one_attached :set_tag_map
-  validates :set_tag_map, content_type: :text
+  validates :set_tag_map, content_type: [:text, 'application/octet-stream']
 
   has_one_attached :results
   validates :results, content_type: :zip
@@ -119,39 +97,88 @@ class NgsRun < ApplicationRecord
     valid
   end
 
+  def submit_request(current_user, route)
+    subject = "NGS raw data analysis request by #{current_user.name}"
+    recipients = User.where(role: 'admin').map(&:email)
+
+    text = "#{current_user.name} is requesting to start an SMRT raw data analysis with the following parameters:\n"
+    text << "Run Title: #{name}\n"
+    text << "Quality threshold: #{quality_threshold}\n"
+    text << "Primer mismatches: #{primer_mismatches}\n"
+    text << "Barcode mismatches: #{tag_mismatches}\n"
+    text << "Taxon: #{higher_order_taxon.name}\n" if higher_order_taxon_id
+    text << "Please visit #{route} to start the analysis."
+
+    `echo "#{text}" | mail -s "#{subject}" #{recipients.join(',')}`
+
+    self.analysis_requested = true
+    self.save!
+  end
+
+  def check_server_status
+    Net::SSH.start('141.20.65.52', 'kai', keys: ['/home/sarah/.ssh/id_rsa', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
+      session.exec!("pgrep -f \"barcoding_pipe.rb\"")
+    end
+  end
+
   def run_pipe
-    Net::SSH.start(ENV['REMOTE_SERVER_PATH'], ENV['REMOTE_USER'], keys: remote_key_list) do |session|
-      analysis_dir = "#{ENV['BARCODING_PIPE_RESULTS_PATH']}/#{name}"
-      output_dir = "#{ENV['BARCODING_PIPE_RESULTS_PATH']}/#{name}_out"
+    Net::SSH.start('141.20.65.52', 'kai', keys: ['/home/sarah/.ssh/id_rsa', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
+      analysis_dir = "/data/data1/sarah/ngs_barcoding/#{name}"
+      output_dir = "/data/data1/sarah/ngs_barcoding/#{name}_out"
 
-      # Write edited tag primer maps
-      tag_primer_maps.each do |tag_primer_map|
-        File.open("#{Rails.root}/#{tag_primer_map.tag_primer_map.filename}", 'w') do |file|
-          file << tag_primer_map.revised_tag_primer_map(projects.map(&:id))
-        end
-      end
-
-      tag_primer_map_path = "#{analysis_dir}/#{tag_primer_maps.first.tag_primer_map.filename}"
-
-      # Create analysis directory
+      # Create analysis directory (and remove older versions)
+      session.exec!("rm -R #{analysis_dir}")
       session.exec!("mkdir #{analysis_dir}")
 
-      # Upload analysis input files
-      session.scp.upload! "#{Rails.root}/#{tag_primer_maps.first.tag_primer_map.filename}", tag_primer_map_path
+      # Write and uplaod adapter platepool (set tag map) file
+      if set_tag_map.attached?
+        File.open("#{Rails.root}/#{set_tag_map.filename}", 'w') do |file|
+          file << set_tag_map.download
+        end
 
-      # Start analysis on server # TODO uncomment when ready and add remaining parameters
-      # session.exec!("ruby /data/data2/lara/Barcoding/barcoding_pipe.rb -m #{tag_primer_map_path} -f #{fastq_location} -o #{output_dir}")
+        set_tag_map_path = "#{analysis_dir}/#{set_tag_map.filename}"
+        session.scp.upload! "#{Rails.root}/#{set_tag_map.filename}", set_tag_map_path
+      end
 
-      # Remove edited tag primer maps
+      # Write and upload edited tag primer maps
+      tag_primer_maps.each do |tag_primer_map|
+        tpm_filename = tag_primer_map.tag_primer_map.filename
+
+        File.open("#{Rails.root}/#{tpm_filename}", 'w') do |file|
+          file << tag_primer_map.revised_tag_primer_map(projects.map(&:id))
+        end
+
+        session.scp.upload! "#{Rails.root}/#{tpm_filename}", "#{analysis_dir}/#{tpm_filename}"
+      end
+
+      # Start analysis on server
+      start_command = "ruby /data/data2/lara/Barcoding/barcoding_pipe.rb "
+      start_command << "-s #{analysis_dir}/#{set_tag_map.filename} " if set_tag_map.attached? # Path to adapter platepool file on server
+      tag_primer_maps.each do |tag_primer_map|
+        start_command << "-m #{"#{analysis_dir}/#{tag_primer_map.tag_primer_map.filename}"} " # Path to tag primer map on server
+      end
+      start_command << "-w \"#{fastq_location}\" " # WebDAV address of raw analysis files
+      start_command << "-o #{output_dir} " # Output directory
+      start_command << "-d #{self.id} "
+      start_command << "-t #{higher_order_taxon.name} " if self.higher_order_taxon
+      start_command << "-q #{self.quality_threshold} "
+      start_command << "-p #{self.primer_mismatches} " if self.primer_mismatches && self.primer_mismatches != 0.0
+      start_command << "-b #{self.tag_mismatches} "
+
+      session.exec!(start_command)
+
+      # Remove edited tag primer maps and set tag map
       tag_primer_maps.each do |tag_primer_map|
         FileUtils.rm("#{Rails.root}/#{tag_primer_map.tag_primer_map.filename}")
       end
+
+      FileUtils.rm("#{Rails.root}/#{set_tag_map.filename}") if set_tag_map.attached?
     end
   end
 
   def import(results_path)
-    # Download results from external server (action will be called at end of analysis script on server!)
-    Net::SFTP.start(ENV['REMOTE_SERVER_PATH'], ENV['REMOTE_USER'], keys: remote_key_list) do |sftp|
+    # Download results from Xylocalyx (action will be called at end of analysis script on Xylocalyx!)
+    Net::SFTP.start('141.20.65.52', 'kai', keys: ['/home/sarah/.ssh/id_rsa', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
       sftp.stat(results_path) do |response|
         if response.ok?
           # Delete older results
@@ -187,7 +214,7 @@ class NgsRun < ApplicationRecord
 
           tag_primer_maps.each do |tpm|
             begin
-              import_results("#{tpm.tag_primer_map.filename.gsub('.txt', '')}_expanded.txt")
+              import_results("#{tpm.tag_primer_map.filename.to_s.gsub('.txt', '')}_expanded.txt")
             rescue Exception => e
               self.issues << Issue.new(title: "Import error",
                                        description: "Importing results for tag primer map #{tpm.tag_primer_map.filename}
@@ -289,22 +316,6 @@ class NgsRun < ApplicationRecord
       ngs_result.ngs_run = self
 
       ngs_result.save
-    end
-  end
-
-  private
-
-  def check_server_status
-    Net::SSH.start(ENV['REMOTE_SERVER_PATH'], ENV['REMOTE_USER'], keys: remote_key_list) do |session|
-      session.exec!("pgrep -f \"barcoding_pipe.rb\"")
-    end
-  end
-
-  def remote_key_list
-    if ENV['REMOTE_KEYS'].include?(';')
-      ENV['REMOTE_KEYS'].split(';')
-    else
-      [ENV['REMOTE_KEYS']]
     end
   end
 end

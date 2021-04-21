@@ -2,10 +2,21 @@
 
 <p>
   <% if user_signed_in? %>
-    <%= link_to 'Start analysis',
-                start_analysis_ngs_run_path(@ngs_run),
-                method: :post,
-                class: 'btn btn-default' %>
+    <% if !@ngs_run.analysis_requested && !@ngs_run.analysis_started %>
+      <%= link_to 'Submit analysis request',
+                  submit_analysis_request_ngs_run_path(@ngs_run),
+                  method: :post,
+                  class: 'btn btn-default' %>
+    <% end %>
+
+    <% if current_user.admin? && @ngs_run.analysis_requested && !@ngs_run.analysis_started %>
+      <%= link_to 'Start analysis',
+                  start_analysis_ngs_run_path(@ngs_run),
+                  method: :post,
+                  class: 'btn btn-default' %>
+    <% else %>
+
+    <% end %>
   <% end %>
 </p>
 
