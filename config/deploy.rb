@@ -104,6 +104,7 @@ before 'deploy:assets:precompile', :symlink_config_files
 desc 'Link shared files'
 task :symlink_config_files do
   symlinks = {
+    "#{shared_path}/config/database.yml" => "#{release_path}/config/database.yml",
     "#{shared_path}/config/master.key" => "#{release_path}/config/master.key"
   }
 
