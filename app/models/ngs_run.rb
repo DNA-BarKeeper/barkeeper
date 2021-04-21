@@ -139,8 +139,8 @@ class NgsRun < ApplicationRecord
 
   def run_pipe
     Net::SSH.start(ENV['REMOTE_SERVER_PATH'], ENV['REMOTE_USER'], keys: remote_key_list) do |session|
-      analysis_dir = "/data/data1/sarah/ngs_barcoding/#{name}"
-      output_dir = "/data/data1/sarah/ngs_barcoding/#{name}_out"
+      analysis_dir = "#{ENV['BARCODING_PIPE_RESULTS_PATH']}/#{name}"
+      output_dir = "#{ENV['BARCODING_PIPE_RESULTS_PATH']}/#{name}_out"
 
       # Create analysis directory (and remove older versions)
       session.exec!("rm -R #{analysis_dir}")
@@ -168,7 +168,7 @@ class NgsRun < ApplicationRecord
       end
 
       # Start analysis on server
-      start_command = "ruby /data/data2/lara/Barcoding/barcoding_pipe.rb "
+      start_command = "ruby #{ENV['BARCODING_PIPE_PATH']}"
       start_command << "-s #{analysis_dir}/#{set_tag_map.filename} " if set_tag_map.attached? # Path to adapter platepool file on server
       tag_primer_maps.each do |tag_primer_map|
         start_command << "-m #{"#{analysis_dir}/#{tag_primer_map.tag_primer_map.filename}"} " # Path to tag primer map on server
@@ -193,7 +193,7 @@ class NgsRun < ApplicationRecord
   end
 
   def import(results_path)
-    # Download results from Xylocalyx (action will be called at end of analysis script on Xylocalyx!)
+    # Download results from remote server (action will be called at end of analysis script!)
     Net::SFTP.start(ENV['REMOTE_SERVER_PATH'], ENV['REMOTE_USER'], keys: remote_key_list) do |sftp|
       sftp.stat(results_path) do |response|
         if response.ok?
