@@ -46,7 +46,7 @@ class MislabelAnalysis < ApplicationRecord
                                                     marker: marker,
                                                     marker_sequence_search: search)
 
-        if ENV['EXTERNAL_SERVER_PATH'] && server_available?
+        if ENV['REMOTE_SERVER_PATH'] && server_available?
           mislabel_analysis.analyse_remotely
         else
           mislabel_analysis.analyse_locally
@@ -105,16 +105,24 @@ class MislabelAnalysis < ApplicationRecord
     end
   end
 
+  def remote_key_list
+    if ENV['REMOTE_KEYS'].include?(';')
+      ENV['REMOTE_KEYS'].split(';')
+    else
+      [ENV['REMOTE_KEYS']]
+    end
+  end
+
   # Check if SATIVA is already running on the server
   def server_available?
-    Net::SSH.start(ENV['EXTERNAL_SERVER_PATH'], ENV['EXTERNAL_USER'], keys: [ENV['EXTERNAL_KEY']]) do |session|
-      return session.exec!("pgrep -f \"SATIVA.sh\"").empty? # TODO: Change to check for actual sativa.py script
+    Net::SSH.start(ENV['REMOTE_SERVER_PATH'], ENV['REMOTE_USER'], keys: remote_key_list) do |session|
+      return session.exec!("pgrep -f \"sativa.py\"").empty? # TODO: Check if this is actually the process name
     end
   end
 
   # Start a SATIVA mislabel analysis
   def analyse_remotely
-    Net::SSH.start(ENV['EXTERNAL_SERVER_PATH'], ENV['EXTERNAL_USER'], keys: [ENV['EXTERNAL_KEY']]) do |session|
+    Net::SSH.start(ENV['REMOTE_SERVER_PATH'], ENV['REMOTE_USER'], keys: remote_key_list) do |session|
       local_analysis_dir = "#{Rails.root}/SATIVA_analyses/#{title}"
 
       sequences = "#{local_analysis_dir}/#{title}.fasta"
@@ -165,7 +173,7 @@ class MislabelAnalysis < ApplicationRecord
     results = "#{local_dir}/#{title}.mis"
 
     # Check if file exists before download
-    Net::SFTP.start(ENV['EXTERNAL_SERVER_PATH'], ENV['EXTERNAL_USER'], keys: [ENV['EXTERNAL_KEY']]) do |sftp|
+    Net::SFTP.start(ENV['REMOTE_SERVER_PATH'], ENV['REMOTE_USER'], keys: remote_key_list) do |sftp|
       sftp.stat(results_remote) do |response|
         if response.ok?
           sftp.download!(results_remote, results)
