@@ -137,14 +137,8 @@ class NgsRun < ApplicationRecord
     self.save!
   end
 
-  def check_server_status
-    Net::SSH.start('141.20.65.52', 'kai', keys: ['/home/sarah/.ssh/id_rsa', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
-      session.exec!("pgrep -f \"barcoding_pipe.rb\"")
-    end
-  end
-
   def run_pipe
-    Net::SSH.start('141.20.65.52', 'kai', keys: ['/home/sarah/.ssh/id_rsa', '/home/sarah/.ssh/gbol_xylocalyx']) do |session|
+    Net::SSH.start(ENV['REMOTE_SERVER_PATH'], ENV['REMOTE_USER'], keys: remote_key_list) do |session|
       analysis_dir = "/data/data1/sarah/ngs_barcoding/#{name}"
       output_dir = "/data/data1/sarah/ngs_barcoding/#{name}_out"
 
@@ -200,7 +194,7 @@ class NgsRun < ApplicationRecord
 
   def import(results_path)
     # Download results from Xylocalyx (action will be called at end of analysis script on Xylocalyx!)
-    Net::SFTP.start('141.20.65.52', 'kai', keys: ['/home/sarah/.ssh/id_rsa', '/home/sarah/.ssh/gbol_xylocalyx']) do |sftp|
+    Net::SFTP.start(ENV['REMOTE_SERVER_PATH'], ENV['REMOTE_USER'], keys: remote_key_list) do |sftp|
       sftp.stat(results_path) do |response|
         if response.ok?
           # Delete older results
@@ -338,6 +332,22 @@ class NgsRun < ApplicationRecord
       ngs_result.ngs_run = self
 
       ngs_result.save
+    end
+  end
+
+  private
+
+  def check_server_status
+    Net::SSH.start(ENV['REMOTE_SERVER_PATH'], ENV['REMOTE_USER'], keys: remote_key_list) do |session|
+      session.exec!("pgrep -f \"barcoding_pipe.rb\"")
+    end
+  end
+
+  def remote_key_list
+    if ENV['REMOTE_KEYS'].include?(';')
+      ENV['REMOTE_KEYS'].split(';')
+    else
+      [ENV['REMOTE_KEYS']]
     end
   end
 end
