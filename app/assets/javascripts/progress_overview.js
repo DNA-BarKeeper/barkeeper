@@ -22,7 +22,6 @@ jQuery(function() {
 // Delete previous progress diagram
 function deleteVisualization() {
     d3.select("#progress_tree").selectAll("svg").remove();
-    d3.select("#reset_zoom").style('visibility', 'hidden');
 }
 
 // Main function to draw and set up the visualization, once we have the data.
@@ -65,7 +64,6 @@ function drawProgressTree(data) {
 
     // Button to reset zoom and position
     d3.select("#reset_zoom")
-        .style('visibility', 'visible')
         .on("click", function() {
             var current_width = $("#progress_svg").width();
             zoom.transform(svg, d3.zoomIdentity.translate(current_width / 2, radius).scale(scale));
@@ -131,11 +129,12 @@ function drawProgressTree(data) {
         })
         .on("mousemove", function(d) {
             var finished_percent = d.data.size == 0 ? '' : " (" + ((d.data.finished_size / d.data.size) * 100).toFixed(2) + "%)";
+            console.log(d3.event.pageX);
             tooltip
                 .html(d.data.scientific_name + ":<br>" + d.data.size + " species (incl. subspecies)<br>" + d.data.finished_size
                     + " finished" + finished_percent)
-                .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY + 28) + "px");
+                .style("left", (d3.event.pageX - parentDiv.offsetLeft + 10) + "px")
+                .style("top", (d3.event.pageY - parentDiv.offsetTop + 20) + "px");
         })
         .on("mouseout", function mouseout() {
             tooltip.transition()
