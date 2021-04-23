@@ -12,7 +12,7 @@ jQuery(function() {
                 deleteVisualization();
                 drawProgressTree(data[0]);
             },
-            error: function (result) {
+            error: function (_result) {
                 console.error("Error getting data.");
             }
         }));
@@ -28,7 +28,7 @@ function deleteVisualization() {
 function drawProgressTree(data) {
     var parentDiv = document.getElementById("progress_tree");
 
-    var width = parentDiv.clientWidth,
+    var width = parentDiv.clientWidth - 17, // subtract padding and border width
         height = 710,
         scale = 1,
         radius = Math.max(width/2 - 100, 500),
@@ -59,7 +59,7 @@ function drawProgressTree(data) {
 
     svg.call(zoom);
 
-    // Trigger tha initial zoom with an initial transform
+    // Trigger initial zoom with an initial transform
     zoom.transform(svg, d3.zoomIdentity.translate(width / 2, radius).scale(scale));
 
     // Button to reset zoom and position
@@ -128,8 +128,7 @@ function drawProgressTree(data) {
                 .raise();
         })
         .on("mousemove", function(d) {
-            var finished_percent = d.data.size == 0 ? '' : " (" + ((d.data.finished_size / d.data.size) * 100).toFixed(2) + "%)";
-            console.log(d3.event.pageX);
+            var finished_percent = d.data.size === 0 ? '' : " (" + ((d.data.finished_size / d.data.size) * 100).toFixed(2) + "%)";
             tooltip
                 .html(d.data.scientific_name + ":<br>" + d.data.size + " species (incl. subspecies)<br>" + d.data.finished_size
                     + " finished" + finished_percent)
