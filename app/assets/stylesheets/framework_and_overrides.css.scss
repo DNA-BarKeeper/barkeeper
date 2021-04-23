@@ -449,12 +449,23 @@ div#ngs_run_results_wrapper div.dataTables_length {
   font-weight: 400;
 }
 
+#progress_tree {
+  padding-right: 0;
+}
+
+@media only screen and (max-width: 1200px) {
+  #progress_tree {
+    padding: 0; // No padding necessary in mobile view
+  }
+}
+
 .sidebar-element {
   border: 1px solid lightgrey;
   padding: 10px;
   margin-bottom: 15px;
 }
 
-#progress_tree {
-  padding-right: 0;
+.sidebar-hl {
+  font-size: 100%;
+  font-weight: bold;
 }
