@@ -27,6 +27,10 @@ class Taxon < ApplicationRecord
       Taxon.roots.where(taxonomic_rank: :is_unranked).first.subtree.to_depth(1).order(:position, :scientific_name).arrange_serializable do |parent, children|
         { id: parent.id,
           scientific_name: parent.scientific_name,
+          common_name: parent.common_name,
+          synonym: parent.synonym,
+          author: parent.author,
+          comment: parent.comment,
           has_children: parent.children_count.positive?,
           children: children}
       end.to_json

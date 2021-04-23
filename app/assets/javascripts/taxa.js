@@ -29,8 +29,8 @@ function drawTaxonomy(data) {
     var parentDiv = document.getElementById("taxonomy_tree");
 
     // Set the dimensions and margins of the diagram
-    var width = parentDiv.clientWidth,
-        height = 650,
+    var width = parentDiv.clientWidth - 17,
+        height = 710,
         margin = { left: 50, top: 10, bottom: 10, right: 50 },
         nodeRadius = 10,
         scale = 1;
@@ -59,14 +59,12 @@ function drawTaxonomy(data) {
 
     // Button to reset zoom and reset tree to top left
     d3.select("#reset_tree_pos")
-        .attr('style', 'margin: 5px')
         .on("click", function() {
             zoom.transform(svg, d3.zoomIdentity.translate(margin.left, margin.top).scale(scale));
         });
 
     // Button to reset zoom and center root node
     d3.select("#center_root")
-        .attr('style', 'margin: 5px')
         .on("click", function() {
             centerNode(root);
         });
@@ -132,7 +130,7 @@ function drawTaxonomy(data) {
                 return "translate(" + source.y0 + "," + source.x0 + ")";
             });
 
-        // Add Circle for the nodes
+        // Add circle for the nodes
         nodeEnter.append('circle')
             .attr("r", nodeRadius)
             .classed("closed", function(d) { return d._children })
@@ -143,14 +141,8 @@ function drawTaxonomy(data) {
             .attr("stroke-width", '3')
             .on('click', click);
 
-        var textGroup = nodeEnter.append('g')
-            .append("a")
-            .attr("xlink:href", function(d) {
-                return "/taxa/" + d.data.id + "/edit";
-            });
-
-        // Add labels for the nodes
-        textGroup.append('text')
+        nodeEnter.append('g')
+            .append('text')
             .text(function (d) {
                 return d.data.scientific_name;
             })
@@ -168,7 +160,17 @@ function drawTaxonomy(data) {
                     'middle' : 'left';
             })
             .attr("fill-opacity", 1)
-            .style('font', '14px sans-serif');
+            .style('font', '14px sans-serif')
+            .on('click', function(d) {
+                $('#taxon_info').text(function() {
+                    var text = "Scientific name: " + d.data.scientific_name + "\n";
+                    text += "Synonym: " + d.data.synonym + "\n";
+                    text += "Common name: " + d.data.common_name + "\n";
+                    text += "Author: " + d.data.author + "\n";
+                    text += "Comment: " + d.data.comment + "\n";
+                    return text;
+            })
+        });
 
         // UPDATE
         var nodeUpdate = nodeEnter.merge(node);
@@ -250,7 +252,6 @@ function drawTaxonomy(data) {
             d.y0 = d.y;
         });
     }
-
 
     // Creates a curved (diagonal) path from parent to the child nodes
     function diagonal(s, d) {
