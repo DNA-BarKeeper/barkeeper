@@ -13,12 +13,6 @@ class Species < ApplicationRecord
   has_many :primer_pos_on_genomes
   belongs_to :family
 
-  def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-    spp_cnt = Species.select(:species_component).joins(family: { order: :higher_order_taxon }).where(orders: { higher_order_taxon_id: higher_order_taxon_id }).distinct.count
-    subspp_cnt = Species.select(:id).joins(family: { order: :higher_order_taxon }).where(orders: { higher_order_taxon_id: higher_order_taxon_id }).distinct.count
-    [spp_cnt, subspp_cnt]
-  end
-
   def self.import_species(file, valid_keys, project_id)
     spreadsheet = Species.open_spreadsheet(file)
     header = spreadsheet.row(1)

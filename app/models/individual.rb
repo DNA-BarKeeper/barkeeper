@@ -35,13 +35,6 @@ class Individual < ApplicationRecord
     end
   end
 
-  # TODO: Remove
-  def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-    individuals = Individual.select('species_id').joins(species: { family: { order: :higher_order_taxon } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    individuals_s = Individual.select('species_component').joins(species: { family: { order: :higher_order_taxon } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    [individuals.count, individuals_s.distinct.count, individuals.distinct.count]
-  end
-
   def taxon_name
     self.try(:taxon)&.scientific_name
   end

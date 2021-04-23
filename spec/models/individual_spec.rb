@@ -35,29 +35,6 @@ RSpec.describe Individual do
     should callback(:update_isolate_tissue).after(:save).if :saved_change_to_tissue_id?
   end
 
-  context "returns number of individuals in higher order taxon" do
-    before(:each) { @hot = FactoryBot.create(:higher_order_taxon) }
-
-    it "returns correct number of individuals in higher order taxon" do
-      order = FactoryBot.create(:order, higher_order_taxon: @hot)
-      family1 = FactoryBot.create(:family, order: order)
-      family2 = FactoryBot.create(:family, order: order)
-      species1 = FactoryBot.create(:species, family: family1)
-      species2 = FactoryBot.create(:species, family: family1)
-      species3 = FactoryBot.create(:species, family: family2)
-
-      FactoryBot.create(:individual, species: species1)
-      FactoryBot.create(:individual, species: species2)
-      FactoryBot.create(:individual, species: species3)
-
-      expect(Individual.spp_in_higher_order_taxon(@hot.id)).to be == [3, 3, 3]
-    end
-
-    it "returns correct number for no individuals in higher order taxon" do
-      expect(Individual.spp_in_higher_order_taxon(@hot.id)).to be == [0, 0, 0]
-    end
-  end
-
   xit "returns csv" do; end
 
   xit "assigns DNA bank info" do; end

@@ -42,33 +42,4 @@ RSpec.describe Marker do
   it "have many primers" do
     should have_many(:primers)
   end
-
-  context "returns number of marker sequences in higher order taxon" do
-    before(:all) { @marker = FactoryBot.create(:marker) }
-    before(:each) { @hot = FactoryBot.create(:higher_order_taxon) }
-
-    it "returns correct number of species in higher order taxon" do
-      order = FactoryBot.create(:order, higher_order_taxon: @hot)
-      family1 = FactoryBot.create(:family, order: order)
-      family2 = FactoryBot.create(:family, order: order)
-      species1 = FactoryBot.create(:species, family: family1)
-      species2 = FactoryBot.create(:species, family: family1)
-      species3 = FactoryBot.create(:species, family: family2)
-      individual1 = FactoryBot.create(:individual, species: species1)
-      individual2 = FactoryBot.create(:individual, species: species2)
-      individual3 = FactoryBot.create(:individual, species: species3)
-      isolate1 = FactoryBot.create(:isolate, individual: individual1)
-      isolate2 = FactoryBot.create(:isolate, individual: individual2)
-      isolate3 = FactoryBot.create(:isolate, individual: individual3)
-      FactoryBot.create(:marker_sequence, isolate: isolate1, marker: @marker)
-      FactoryBot.create(:marker_sequence, isolate: isolate2, marker: @marker)
-      FactoryBot.create(:marker_sequence, isolate: isolate3, marker: @marker)
-
-      expect(@marker.spp_in_higher_order_taxon(@hot.id)).to be == [3, 3, 3]
-    end
-
-    it "returns zero if no species belong to higher order taxon" do
-      expect(@marker.spp_in_higher_order_taxon(@hot.id)).to be == [0, 0, 0]
-    end
-  end
 end
