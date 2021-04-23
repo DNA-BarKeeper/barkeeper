@@ -11,9 +11,8 @@ GBOLapp::Application.routes.draw do
   match 'progress', to: 'home#progress', via: 'get'
 
   get 'progress_overview/index'
+  get 'progress_overview/export_progress_csv'
   get 'progress_overview/progress_tree', defaults: { format: 'json' }
-  get 'progress_overview/all_species', defaults: { format: 'json' }
-  get 'progress_overview/finished_species_marker', defaults: { format: 'json' }
 
   get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'

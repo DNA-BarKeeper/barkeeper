@@ -13,16 +13,12 @@ class ProgressOverviewController < ApplicationController
     render json: progress_tree_json(current_project_id, params[:marker_id])
   end
 
-  # returns JSON containing the number of target species for each family
-  def all_species
-    authorize! :all_species, :progress_overview
-    render json: all_taxa_json(current_project_id)
-  end
+  def export_progress_csv
+    authorize! :export_progress_csv, :progress_overview
 
-  # returns JSON with the number of finished species for each family
-  def finished_species_marker
-    @current_project_id = current_project_id
-    authorize! :finished_species_marker, :progress_overview
-    render json: finished_taxa_json(current_project_id, params[:marker_id])
+    marker = Marker.find(params[:marker_id]) if params[:marker_id]
+    send_data(progress_table(current_project_id, params[:marker_id]),
+              filename: "progress_status_#{marker.name}.csv",
+              type: 'application/csv')
   end
 end

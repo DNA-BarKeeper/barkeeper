@@ -17,7 +17,34 @@ jQuery(function() {
             }
         }));
     }
+
+    // Download button and tree navigation are disabled on page load
+    var message = 'Please select a marker first';
+    disableButton($('#download_csv'), message);
+    disableButton($('#reset_zoom'), message);
+
+    $('#progress_diagram_marker_select').change(function() {
+        // Add selected marker ID to download button link attribute
+        var button = $('#download_csv');
+        var marker_id = $('#progress_diagram_marker_select option:selected').val();
+        button.attr('href', '/progress_overview/export_progress_csv?marker_id=' + marker_id)
+
+        // Enable download button
+        changeDownloadButtonStatus();
+    });
 });
+
+function changeDownloadButtonStatus() {
+    var button = $('#download_csv');
+    var no_marker_selected = !$('#progress_diagram_marker_select option:selected').length;
+
+    if (no_marker_selected) {
+        disableButton(button);
+    }
+    else {
+        enableButton(button);
+    }
+}
 
 // Delete previous progress diagram
 function deleteVisualization() {
@@ -68,6 +95,7 @@ function drawProgressTree(data) {
             var current_width = $("#progress_svg").width();
             zoom.transform(svg, d3.zoomIdentity.translate(current_width / 2, radius).scale(scale));
         });
+    enableButton($('#reset_zoom'));
 
     // draw links
     mainGroup.append('g')
