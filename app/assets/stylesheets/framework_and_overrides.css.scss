@@ -412,7 +412,16 @@ div#ngs_run_results_wrapper div.dataTables_length {
   width: 100%;
   vertical-align: top;
   overflow: hidden;
-  padding: 5px;
+}
+
+.visualization-container {
+  padding-right: 0;
+}
+
+@media only screen and (max-width: 1200px) {
+  .visualization-container {
+    padding: 0; // No padding necessary in mobile view
+  }
 }
 
 .svg-content {
@@ -447,16 +456,6 @@ div#ngs_run_results_wrapper div.dataTables_length {
   font-size: 1.5rem;
   fill: #555;
   font-weight: 400;
-}
-
-#progress_tree {
-  padding-right: 0;
-}
-
-@media only screen and (max-width: 1200px) {
-  #progress_tree {
-    padding: 0; // No padding necessary in mobile view
-  }
 }
 
 .sidebar-element {

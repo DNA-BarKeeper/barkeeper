@@ -2,13 +2,58 @@
   <div class="panel-heading">
     <h3 class="panel-title">Taxonomy</h3>
   </div>
-  <button id='reset_tree_pos' class="btn btn-default">Reset tree position & zoom</button>
-  <button id='center_root' class="btn btn-default">Center root node & reset zoom</button>
-  <p style="margin: 5px;">
-    Filled grey circles can expand child taxa when clicked. Clicking on a taxon's name will open a page with more detailed information about it.
-  </p>
-  <div id='taxonomy_tree' class='visualization'></div>
+  <div class="panel-body" id="main">
+    <div class="container" style="width: 100%">
+      <div class="row">
+        <div class="col-lg-2">
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Taxon</div>
+
+              <div id='taxon_info'></div>
+
+              <%= link_to edit_taxon_path(0), class: 'btn btn-default' do %>
+                <span class="glyphicon glyphicon-edit" title="'test'"></span>
+              <% end %>
+
+              <%= link_to new_taxon_path, class: 'btn btn-default' do %>
+                <span class="glyphicon glyphicon-unchecked"></span>
+              <% end %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Tree Navigation</div>
+
+              <button id='center_root' class="btn btn-default" title="Center root node & reset zoom" style="margin: 5px;">
+                <span class="glyphicon glyphicon-screenshot"></span>
+              </button>
+
+              <button id='reset_tree_pos' class="btn btn-default" title="Align tree to top left & reset zoom" style="margin: 5px;">
+                <span class="glyphicon glyphicon-object-align-left"></span>
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Manual</div>
+              <p>
+                Filled grey circles can expand child taxa when clicked.</p>
+              <p>
+                Clicking on a taxon's name will open a page with more detailed information about it.
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Downloads</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-10 visualization-container">
+          <div id='taxonomy_tree' class='visualization'></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-<%= link_to 'New taxon', new_taxon_path %>
-
