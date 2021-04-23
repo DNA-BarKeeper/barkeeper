@@ -29,7 +29,7 @@ module ProgressOverviewConcern
     end.to_json
   end
 
-  def progress_table(current_project_id)
+  def progress_table(current_project_id, marker_id)
     individual_cnts = Individual.in_project(current_project_id)
                                 .joins(:taxon)
                                 .order('taxa.scientific_name')
@@ -42,24 +42,23 @@ module ProgressOverviewConcern
                              .group('taxa.scientific_name')
                              .count
 
-    # TODO: Loop over projects markers from here on and replace marker ID
     primer_read_cnts = PrimerRead.in_project(current_project_id)
                                  .joins(contig: [isolate: [individual: :taxon]])
-                                 .where(contigs: {marker_id: 5})
+                                 .where(contigs: {marker_id: marker_id})
                                  .order('taxa.scientific_name')
                                  .group('taxa.scientific_name')
                                  .count
 
     contig_cnts = Contig.in_project(current_project_id)
                         .joins(isolate: [individual: :taxon])
-                        .where(marker: 5)
+                        .where(marker_id: marker_id)
                         .order('taxa.scientific_name')
                         .group('taxa.scientific_name')
                         .count
 
     marker_sequence_cnts = MarkerSequence.in_project(current_project_id)
                                          .joins(isolate: [individual: :taxon])
-                                         .where(marker: 5)
+                                         .where(marker: marker_id)
                                          .order('taxa.scientific_name')
                                          .group('taxa.scientific_name')
                                          .count
@@ -69,82 +68,19 @@ module ProgressOverviewConcern
                        .collect { |t| [t.scientific_name, t.taxonomic_rank] }
                        .to_h
 
-    CSV.open('progress_table.csv', 'w') do |csv|
-      csv << %w(Taxon Rank #Specimen #Isolates #Reads #Contigs #MS)
+    progress_table = ''.dup
+    progress_table << CSV.generate_line(%w(Taxon TaxonomicRank #Specimen #Isolates #Reads #Contigs #MarkerSequences))
 
-      individual_cnts.each do |taxon_name, cnt|
-        csv << [taxon_name,
-                taxon_ranks[taxon_name].humanize,
-                cnt,
-                isolate_cnts[taxon_name],
-                primer_read_cnts[taxon_name],
-                contig_cnts[taxon_name],
-                marker_sequence_cnts[taxon_name]]
-      end
-    end
-  end
-
-  def all_taxa_json(current_project_id)
-    root = { :name => 'root', 'children' => [] }
-    taxa = HigherOrderTaxon.in_project(current_project_id).includes(orders: [:families]).order(:position)
-    species_count_per_family = Species.in_project(current_project_id).joins(:family).order('families.name').group('families.name').count
-
-    i = 0
-    taxa.each do |taxon|
-      orders = taxon.orders
-      children = root['children']
-      children[i] = { :name => taxon.name, 'children' => [] }
-      j = 0
-      orders.each do |order|
-        families = order.families
-        children2 = children[i]['children']
-        children2[j] = { :name => order.name, 'children' => [] }
-        k = 0
-        families.each do |family|
-          children3 = children2[j]['children']
-          children3[k] = { name: family.name, size: species_count_per_family[family.name].to_i }
-          k += 1
-        end
-        j += 1
-      end
-      i += 1
+    individual_cnts.each do |taxon_name, cnt|
+      progress_table << CSV.generate_line([taxon_name,
+              taxon_ranks[taxon_name].split('_')[1].humanize,
+              cnt,
+              isolate_cnts[taxon_name],
+              primer_read_cnts[taxon_name],
+              contig_cnts[taxon_name],
+              marker_sequence_cnts[taxon_name]])
     end
 
-    root
+    progress_table
   end
-
-  def finished_taxa_json(current_project_id, marker_id)
-    root = { :name => 'root', 'children' => [] }
-    taxa = HigherOrderTaxon.in_project(current_project_id).includes(orders: [:families]).order(:position)
-    marker_sequence_cnts = MarkerSequence.in_project(current_project_id).joins(isolate: [individual: [species: :family]]).where(marker: marker_id).order('families.name').group('families.name').count
-
-    i = 0
-    taxa.each do |taxon|
-      orders = taxon.orders
-      children = root['children']
-      children[i] = { :name => taxon.name, 'children' => [] }
-      j = 0
-      orders.each do |order|
-        families = order.families
-        children2 = children[i]['children']
-        children2[j] = { :name => order.name, 'children' => [] }
-        k = 0
-        families.each do |family|
-          children3 = children2[j]['children']
-          children3[k] = { name: family.name, size: marker_sequence_cnts[family.name].to_i }
-          k += 1
-        end
-        j += 1
-      end
-      i += 1
-    end
-
-    root
-  end
-
-  # private
-  #
-  # def node_size(node)
-  #   Taxon.descendants_of(node).where(children_count: 0).size
-  # end
 end
