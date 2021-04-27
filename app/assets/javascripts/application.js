@@ -17,3 +17,23 @@
 
 // Make datatables warning more meaningful
 $.fn.dataTable.ext.errMode = () => alert('An error occurred while loading the data table. Please contact an admin if the error persists.');
+
+// Function to replace html relevant characters to prevent XSS attacks
+function htmlSafe(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function enableButton(button, message = null) {
+    button.removeAttr('disabled');
+    if (message) {
+        button.attr('title', message);
+    }
+    else {
+        button.removeAttr('title');
+    }
+}
+
+function disableButton(button, message) {
+    button.attr('disabled', 'disabled');
+    button.attr('title', message);
+}

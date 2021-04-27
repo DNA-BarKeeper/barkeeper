@@ -12,12 +12,12 @@
 
               <div id='taxon_info'></div>
 
-              <%= link_to edit_taxon_path(0), class: 'btn btn-default' do %>
-                <span class="glyphicon glyphicon-edit" title="'test'"></span>
+              <%= link_to new_taxon_path, class: 'btn btn-default', target: "_blank", title: 'Create a new taxon', style: "margin: 5px;" do %>
+                <span class="glyphicon glyphicon-unchecked"></span>
               <% end %>
 
-              <%= link_to new_taxon_path, class: 'btn btn-default' do %>
-                <span class="glyphicon glyphicon-unchecked"></span>
+              <%= link_to edit_taxon_path(0), class: 'btn btn-default', id: 'edit_taxon', target: "_blank", style: "margin: 5px;" do %>
+                <span class="glyphicon glyphicon-edit"></span>
               <% end %>
             </div>
           </div>
@@ -38,10 +38,12 @@
             <div class="col-lg-12 sidebar-element">
               <div class="sidebar-hl">Manual</div>
               <p>
-                Filled grey circles can expand child taxa when clicked.</p>
-              <p>
-                Clicking on a taxon's name will open a page with more detailed information about it.
+                Filled grey circles can expand child taxa when clicked.
               </p>
+              <p>
+                Clicking on a taxon's name will display some information about it in the 'Taxon' section of this page.
+              </p>
+              <p>To see the all available information about a taxon or to edit it, click on the according button in the 'Taxon' section. A new tab will open.</p>
             </div>
           </div>
           <div class="row">

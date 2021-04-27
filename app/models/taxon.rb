@@ -20,6 +20,11 @@ class Taxon < ApplicationRecord
       Taxon.find(parent_id).children.order(:position, :scientific_name).arrange_serializable do |parent, children|
         { id: parent.id,
           scientific_name: parent.scientific_name,
+          taxonomic_rank: parent.human_taxonomic_rank,
+          common_name: parent.common_name,
+          synonym: parent.synonym,
+          author: parent.author,
+          comment: parent.comment,
           has_children: parent.children_count.positive?,
           children: children}
       end.to_json
@@ -27,6 +32,7 @@ class Taxon < ApplicationRecord
       Taxon.roots.where(taxonomic_rank: :is_unranked).first.subtree.to_depth(1).order(:position, :scientific_name).arrange_serializable do |parent, children|
         { id: parent.id,
           scientific_name: parent.scientific_name,
+          taxonomic_rank: parent.human_taxonomic_rank,
           common_name: parent.common_name,
           synonym: parent.synonym,
           author: parent.author,
@@ -63,5 +69,9 @@ class Taxon < ApplicationRecord
     else
       self.parent = Taxon.find_by(scientific_name: scientific_name) if scientific_name.present?
     end
+  end
+
+  def human_taxonomic_rank
+    taxonomic_rank.split('_')[1].capitalize
   end
 end
