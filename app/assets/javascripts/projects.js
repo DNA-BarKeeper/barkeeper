@@ -36,13 +36,3 @@ function changeSubmitButtonStatus() {
         enableButton(button);
     }
 }
-
-function enableButton(button) {
-    button.removeAttr('disabled');
-    button.removeAttr('title');
-}
-
-function disableButton(button, message) {
-    button.attr('disabled', 'disabled');
-    button.attr('title', message);
-}

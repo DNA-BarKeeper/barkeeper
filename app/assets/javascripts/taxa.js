@@ -57,6 +57,8 @@ function drawTaxonomy(data) {
 
     svg.call(zoom);
 
+    disableButton($("#edit_taxon"), "Please select a taxon first");
+
     // Button to reset zoom and reset tree to top left
     d3.select("#reset_tree_pos")
         .on("click", function() {
@@ -68,6 +70,8 @@ function drawTaxonomy(data) {
         .on("click", function() {
             centerNode(root);
         });
+
+    var taxon_text = d3.select('#taxon_info').append('p').attr('id', 'taxon_text');
 
     var i = 0,
         duration = 750,
@@ -128,6 +132,12 @@ function drawTaxonomy(data) {
             .attr('class', 'node')
             .attr("transform", function(_d) {
                 return "translate(" + source.y0 + "," + source.x0 + ")";
+            })
+            .on("mouseover", function(d) {
+                d3.select(this).style("cursor", "pointer");
+            })
+            .on("mouseout", function(d) {
+                d3.select(this).style("cursor", "default");
             });
 
         // Add circle for the nodes
@@ -162,15 +172,20 @@ function drawTaxonomy(data) {
             .attr("fill-opacity", 1)
             .style('font', '14px sans-serif')
             .on('click', function(d) {
-                $('#taxon_info').text(function() {
-                    var text = "Scientific name: " + d.data.scientific_name + "\n";
-                    text += "Synonym: " + d.data.synonym + "\n";
-                    text += "Common name: " + d.data.common_name + "\n";
-                    text += "Author: " + d.data.author + "\n";
-                    text += "Comment: " + d.data.comment + "\n";
-                    return text;
-            })
-        });
+                // Display taxon info in top left div
+                var text = "<b>Scientific name:</b> " + htmlSafe(d.data.scientific_name) + "<br>";
+                if (d.data.taxonomic_rank) text += "<b>Taxonomic rank</b>: " + htmlSafe(d.data.taxonomic_rank) + "<br>";
+                if (d.data.synonym) text += "<b>Synonym</b>: " + htmlSafe(d.data.synonym) + "<br>";
+                if (d.data.common_name) text += "<b>Common name:</b> " + htmlSafe(d.data.common_name) + "<br>";
+                if (d.data.author) text += "<b>Author:</b> " + htmlSafe(d.data.author) + "<br>";
+                if (d.data.comment) text += "<b>Comment:</b> " + htmlSafe(d.data.comment) + "<br>";
+                taxon_text.html(text);
+
+                // Set correct taxon edit link and enable button
+                var taxon_link = d3.select('#edit_taxon').attr('href').replace(/(.*\/)(\d+)(\/.*)/, "$1" + d.data.id + "$3");
+                d3.select('#edit_taxon').attr('href', taxon_link);
+                enableButton($('#edit_taxon'), 'Edit in a new tab');
+            });
 
         // UPDATE
         var nodeUpdate = nodeEnter.merge(node);
