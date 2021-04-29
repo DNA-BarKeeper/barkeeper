@@ -7,76 +7,78 @@
   </div>
 
   <div class="panel-body">
-    <%= form_for @contig_search do |f| %>
-        <div class="field">
-          <%= f.label :title, 'Title (if you leave this field empty the search will not be saved)' %><br />
-          <%= f.text_field :title, class: 'form-control' %>
-        </div>
+    <div class="advanced_search">
+      <%= form_for @contig_search do |f| %>
+          <div class="field">
+            <%= f.label :title, 'Title (if you leave this field empty the search will not be saved)' %><br />
+            <%= f.text_field :title, class: 'form-control' %>
+          </div>
 
-        <div class="field">
-          <%= f.label :name, 'Contig name' %><br />
-          <%= f.text_field :name, data: { autocomplete_source: filter_contigs_path }, include_blank: true, class: 'form-control' %>
-        </div>
-        <br/>
-        <div>
-          <%= f.radio_button :assembled, "assembled" %>
-          <%= f.label :assembled, "Assembled" %>
-          <%= f.radio_button :assembled, "unassembled" %>
-          <%= f.label :unassembled, "Unassembled" %>
-          <%= f.radio_button :assembled, "both", :checked => radio_checked(@contig_search, 'assembled', 'both') %>
-          <%= f.label :both_assembly, "Both" %>
-        </div>
+          <div class="field">
+            <%= f.label :name, 'Contig name' %><br />
+            <%= f.text_field :name, data: { autocomplete_source: filter_contigs_path }, include_blank: true, class: 'form-control' %>
+          </div>
+          <br/>
+          <div>
+            <%= f.radio_button :assembled, "assembled" %>
+            <%= f.label :assembled, "Assembled" %>
+            <%= f.radio_button :assembled, "unassembled" %>
+            <%= f.label :unassembled, "Unassembled" %>
+            <%= f.radio_button :assembled, "both", :checked => radio_checked(@contig_search, 'assembled', 'both') %>
+            <%= f.label :both_assembly, "Both" %>
+          </div>
 
-        <div>
-          <%= f.radio_button :verified, "verified" %>
-          <%= f.label :assembled, "Verified" %>
-          <%= f.radio_button :verified, "unverified" %>
-          <%= f.label :unverified, "Unverified" %>
-          <%= f.radio_button :verified, "both", :checked => radio_checked(@contig_search, 'verified', 'both') %>
-          <%= f.label :both_verify, "Both" %>
-        </div>
+          <div>
+            <%= f.radio_button :verified, "verified" %>
+            <%= f.label :assembled, "Verified" %>
+            <%= f.radio_button :verified, "unverified" %>
+            <%= f.label :unverified, "Unverified" %>
+            <%= f.radio_button :verified, "both", :checked => radio_checked(@contig_search, 'verified', 'both') %>
+            <%= f.label :both_verify, "Both" %>
+          </div>
 
-        <div class="field">
-          <%= f.label :verified_by %><br />
-          <%= f.text_field :verified_by, data: { autocomplete_source: User.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
-        </div>
-        <br/>
-        <div>
-          <%= f.label :has_warnings, 'Search for contigs that have marker sequences with unsolved SATIVA warnings:' %><br>
-          <%= f.radio_button :has_warnings, "yes" %>
-          <%= f.label :yes, "Yes" %>
-          <%= f.radio_button :has_warnings, "no" %>
-          <%= f.label :no, "No" %>
-          <%= f.radio_button :has_warnings, "both", :checked => radio_checked(@contig_search, 'has_warnings', 'both') %>
-          <%= f.label :both, "Search for both" %>
-        </div>
-        <br/>
-        <div class="field">
-          <%= f.label :marker %><br />
-          <%= f.text_field :marker, data: { autocomplete_source: Marker.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
-        </div>
+          <div class="field">
+            <%= f.label :verified_by %><br />
+            <%= f.text_field :verified_by, data: { autocomplete_source: User.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+          </div>
+          <br/>
+          <div>
+            <%= f.label :has_warnings, 'Search for contigs that have marker sequences with unsolved SATIVA warnings:' %><br>
+            <%= f.radio_button :has_warnings, "yes" %>
+            <%= f.label :yes, "Yes" %>
+            <%= f.radio_button :has_warnings, "no" %>
+            <%= f.label :no, "No" %>
+            <%= f.radio_button :has_warnings, "both", :checked => radio_checked(@contig_search, 'has_warnings', 'both') %>
+            <%= f.label :both, "Search for both" %>
+          </div>
+          <br/>
+          <div class="field">
+            <%= f.label :marker %><br />
+            <%= f.text_field :marker, data: { autocomplete_source: Marker.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+          </div>
 
-        <div class="field">
-          <%= f.label :specimen %><br />
-          <%= f.text_field :specimen, data: { autocomplete_source: filter_individuals_path(format: 'json') }, include_blank: true, class: 'form-control' %>
-        </div>
+          <div class="field">
+            <%= f.label :specimen %><br />
+            <%= f.text_field :specimen, data: { autocomplete_source: filter_individuals_path(format: 'json') }, include_blank: true, class: 'form-control' %>
+          </div>
 
-        <div class="field">
-          <%= f.label :taxon, 'Associated Taxon' %><br />
-          <%= f.text_field :taxon, data: { autocomplete_source: filter_taxa_path }, include_blank: true, class: 'form-control' %>
-        </div>
+          <div class="field">
+            <%= f.label :taxon, 'Associated Taxon' %><br />
+            <%= f.text_field :taxon, data: { autocomplete_source: filter_taxa_path }, include_blank: true, class: 'form-control' %>
+          </div>
 
-        <div class="field">
-          <%= f.label :age, "Created between" %><br />
-          <%= f.text_field :min_age, class: 'form-control' %> and <%= f.text_field :max_age, class: 'form-control' %>
-        </div>
+          <div class="field">
+            <%= f.label :age, "Created between" %><br />
+            <%= f.text_field :min_age, class: 'form-control' %> and <%= f.text_field :max_age, class: 'form-control' %>
+          </div>
 
-        <div class="field">
-          <%= f.label :update, "Updated between" %><br />
-          <%= f.text_field :min_update, class: 'form-control' %> and <%= f.text_field :max_update, class: 'form-control' %>
-        </div>
-        <br>
-        <div class="actions"><%= f.submit "Search", class: 'btn btn-default' %></div>
-    <% end %>
+          <div class="field">
+            <%= f.label :update, "Updated between" %><br />
+            <%= f.text_field :min_update, class: 'form-control' %> and <%= f.text_field :max_update, class: 'form-control' %>
+          </div>
+          <br>
+          <div class="actions"><%= f.submit "Search", class: 'btn btn-default' %></div>
+      <% end %>
+    </div>
   </div>
 </div>

@@ -20,6 +20,11 @@ class TaxaController < ApplicationController
     render json: @taxon.specimen_json
   end
 
+  def find_ancestry
+    taxon_name = params[:taxon_name]
+    render plain: Taxon.find_ancestry(taxon_name)
+  end
+
   def show_individuals
     respond_to do |format|
       format.html

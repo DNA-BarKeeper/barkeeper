@@ -137,6 +137,7 @@ GBOLapp::Application.routes.draw do
     collection do
       get :filter
       get 'taxonomy_tree', defaults: { format: 'json' }
+      get 'find_ancestry', defaults: { format: 'text' }
     end
   end
 
