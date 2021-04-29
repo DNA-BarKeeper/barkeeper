@@ -90,7 +90,7 @@ class NgsRunsController < ApplicationController
     end
   end
 
-  def  submit_analysis_request
+  def submit_analysis_request
     @ngs_run.submit_request(current_user, edit_ngs_run_url(@ngs_run))
     redirect_to ngs_runs_path, notice: 'Request for analysis successfully submitted. An admin is informed. Please check in later to see results.'
   end

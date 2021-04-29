@@ -55,6 +55,10 @@ class Taxon < ApplicationRecord
     taxon
   end
 
+  def self.find_ancestry(taxon_name)
+    Taxon.find_by_sci_name_or_synonym(taxon_name).try(:ancestry)
+  end
+
   def update_descendants_counter_cache
     self.update_column(:descendants_count, self.descendants.where(taxonomic_rank: [:is_species, :is_subspecies]).size)
   end

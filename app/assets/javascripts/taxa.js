@@ -22,7 +22,34 @@ jQuery(function() {
         allow_single_deselect: true,
         no_results_text: 'No results matched'
     });
+
+    $('#taxon_search').autocomplete({
+        source: $('#taxon_search').data('autocomplete-source')});
+
+    $('#start_search').click(function() {
+        var taxon_name = document.getElementById('taxon_search').value;
+
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: 'taxa/find_ancestry?taxon_name=' + taxon_name,
+            dataType: 'text',
+            processData: false,
+            success: function (ancestry) {
+                open_nodes(ancestry);
+            },
+            error: function (_result) {
+                console.error("Error getting data.");
+            }
+        });
+    });
 });
+
+function open_nodes(ancestry) {
+    ancestor_ids = ancestry.split('/');
+
+    // TODO: Find and uncollapse all ancestors
+}
 
 // Main function to draw and set up the visualization, once we have the data.
 function drawTaxonomy(data) {

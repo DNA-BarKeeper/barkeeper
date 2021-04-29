@@ -12,11 +12,11 @@
 
               <div id='taxon_info'></div>
 
-              <%= link_to new_taxon_path, class: 'btn btn-default', target: "_blank", title: 'Create a new taxon', style: "margin: 5px;" do %>
+              <%= link_to new_taxon_path, class: 'btn btn-default', target: "_blank", title: 'Create a new taxon' do %>
                 <span class="glyphicon glyphicon-unchecked"></span>
               <% end %>
 
-              <%= link_to edit_taxon_path(0), class: 'btn btn-default', id: 'edit_taxon', target: "_blank", style: "margin: 5px;" do %>
+              <%= link_to edit_taxon_path(0), class: 'btn btn-default', id: 'edit_taxon', target: "_blank" do %>
                 <span class="glyphicon glyphicon-edit"></span>
               <% end %>
             </div>
@@ -25,12 +25,7 @@
             <div class="col-lg-12 sidebar-element">
               <div class="sidebar-hl">Associated specimen</div>
               <div id='specimen_list'>
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">Please select a taxon.</li>
-                  <li class="list-group-item">Please select a taxon.</li>
-                  <li class="list-group-item">Please select a taxon.</li>
-                </ul>
-                <!--                <p>Please select a taxon.</p>-->
+                <p>Please select a taxon.</p>
               </div>
             </div>
           </div>
@@ -38,13 +33,22 @@
             <div class="col-lg-12 sidebar-element">
               <div class="sidebar-hl">Tree Navigation</div>
 
-              <button id='center_root' class="btn btn-default" title="Center root node & reset zoom" style="margin: 5px;">
+              <button id='center_root' class="btn btn-default" title="Center root node & reset zoom">
                 <span class="glyphicon glyphicon-screenshot"></span>
               </button>
 
-              <button id='reset_tree_pos' class="btn btn-default" title="Align tree to top left & reset zoom" style="margin: 5px;">
+              <button id='reset_tree_pos' class="btn btn-default" title="Align tree to top left & reset zoom">
                 <span class="glyphicon glyphicon-triangle-left"></span>
               </button>
+
+              <div class="input-group">
+                <%= text_field :taxon, :search, data: { autocomplete_source: filter_taxa_path } , class: 'form-control'%>
+                <span class="input-group-btn">
+                  <button id='start_search' class="btn btn-default" title="Open this taxon in tree">
+                    <span class="glyphicon glyphicon-search"></span>
+                  </button>
+                </span>
+              </div>
             </div>
           </div>
           <div class="row">

@@ -7,62 +7,64 @@
   </div>
 
   <div class="panel-body">
-    <%= form_for @individual_search do |f| %>
-      <div class="field">
-        <%= f.label :title, 'Title (if you leave this field empty the search will not be saved)' %><br />
-        <%= f.text_field :title, class: 'form-control' %>
-      </div>
-      <br/>
-      <div class="field">
-        <%= f.label :specimen_id, 'Specimen ID' %><br />
-        <%= f.text_field :specimen_id, data: { autocomplete_source: filter_individuals_path }, class: 'form-control' %>
-      </div>
-      <div class="field">
-        <%= f.label :DNA_bank_id, 'Associated DNA Bank ID' %><br />
-        <%= f.text_field :DNA_bank_id, class: 'form-control' %>
-      </div>
-      <br/>
-      <div>
-        <%= f.label :has_taxon, 'Search for specimen with or without associated taxonomic information:' %><br>
-        <%= f.radio_button :has_taxon, "taxon" %>
-        <%= f.label :taxon, "Only with" %>
-        <%= f.radio_button :has_taxon, "no_taxon" %>
-        <%= f.label :no_taxon, "Only without" %>
-        <%= f.radio_button :has_taxon, "all_taxon", :checked => radio_checked(@individual_search, 'has_taxon', 'all_taxon') %>
-        <%= f.label :all_taxon, "Both" %>
-      </div>
-      <br/>
-      <div>
-        <%= f.label :has_issue, 'Search for specimen with unsolved issues:' %><br>
-        <%= f.radio_button :has_issue, "issues" %>
-        <%= f.label :yes, "Only with" %>
-        <%= f.radio_button :has_issue, "no_issues" %>
-        <%= f.label :no, "Only without" %>
-        <%= f.radio_button :has_issue, "all_issue", :checked => radio_checked(@individual_search, 'has_issue', 'all_issue') %>
-        <%= f.label :both, "Both" %>
-      </div>
-      <br/>
-      <div>
-        <%= f.label :has_problematic_location, 'Search for specimen with problematic location data:' %><br>
-        <%= f.radio_button :has_problematic_location, "bad_location" %>
-        <%= f.label :bad_location, "Only with" %>
-        <%= f.radio_button :has_problematic_location, "location_okay" %>
-        <%= f.label :location_okay, "Only without" %>
-        <%= f.radio_button :has_problematic_location, "all_location", :checked => radio_checked(@individual_search, 'has_problematic_location', 'all_location') %>
-        <%= f.label :all_location, "Both" %>
-      </div>
-      <br/>
-      <div class="field">
-        <%= f.label :herbarium, 'Herbarium (Acronym)' %><br />
-        <%= f.text_field :herbarium, data: { autocomplete_source: Herbarium.order(:acronym).map(&:acronym) }, class: 'form-control' %>
-      </div>
-      <br/>
-      <div class="field">
-        <%= f.label :taxon, 'Associated Taxon' %><br />
-        <%= f.text_field :taxon, data: { autocomplete_source: filter_taxa_path }, include_blank: true, class: 'form-control' %>
-      </div>
-      <br>
-      <div class="actions"><%= f.submit "Search", class: 'btn btn-default'%></div>
-    <% end %>
+    <div class="advanced_search">
+      <%= form_for @individual_search do |f| %>
+        <div class="field">
+          <%= f.label :title, 'Title (if you leave this field empty the search will not be saved)' %><br />
+          <%= f.text_field :title, class: 'form-control' %>
+        </div>
+        <br/>
+        <div class="field">
+          <%= f.label :specimen_id, 'Specimen ID' %><br />
+          <%= f.text_field :specimen_id, data: { autocomplete_source: filter_individuals_path }, class: 'form-control' %>
+        </div>
+        <div class="field">
+          <%= f.label :DNA_bank_id, 'Associated DNA Bank ID' %><br />
+          <%= f.text_field :DNA_bank_id, class: 'form-control' %>
+        </div>
+        <br/>
+        <div>
+          <%= f.label :has_taxon, 'Search for specimen with or without associated taxonomic information:' %><br>
+          <%= f.radio_button :has_taxon, "taxon" %>
+          <%= f.label :taxon, "Only with" %>
+          <%= f.radio_button :has_taxon, "no_taxon" %>
+          <%= f.label :no_taxon, "Only without" %>
+          <%= f.radio_button :has_taxon, "all_taxon", :checked => radio_checked(@individual_search, 'has_taxon', 'all_taxon') %>
+          <%= f.label :all_taxon, "Both" %>
+        </div>
+        <br/>
+        <div>
+          <%= f.label :has_issue, 'Search for specimen with unsolved issues:' %><br>
+          <%= f.radio_button :has_issue, "issues" %>
+          <%= f.label :yes, "Only with" %>
+          <%= f.radio_button :has_issue, "no_issues" %>
+          <%= f.label :no, "Only without" %>
+          <%= f.radio_button :has_issue, "all_issue", :checked => radio_checked(@individual_search, 'has_issue', 'all_issue') %>
+          <%= f.label :both, "Both" %>
+        </div>
+        <br/>
+        <div>
+          <%= f.label :has_problematic_location, 'Search for specimen with problematic location data:' %><br>
+          <%= f.radio_button :has_problematic_location, "bad_location" %>
+          <%= f.label :bad_location, "Only with" %>
+          <%= f.radio_button :has_problematic_location, "location_okay" %>
+          <%= f.label :location_okay, "Only without" %>
+          <%= f.radio_button :has_problematic_location, "all_location", :checked => radio_checked(@individual_search, 'has_problematic_location', 'all_location') %>
+          <%= f.label :all_location, "Both" %>
+        </div>
+        <br/>
+        <div class="field">
+          <%= f.label :herbarium, 'Herbarium (Acronym)' %><br />
+          <%= f.text_field :herbarium, data: { autocomplete_source: Herbarium.order(:acronym).map(&:acronym) }, class: 'form-control' %>
+        </div>
+        <br/>
+        <div class="field">
+          <%= f.label :taxon, 'Associated Taxon' %><br />
+          <%= f.text_field :taxon, data: { autocomplete_source: filter_taxa_path }, include_blank: true, class: 'form-control' %>
+        </div>
+        <br>
+        <div class="actions"><%= f.submit "Search", class: 'btn btn-default'%></div>
+      <% end %>
+    </div>
   </div>
 </div>
