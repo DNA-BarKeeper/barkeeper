@@ -185,6 +185,9 @@ function drawTaxonomy(data) {
                 var taxon_link = d3.select('#edit_taxon').attr('href').replace(/(.*\/)(\d+)(\/.*)/, "$1" + d.data.id + "$3");
                 d3.select('#edit_taxon').attr('href', taxon_link);
                 enableButton($('#edit_taxon'), 'Edit in a new tab');
+
+                // Display list of specimen associated with this taxon
+                display_specimen_Data(d);
             });
 
         // UPDATE
@@ -362,5 +365,23 @@ function drawTaxonomy(data) {
         });
 
         return promise; //return a promise if async. requests
+    }
+
+    function display_specimen_Data(d) {
+        $.ajax({
+            url: "taxa/" + d.data.id + "/associated_specimen",
+            dataType: 'json',
+            type: 'GET',
+            cache: false,
+            success: function(data) {
+                var ul = "<ul class=\"list-group list-group-flush\">";
+                data.forEach(function(element) {
+                    ul += "<li class=\"list-group-item\"><a href='individuals/" + element.id + "/edit' target='_blank'>" + element.specimen_id + "</a></li>";
+                });
+                ul += "</ul>";
+
+                d3.select('#specimen_list').html(ul);
+            }
+        });
     }
 }

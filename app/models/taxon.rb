@@ -74,4 +74,8 @@ class Taxon < ApplicationRecord
   def human_taxonomic_rank
     taxonomic_rank.split('_')[1].capitalize
   end
+
+  def specimen_json
+    Individual.where(taxon: self).to_json(only: [:id, :specimen_id])
+  end
 end
