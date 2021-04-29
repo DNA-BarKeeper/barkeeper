@@ -3,7 +3,7 @@ class TaxaController < ApplicationController
 
   load_and_authorize_resource
 
-  before_action :set_taxon, only: %i[show edit update destroy]
+  before_action :set_taxon, only: %i[show edit update destroy associated_specimen]
 
   # returns taxonomic hierarchy as JSON
   def index
@@ -14,6 +14,10 @@ class TaxaController < ApplicationController
   def taxonomy_tree
     parent_id = params[:parent_id]
     render json: Taxon.subtree_json(parent_id)
+  end
+
+  def associated_specimen
+    render json: @taxon.specimen_json
   end
 
   def show_individuals

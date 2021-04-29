@@ -131,6 +131,7 @@ GBOLapp::Application.routes.draw do
   resources :taxa do
     member do
       get 'show_individuals'
+      get 'associated_specimen'
     end
 
     collection do
