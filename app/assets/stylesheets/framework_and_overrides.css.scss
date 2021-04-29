@@ -467,5 +467,23 @@ div#ngs_run_results_wrapper div.dataTables_length {
 .sidebar-hl {
   font-size: 1.4rem;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+#specimen_list > ul  {
+  margin: 5px;
+}
+
+// Flush list items based on version in Bootstrap 5.0
+.list-group-flush {
+  border-radius: 0;
+
+  > .list-group-item {
+    border-width: 0 0 1px;
+    background-color: inherit;
+
+    &:last-child {
+      border-bottom-width: 0;
+    }
+  }
 }
