@@ -25,31 +25,7 @@ jQuery(function() {
 
     $('#taxon_search').autocomplete({
         source: $('#taxon_search').data('autocomplete-source')});
-
-    $('#start_search').click(function() {
-        var taxon_name = document.getElementById('taxon_search').value;
-
-        $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            url: 'taxa/find_ancestry?taxon_name=' + taxon_name,
-            dataType: 'text',
-            processData: false,
-            success: function (ancestry) {
-                open_nodes(ancestry);
-            },
-            error: function (_result) {
-                console.error("Error getting data.");
-            }
-        });
-    });
 });
-
-function open_nodes(ancestry) {
-    ancestor_ids = ancestry.split('/');
-
-    // TODO: Find and uncollapse all ancestors
-}
 
 // Main function to draw and set up the visualization, once we have the data.
 function drawTaxonomy(data) {
@@ -84,20 +60,6 @@ function drawTaxonomy(data) {
 
     svg.call(zoom);
 
-    disableButton($("#edit_taxon"), "Please select a taxon first");
-
-    // Button to reset zoom and reset tree to top left
-    d3.select("#reset_tree_pos")
-        .on("click", function() {
-            zoom.transform(svg, d3.zoomIdentity.translate(margin.left, margin.top).scale(scale));
-        });
-
-    // Button to reset zoom and center root node
-    d3.select("#center_root")
-        .on("click", function() {
-            centerNode(root);
-        });
-
     var taxon_text = d3.select('#taxon_info').append('p').attr('id', 'taxon_text');
 
     var i = 0,
@@ -119,6 +81,41 @@ function drawTaxonomy(data) {
     update(root);
 
     centerNode(root);
+
+    // Setup buttons
+    disableButton($("#edit_taxon"), "Please select a taxon first");
+
+    // Button to reset zoom and reset tree to top left
+    d3.select("#reset_tree_pos")
+        .on("click", function() {
+            zoom.transform(svg, d3.zoomIdentity.translate(margin.left, margin.top).scale(scale));
+        });
+
+    // Button to reset zoom and center root node
+    d3.select("#center_root")
+        .on("click", function() {
+            centerNode(root);
+        });
+
+    d3.select('#start_search')
+        .on("click", function() {
+            var taxon_name = document.getElementById('taxon_search').value;
+
+            $.ajax({
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                url: 'taxa/find_ancestry?taxon_name=' + taxon_name,
+                dataType: 'text',
+                processData: false,
+                success: function (ancestry) {
+                    var ancestor_ids = ancestry.split('/');
+                    open_path(root, ancestor_ids);
+                },
+                error: function (_result) {
+                    console.error("Error getting data.");
+                }
+            });
+        });
 
     function update(source) {
         var levelHeight = [1];
@@ -170,6 +167,7 @@ function drawTaxonomy(data) {
         // Add circle for the nodes
         nodeEnter.append('circle')
             .attr("r", nodeRadius)
+            .attr('id', function(d) { return "node_" + d.data.id })
             .classed("closed", function(d) { return d._children })
             .style("fill", function(d) {
                 return d.data.has_children ? "lightgrey" : "#fff";
@@ -410,5 +408,45 @@ function drawTaxonomy(data) {
                 d3.select('#specimen_list').html(ul);
             }
         });
+    }
+
+    function open_path(node, ancestor_ids) {
+        //TODO: doesn't work anymore when called the second time
+        //TODO: collapse all other nodes except path
+        //TODO: maybe highlight path
+
+        console.log(ancestor_ids);
+        var ancestor_id = ancestor_ids.shift();
+
+        if (parseInt(node.data.id) === parseInt(ancestor_id)) {
+            // Avoid endless loop when node is already opened
+            if (ancestor_ids.length !== 1) {
+                open_path(node, ancestor_ids);
+            }
+            else {
+                centerNode(node); //TODO: doesn't work
+            }
+        }
+        else {
+            node.children.forEach(function (child_node) {
+                if (parseInt(child_node.data.id) === parseInt(ancestor_id)) {
+                    if (!child_node.children) {
+                        var node_circle = d3.select("#node_" + ancestor_id);
+
+                        var promise = get_child_data(child_node);
+
+                        if (promise !== undefined) node_circle.classed("spinner", true);
+
+                        promise !== undefined ? $.when(promise).done(function () {
+                            node_circle.classed("spinner", false);
+                            toggle(child_node);
+                            open_path(child_node, ancestor_ids);
+                        }.bind(node_circle)) : toggle(child_node);
+                    }
+                }
+            });
+
+
+        }
     }
 }
