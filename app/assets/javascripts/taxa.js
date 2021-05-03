@@ -85,6 +85,10 @@ function drawTaxonomy(data) {
     // Setup buttons
     disableButton($("#edit_taxon"), "Please select a taxon first");
 
+    // Setup buttons
+    disableButton($("#center_selected_node"), "Please select a taxon first");
+    var selected_node = null;
+
     // Button to reset zoom and reset tree to top left
     d3.select("#reset_tree_pos")
         .on("click", function() {
@@ -95,6 +99,12 @@ function drawTaxonomy(data) {
     d3.select("#center_root")
         .on("click", function() {
             centerNode(root);
+        });
+
+    // Button to reset zoom and center root node
+    d3.select("#center_selected_node")
+        .on("click", function() {
+            centerNode(selected_node);
         });
 
     d3.select('#start_search')
@@ -215,10 +225,13 @@ function drawTaxonomy(data) {
                 if (d.data.comment) text += "<b>Comment:</b> " + htmlSafe(d.data.comment) + "<br>";
                 taxon_text.html(text);
 
-                // Set correct taxon edit link and enable button
+                // Set correct taxon edit link and enable buttons
                 var taxon_link = d3.select('#edit_taxon').attr('href').replace(/(.*\/)(\d+)(\/.*)/, "$1" + d.data.id + "$3");
                 d3.select('#edit_taxon').attr('href', taxon_link);
                 enableButton($('#edit_taxon'), 'Edit in a new tab');
+
+                selected_node = d;
+                enableButton($('#center_selected_node'), 'Center currently selected node');
 
                 // Display list of specimen associated with this taxon
                 display_specimen_Data(d);
@@ -420,9 +433,6 @@ function drawTaxonomy(data) {
     }
 
     function open_path(node, ancestor_ids, searched_name) {
-        //TODO: collapse all other nodes except path
-        //TODO: maybe highlight path
-
         var ancestor_id = ancestor_ids.shift();
 
         if (parseInt(node.data.id) === parseInt(ancestor_id)) {
