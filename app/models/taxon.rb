@@ -60,7 +60,7 @@ class Taxon < ApplicationRecord
   end
 
   def update_descendants_counter_cache
-    self.update_column(:descendants_count, self.descendants.where(taxonomic_rank: [:is_species, :is_subspecies]).size)
+    self.update_column(:descendants_count, self.descendants.where(taxonomic_rank: [:is_species, :is_subspecies]).size) if Taxon.exists?(id)
   end
 
   def parent_name

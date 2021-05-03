@@ -268,13 +268,19 @@ ul.ui-autocomplete {
   width: 100% !important;
 }
 
-.advanced_search input.form-control {
+input.form-control {
   border: 1px solid lightgrey !important;
   padding: 5px !important;
   width: auto !important;
 }
 
-.advanced_search select.form-control {
+textarea.form-control {
+  border: 1px solid lightgrey !important;
+  padding: 5px !important;
+  width: auto !important;
+}
+
+select.form-control {
   border: 1px solid lightgrey !important;
   padding: 5px !important;
   width: auto !important;
@@ -469,4 +475,12 @@ div#ngs_run_results_wrapper div.dataTables_length {
 
 .sidebar-element .btn {
   margin: 0 10px 10px 0;
+}
+
+div.search-taxonomy input {
+  width: 100%!important;
+}
+
+div.search-taxonomy span button {
+  margin-right: 0!important;
 }
