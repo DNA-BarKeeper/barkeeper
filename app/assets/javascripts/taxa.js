@@ -84,6 +84,7 @@ function drawTaxonomy(data) {
 
     // Setup buttons
     disableButton($("#edit_taxon"), "Please select a taxon first");
+    disableButton($("#delete_taxon"), "Please select a taxon first");
 
     // Setup buttons
     disableButton($("#center_selected_node"), "Please select a taxon first");
@@ -225,10 +226,14 @@ function drawTaxonomy(data) {
                 if (d.data.comment) text += "<b>Comment:</b> " + htmlSafe(d.data.comment) + "<br>";
                 taxon_text.html(text);
 
-                // Set correct taxon edit link and enable buttons
-                var taxon_link = d3.select('#edit_taxon').attr('href').replace(/(.*\/)(\d+)(\/.*)/, "$1" + d.data.id + "$3");
-                d3.select('#edit_taxon').attr('href', taxon_link);
+                // Set correct taxon edit and destroy links and enable buttons
+                var taxon_edit_link = d3.select('#edit_taxon').attr('href').replace(/(.*\/)(\d+)(\/.*)/, "$1" + d.data.id + "$3");
+                d3.select('#edit_taxon').attr('href', taxon_edit_link);
                 enableButton($('#edit_taxon'), 'Edit in a new tab');
+
+                var taxon_delete_link = d3.select('#delete_taxon').attr('href').replace(/(.*\/)(\d+)/, "$1" + d.data.id);
+                d3.select('#delete_taxon').attr('href', taxon_delete_link);
+                enableButton($('#delete_taxon'), 'Delete taxon');
 
                 selected_node = d;
                 enableButton($('#center_selected_node'), 'Center currently selected node');

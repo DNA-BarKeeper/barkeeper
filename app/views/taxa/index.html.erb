@@ -19,6 +19,10 @@
               <%= link_to edit_taxon_path(0), class: 'btn btn-default', id: 'edit_taxon', target: "_blank" do %>
                 <span class="glyphicon glyphicon-edit"></span>
               <% end %>
+
+              <%= link_to taxon_path(0), method: :delete, class: 'btn btn-default', id: 'delete_taxon', data: { confirm: 'Are you sure?' } do %>
+                <span class="glyphicon glyphicon-trash"></span>
+              <% end %>
             </div>
           </div>
           <div class="row">
@@ -45,7 +49,7 @@
                 <span class="glyphicon glyphicon-map-marker"></span>
               </button>
 
-              <div class="input-group">
+              <div class="input-group search-taxonomy">
                 <%= text_field :taxon, :search, data: { autocomplete_source: filter_taxa_path } , class: 'form-control'%>
                 <span class="input-group-btn">
                   <button id='start_search' class="btn btn-default" title="Find this taxon in the tree">
