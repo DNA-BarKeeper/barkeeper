@@ -25,7 +25,7 @@ class Individual < ApplicationRecord
   scope :bad_location, -> { bad_latitude.or(Individual.bad_longitude) }
 
   def self.to_csv(project_id)
-    header = %w{ database_id specimen_id taxon_name determination herbarium collectors_field_number collector collection_date
+    header = %w{ Database_ID specimen_id taxon_name determination herbarium collectors_field_number collector collection_date
 state_province country latitude longitude elevation exposition locality habitat comments }
 
     attributes = %w{ id specimen_id taxon_name determination herbarium_code collectors_field_number collector collected
