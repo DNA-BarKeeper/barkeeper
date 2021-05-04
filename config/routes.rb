@@ -34,6 +34,10 @@ GBOLapp::Application.routes.draw do
     get :export_as_pde
   end
 
+  resources :individual_searches do
+    get :export_as_csv
+  end
+
   resources :ngs_runs do
     collection do
       post :revised_tpm
@@ -48,8 +52,6 @@ GBOLapp::Application.routes.draw do
   end
 
   resources :clusters
-
-  resources :individual_searches
 
   resources :herbaria
 

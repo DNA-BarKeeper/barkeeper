@@ -64,6 +64,12 @@ class IndividualSearchesController < ApplicationController
     end
   end
 
+  def export_as_csv
+    @individual_search = IndividualSearch.find(params[:individual_search_id])
+    file_name = @individual_search.title.empty? ? "specimen_search_#{@individual_search.created_at}" : @individual_search.title
+    send_data(@individual_search.to_csv, filename: "#{file_name}.csv", type: 'application/csv')
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

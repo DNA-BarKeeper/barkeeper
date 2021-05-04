@@ -15,6 +15,22 @@ class IndividualSearch < ApplicationRecord
     @individuals ||= find_individuals
   end
 
+  def to_csv
+    header = %w{ Database_ID specimen_id taxon_name determination herbarium collectors_field_number collector collection_date
+state_province country latitude longitude elevation exposition locality habitat comments }
+
+    attributes = %w{ id specimen_id taxon_name determination herbarium_code collectors_field_number collector collected
+state_province country latitude longitude elevation exposition locality habitat comments }
+
+    CSV.generate(headers: true) do |csv|
+      csv << header.map { |entry| entry.humanize }
+
+      individuals.includes(:taxon).each do |individual|
+        csv << attributes.map{ |attr| individual.send(attr) }
+      end
+    end
+  end
+
   private
 
   def find_individuals
