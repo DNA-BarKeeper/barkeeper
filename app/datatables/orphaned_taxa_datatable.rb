@@ -25,7 +25,7 @@ class OrphanedTaxaDatatable
   def data
     orphans.map do |orphan|
       [
-        link_to(orphan.scientific_name, taxon_path(orphan)),
+        link_to(orphan.scientific_name, edit_taxon_path(orphan)),
         orphan.synonym,
         orphan.common_name,
         orphan.human_taxonomic_rank,
