@@ -14,31 +14,12 @@ class IndividualsController < ApplicationController
     end
   end
 
-  def create_xls
-    SpecimenExport.perform_async(current_project_id)
-    redirect_to individuals_path, notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Specimens index page > 'Download last specimens export'."
-  end
+  def export_as_csv
+    authorize! :export_as_csv, :individual
 
-  def xls
-    require 'open-uri'
-
-    export = SpecimenExporter.last.specimen_export
-
-    if export.attached?
-      begin
-        send_data(export.blob.download, filename: 'specimens_export.xls',
-                  type: 'application/vnd.ms-excel',
-                  disposition: 'attachment',
-                  stream: 'true',
-                  buffer_size: '4096')
-      rescue OpenURI::HTTPError # Specimen XLS could not be found on server
-        redirect_to individuals_path,
-                    alert: 'The specimens XLS file could not be opened. Please try to export it again or contact an administrator if the issue persists.'
-      end
-    else
-      redirect_to individuals_path,
-                  notice: 'Please wait while the file is being written to the server.'
-    end
+    send_data(Individual.to_csv(current_project_id),
+              filename: "specimen_project_#{Project.find(current_project_id).name}.csv",
+              type: 'application/csv')
   end
 
   def problematic_specimens
@@ -117,33 +98,11 @@ class IndividualsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def individual_params
-    params.require(:individual).permit(:specimen_id,
-                                       :DNA_bank_id,
-                                       :collector,
-                                       :specimen_id,
-                                       :herbarium_code,
-                                       :herbarium_id,
-                                       :country,
-                                       :state_province,
-                                       :locality,
-                                       :latitude,
-                                       :longitude,
-                                       :latitude_original,
-                                       :longitude_original,
-                                       :elevation,
-                                       :exposition,
-                                       :habitat,
-                                       :substrate,
-                                       :life_form,
-                                       :collectors_field_number,
-                                       :collected,
-                                       :determination,
-                                       :revision,
-                                       :confirmation,
-                                       :comments,
-                                       :taxon_id,
-                                       :taxon_name,
-                                       :tissue_id,
+    params.require(:individual).permit(:specimen_id, :DNA_bank_id, :collector, :specimen_id, :herbarium_code,
+                                       :herbarium_id, :country, :state_province, :locality, :latitude, :longitude,
+                                       :latitude_original, :longitude_original, :elevation, :exposition, :habitat,
+                                       :substrate, :life_form, :collectors_field_number, :collected, :determination,
+                                       :revision, :confirmation, :comments, :taxon_id, :taxon_name, :tissue_id,
                                        project_ids: [])
   end
 end

@@ -43,6 +43,14 @@ class TaxaController < ApplicationController
     end
   end
 
+  def export_as_csv
+    authorize! :export_as_csv, :taxon
+
+    send_data(Taxon.to_csv(current_project_id),
+              filename: "taxa_project_#{Project.find(current_project_id).name}.csv",
+              type: 'application/csv')
+  end
+
   def show; end
 
   def new

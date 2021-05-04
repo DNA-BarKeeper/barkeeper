@@ -88,6 +88,7 @@ GBOLapp::Application.routes.draw do
     collection do
       get :filter
       get :problematic_specimens
+      get :export_as_csv
       get :create_xls
       get :xls
     end
@@ -130,14 +131,15 @@ GBOLapp::Application.routes.draw do
 
   resources :taxa do
     member do
-      get 'show_individuals'
-      get 'associated_specimen'
+      get :show_individuals
+      get :associated_specimen
     end
 
     collection do
       get :filter
-      get 'taxonomy_tree', defaults: { format: 'json' }
-      get 'find_ancestry', defaults: { format: 'text' }
+      get :taxonomy_tree, defaults: { format: 'json' }
+      get :find_ancestry, defaults: { format: 'text' }
+      get :export_as_csv
     end
   end
 
@@ -158,10 +160,6 @@ GBOLapp::Application.routes.draw do
       get 'show_individuals'
     end
   end
-
-  resources :primer_pos_on_genomes
-
-  resources :alignments
 
   resources :projects do
     collection do
@@ -186,8 +184,6 @@ GBOLapp::Application.routes.draw do
   resources :orders
 
   resources :tissues
-
-  resources :statuses
 
   resources :primers do
     collection do

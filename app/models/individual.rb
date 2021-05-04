@@ -17,20 +17,25 @@ class Individual < ApplicationRecord
 
   scope :without_taxon, -> { where(taxon: nil) }
   scope :without_isolates, -> { left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
-  scope :no_species_isolates, -> { without_species.left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
+  scope :no_species_isolates, -> { without_taxon.left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
   scope :bad_longitude, -> { where(longitude: nil).where.not(longitude_original: [nil, ''])
                                  .where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]+\.*[0-9]*') }
   scope :bad_latitude, -> { where(latitude: nil).where.not(latitude_original: [nil, ''])
                                 .where('individuals.latitude_original NOT SIMILAR TO ?', '[0-9]+\.*[0-9]+') }
   scope :bad_location, -> { bad_latitude.or(Individual.bad_longitude) }
 
-  # TODO: Seems unused, replace by new progress CSV / XML export
-  def self.to_csv(options = {})
-    # Change to_csv block to list attributes/values individually
-    CSV.generate(options) do |csv|
-      csv << column_names
-      all.each do |individual|
-        csv << individual.attributes.values_at(*column_names)
+  def self.to_csv(project_id)
+    header = %w{ database_id specimen_id taxon_name determination herbarium collectors_field_number collector collection_date
+state_province country latitude longitude elevation exposition locality habitat comments }
+
+    attributes = %w{ id specimen_id taxon_name determination herbarium_code collectors_field_number collector collected
+state_province country latitude longitude elevation exposition locality habitat comments }
+
+    CSV.generate(headers: true) do |csv|
+      csv << header.map { |entry| entry.humanize }
+
+      in_project(project_id).includes(:taxon).each do |individual|
+        csv << attributes.map{ |attr| individual.send(attr) }
       end
     end
   end
