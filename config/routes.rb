@@ -89,8 +89,6 @@ GBOLapp::Application.routes.draw do
       get :filter
       get :problematic_specimens
       get :export_as_csv
-      get :create_xls
-      get :xls
     end
   end
 
@@ -150,8 +148,6 @@ GBOLapp::Application.routes.draw do
       get :get_mar
       get :get_bry
       get :get_ant
-      get :create_xls
-      get :xls
       post :import_stuttgart
       post :import_berlin
       post :import_gbolii

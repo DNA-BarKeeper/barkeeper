@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_03_124346) do
+ActiveRecord::Schema.define(version: 2021_05_04_125603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -756,24 +756,6 @@ ActiveRecord::Schema.define(version: 2021_05_03_124346) do
     t.string "synonym", limit: 255
     t.string "composed_name", limit: 255
     t.string "species_component"
-  end
-
-  create_table "species_exporters", id: :serial, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "species_export_file_name"
-    t.string "species_export_content_type"
-    t.integer "species_export_file_size"
-    t.datetime "species_export_updated_at"
-  end
-
-  create_table "specimen_exporters", id: :serial, force: :cascade do |t|
-    t.string "specimen_export_file_name"
-    t.string "specimen_export_content_type"
-    t.integer "specimen_export_file_size"
-    t.datetime "specimen_export_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "subdivisions", id: :serial, force: :cascade do |t|
