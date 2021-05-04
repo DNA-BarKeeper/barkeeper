@@ -42,7 +42,7 @@
             <div class="col-lg-12 sidebar-element">
               <div class="sidebar-hl">Manual</div>
               <p>This tree shows all taxa in your currently selected project that are descendants of the shown main root node.
-                <br>Orphaned taxa (those without a specified parent taxon) are listed on the page <%= link_to '"Orphaned taxon entries"', orphans_taxa_path %>.</p>
+                <br>Orphaned taxa (those without a specified parent taxon) are listed on the page <b><%= link_to 'Orphaned taxon entries', orphans_taxa_path %></b>.</p>
               <p>
                 Filled grey circles can expand child taxa when clicked.
               </p>
@@ -82,7 +82,8 @@
           <div class="row">
             <div class="col-lg-12 sidebar-element">
               <div class="sidebar-hl">Downloads</div>
-              <p>Download a CSV table containing information about all taxa in your currently selected projects.</p>
+              <p>Download a CSV table containing information about <b>all</b> taxa in your currently selected project
+                (the content does <b>not</b> reflect the taxonomy shown on this page).</p>
 
               <%= link_to export_as_csv_taxa_path, class: 'btn btn-default' do %>
                 <span class="glyphicon glyphicon-download-alt"></span>
