@@ -9,7 +9,7 @@ jQuery(function() {
                 marker_id: $('#progress_diagram_marker_select option:selected').val()
             },
             success: function (data) {
-                deleteVisualization();
+                deleteVisualization('#progress_tree');
                 drawProgressTree(data[0]);
             },
             error: function (_result) {
@@ -44,11 +44,6 @@ function changeDownloadButtonStatus() {
     else {
         enableButton(button);
     }
-}
-
-// Delete previous progress diagram
-function deleteVisualization() {
-    d3.select("#progress_tree").selectAll("svg").remove();
 }
 
 // Main function to draw and set up the visualization, once we have the data.

@@ -8,34 +8,13 @@
         <div class="col-lg-2">
           <div class="row">
             <div class="col-lg-12 sidebar-element">
-              <div class="sidebar-hl">Taxon</div>
-
-              <div id='taxon_info'></div>
-
-              <%= link_to new_taxon_path, class: 'btn btn-default', target: "_blank", title: 'Create a new taxon entry' do %>
-                <span class="glyphicon glyphicon-unchecked"></span>
-              <% end %>
-
-              <%= link_to edit_taxon_path(0), class: 'btn btn-default', id: 'edit_taxon', target: "_blank" do %>
-                <span class="glyphicon glyphicon-edit"></span>
-              <% end %>
-
-              <%= link_to taxon_path(0), method: :delete, class: 'btn btn-default', id: 'delete_taxon', data: { confirm: 'Are you sure?' } do %>
-                <span class="glyphicon glyphicon-trash"></span>
-              <% end %>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-12 sidebar-element">
-              <div class="sidebar-hl">Associated specimen</div>
-              <div id='specimen_list'>
-                <p>Please select a taxon.</p>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-12 sidebar-element">
               <div class="sidebar-hl">Tree Navigation</div>
+
+              <p>
+                Select a root taxon to show a phylogenetic tree of all its descendants.
+                <%= select_tag('Root taxon', options_from_collection_for_select(Taxon.orphans.order(:taxonomic_rank).in_project(current_project_id), 'id', 'scientific_name'),
+                             prompt: "Select a taxon", class: 'form-control root_select', id: 'taxonomy_root_select') %>
+              </p>
 
               <button id='center_root' class="btn btn-default" title="Center root node">
                 <span class="glyphicon glyphicon-screenshot"></span>
@@ -62,6 +41,8 @@
           <div class="row">
             <div class="col-lg-12 sidebar-element">
               <div class="sidebar-hl">Manual</div>
+              <p>This tree shows all taxa in your currently selected project that are descendants of the shown main root node.
+                <br>Orphaned taxa (those without a specified parent taxon) are listed on the page <%= link_to '"Orphaned taxon entries"', orphans_taxa_path %>.</p>
               <p>
                 Filled grey circles can expand child taxa when clicked.
               </p>
@@ -69,6 +50,33 @@
                 Clicking on a taxon's name will display some information about it in the 'Taxon' section of this page.
               </p>
               <p>To see the all available information about a taxon or to edit it, click on the according button in the 'Taxon' section. A new tab will open.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Taxon</div>
+
+              <div id='taxon_info'></div>
+
+              <%= link_to new_taxon_path, class: 'btn btn-default', target: "_blank", title: 'Create a new taxon entry' do %>
+                <span class="glyphicon glyphicon-unchecked"></span>
+              <% end %>
+
+              <%= link_to edit_taxon_path(0), class: 'btn btn-default', id: 'edit_taxon', target: "_blank" do %>
+                <span class="glyphicon glyphicon-edit"></span>
+              <% end %>
+
+              <%= link_to taxon_path(0), method: :delete, class: 'btn btn-default', id: 'delete_taxon', data: { confirm: 'Are you sure?' } do %>
+                <span class="glyphicon glyphicon-trash"></span>
+              <% end %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Associated specimen</div>
+              <div id='specimen_list'>
+                <p>Please select a taxon.</p>
+              </div>
             </div>
           </div>
           <div class="row">

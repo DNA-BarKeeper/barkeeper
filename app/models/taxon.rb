@@ -13,11 +13,14 @@ class Taxon < ApplicationRecord
   after_save :update_descendants_counter_cache
   after_destroy :update_descendants_counter_cache
 
+  scope :orphans, -> { where(ancestry_depth: 0) }
+
   enum taxonomic_rank: %i[is_unranked is_division is_subdivision is_class is_order is_family is_genus is_species is_subspecies]
 
-  def self.subtree_json(parent_id=nil)
+  def self.subtree_json(project_id, parent_id=nil, root_id=nil)
     if parent_id
-      Taxon.find(parent_id).children.order(:position, :scientific_name).arrange_serializable do |parent, children|
+      Taxon.find(parent_id).children.order(:position, :scientific_name)
+           .in_project(project_id).arrange_serializable do |parent, children|
         { id: parent.id,
           scientific_name: parent.scientific_name,
           taxonomic_rank: parent.human_taxonomic_rank,
@@ -29,7 +32,8 @@ class Taxon < ApplicationRecord
           children: children}
       end.to_json
     else
-      Taxon.roots.where(taxonomic_rank: :is_unranked).first.subtree.to_depth(1).order(:position, :scientific_name).arrange_serializable do |parent, children|
+      Taxon.find(root_id).subtree.to_depth(1).order(:position, :scientific_name)
+           .in_project(project_id).arrange_serializable do |parent, children|
         { id: parent.id,
           scientific_name: parent.scientific_name,
           taxonomic_rank: parent.human_taxonomic_rank,
