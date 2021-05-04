@@ -1,18 +1,25 @@
 jQuery(function() {
     if (document.getElementById("taxonomy_tree") != null) {
-        $.ajax({
+        initialize_buttons();
+
+        $("#taxonomy_root_select").on("change", () => $.ajax({
             type: "GET",
             contentType: "application/json; charset=utf-8",
             url: 'taxa/taxonomy_tree',
             dataType: 'json',
-            processData: false,
+            data: {
+                root_id: $('#taxonomy_root_select option:selected').val()
+            },
             success: function (data) {
+                remove_selected_taxon_info();
+                deleteVisualization('#taxonomy_tree');
+
                 drawTaxonomy(data[0]);
             },
             error: function (_result) {
                 console.error("Error getting data.");
             }
-        });
+        }));
     }
 
     $('#taxon_parent_name').autocomplete({
@@ -25,7 +32,33 @@ jQuery(function() {
 
     $('#taxon_search').autocomplete({
         source: $('#taxon_search').data('autocomplete-source')});
+
+    $('#orphans').DataTable({
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#orphans').data('source'),
+        "columnDefs": [
+            { "orderable": false, "targets": 5 }
+        ],
+        "order": [ 0, 'asc' ]
+    });
 });
+
+function initialize_buttons() {
+    disableButton($("#center_root"), "Please load a taxonomy first");
+    disableButton($("#reset_tree_pos"), "Please load a taxonomy first");
+
+    disableButton($("#center_selected_node"), "Please select a taxon first");
+
+    disableButton($("#edit_taxon"), "Please select a taxon first");
+    disableButton($("#delete_taxon"), "Please select a taxon first");
+}
+
+function remove_selected_taxon_info() {
+    d3.select('#taxon_info').selectAll("p").remove();
+    d3.select('#specimen_list').html('');
+    d3.select('#specimen_list').append('p').text('Please select a taxon.');
+}
 
 // Main function to draw and set up the visualization, once we have the data.
 function drawTaxonomy(data) {
@@ -37,6 +70,8 @@ function drawTaxonomy(data) {
         margin = { left: 50, top: 10, bottom: 10, right: 50 },
         nodeRadius = 10,
         scale = 1;
+
+    var selected_node = null;
 
     // Append the SVG object to the parent div
     var svg = d3.select('#taxonomy_tree')
@@ -82,13 +117,8 @@ function drawTaxonomy(data) {
 
     centerNode(root);
 
-    // Setup buttons
-    disableButton($("#edit_taxon"), "Please select a taxon first");
-    disableButton($("#delete_taxon"), "Please select a taxon first");
-
-    // Setup buttons
-    disableButton($("#center_selected_node"), "Please select a taxon first");
-    var selected_node = null;
+    enableButton($("#center_root"), "Center root node");
+    enableButton($("#reset_tree_pos"), "Align tree to top left");
 
     // Button to reset zoom and reset tree to top left
     d3.select("#reset_tree_pos")
@@ -105,7 +135,9 @@ function drawTaxonomy(data) {
     // Button to reset zoom and center root node
     d3.select("#center_selected_node")
         .on("click", function() {
-            centerNode(selected_node);
+            if (selected_node !== null) {
+                centerNode(selected_node);
+            }
         });
 
     d3.select('#start_search')
@@ -476,8 +508,6 @@ function drawTaxonomy(data) {
                    }
                 }
             });
-
-
         }
     }
 }

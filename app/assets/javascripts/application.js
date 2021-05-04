@@ -37,3 +37,8 @@ function disableButton(button, message) {
     button.attr('disabled', 'disabled');
     button.attr('title', message);
 }
+
+// Delete previous diagram
+function deleteVisualization(id) {
+    d3.select(id).selectAll("svg").remove();
+}

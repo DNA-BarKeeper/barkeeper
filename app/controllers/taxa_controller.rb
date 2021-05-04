@@ -5,7 +5,6 @@ class TaxaController < ApplicationController
 
   before_action :set_taxon, only: %i[show edit update destroy associated_specimen]
 
-  # returns taxonomic hierarchy as JSON
   def index
     @taxa = Taxon.order(:taxonomic_rank, :scientific_name).in_project(current_project_id)
   end
@@ -13,7 +12,8 @@ class TaxaController < ApplicationController
   # returns hierarchy of taxa as JSON
   def taxonomy_tree
     parent_id = params[:parent_id]
-    render json: Taxon.subtree_json(parent_id)
+    root_id = params[:root_id]
+    render json: Taxon.subtree_json(current_project_id, parent_id, root_id)
   end
 
   def associated_specimen
@@ -49,6 +49,13 @@ class TaxaController < ApplicationController
     send_data(Taxon.to_csv(current_project_id),
               filename: "taxa_project_#{Project.find(current_project_id).name}.csv",
               type: 'application/csv')
+  end
+
+  def orphans
+    respond_to do |format|
+      format.html
+      format.json { render json: OrphanedTaxaDatatable.new(view_context, current_project_id) }
+    end
   end
 
   def show; end

@@ -140,6 +140,7 @@ GBOLapp::Application.routes.draw do
       get :taxonomy_tree, defaults: { format: 'json' }
       get :find_ancestry, defaults: { format: 'text' }
       get :export_as_csv
+      get :orphans
     end
   end
 

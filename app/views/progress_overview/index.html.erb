@@ -10,7 +10,7 @@
           <div class="row">
             <div class="col-lg-12 sidebar-element">
               <div class="sidebar-hl">Marker</div>
-              Select a marker to show a phylogenetic diagram visualizing the completion status of all families for this marker.<br>
+              <p>Select a marker to show a phylogenetic diagram visualizing the completion status of all families for this marker.</p>
               <%= select_tag('Marker', options_from_collection_for_select(Marker.in_project(current_project_id).order(:name), 'id', 'name'),
                              prompt: "Select a Marker", class: 'form-control', id: 'progress_diagram_marker_select') %>
             </div>
