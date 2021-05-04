@@ -23,16 +23,22 @@
 
         <tbody>
         </tbody>
-
       </table></div>
-
   </div>
-
 </div>
+
+<% if user_signed_in? %>
+  <p>
+    <%= link_to export_as_csv_individuals_path, class: 'btn btn-default' do %>
+      <span class="glyphicon glyphicon-download-alt"></span>
+    <% end %>
+    Download a CSV table containing information about all specimen in your currently selected projects
+  </p>
+<%end %>
+
 <p>
-  <% if user_signed_in? %>
-      <%= link_to 'Export specimens to xls…', create_xls_individuals_path, :class => 'btn btn-default' %>
-      <%= link_to 'Download last specimens export', xls_individuals_path, :class => 'btn btn-default' %>
-  <%end %>
+  <%= link_to new_individual_path, class: 'btn btn-default', target: "_blank", title: 'Create a new specimen entry' do %>
+    <span class="glyphicon glyphicon-unchecked"></span>
+  <% end %>
+  Create a new specimen entry
 </p>
-<%= link_to 'New Specimen', new_individual_path %>

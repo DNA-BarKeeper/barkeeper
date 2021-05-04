@@ -59,6 +59,19 @@ class Taxon < ApplicationRecord
     Taxon.find_by_sci_name_or_synonym(taxon_name).try(:ancestry)
   end
 
+  def self.to_csv(project_id)
+    header = %w{ ID scientific_name synonym common_name taxonomic_rank author comment Parent_ID }
+    attributes = %w{ id scientific_name synonym common_name human_taxonomic_rank author comment parent_id }
+
+    CSV.generate(headers: true) do |csv|
+      csv << header.map { |entry| entry.humanize }
+
+      in_project(project_id).each do |taxon|
+        csv << attributes.map{ |attr| taxon.send(attr) }
+      end
+    end
+  end
+
   def update_descendants_counter_cache
     self.update_column(:descendants_count, self.descendants.where(taxonomic_rank: [:is_species, :is_subspecies]).size) if Taxon.exists?(id)
   end
