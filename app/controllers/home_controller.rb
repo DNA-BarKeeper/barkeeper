@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class HomeController < ApplicationController
-  def overview
-    authorize! :overview, :home
+  def progress
+    authorize! :progress, :home
   end
 
   def about

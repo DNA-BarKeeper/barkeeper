@@ -64,6 +64,12 @@ class IndividualSearchesController < ApplicationController
     end
   end
 
+  def export_as_csv
+    @individual_search = IndividualSearch.find(params[:individual_search_id])
+    file_name = @individual_search.title.empty? ? "specimen_search_#{@individual_search.created_at}" : @individual_search.title
+    send_data(@individual_search.to_csv, filename: "#{file_name}.csv", type: 'application/csv')
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -73,7 +79,7 @@ class IndividualSearchesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def individual_search_params
-    params.require(:individual_search).permit(:title, :DNA_bank_id, :family, :has_issue, :has_problematic_location,
-                                              :has_species, :order, :species, :specimen_id, :herbarium)
+    params.require(:individual_search).permit(:title, :DNA_bank_id, :has_issue, :has_problematic_location,
+                                              :has_taxon, :taxon, :specimen_id, :herbarium)
   end
 end

@@ -32,19 +32,21 @@ class Ability
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
     # Permissions for every user, even if not logged in
-    can %i[edit index filter change_via_script compare_contigs as_fasq], Contig
+    can %i[about progress impressum privacy_policy], :home
+    can :manage, :progress_overview
+    can %i[edit index filter taxonomy_tree associated_specimen find_ancestry show_individuals], Taxon
+    can %i[edit index filter], Individual
+    can %i[edit index], Herbarium
+    can %i[edit index filter show_individuals xls], Species
     can %i[edit index filter show_species], Family
+    can %i[edit index filter], Order
     can %i[edit index show_species], HigherOrderTaxon
-    can %i[about overview impressum privacy_policy], :home
-    can %i[edit index filter xls], Individual
+    can %i[edit index filter change_via_script compare_contigs as_fasq], Contig
     can %i[edit index filter], Isolate
     can [:filter], MarkerSequence
-    can %i[edit index filter], Order
     can :manage, PartialCon
     can %i[edit index], PrimerRead
-    can %i[edit index filter show_individuals xls], Species
     can :manage, TxtUploader
-    can :manage, :overview_diagram
     can :download_results, MislabelAnalysis
     can [:import, :revised_tpm], NgsRun
 

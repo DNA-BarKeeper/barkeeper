@@ -90,7 +90,7 @@ class NgsRunsController < ApplicationController
     end
   end
 
-  def  submit_analysis_request
+  def submit_analysis_request
     @ngs_run.submit_request(current_user, edit_ngs_run_url(@ngs_run))
     redirect_to ngs_runs_path, notice: 'Request for analysis successfully submitted. An admin is informed. Please check in later to see results.'
   end
@@ -147,6 +147,6 @@ class NgsRunsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def ngs_run_params
     params.require(:ngs_run).permit(:name, :analysis_requested, :analysis_started, :comment, :primer_mismatches, :quality_threshold, :tag_mismatches, :fastq_location,
-                                    :set_tag_map, :higher_order_taxon_id, :delete_set_tag_map, :results)
+                                    :set_tag_map, :taxon_id, :delete_set_tag_map, :results)
   end
 end
