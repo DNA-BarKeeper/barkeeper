@@ -141,6 +141,7 @@ GBOLapp::Application.routes.draw do
       get :find_ancestry, defaults: { format: 'text' }
       get :export_as_csv
       get :orphans
+      post :import_csv
     end
   end
 

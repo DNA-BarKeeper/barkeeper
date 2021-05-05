@@ -58,6 +58,12 @@ class TaxaController < ApplicationController
     end
   end
 
+  def import_csv
+    file = params[:file]
+    cnt = Taxon.import_from_csv(file, current_project_id)
+    redirect_to taxa_path, notice: "Successfully imported or updated #{cnt} taxon entries."
+  end
+
   def show; end
 
   def new
