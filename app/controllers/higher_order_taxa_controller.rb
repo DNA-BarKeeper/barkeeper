@@ -7,7 +7,6 @@ class HigherOrderTaxaController < ApplicationController
 
   before_action :set_higher_order_taxon, only: %i[show edit update destroy]
 
-
   def index
     @higher_order_taxa = HigherOrderTaxon.order(:position).in_project(current_project_id)
   end

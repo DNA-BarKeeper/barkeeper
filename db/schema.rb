@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_14_112537) do
+ActiveRecord::Schema.define(version: 2021_05_04_125603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -96,10 +96,8 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
   end
 
   create_table "contig_searches", id: :serial, force: :cascade do |t|
-    t.string "species"
-    t.string "order"
+    t.string "taxon"
     t.string "specimen"
-    t.string "family"
     t.string "verified"
     t.string "marker"
     t.string "name"
@@ -244,16 +242,25 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
     t.integer "project_id"
   end
 
+  create_table "homes", force: :cascade do |t|
+    t.string "title"
+    t.string "subtitle"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "active"
+    t.bigint "main_logo_id"
+    t.index ["main_logo_id"], name: "index_homes_on_main_logo_id"
+  end
+
   create_table "individual_searches", id: :serial, force: :cascade do |t|
     t.string "title"
-    t.integer "has_species"
+    t.integer "has_taxon"
     t.integer "has_problematic_location"
     t.integer "has_issue"
     t.string "specimen_id"
     t.string "DNA_bank_id"
-    t.string "species"
-    t.string "family"
-    t.string "order"
+    t.string "taxon"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "project_id"
@@ -294,7 +301,9 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
     t.boolean "has_issue"
     t.integer "herbarium_id"
     t.integer "tissue_id"
+    t.bigint "taxon_id"
     t.index ["herbarium_id"], name: "index_individuals_on_herbarium_id"
+    t.index ["taxon_id"], name: "index_individuals_on_taxon_id"
     t.index ["tissue_id"], name: "index_individuals_on_tissue_id"
   end
 
@@ -380,23 +389,29 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
     t.integer "project_id"
   end
 
+  create_table "logos", force: :cascade do |t|
+    t.string "title"
+    t.string "url"
+    t.boolean "main", default: true
+    t.bigint "home_id"
+    t.boolean "display", default: true
+    t.index ["home_id"], name: "index_logos_on_home_id"
+  end
+
   create_table "marker_sequence_searches", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "verified"
-    t.string "species"
-    t.string "order"
+    t.string "taxon"
     t.string "specimen"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.string "title"
-    t.string "family"
     t.string "marker"
     t.integer "min_length"
     t.integer "max_length"
     t.integer "project_id"
-    t.boolean "has_species"
-    t.string "higher_order_taxon"
+    t.boolean "has_taxon"
     t.integer "has_warnings"
     t.date "min_age"
     t.date "max_age"
@@ -537,8 +552,10 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
     t.string "fastq_location"
     t.boolean "analysis_requested", default: false
     t.boolean "analysis_started", default: false
+    t.bigint "taxon_id"
     t.index ["higher_order_taxon_id"], name: "index_ngs_runs_on_higher_order_taxon_id"
     t.index ["isolate_id"], name: "index_ngs_runs_on_isolate_id"
+    t.index ["taxon_id"], name: "index_ngs_runs_on_taxon_id"
   end
 
   create_table "ngs_runs_projects", id: false, force: :cascade do |t|
@@ -598,17 +615,6 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
     t.integer "plant_plate_id", null: false
     t.integer "project_id", null: false
     t.index ["plant_plate_id", "project_id"], name: "index_plant_plates_projects_on_plant_plate_id_and_project_id"
-  end
-
-  create_table "primer_pos_on_genomes", id: :serial, force: :cascade do |t|
-    t.text "note"
-    t.integer "position"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "primer_id"
-    t.integer "species_id"
-    t.index ["primer_id"], name: "index_primer_pos_on_genomes_on_primer_id"
-    t.index ["species_id"], name: "index_primer_pos_on_genomes_on_species_id"
   end
 
   create_table "primer_reads", id: :serial, force: :cascade do |t|
@@ -704,6 +710,12 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
     t.index ["project_id", "tag_primer_map_id"], name: "index_projects_tag_primer_maps"
   end
 
+  create_table "projects_taxa", id: false, force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "taxon_id", null: false
+    t.index ["project_id", "taxon_id"], name: "index_projects_taxa_on_project_id_and_taxon_id"
+  end
+
   create_table "projects_users", id: false, force: :cascade do |t|
     t.integer "project_id"
     t.integer "user_id"
@@ -746,24 +758,6 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
     t.string "species_component"
   end
 
-  create_table "species_exporters", id: :serial, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "species_export_file_name"
-    t.string "species_export_content_type"
-    t.integer "species_export_file_size"
-    t.datetime "species_export_updated_at"
-  end
-
-  create_table "specimen_exporters", id: :serial, force: :cascade do |t|
-    t.string "specimen_export_file_name"
-    t.string "specimen_export_content_type"
-    t.integer "specimen_export_file_size"
-    t.datetime "specimen_export_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "subdivisions", id: :serial, force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -785,6 +779,23 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
     t.string "name"
     t.string "tag"
     t.index ["ngs_run_id"], name: "index_tag_primer_maps_on_ngs_run_id"
+  end
+
+  create_table "taxa", force: :cascade do |t|
+    t.string "scientific_name"
+    t.string "common_name"
+    t.string "position"
+    t.string "synonym"
+    t.string "author"
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "ancestry"
+    t.integer "taxonomic_rank"
+    t.integer "ancestry_depth", default: 0
+    t.integer "children_count", default: 0
+    t.integer "descendants_count", default: 0
+    t.index ["ancestry"], name: "index_taxa_on_ancestry"
   end
 
   create_table "taxonomic_classes", id: :serial, force: :cascade do |t|
@@ -833,9 +844,11 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "contig_searches", "projects"
+  add_foreign_key "homes", "logos", column: "main_logo_id"
   add_foreign_key "individual_searches", "projects"
   add_foreign_key "individual_searches", "users"
   add_foreign_key "individuals", "herbaria"
+  add_foreign_key "individuals", "taxa"
   add_foreign_key "individuals", "tissues"
   add_foreign_key "lab_racks", "shelves"
   add_foreign_key "marker_sequence_searches", "mislabel_analyses"
@@ -843,9 +856,8 @@ ActiveRecord::Schema.define(version: 2020_10_14_112537) do
   add_foreign_key "mislabel_analyses", "markers"
   add_foreign_key "mislabels", "marker_sequences"
   add_foreign_key "ngs_runs", "higher_order_taxa"
+  add_foreign_key "ngs_runs", "taxa"
   add_foreign_key "plant_plates", "lab_racks"
-  add_foreign_key "primer_pos_on_genomes", "primers"
-  add_foreign_key "primer_pos_on_genomes", "species"
   add_foreign_key "shelves", "freezers"
   add_foreign_key "subdivisions", "divisions"
 end

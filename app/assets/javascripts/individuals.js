@@ -14,8 +14,8 @@ jQuery(function() {
         no_results_text: 'No results matched'
     });
 
-    $('#individual_species_name').autocomplete({
-        source: $('#individual_species_name').data('autocomplete-source')
+    $('#individual_taxon_name').autocomplete({
+        source: $('#individual_taxon_name').data('autocomplete-source')
     });
 
     $('#individual_collected').datepicker({

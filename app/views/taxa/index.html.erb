@@ -1,0 +1,112 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Taxonomy</h3>
+  </div>
+  <div class="panel-body" id="main">
+    <div class="container" style="width: 100%">
+      <div class="row">
+        <div class="col-lg-2">
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Tree Navigation</div>
+
+              <p>
+                Select a root taxon to show a phylogenetic tree of all its descendants.
+                <%= select_tag('Root taxon', options_from_collection_for_select(Taxon.orphans.order(:taxonomic_rank).in_project(current_project_id), 'id', 'scientific_name'),
+                             prompt: "Select a taxon", class: 'form-control root_select', id: 'taxonomy_root_select') %>
+              </p>
+
+              <button id='center_root' class="btn btn-default" title="Center root node">
+                <span class="glyphicon glyphicon-screenshot"></span>
+              </button>
+
+              <button id='reset_tree_pos' class="btn btn-default" title="Align tree to top left">
+                <span class="glyphicon glyphicon-triangle-left"></span>
+              </button>
+
+              <button id='center_selected_node' class="btn btn-default">
+                <span class="glyphicon glyphicon-map-marker"></span>
+              </button>
+
+              <div class="input-group search-taxonomy">
+                <%= text_field :taxon, :search, data: { autocomplete_source: filter_taxa_path } , class: 'form-control'%>
+                <span class="input-group-btn">
+                  <button id='start_search' class="btn btn-default" title="Find this taxon in the tree">
+                    <span class="glyphicon glyphicon-search"></span>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Manual</div>
+              <p>This tree shows all taxa in your currently selected project that are descendants of the shown main root node.
+                <br>Orphaned taxa (those without a specified parent taxon) are listed on the page <b><%= link_to 'Orphaned taxon entries', orphans_taxa_path %></b>.</p>
+              <p>
+                Filled grey circles can expand child taxa when clicked.
+              </p>
+              <p>
+                Clicking on a taxon's name will display some information about it in the 'Taxon' section of this page.
+              </p>
+              <p>To see the all available information about a taxon or to edit it, click on the according button in the 'Taxon' section. A new tab will open.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Taxon</div>
+
+              <div id='taxon_info'></div>
+
+              <%= link_to new_taxon_path, class: 'btn btn-default', target: "_blank", title: 'Create a new taxon entry' do %>
+                <span class="glyphicon glyphicon-unchecked"></span>
+              <% end %>
+
+              <%= link_to edit_taxon_path(0), class: 'btn btn-default', id: 'edit_taxon', target: "_blank" do %>
+                <span class="glyphicon glyphicon-edit"></span>
+              <% end %>
+
+              <%= link_to taxon_path(0), method: :delete, class: 'btn btn-default', id: 'delete_taxon', data: { confirm: 'Are you sure?' } do %>
+                <span class="glyphicon glyphicon-trash"></span>
+              <% end %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Associated specimen</div>
+              <div id='specimen_list'>
+                <p>Please select a taxon.</p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Import & Export</div>
+              <p>Import data from a CSV file. You can use this to add new taxa or update existing ones. If no taxonomic rank is specified for a new entry it will be "unranked".</p>
+              <p>To specify a parent taxon you can either give the name of the next higher taxon or, if you know it, its ID in this database (as found in the URL).</p>
+              <p>If the specified parent cannot be found in the database, no parent will be added and the taxon will appear as an "orphaned" entry.</p>
+              <p>Please use this template: <%= link_to 'Taxon Import Template', "templates/taxon_upload_template.csv" %></p>
+
+              <%= form_tag import_csv_taxa_url, multipart: true do %>
+                <p><%= file_field_tag :file %></p>
+                <%= button_tag(class: 'btn btn-default') do %>
+                  <span class="glyphicon glyphicon-import"></span>
+                <% end %>
+              <% end %>
+
+              <p>Download a CSV table containing information about <b>all</b> taxa in your currently selected project
+                (the content does <b>not</b> reflect the taxonomy shown on this page).</p>
+
+              <%= link_to export_as_csv_taxa_path, class: 'btn btn-default' do %>
+                <span class="glyphicon glyphicon-export"></span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-10 visualization-container">
+          <div id='taxonomy_tree' class='visualization'></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

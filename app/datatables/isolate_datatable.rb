@@ -32,8 +32,8 @@ class IsolateDatatable
       lab_isolation_nr = ''
       lab_isolation_nr = link_to isolate.lab_isolation_nr, edit_isolate_path(isolate) if isolate.lab_isolation_nr
 
-      species_name = ''
-      species_name = link_to isolate.individual.species.name_for_display, edit_species_path(isolate.individual.species) if isolate.individual&.species
+      taxon_name = ''
+      taxon_name = link_to isolate.individual.taxon.scientific_name, edit_taxon_path(isolate.individual.taxon) if isolate.individual&.taxon
 
       individual = ''
       if isolate.individual && !isolate.individual.specimen_id.nil?
@@ -43,7 +43,7 @@ class IsolateDatatable
       [
         dna_bank_id,
         lab_isolation_nr,
-        species_name,
+        taxon_name,
         individual,
         isolate.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
         link_to('Delete', isolate, method: :delete, data: { confirm: 'Are you sure?' })
@@ -58,15 +58,15 @@ class IsolateDatatable
   def fetch_isolates
     case @isolates_to_show
     when 'no_specimen'
-      isolates = Isolate.includes(individual: :species).where(individual: nil).where(negative_control: false).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      isolates = Isolate.includes(individual: :taxon).where(individual: nil).where(negative_control: false).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     when 'duplicates' # Either have duplicate DNA Bank Number or Lab Isolation Number
       names_with_multiple_db = Isolate.where.not(dna_bank_id: [nil, '']).group(:dna_bank_id).having('count(dna_bank_id) > 1').count.keys
       names_with_multiple_gbol = Isolate.where.not(lab_isolation_nr: [nil, '']).group(:lab_isolation_nr).having('count(lab_isolation_nr) > 1').count.keys
-      isolates = Isolate.includes(individual: :species).where(dna_bank_id: names_with_multiple_db)
-                        .or(Isolate.includes(individual: :species).where(lab_isolation_nr: names_with_multiple_gbol))
+      isolates = Isolate.includes(individual: :taxon).where(dna_bank_id: names_with_multiple_db)
+                        .or(Isolate.includes(individual: :taxon).where(lab_isolation_nr: names_with_multiple_gbol))
                         .order("#{sort_column} #{sort_direction}")
     else
-      isolates = Isolate.includes(individual: :species).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      isolates = Isolate.includes(individual: :taxon).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
     isolates = isolates.page(page).per_page(per_page)
@@ -74,9 +74,9 @@ class IsolateDatatable
     if params[:sSearch].present?
       isolates = isolates.where('isolates.dna_bank_id ILIKE :search
 OR isolates.lab_isolation_nr ILIKE :search
-OR species.composed_name ILIKE :search
+OR taxa.scientific_name ILIKE :search
 OR individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
-                         .references(individual: :species)
+                         .references(individual: :taxon)
     end
 
     isolates
@@ -91,7 +91,7 @@ OR individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
   end
 
   def sort_column
-    columns = %w[isolates.dna_bank_id isolates.lab_isolation_nr species.composed_name individuals.specimen_id isolates.updated_at]
+    columns = %w[isolates.dna_bank_id isolates.lab_isolation_nr taxa.scientific_name individuals.specimen_id isolates.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

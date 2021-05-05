@@ -26,21 +26,21 @@ class ContigSearchResultDatatable
   def data
     contigs_data.map do |contig|
       assembled = contig.assembled ? 'Yes' : 'No'
-      species_name = ''
-      species_id = 0
+      taxon_name = ''
+      taxon_id = 0
       individual_name = ''
       individual_id = 0
 
-      if contig.try(:isolate).try(:individual).try(:species)
-        species_name = contig.isolate.individual.species.name_for_display
-        species_id = contig.isolate.individual.species.id
+      if contig.try(:isolate).try(:individual).try(:taxon)
+        taxon_name = contig.isolate.individual.taxon.scientific_name
+        taxon_id = contig.isolate.individual.taxon.id
         individual_name = contig.isolate.individual.specimen_id
         individual_id = contig.isolate.individual.id
       end
 
       [
         link_to(contig.name, edit_contig_path(contig)),
-        link_to(species_name, edit_species_path(species_id)),
+        link_to(taxon_name, edit_taxon_path(taxon_id)),
         link_to(individual_name, edit_individual_path(individual_id)),
         assembled,
         contig.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
@@ -50,13 +50,13 @@ class ContigSearchResultDatatable
   end
 
   def contigs_data
-    @search_result ||= ContigSearch.find_by_id(@search_id).contigs.includes(isolate: [individual: :species]).reorder("#{sort_column} #{sort_direction}")
+    @search_result ||= ContigSearch.find_by_id(@search_id).contigs.includes(isolate: [individual: :taxon]).reorder("#{sort_column} #{sort_direction}")
 
     @search_result = @search_result.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      @search_result = @search_result.where('contigs.name ILIKE :search OR species.composed_name ILIKE :search OR individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
-                                     .references(isolate: [individual: :species])
+      @search_result = @search_result.where('contigs.name ILIKE :search OR taxa.scientific_name ILIKE :search OR individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
+                                     .references(isolate: [individual: :taxon])
     end
 
     @search_result
@@ -71,7 +71,7 @@ class ContigSearchResultDatatable
   end
 
   def sort_column
-    columns = %w[contigs.name species.composed_name individuals.specimen_id contigs.assembled contigs.updated_at]
+    columns = %w[contigs.name taxa.scientific_name individuals.specimen_id contigs.assembled contigs.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

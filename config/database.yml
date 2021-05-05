@@ -8,14 +8,14 @@ default: &default
 test:
   <<: *default
   database: gbol5_test
-  username: <%= ENV['DB_USER'] %>
-  password: <%= ENV['DB_PASSWORD'] %>
+  username: <%= Rails.application.credentials.gbol5_database_user %>
+  password: <%= Rails.application.credentials.gbol5_dev_db_password %>
 
 development:
   <<: *default
   database: gbol5_development
-  username: <%= ENV['DB_USER'] %>
-  password: <%= ENV['DB_PASSWORD'] %>
+  username: <%= Rails.application.credentials.gbol5_database_user %>
+  password: <%= Rails.application.credentials.gbol5_dev_db_password %>
 
 production:
   <<: *default

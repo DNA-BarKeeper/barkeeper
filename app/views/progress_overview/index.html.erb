@@ -1,0 +1,54 @@
+<% provide(:title, 'Overview diagrams') %>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Progress diagrams</h3>
+  </div>
+  <div class="panel-body" id="main">
+    <div class="container" style="width: 100%">
+      <div class="row">
+        <div class="col-lg-2">
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Marker</div>
+              <p>Select a marker to show a phylogenetic diagram visualizing the completion status of all families for this marker.</p>
+              <%= select_tag('Marker', options_from_collection_for_select(Marker.in_project(current_project_id).order(:name), 'id', 'name'),
+                             prompt: "Select a Marker", class: 'form-control', id: 'progress_diagram_marker_select') %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Tree Navigation</div>
+              <button id='reset_zoom' class="btn btn-default" title="Reset zoom & recenter" style="margin: 5px;">
+                <span class="glyphicon glyphicon-screenshot"></span>
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Manual</div>
+              <p>
+                The number of species (including subspecies) in each family is represented by the size of the corresponding node.
+              </p>
+              <p>
+                Node colors represent the relative amount of species (including subspecies) within this family with at least one finished marker sequence.
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12 sidebar-element">
+              <div class="sidebar-hl">Downloads</div>
+              <p>Download a CSV table containing information about the number of records associated with the selected marker for all species.</p>
+
+              <%= link_to progress_overview_export_progress_csv_path, class: 'btn btn-default', id: 'download_csv' do %>
+                <span class="glyphicon glyphicon-download-alt"></span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-10 visualization-container">
+          <div id='progress_tree' class='visualization'></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

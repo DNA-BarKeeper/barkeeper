@@ -14,9 +14,9 @@ module AdvancedSearchesHelper
         all_issue: 'Has issues: both',
         issues: 'Has issues: yes',
         no_issues: 'Has issues: no',
-        all_species: 'Has species info: both',
-        species: 'Has species info: yes',
-        no_species: 'Has species info: no',
+        all_taxon: 'Has taxon info: both',
+        taxon: 'Has taxon info: yes',
+        no_taxon: 'Has taxon info: no',
         all_location: 'Location data status: both',
         bad_location: 'Location data status: problematic',
         location_okay: 'Location data status: okay'

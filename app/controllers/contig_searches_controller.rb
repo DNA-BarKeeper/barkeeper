@@ -77,7 +77,7 @@ class ContigSearchesController < ApplicationController
   def export_as_pde
     @contig_search = ContigSearch.find(params[:contig_search_id])
     file_name = @contig_search.title.empty? ? "contig_search_#{@contig_search.created_at}" : @contig_search.title
-    send_data(ContigSearch.pde(@contig_search.contigs.includes(:partial_cons, isolate: [individual: :species]), add_reads: false), filename: "#{file_name}.pde", type: 'application/txt')
+    send_data(ContigSearch.pde(@contig_search.contigs.includes(:partial_cons, isolate: [individual: :taxon]), add_reads: false), filename: "#{file_name}.pde", type: 'application/txt')
   end
 
   def export_results_as_zip
@@ -114,8 +114,8 @@ class ContigSearchesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def contig_search_params
-    params.require(:contig_search).permit(:title, :assembled, :has_warnings, :family, :marker, :max_age, :max_update,
-                                          :min_age, :min_update, :name, :order, :species, :specimen, :verified,
+    params.require(:contig_search).permit(:title, :assembled, :has_warnings, :marker, :max_age, :max_update,
+                                          :min_age, :min_update, :name, :taxon, :specimen, :verified,
                                           :verified_by, :project_id, :search_result_archive)
   end
 end
