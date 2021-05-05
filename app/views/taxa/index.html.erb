@@ -81,12 +81,24 @@
           </div>
           <div class="row">
             <div class="col-lg-12 sidebar-element">
-              <div class="sidebar-hl">Downloads</div>
+              <div class="sidebar-hl">Import & Export</div>
+              <p>Import data from a CSV file. You can use this to add new taxa or update existing ones. If no taxonomic rank is specified for a new entry it will be "unranked".</p>
+              <p>To specify a parent taxon you can either give the name of the next higher taxon or, if you know it, its ID in this database (as found in the URL).</p>
+              <p>If the specified parent cannot be found in the database, no parent will be added and the taxon will appear as an "orphaned" entry.</p>
+              <p>Please use this template: <%= link_to 'Taxon Import Template', "templates/taxon_upload_template.csv" %></p>
+
+              <%= form_tag import_csv_taxa_url, multipart: true do %>
+                <p><%= file_field_tag :file %></p>
+                <%= button_tag(class: 'btn btn-default') do %>
+                  <span class="glyphicon glyphicon-import"></span>
+                <% end %>
+              <% end %>
+
               <p>Download a CSV table containing information about <b>all</b> taxa in your currently selected project
                 (the content does <b>not</b> reflect the taxonomy shown on this page).</p>
 
               <%= link_to export_as_csv_taxa_path, class: 'btn btn-default' do %>
-                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="glyphicon glyphicon-export"></span>
               <% end %>
             </div>
           </div>

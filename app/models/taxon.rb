@@ -1,4 +1,5 @@
 class Taxon < ApplicationRecord
+  extend Import
   include ProjectRecord
 
   has_many :individuals
@@ -74,6 +75,50 @@ class Taxon < ApplicationRecord
         csv << attributes.map{ |attr| taxon.send(attr) }
       end
     end
+  end
+
+  def self.import_from_csv(file, project_id)
+    spreadsheet = Taxon.open_spreadsheet(file)
+    header = spreadsheet.row(1)
+    cnt = 0
+
+    (2..spreadsheet.last_row).each do |i|
+      row = Hash[[header, spreadsheet.row(i)].transpose]
+      id = row['ID']
+      scientific_name = row['Scientific name']
+      synonym = row['Synonym']
+      taxonomic_rank = Taxon.taxonomic_ranks["is_" + row['Taxonomic rank'].downcase] if row['Taxonomic rank']
+      taxonomic_rank ||= Taxon.taxonomic_ranks['is_unranked']
+
+      if id && id.scan(/\D/).empty? # ID only consists of digits
+        taxon = Taxon.find(id.to_i)
+      elsif scientific_name
+        taxon = Taxon.find_by_sci_name_or_synonym(scientific_name) if scientific_name
+        taxon ||= Taxon.find_by_sci_name_or_synonym(synonym) if synonym
+        taxon ||= Taxon.create(scientific_name: scientific_name, taxonomic_rank: taxonomic_rank)
+      else
+        break
+      end
+
+      common_name = row['Common name']
+      author = row['Author']
+      comment = row['Comment']
+
+      parent_identifier = row['Parent']
+      if parent_identifier.scan(/\D/).empty?
+        parent = Taxon.find(parent_identifier.to_i)
+      else
+        parent = Taxon.find_by_sci_name_or_synonym(parent_identifier)
+      end
+
+      taxon.update(synonym: synonym, common_name: common_name, taxonomic_rank: taxonomic_rank, author: author,
+                   comment: comment, parent: parent)
+      taxon.add_project(project_id)
+      taxon.save!
+      cnt += 1
+    end
+
+    cnt
   end
 
   def update_descendants_counter_cache
