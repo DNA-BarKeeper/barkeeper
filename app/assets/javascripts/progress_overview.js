@@ -182,7 +182,7 @@ function drawProgressTree(data) {
                 .style("font-weight", 'normal');
         });
 
-    var nodeRadiusMin = 2;
+    var nodeRadiusMin = 4;
     var nodeRadiusMax = 40;
     var nodeSizeScale = d3.scaleLinear()
         .domain([0, maxChildren])
