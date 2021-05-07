@@ -102,7 +102,7 @@ function drawTaxonomy(data) {
         root;
 
     // Declares a tree layout and assigns the size
-    var treemap = d3.tree().separation(function(a, b) { return a.parent == b.parent ? 3 : 2; }).size([width, height]);
+    var treemap = d3.tree().separation(function(a, b) { return a.parent == b.parent ? 3 : 2; }).nodeSize([2 * nodeRadius, 4 * nodeRadius]);
 
     // Assigns the data to a hierarchy using parent-child relationships
     root = d3.hierarchy(data, function(d) {
@@ -170,23 +170,8 @@ function drawTaxonomy(data) {
     }
 
     function update(source) {
-        var levelHeight = [1];
-        var childCount = function(level, n) {
-            if (n.children && n.children.length > 0) {
-                if (levelHeight.length <= level + 1) levelHeight.push(0);
-
-                levelHeight[level + 1] += n.children.length;
-                n.children.forEach(function(d) {
-                    childCount(level + 1, d);
-                });
-            }
-        };
-        childCount(0, root);
-        var newHeight = d3.max(levelHeight) * 50;
-
-        treemap = treemap.size([newHeight, width]);
-
-        treeData = treemap(root);
+        // Assigns the x and y position for the nodes
+        var treeData = treemap(root);
 
         // Compute the new tree layout.
         var nodes = treeData.descendants(),
