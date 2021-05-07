@@ -164,11 +164,13 @@ function drawProgressTree(data) {
         })
         .on("mousemove", function(d) {
             var finished_percent = d.data.size === 0 ? '' : " (" + ((d.data.finished_size / d.data.size) * 100).toFixed(2) + "%)";
+            var sidebar_width = $("#sidebar_progress_tree").width();
+
             tooltip
                 .html(d.data.scientific_name + ":<br>" + d.data.size + " species (incl. subspecies)<br>" + d.data.finished_size
                     + " finished" + finished_percent)
-                .style("left", (d3.event.pageX - parentDiv.offsetLeft + 10) + "px")
-                .style("top", (d3.event.pageY - parentDiv.offsetTop + 20) + "px");
+                .style("left", (d3.event.pageX - document.getElementById('chart_column').offsetLeft + 20) + "px")
+                .style("top", (d3.event.pageY - document.getElementById('chart_column').offsetTop - document.getElementById('progress_tree').offsetTop + 28) + "px");
         })
         .on("mouseout", function mouseout() {
             tooltip.transition()
@@ -181,7 +183,7 @@ function drawProgressTree(data) {
         });
 
     var nodeRadiusMin = 2;
-    var nodeRadiusMax = 30;
+    var nodeRadiusMax = 40;
     var nodeSizeScale = d3.scaleLinear()
         .domain([0, maxChildren])
         .range([nodeRadiusMin, nodeRadiusMax]);
