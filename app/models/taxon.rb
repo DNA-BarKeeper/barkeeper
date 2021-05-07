@@ -2,8 +2,8 @@ class Taxon < ApplicationRecord
   extend Import
   include ProjectRecord
 
-  has_many :individuals
-  has_many :ngs_runs
+  has_many :individuals, dependent: :nullify
+  has_many :ngs_runs, dependent: :nullify
 
   has_ancestry  cache_depth: true, counter_cache: true, orphan_strategy: :adopt
 
