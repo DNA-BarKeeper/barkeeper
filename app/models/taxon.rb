@@ -5,7 +5,7 @@ class Taxon < ApplicationRecord
   has_many :individuals
   has_many :ngs_runs
 
-  has_ancestry  cache_depth: true, counter_cache: true
+  has_ancestry  cache_depth: true, counter_cache: true, orphan_strategy: :adopt
 
   validates_presence_of :scientific_name
   validates_uniqueness_of :scientific_name
