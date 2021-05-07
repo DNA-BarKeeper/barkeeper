@@ -2,24 +2,9 @@ jQuery(function() {
     if (document.getElementById("taxonomy_tree") != null) {
         initialize_buttons();
 
-        $("#taxonomy_root_select").on("change", () => $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            url: 'taxa/taxonomy_tree',
-            dataType: 'json',
-            data: {
-                root_id: $('#taxonomy_root_select option:selected').val()
-            },
-            success: function (data) {
-                remove_selected_taxon_info();
-                deleteVisualization('#taxonomy_tree');
+        loadTaxonomy();
 
-                drawTaxonomy(data[0]);
-            },
-            error: function (_result) {
-                console.error("Error getting data.");
-            }
-        }));
+        $("#taxonomy_root_select").on("change", () => loadTaxonomy());
     }
 
     $('#taxon_parent_name').autocomplete({
@@ -43,6 +28,27 @@ jQuery(function() {
         "order": [ 0, 'asc' ]
     });
 });
+
+function loadTaxonomy() {
+    $.ajax({
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        url: 'taxa/taxonomy_tree',
+        dataType: 'json',
+        data: {
+            root_id: $('#taxonomy_root_select option:selected').val()
+        },
+        success: function (data) {
+            remove_selected_taxon_info();
+            deleteVisualization('#taxonomy_tree');
+
+            drawTaxonomy(data[0]);
+        },
+        error: function (_result) {
+            console.error("Error getting data.");
+        }
+    });
+}
 
 function initialize_buttons() {
     disableButton($("#center_root"), "Please load a taxonomy first");
