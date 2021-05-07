@@ -66,7 +66,7 @@ function drawProgressTree(data) {
         }
     })
 
-    var radius = Math.max(width/2, leaveCnt * 30 / (2 * Math.PI)); // Calculate tree radius from number of leave nodes
+    var radius = Math.max(width/2, leaveCnt * 30 / (2 * Math.PI)); // Calculate tree radius from number of leave nodes with a minimum distance of 30
 
     var treeLayout = d3.cluster()
         .size([2 * Math.PI, radius - 150]);
