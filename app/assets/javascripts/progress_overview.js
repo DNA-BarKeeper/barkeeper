@@ -53,7 +53,7 @@ function drawProgressTree(data) {
     var width = parentDiv.clientWidth - 17, // subtract padding and border width
         height = 710,
         scale = 1,
-        radius = Math.max(width/2 - 100, 500),
+        radius = Math.max(width/2 - 100, 800),
         nodeRadius = 2;
 
     var treeLayout = d3.cluster().size([2 * Math.PI, radius - 100]);
