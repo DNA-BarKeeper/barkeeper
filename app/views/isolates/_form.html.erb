@@ -5,8 +5,8 @@
   <div class="panel-heading">
     <h3 class="panel-title">Isolate <%= @isolate.display_name %>
 
-      <% if @isolate.try(:individual).try(:species) %>
-          - <%=link_to(@isolate.individual.species.name_for_display, edit_species_path(@isolate.individual.species.id))  %>
+      <% if @isolate.try(:individual).try(:taxon) %>
+          - <%=link_to(@isolate.individual.taxon.scientific_name, edit_taxon_path(@isolate.individual.taxon.id))  %>
       <% end %>
     </h3>
   </div>
