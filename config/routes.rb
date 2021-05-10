@@ -119,16 +119,6 @@ GBOLapp::Application.routes.draw do
 
   resources :issues
 
-  resources :higher_order_taxa do
-    collection do
-      get 'hierarchy_tree', defaults: { format: 'json' }
-    end
-
-    member do
-      get 'show_species'
-    end
-  end
-
   resources :taxa do
     member do
       get :show_individuals
@@ -142,22 +132,6 @@ GBOLapp::Application.routes.draw do
       get :export_as_csv
       get :orphans
       post :import_csv
-    end
-  end
-
-  resources :species do
-    collection do
-      get :filter
-      get :get_mar
-      get :get_bry
-      get :get_ant
-      post :import_stuttgart
-      post :import_berlin
-      post :import_gbolii
-    end
-
-    member do
-      get 'show_individuals'
     end
   end
 
@@ -180,8 +154,6 @@ GBOLapp::Application.routes.draw do
       get :filter
     end
   end
-
-  resources :orders
 
   resources :tissues
 
@@ -218,15 +190,6 @@ GBOLapp::Application.routes.draw do
   resources :mislabels do
     member do
       get :solve
-    end
-  end
-
-  resources :families do
-    collection do
-      get 'filter'
-    end
-    member do
-      get 'show_species'
     end
   end
 
