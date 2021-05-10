@@ -5,8 +5,8 @@
 
   <div class="panel-heading">
     <h3 class="panel-title">Cluster <%= @cluster.name %>
-      <% if @cluster.try(:isolate).try(:individual).try(:species) %>
-        - <%= link_to(@cluster.isolate.individual.species.name_for_display, edit_species_path(@cluster.isolate.individual.species.id)) %>
+      <% if @cluster.try(:isolate).try(:individual).try(:taxon) %>
+        - <%= link_to(@cluster.isolate.individual.taxon.scientific_name, edit_taxon_path(@cluster.isolate.individual.taxon.id)) %>
       <% end %>
     </h3>
   </div>

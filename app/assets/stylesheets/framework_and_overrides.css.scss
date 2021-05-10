@@ -95,10 +95,11 @@ a.my-btn {
 // to make views framework-neutral
 main {
   @extend .container;
-  //  background-color: #eee;
-  padding-bottom: 80px;
+  padding-top: 20px;
+  padding-bottom: 20px;
   width: 100%;
-  margin-top: 51px; // accommodate the navbar
+  margin-top: 51px; // Accommodate the navbar
+  margin-bottom: 20px;
 }
 
 section {
@@ -297,6 +298,12 @@ input.form-control {
   width: auto !important;
 }
 
+textarea.form-control {
+  border: 1px solid lightgrey !important;
+  padding: 5px !important;
+  width: auto !important;
+}
+
 select.form-control {
   border: 1px solid lightgrey !important;
   padding: 5px !important;
@@ -384,27 +391,6 @@ html {
   margin-left: 20px;
 }
 
-/* Styles for nested taxa index */
-.higher_order_taxon {
-  border: 1px solid lightgrey;
-  margin: 4px 8px;
-  padding: 5px;
-  height: 34px;
-  color: #555555;
-  background-color: #fff;
-  background-image: none;
-  border-radius: 4px;
-  display: inline-block
-}
-
-.nested_taxa {
-  margin-left: 2%;
-}
-
-.nested_taxa .nested_taxa .nested_taxa .nested_taxa .nested_taxa .nested_taxa {
-  margin-left: 0;
-}
-
 /* Styles for Chosen */
 .chosen-container-multi .chosen-choices {
   //display: inline-block;
@@ -437,9 +423,19 @@ div#ngs_run_results_wrapper div.dataTables_length {
   overflow: hidden;
 }
 
+.visualization-container {
+  padding-right: 0;
+}
+
+@media only screen and (max-width: 1200px) {
+  .visualization-container {
+    padding: 0; // No padding necessary in mobile view
+  }
+}
+
 .svg-content {
-  display: inline-block;
-  position: absolute;
+  display: block;
+  border: 1px solid lightgrey;
   top: 0;
   left: 0;
 }
@@ -474,3 +470,72 @@ img{
   max-width: 50%;
 }
 
+
+.panel-default {
+  margin-bottom: 20px;
+}
+
+// Progress tree legend
+.axis path, .axis tick, .axis line {
+  fill: none;
+  stroke: none;
+}
+
+.tick text {
+  font-size: 1.2rem;
+  fill: #555;
+  font-weight: 400;
+}
+
+.legendTitle {
+  text-align: center;
+  font-size: 1.5rem;
+  fill: #555;
+  font-weight: 400;
+}
+
+.sidebar-element {
+  border: 1px solid lightgrey;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.sidebar-hl {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#specimen_list > ul  {
+  margin: 5px;
+}
+
+// Flush list items based on version in Bootstrap 5.0
+.list-group-flush {
+  border-radius: 0;
+
+  > .list-group-item {
+    border-width: 0 0 1px;
+    background-color: inherit;
+
+    &:last-child {
+      border-bottom-width: 0;
+    }
+  }
+}
+
+.sidebar-element .btn {
+  margin: 0 10px 10px 0;
+}
+
+div.search-taxonomy input {
+  width: 100%!important;
+}
+
+div.search-taxonomy span button {
+  margin-right: 0!important;
+}
+
+select.root_select {
+  width: 100%!important;
+}

@@ -16,9 +16,14 @@
         </thead>
         <tbody>
         </tbody>
-      </table></div></div>
-
-
+      </table>
+    </div>
+  </div>
 </div>
-<%= link_to 'New Herbarium', new_herbarium_path %>
 
+<p>
+  <%= link_to new_herbarium_path, class: 'btn btn-default', target: "_blank", title: 'Create a new herbarium entry' do %>
+    <span class="glyphicon glyphicon-unchecked"></span>
+  <% end %>
+  Create a new herbarium entry
+</p>

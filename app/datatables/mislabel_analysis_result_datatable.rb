@@ -50,17 +50,17 @@ class MislabelAnalysisResultDatatable
       mislabel_confidence = mislabel.confidence.to_f.round(2)
       proposed_label = mislabel.proposed_label
 
-      species_name = ''
-      species_id = 0
+      taxon_name = ''
+      taxon_id = 0
 
-      if mislabel.marker_sequence.try(:isolate).try(:individual).try(:species)
-        species_name = mislabel.marker_sequence.isolate.individual.species.name_for_display
-        species_id = mislabel.marker_sequence.isolate.individual.species.id
+      if mislabel.marker_sequence.try(:isolate).try(:individual).try(:taxon)
+        taxon_name = mislabel.marker_sequence.isolate.individual.taxon.scientific_name
+        taxon_id = mislabel.marker_sequence.isolate.individual.taxon.id
       end
 
       [
         link_to(mislabel.marker_sequence.name, edit_marker_sequence_path(mislabel.marker_sequence)),
-        link_to(species_name, edit_species_path(species_id)),
+        link_to(taxon_name, edit_taxon_path(taxon_id)),
         mislabel_level,
         mislabel_confidence,
         proposed_label,
@@ -71,16 +71,16 @@ class MislabelAnalysisResultDatatable
   end
 
   def analysis_data
-    @analysis ||= MislabelAnalysis.find_by_id(@analysis_id).mislabels.includes(marker_sequence: [isolate: [individual: :species]]).reorder("#{sort_column} #{sort_direction}")
+    @analysis ||= MislabelAnalysis.find_by_id(@analysis_id).mislabels.includes(marker_sequence: [isolate: [individual: :taxon]]).reorder("#{sort_column} #{sort_direction}")
 
     @analysis = @analysis.page(page).per_page(per_page)
 
     if params[:sSearch].present?
       @analysis = @analysis.where('marker_sequences.name ILIKE :search
-OR species.composed_name ILIKE :search
+OR taxa.scientific_name ILIKE :search
 OR mislabels.level ILIKE :search
 OR mislabels.proposed_label ILIKE :search', search: "%#{params[:sSearch]}%")
-                           .references(marker_sequence: [isolate: [individual: :species]])
+                           .references(marker_sequence: [isolate: [individual: :taxon]])
     end
 
     @analysis
@@ -95,7 +95,7 @@ OR mislabels.proposed_label ILIKE :search', search: "%#{params[:sSearch]}%")
   end
 
   def sort_column
-    columns = %w[marker_sequences.name species.composed_name mislabels.level mislabels.confidence mislabels.proposed_label marker_sequences.updated_at]
+    columns = %w[marker_sequences.name taxa.scientific_name mislabels.level mislabels.confidence mislabels.proposed_label marker_sequences.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 
