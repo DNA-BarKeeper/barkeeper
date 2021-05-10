@@ -5,8 +5,8 @@
 
   <div class="panel-heading">
     <h3 class="panel-title"><%= @primer_read.name %>
-      <% if @primer_read.try(:contig).try(:isolate).try(:individual).try(:species) %>
-          - <%= link_to(@primer_read.contig.isolate.individual.species.name_for_display, edit_species_path(@primer_read.contig.isolate.individual.species.id))  %>
+      <% if @primer_read.try(:contig).try(:isolate).try(:individual).try(:taxon) %>
+          - <%= link_to(@primer_read.contig.isolate.individual.taxon.scientific_name, edit_taxon_path(@primer_read.contig.isolate.individual.taxon.id))  %>
       <% end %>
     </h3>
   </div>

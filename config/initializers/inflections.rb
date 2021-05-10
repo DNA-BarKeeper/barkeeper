@@ -12,13 +12,6 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   #   inflect.irregular 'person', 'people'
   #    inflect.uncountable %w( fish sheep )
   inflect.irregular 'taxon', 'taxa'
-  inflect.irregular 'syntaxon', 'syntaxa'
-  inflect.irregular 'OverviewFinishedTaxa', 'OverviewFinishedTaxa'
-  inflect.irregular 'OverviewAllTaxa', 'OverviewAllTaxa'
-  inflect.irregular 'overview_finished_taxa', 'overview_finished_taxa'
-  inflect.irregular 'overview_all_taxa', 'overview_all_taxa'
-  inflect.irregular 'HigherOrderTaxon', 'HigherOrderTaxa'
-  inflect.irregular 'higher_order_taxon', 'higher_order_taxa'
   inflect.irregular 'genus', 'genera'
   inflect.uncountable %w[species]
   inflect.uncountable %w[subspecies]

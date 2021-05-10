@@ -11,8 +11,8 @@ RSpec.describe Individual do
     should be_valid
   end
 
-  it "belongs to a species" do
-    should belong_to(:species)
+  it "belongs to a taxon" do
+    should belong_to(:taxon)
   end
 
   it "belongs to a herbarium" do
@@ -39,48 +39,48 @@ RSpec.describe Individual do
 
   xit "assigns DNA bank info" do; end
 
-  context "returns associated species name" do
-    it "returns name of associated species if one exists" do
-      species = FactoryBot.create(:species)
-      individual = FactoryBot.create(:individual, species: species)
+  context "returns associated taxon name" do
+    it "returns name of associated taxon if one exists" do
+      taxon = FactoryBot.create(:taxon)
+      individual = FactoryBot.create(:individual, taxon: taxon)
 
-      expect(individual.species_name).to be == species.composed_name
+      expect(individual.taxon_name).to be == taxon.scientific_name
     end
 
-    it "returns nil if no associated species exists" do
-      individual = FactoryBot.create(:individual, species: nil)
-      expect(individual.species_name).to be == nil
+    it "returns nil if no associated taxon exists" do
+      individual = FactoryBot.create(:individual, taxon: nil)
+      expect(individual.taxon_name).to be == nil
     end
   end
 
-  context "changes associated species name" do
-    it "changes name of associated species if one exists" do
-      species1 = FactoryBot.create(:species)
-      species2 = FactoryBot.create(:species)
+  context "changes associated taxon name" do
+    it "changes name of associated taxon if one exists" do
+      taxon1 = FactoryBot.create(:taxon)
+      taxon2 = FactoryBot.create(:taxon)
 
-      individual = FactoryBot.create(:individual, species: species1)
+      individual = FactoryBot.create(:individual, taxon: taxon1)
 
-      expect { individual.species_name = species2.composed_name }.to change { individual.species }.to species2
+      expect { individual.taxon_name = taxon2.scientific_name }.to change { individual.taxon }.to taxon2
     end
 
-    it "creates new associated species if none exists" do
-      species_name = Faker::Lorem.word
+    it "creates new associated taxon if none exists" do
+      taxon_name = Faker::Lorem.word
 
-      expect { subject.species_name = species_name }.to change { Species.count }.by 1
+      expect { subject.taxon_name = taxon_name }.to change { Taxon.count }.by 1
     end
 
-    it "does not change associated species if nil is provided" do
-      species = FactoryBot.create(:species)
-      individual = FactoryBot.create(:individual, species: species)
+    it "does not change associated taxon if nil is provided" do
+      taxon = FactoryBot.create(:taxon)
+      individual = FactoryBot.create(:individual, taxon: taxon)
 
-      expect { individual.species_name = nil }.not_to change { individual.species }
+      expect { individual.taxon_name = nil }.not_to change { individual.taxon }
     end
 
-    it "removes associated species if an empty string is provided" do
-      species = FactoryBot.create(:species)
-      individual = FactoryBot.create(:individual, species: species)
+    it "removes associated taxon if an empty string is provided" do
+      taxon = FactoryBot.create(:taxon)
+      individual = FactoryBot.create(:individual, taxon: taxon)
 
-      expect { individual.species_name = '' }.to change { individual.species }.to nil
+      expect { individual.taxon_name = '' }.to change { individual.taxon }.to nil
     end
   end
 

@@ -10,8 +10,6 @@ storage/
 
 dump.rdb
 latest.dump
-specimens.xls
-species.xls
 spec/examples.txt
 
 # Ignore master key for decrypting credentials and more.
