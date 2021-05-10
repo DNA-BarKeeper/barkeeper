@@ -6,7 +6,6 @@ class Individual < ApplicationRecord
 
   has_many :isolates
   belongs_to :taxon
-  belongs_to :species # TODO: Remove
   belongs_to :herbarium
   belongs_to :tissue
 
