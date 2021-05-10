@@ -34,13 +34,11 @@ class Ability
     # Permissions for every user, even if not logged in
     can %i[about progress impressum privacy_policy], :home
     can :manage, :progress_overview
+
     can %i[edit index filter taxonomy_tree associated_specimen find_ancestry show_individuals], Taxon
     can %i[edit index filter], Individual
     can %i[edit index], Herbarium
-    can %i[edit index filter show_individuals xls], Species
-    can %i[edit index filter show_species], Family
-    can %i[edit index filter], Order
-    can %i[edit index show_species], HigherOrderTaxon
+
     can %i[edit index filter change_via_script compare_contigs as_fasq], Contig
     can %i[edit index filter], Isolate
     can [:filter], MarkerSequence
@@ -100,8 +98,8 @@ class Ability
       can :manage, IndividualSearch, user_id: user.id # Users can only edit their own searches
 
       if user.responsibilities.exists?(name: 'lab') # Restrictions for users in project "lab"
-        cannot %i[create update destroy], [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
-        can :edit, [Family, Species, Individual, Division, Order, TaxonomicClass, HigherOrderTaxon]
+        cannot %i[create update destroy], [Taxon, Individual]
+        can :edit, [Taxon, Individual]
       elsif user.responsibilities.exists?(name: 'taxonomy') # Restrictions for users in project "taxonomy"
         cannot %i[create update destroy], [Alignment, Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker,
                                            MarkerSequence, MicronicPlate, PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
