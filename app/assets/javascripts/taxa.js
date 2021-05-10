@@ -52,7 +52,6 @@ function loadTaxonomy() {
 
 function initialize_buttons() {
     disableButton($("#center_root"), "Please load a taxonomy first");
-    disableButton($("#reset_tree_pos"), "Please load a taxonomy first");
 
     disableButton($("#center_selected_node"), "Please select a taxon first");
 
@@ -124,13 +123,6 @@ function drawTaxonomy(data) {
     centerNode(root);
 
     enableButton($("#center_root"), "Center root node");
-    enableButton($("#reset_tree_pos"), "Align tree to top left");
-
-    // Button to reset zoom and reset tree to top left
-    d3.select("#reset_tree_pos")
-        .on("click", function() {
-            zoom.transform(svg, d3.zoomIdentity.translate(margin.left, margin.top).scale(scale));
-        });
 
     // Button to reset zoom and center root node
     d3.select("#center_root")
