@@ -47,22 +47,22 @@ class ContigDatatable
 
   def data
     contigs.map do |contig|
-      species_name = ''
-      species_id = 0
+      taxon_name = ''
+      taxon_id = 0
       individual_name = ''
       individual_id = 0
       assembled = contig.assembled ? 'Yes' : 'No'
 
-      if contig.try(:isolate).try(:individual).try(:species)
-        species_name = contig.isolate.individual.species.name_for_display
-        species_id = contig.isolate.individual.species.id
+      if contig.try(:isolate).try(:individual).try(:taxon)
+        taxon_name = contig.isolate.individual.taxon.scientific_name
+        taxon_id = contig.isolate.individual.taxon.id
         individual_name = contig.isolate.individual.specimen_id
         individual_id = contig.isolate.individual.id
       end
 
       [
         link_to(contig.name, edit_contig_path(contig)),
-        link_to(species_name, edit_species_path(species_id)),
+        link_to(taxon_name, edit_taxon_path(taxon_id)),
         link_to(individual_name, edit_individual_path(individual_id)),
         assembled,
         contig.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
@@ -79,18 +79,18 @@ class ContigDatatable
     case @contigs_to_show
     when 'duplicates'
       names_with_multiple = Contig.group(:name).having('count(name) > 1').count.keys
-      contigs = Contig.includes(isolate: [individual: :species]).where(name: names_with_multiple)
+      contigs = Contig.includes(isolate: [individual: :taxon]).where(name: names_with_multiple)
                       .in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     when 'imported'
-      contigs = Contig.includes(isolate: [individual: :species]).externally_edited.order("#{sort_column} #{sort_direction}")
+      contigs = Contig.includes(isolate: [individual: :taxon]).externally_edited.order("#{sort_column} #{sort_direction}")
     else
-      contigs = Contig.includes(isolate: [individual: :species]).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      contigs = Contig.includes(isolate: [individual: :taxon]).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
     end
 
     contigs = contigs.page(page).per_page(per_page)
 
-    contigs = contigs.where('contigs.name ILIKE :search OR species.composed_name ILIKE :search OR individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
-                     .references(isolate: [individual: :species]) if params[:sSearch].present?
+    contigs = contigs.where('contigs.name ILIKE :search OR taxa.scientific_name ILIKE :search OR individuals.specimen_id ILIKE :search', search: "%#{params[:sSearch]}%")
+                     .references(isolate: [individual: :taxon]) if params[:sSearch].present?
 
     contigs
   end
@@ -104,7 +104,7 @@ class ContigDatatable
   end
 
   def sort_column
-    columns = %w[contigs.name species.composed_name individuals.specimen_id contigs.assembled contigs.updated_at]
+    columns = %w[contigs.name taxa.scientific_name individuals.specimen_id contigs.assembled contigs.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

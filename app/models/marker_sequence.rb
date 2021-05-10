@@ -33,16 +33,9 @@ class MarkerSequence < ApplicationRecord
 
   scope :verified, -> { joins(:contigs).where(contigs: { verified: true }) }
   scope :not_verified, -> { joins(:contigs).where(contigs: { verified: false }) }
-  scope :has_species, -> { joins(isolate: [individual: :species]) }
+  scope :has_taxon, -> { joins(isolate: [individual: :taxon]) }
   scope :no_isolate, -> { where(isolate: nil) }
   scope :unsolved_warnings, -> { joins(:mislabels).where(mislabels: { solved: false }) }
-
-  def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-    ms = MarkerSequence.select('species_id').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    ms_s = MarkerSequence.select('species_component').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    ms_i = MarkerSequence.select('individual_id').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    [ms.count, ms_s.distinct.count, ms.distinct.count, ms_i.distinct.count]
-  end
 
   def generate_name
     if marker.present? && isolate.present?
@@ -66,6 +59,6 @@ class MarkerSequence < ApplicationRecord
   end
 
   def has_unsolved_mislabels
-    !mislabels.where(solved: false).blank?
+    mislabels.where(solved: false).present?
   end
 end

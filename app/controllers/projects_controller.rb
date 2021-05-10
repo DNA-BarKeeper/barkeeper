@@ -89,21 +89,14 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def search_taxa
-    @result = PgSearch.multisearch(params[:query])
-  end
-
   def add_to_taxa
-    taxa = {}
-    taxa[:hot] = params[:higherordertaxon][:id] if params[:higherordertaxon]
-    taxa[:order] = params[:order][:id] if params[:order]
-    taxa[:family] = params[:family][:id] if params[:family]
-    taxa[:species] = params[:species][:id] if params[:species]
+    taxon_name = params[:associated_taxon]
 
-    Project.where(id: params[:project][:id]).each { |project| project.add_project_to_taxa(taxa) }
+    taxon = Taxon.find_by(scientific_name: taxon_name)
+    Project.where(id: params[:project][:id]).each { |project| project.add_project_to_taxonomy(taxon) }
 
     respond_to do |format|
-      format.html { redirect_to projects_url, notice: 'Added project(s) to all selected taxa.' }
+      format.html { redirect_to projects_url, notice: 'Added project(s) to selected taxon and all descendants.' }
       format.json { head :no_content }
     end
   end
