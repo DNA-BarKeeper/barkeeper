@@ -4,8 +4,8 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Contig <%= @contig.name %>
-      <% if @contig.try(:isolate).try(:individual).try(:species) %>
-          - <%= link_to(@contig.isolate.individual.species.name_for_display, edit_species_path(@contig.isolate.individual.species.id)) %>
+      <% if @contig.try(:isolate).try(:individual).try(:taxon) %>
+        - <%= link_to(@contig.isolate.individual.taxon.scientific_name, edit_taxon_path(@contig.isolate.individual.taxon.id)) %>
       <% end %>
     </h3>
   </div>
