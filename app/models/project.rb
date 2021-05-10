@@ -39,10 +39,6 @@ class Project < ApplicationRecord
   has_and_belongs_to_many :marker_sequences
 
   has_and_belongs_to_many :individuals
-  has_and_belongs_to_many :species
-  has_and_belongs_to_many :families
-  has_and_belongs_to_many :orders
-  has_and_belongs_to_many :higher_order_taxa
   has_and_belongs_to_many :taxa
 
   has_and_belongs_to_many :labs
