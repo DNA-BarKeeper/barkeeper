@@ -12,7 +12,7 @@ module Export
 
   module ClassMethods
     def pde(records, options)
-      @pde_header = "<header><entries>32 \"Species\" STRING\n33 \"GBOL5 URL\" STRING</entries>"
+      @pde_header = "<header><entries>32 \"Taxon\" STRING\n33 \"GBOL5 URL\" STRING</entries>"
 
       pde_matrix = +''
       @height = 0 # Number of lines (needed for pde dimensions)
@@ -65,17 +65,15 @@ module Export
     def taxonomy_file(sequences)
       taxa = +''
 
-      sequences.includes(isolate: [individual: [species: [family: [order: :higher_order_taxon]]]]).each do |marker_sequence|
+      sequences.includes(isolate: [individual: :taxon]).each do |marker_sequence|
         if marker_sequence.sequence
-          species = marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')
-          family = marker_sequence.isolate&.individual&.species&.family&.name
-          order = marker_sequence.isolate&.individual&.species&.family&.order&.name
-          hot = marker_sequence.isolate&.individual&.species&.family&.order&.higher_order_taxon&.name
+          ancestors = marker_sequence.try(:isolate).try(:individual).try(:taxon).try(:ancestors)
+          taxonomy = ancestors.map(&:scientific_name).join(';')
 
           taxa << marker_sequence.name.delete(' ')
-          taxa << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}"
+          taxa << "_#{marker_sequence.isolate&.individual&.taxon&.scientific_name&.gsub(' ', '_')}"
           taxa << "\t"
-          taxa << "Eukaryota;Embryophyta;#{hot};#{order};#{family};#{species}\n"
+          taxa << "Eukaryota;#{taxonomy}\n"
         end
       end
 
@@ -86,15 +84,15 @@ module Export
 
     def pde_contigs(contigs, add_reads)
       contigs.each do |contig|
-        species = contig.try(:isolate).try(:individual).try(:species)&.composed_name
-        contig_name = species.blank? ? contig.name : [contig.name, species.tr(' ', '_')].join('_')
+        taxon = contig.try(:isolate).try(:individual).try(:taxon)&.composed_name
+        contig_name = taxon.blank? ? contig.name : [contig.name, taxon.tr(' ', '_')].join('_')
 
         contig.partial_cons.each do |partial_con|
           aligned_sequence = partial_con.aligned_sequence.nil? ? '' : partial_con.aligned_sequence
 
           partial_con.primer_reads.each { |read| add_primer_read_to_pde(read, true) } if add_reads
 
-          add_sequence_to_pde(contig_name, species, routes.edit_contig_url(contig, url_options), aligned_sequence, false)
+          add_sequence_to_pde(contig_name, taxon, routes.edit_contig_url(contig, url_options), aligned_sequence, false)
         end
 
         next unless add_reads
@@ -112,10 +110,10 @@ module Export
 
     def pde_marker_sequences(marker_sequences)
       marker_sequences.each do |marker_sequence|
-        species = marker_sequence.try(:isolate).try(:individual).try(:species)&.composed_name
-        name = species.blank? ? marker_sequence.name : [marker_sequence.name, species.tr(' ', '_')].join('_')
+        taxon = marker_sequence.try(:isolate).try(:individual).try(:taxon)&.scientific_name
+        name = taxon.blank? ? marker_sequence.name : [marker_sequence.name, taxon.tr(' ', '_')].join('_')
 
-        add_sequence_to_pde(name, species, routes.edit_marker_sequence_url(marker_sequence, url_options), marker_sequence.sequence, false)
+        add_sequence_to_pde(name, taxon, routes.edit_marker_sequence_url(marker_sequence, url_options), marker_sequence.sequence, false)
       end
     end
 
@@ -157,10 +155,10 @@ module Export
         if meta_data
           name << "|#{marker_sequence.isolate&.display_name}" # Isolate
           name << "|#{marker_sequence.isolate&.individual&.specimen_id}" # Specimen
-          name << "|#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}" # Species
-          name << "|#{marker_sequence.isolate&.individual&.species&.family&.name}" # Family
+          name << "|#{marker_sequence.isolate&.individual&.taxon&.scientific_name&.gsub(' ', '_')}" # Taxon
+          name << "|#{marker_sequence.isolate&.individual&.taxon&.ancestors.where(taxonomic_rank: "is_family").first&.scientific_name}" # Family
         else
-          name << "_#{marker_sequence.isolate&.individual&.species&.get_species_component&.gsub(' ', '_')}" # Species
+          name << "_#{marker_sequence.isolate&.individual&.taxon&.scientific_name&.gsub(' ', '_')}" # Taxon
         end
 
         name << "|sativa_warning" if warnings && marker_sequence.has_unsolved_mislabels # Label sequences with SATIVA warnings
@@ -177,7 +175,7 @@ module Export
       ActionMailer::Base.default_url_options
     end
 
-    def add_sequence_to_pde(name, species, url, sequence, is_primer_read)
+    def add_sequence_to_pde(name, taxon, url, sequence, is_primer_read)
       sequence ||= ''
 
       @pde_header += "<seq idx=\"#{@height}\">"\
@@ -185,7 +183,7 @@ module Export
 
       @pde_header += "<e id=\"2\">#{name}</e>" if is_primer_read
 
-      @pde_header += "<e id=\"32\">#{species}</e>" unless is_primer_read
+      @pde_header += "<e id=\"32\">#{taxon}</e>" unless is_primer_read
 
       @pde_header += "<e id=\"33\">#{url}</e>"\
                      "</seq>\n"
