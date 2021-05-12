@@ -148,7 +148,6 @@ select.form-control + .chosen-container-multi .chosen-results li.result-selected
 }
 
 .chosen-container-single .chosen-single abbr {
-    background: url(chosen-sprite.png) right top no-repeat;
     display: block;
     font-size: 1px;
     height: 10px;
