@@ -32,6 +32,13 @@ class TaxaController < ApplicationController
     end
   end
 
+  def show_children
+    respond_to do |format|
+      format.html
+      format.json { render json: TaxonDatatable.new(view_context, params[:id], current_project_id) }
+    end
+  end
+
   def filter
     @taxa = Taxon.where('scientific_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:scientific_name).limit(100)
     size = Taxon.where('scientific_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:scientific_name).size
@@ -54,7 +61,7 @@ class TaxaController < ApplicationController
   def orphans
     respond_to do |format|
       format.html
-      format.json { render json: OrphanedTaxaDatatable.new(view_context, current_project_id) }
+      format.json { render json: TaxonDatatable.new(view_context, nil, current_project_id) }
     end
   end
 
