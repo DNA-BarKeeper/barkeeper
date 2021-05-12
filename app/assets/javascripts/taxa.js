@@ -7,8 +7,15 @@ jQuery(function() {
         $("#taxonomy_root_select").on("change", () => loadTaxonomy());
     }
 
-    $('#taxon_parent_name').autocomplete({
-        source: $('#taxon_parent_name').data('autocomplete-source')});
+    $('#taxon_taxonomic_rank').chosen({
+        allow_single_deselect: true,
+        no_results_text: 'No results matched'
+    });
+
+    $('#taxon_parent_id').chosen({
+        allow_single_deselect: true,
+        no_results_text: 'No results matched'
+    });
 
     $('#taxon_project_ids').chosen({
         allow_single_deselect: true,
