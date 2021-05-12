@@ -132,6 +132,7 @@ GBOLapp::Application.routes.draw do
   resources :taxa do
     member do
       get :show_individuals
+      get :show_children
       get :associated_specimen
     end
 

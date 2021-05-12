@@ -13,6 +13,7 @@ jQuery(function() {
     });
 
     $('#taxon_parent_id').chosen({
+        max_shown_results: 100,
         allow_single_deselect: true,
         no_results_text: 'No results matched'
     });
@@ -24,6 +25,26 @@ jQuery(function() {
 
     $('#taxon_search').autocomplete({
         source: $('#taxon_search').data('autocomplete-source')});
+
+    $('#associated_individuals').DataTable({
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#associated_individuals').data('source'),
+        "columnDefs": [
+            { "orderable": false, "targets": 6 }
+        ],
+        "order": [5, 'desc']
+    });
+
+    $('#direct_children').DataTable({
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#direct_children').data('source'),
+        "columnDefs": [
+            { "orderable": false, "targets": 5 }
+        ],
+        "order": [ 0, 'asc' ]
+    });
 
     $('#orphans').DataTable({
         bProcessing: true,
