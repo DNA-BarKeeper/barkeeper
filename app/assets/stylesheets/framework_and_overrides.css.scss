@@ -171,64 +171,6 @@ body.about_page {
   padding: 3px;
 }
 
-// Overview diagram styles:
-
-.overview_diagram h3 {
-  font-size: 24px;
-}
-
-#main {
-  //float: left;
-  font-size: 12px;
-  font-weight: 400;
-  background-color: #fff;
-  //height: 750px;
-  //margin-top: 10px;
-  overflow-x: auto;
-}
-
-#sidebar {
-  float: right;
-  width: 130px;
-}
-
-#legend {
-  padding: 10px 0 0 3px;
-}
-
-.sequence {
-  width: 600px;
-  height: 70px;
-  font-size: 13px;
-}
-
-.sequence text, #legend text {
-  font-weight: 600;
-  fill: #fff;
-}
-
-.chart {
-  position: relative;
-}
-
-.chart path {
-  stroke: #fff;
-}
-
-.explanation {
-  position: absolute;
-  top: 190px;
-  left: 255px;
-  width: 140px;
-  text-align: center;
-  color: #666;
-}
-
-.percentage {
-  font-size: 2.5em;
-  display: inline-block;
-}
-
 // Advanced search styles:
 
 ul.ui-autocomplete {
@@ -367,11 +309,6 @@ html {
   margin-left: 20px;
 }
 
-.chosen-container {
-  font-size: 14px;
-  width: 190px !important;
-}
-
 /* Do not show page control buttons in NGS result view */
 div#ngs_run_results_wrapper div.dataTables_paginate {
   display:none;
@@ -473,8 +410,4 @@ div.search-taxonomy input {
 
 div.search-taxonomy span button {
   margin-right: 0!important;
-}
-
-select.root_select {
-  width: 100%!important;
 }
