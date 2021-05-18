@@ -25,7 +25,7 @@
               </button>
 
               <div class="input-group search-taxonomy">
-                <%= text_field :taxon, :search, data: { autocomplete_source: filter_taxa_path } , class: 'form-control'%>
+                <%= text_field :taxon, :search, data: { autocomplete_source: autocomplete_taxa_path } , class: 'form-control'%>
                 <span class="input-group-btn">
                   <button id='start_search' class="btn btn-default" title="Find this taxon in the tree">
                     <span class="glyphicon glyphicon-search"></span>
@@ -84,7 +84,7 @@
               <p>Please use this template: <%= link_to 'Taxon Import Template', "templates/taxon_upload_template.csv" %></p>
 
               <%= form_tag import_csv_taxa_url, multipart: true do %>
-                <p><%= file_field_tag :file %></p>
+                <p><%= file_field_tag :file, class: 'form-control' %></p>
                 <%= button_tag(class: 'btn btn-default') do %>
                   <span class="glyphicon glyphicon-import"></span>
                 <% end %>

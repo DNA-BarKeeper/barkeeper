@@ -7,54 +7,8 @@ jQuery(function() {
         $("#taxonomy_root_select").on("change", () => loadTaxonomy());
     }
 
-    $('#taxon_taxonomic_rank').chosen({
-        allow_single_deselect: true,
-        no_results_text: 'No results matched'
-    });
-
-    $('#taxon_parent_id').chosen({
-        max_shown_results: 100,
-        allow_single_deselect: true,
-        no_results_text: 'No results matched'
-    });
-
-    $('#taxon_project_ids').chosen({
-        allow_single_deselect: true,
-        no_results_text: 'No results matched'
-    });
-
     $('#taxon_search').autocomplete({
         source: $('#taxon_search').data('autocomplete-source')});
-
-    $('#associated_individuals').DataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#associated_individuals').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 6 }
-        ],
-        "order": [5, 'desc']
-    });
-
-    $('#direct_children').DataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#direct_children').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 5 }
-        ],
-        "order": [ 0, 'asc' ]
-    });
-
-    $('#orphans').DataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#orphans').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 5 }
-        ],
-        "order": [ 0, 'asc' ]
-    });
 });
 
 function loadTaxonomy() {
