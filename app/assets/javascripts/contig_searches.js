@@ -1,26 +1,4 @@
 jQuery(function() {
-    $('#contig_searches').dataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#contig_searches').data('source'),
-        "columnDefs": [{
-            "targets": 3,
-            "orderable": false
-        }],
-        "order": [ 2, 'desc' ]
-    });
-
-    $('#contig_search_results').dataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#contig_search_results').data('source'),
-        "columnDefs": [{
-            "targets": [1, 2, 5],
-            "orderable": false
-        }],
-        "order": [ 0, 'asc' ]
-    });
-
     $('#contig_search_min_age').datepicker({
         dateFormat: 'yy-mm-dd'
     });

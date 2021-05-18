@@ -1,39 +1,4 @@
 jQuery(function() {
-
-    //initially hide global spinner
-    var $global_spinner=$(".sk-circle").hide();
-    var $buttons = $('#buttons').hide();
-
-    $(document)
-        .ajaxStart(function () {
-            $global_spinner.show();
-        })
-        .ajaxStop(function () {
-            $global_spinner.hide();
-            $buttons.show();
-        });
-
-
-    $('#contigs').DataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#contigs').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 5 }
-        ],
-        "order": [ 4, 'desc' ]
-    });
-
-    $('#contigs-duplicates').DataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#contigs-duplicates').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 5 }
-        ],
-        "order": [ 0, 'asc' ]
-    });
-
     $('#contig_isolate_name').autocomplete({
         source: $('#contig_isolate_name').data('autocomplete-source')
     });
