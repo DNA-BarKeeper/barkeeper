@@ -1,26 +1,4 @@
 jQuery(function() {
-    $('#marker_sequence_searches').dataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#marker_sequence_searches').data('source'),
-        "columnDefs": [{
-            "orderable": false,
-            "targets": 3
-        }],
-        "order": [ 2, 'desc' ]
-    });
-
-    $('#marker_sequence_search_results').dataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#marker_sequence_search_results').data('source'),
-        "columnDefs": [{
-            "orderable": false,
-            "targets": [1, 3]
-        }],
-        "order": [ 0, 'asc' ]
-    });
-
     $('#marker_sequence_search_min_age').datepicker({
         dateFormat: 'yy-mm-dd'
     });

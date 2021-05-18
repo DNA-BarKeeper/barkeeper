@@ -1,33 +1,4 @@
 jQuery(function() {
-    $('#ngs_runs').dataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#ngs_runs').data('source'),
-        "columnDefs": [{
-            "targets": 2,
-            "orderable": false
-        }],
-        "order": [1, 'desc']
-    });
-
-    $('#ngs_run_results').dataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#ngs_run_results').data('source'),
-        "sScrollY": document.body.clientHeight * 70 / 100,
-        "scrollX": true,
-        scroller: {
-            loadingIndicator: true,
-            displayBuffer: 2
-        },
-        deferRender:    true,
-        "columnDefs": [{
-            "targets": 3,
-            "orderable": false
-        }],
-        "order": [0, 'desc']
-    });
-
     // Make file input multiple if package map was selected/uploaded
     var set_tag_map = $('#ngs_run_set_tag_map');
     var tag_primer_map = $("#ngs_run_tag_primer_map");

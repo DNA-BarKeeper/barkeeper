@@ -73,36 +73,6 @@ jQuery(function() {
         }
     );
 
-    $('#primer_reads').DataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#primer_reads').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 4 }
-        ],
-        "order": [ 3, 'desc' ]
-    });
-
-    $('#primer_reads-duplicates').DataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#primer_reads-duplicates').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 4 }
-        ],
-        "order": [ 0, 'asc' ]
-    });
-
-    $('#reads_without_contigs').DataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#reads_without_contigs').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 4 }
-        ],
-        "order": [ 3, 'desc' ]
-    });
-
     $('#primer_read_contig_name').autocomplete( {
         source: $('#primer_read_contig_name').data('autocomplete-source')
     });
