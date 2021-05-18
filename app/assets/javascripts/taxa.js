@@ -6,9 +6,6 @@ jQuery(function() {
 
         $("#taxonomy_root_select").on("change", () => loadTaxonomy());
     }
-
-    $('#taxon_search').autocomplete({
-        source: $('#taxon_search').data('autocomplete-source')});
 });
 
 function loadTaxonomy() {

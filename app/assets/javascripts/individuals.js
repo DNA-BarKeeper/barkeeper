@@ -1,18 +1,3 @@
-jQuery(function() {
-    $('#individual_project_ids').chosen({
-        allow_single_deselect: true,
-        no_results_text: 'No results matched'
-    });
-
-    $('#individual_taxon_name').autocomplete({
-        source: $('#individual_taxon_name').data('autocomplete-source')
-    });
-
-    $('#individual_collected').datepicker({
-        dateFormat: 'yy-mm-dd'
-    });
-});
-
 function init() {
     // stuff runs faster when objects are in vars
     d = document;

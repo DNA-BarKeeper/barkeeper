@@ -17,8 +17,3 @@ jQuery ->
     source: $('#species_family_name').data('autocomplete-source')
 
   $('#wiki').width($(document).width()).height($(document).height())
-
-  $('#species_project_ids').chosen({
-    allow_single_deselect: true
-    no_results_text: 'No results matched'
-  });

@@ -1,12 +1,7 @@
 jQuery(function() {
-    $('#associated_taxon').autocomplete({
-        source: $('#associated_taxon').data('autocomplete-source')
-    });
-
     $('#associated_taxon').change(function() {
         changeSubmitButtonStatus();
     });
-
 
     $('#project_id').multiselect({
         maxHeight: 200,

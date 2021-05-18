@@ -19,8 +19,4 @@ jQuery(function() {
             tag_primer_map.val("");
         }
     });
-
-    $('#ngs_run_taxon_name').autocomplete({
-        source: $('#ngs_run_taxon_name').data('autocomplete-source')
-    });
 });
