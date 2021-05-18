@@ -1,19 +1,5 @@
 jQuery(function() {
-    $('#contig_isolate_name').autocomplete({
-        source: $('#contig_isolate_name').data('autocomplete-source')
-    });
-
-    $('#contig_marker_sequence_name').autocomplete({
-        source: $('#contig_marker_sequence_name').data('autocomplete-source')
-    });
-
-    $('#contig_project_ids').chosen({
-        allow_single_deselect: true,
-        no_results_text: 'No results matched'
-    });
-
     // do for all div with class partial_con
-
     $('.single-page-button').click(function () {
         $('button.first-page-button').attr("disabled", true);
         $('button.last-page-button').attr("disabled", true);

@@ -1,9 +1,4 @@
 jQuery(function() {
-    $('#primer_read_project_ids').chosen({
-        allow_single_deselect: true,
-        no_results_text: 'No results matched'
-    });
-
     $('.go-to-button_primer_read').click( function () {
         var read_id = $(this).data('readId');
         var input_id = "#go-to-pos_" + $(this).data('readId');
@@ -72,10 +67,6 @@ jQuery(function() {
             }
         }
     );
-
-    $('#primer_read_contig_name').autocomplete( {
-        source: $('#primer_read_contig_name').data('autocomplete-source')
-    });
 
     // Iterate over all divs of class chromatogram and use available data to draw
     var primer_read_divs = document.getElementsByClassName('chromatogram');
