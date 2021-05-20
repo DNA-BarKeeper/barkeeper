@@ -18,14 +18,8 @@ class SpeciesController < ApplicationController
   end
 
   def filter
-    @species = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:composed_name).limit(100)
-    size = Species.where('composed_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:composed_name).size
-
-    if size > 100
-      render json: @species.map(&:composed_name).push("and #{size} more...")
-    else
-      render json: @species.map(&:composed_name)
-    end
+    @species = Species.where('species.composed_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:composed_name)
+    render json: @species.map{ |species| {:id=> species.id, :name => species.composed_name }}
   end
 
   def show_individuals

@@ -40,19 +40,8 @@ class TaxaController < ApplicationController
   end
 
   def filter
-    @taxa = Taxon.where('scientific_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:scientific_name).limit(100)
-    render json: @taxa.map{ |taxon| {:id=> taxon.id, :scientific_name => taxon.scientific_name }}
-  end
-
-  def autocomplete
-    @taxa = Taxon.where('scientific_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:taxonomic_rank, :scientific_name).limit(100)
-    size = Taxon.where('scientific_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:taxonomic_rank, :scientific_name).size
-
-    if size > 100
-      render json: @taxa.map(&:scientific_name).push("and #{size} more...")
-    else
-      render json: @taxa.map(&:scientific_name)
-    end
+    @taxa = Taxon.where('scientific_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:scientific_name)
+    render json: @taxa.map{ |taxon| {:id=> taxon.id, :name => taxon.scientific_name }}
   end
 
   def export_as_csv

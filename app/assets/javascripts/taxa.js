@@ -117,18 +117,12 @@ function drawTaxonomy(data) {
             }
         });
 
-    d3.select('#start_search')
-        .on("click", function() { startTaxonSearch() });
-
-    document.getElementById('taxon_search')
-        .addEventListener("keydown", function (e) {
-        if (e.code === "Enter") {
-            startTaxonSearch();
-        }
+    $('#taxon_search').on('select2:select', function (e) {
+        startTaxonSearch();
     });
 
     function startTaxonSearch() {
-        var taxon_name = document.getElementById('taxon_search').value;
+        var taxon_name = $('#taxon_search').select2('data')[0].text;
 
         $.ajax({
             type: "GET",

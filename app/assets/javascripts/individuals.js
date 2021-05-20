@@ -1,3 +1,9 @@
+jQuery(function() {
+    $('#individual_collected').datepicker({
+        dateFormat: 'yy-mm-dd'
+    });
+});
+
 function init() {
     // stuff runs faster when objects are in vars
     d = document;

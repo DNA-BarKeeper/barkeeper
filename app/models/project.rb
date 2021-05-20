@@ -35,9 +35,12 @@ class Project < ApplicationRecord
 
   validates_presence_of :name
 
-  def add_project_to_taxonomy(parent_taxon)
-    parent_taxon.subtree.includes(:projects).each do |taxon|
-      taxon.add_project_and_save(id)
+  def add_project_to_taxonomy(parent_taxon_id)
+    parent_taxon = Taxon.find(parent_taxon_id) if parent_taxon_id
+    if parent_taxon
+      parent_taxon.subtree.includes(:projects).each do |taxon|
+        taxon.add_project_and_save(id)
+      end
     end
   end
 end

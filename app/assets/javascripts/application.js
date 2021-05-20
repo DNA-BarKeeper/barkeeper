@@ -10,12 +10,11 @@
 //= require bootstrap
 //= require keyboard_shortcuts
 //= require d3.min
-//= require bootstrap-multiselect
 //= require select2
 //= require_tree .
 
 jQuery(function() {
-    //initially hide global spinner
+    // Initially hide global spinner
     var $global_spinner = $(".sk-circle").hide();
     var $buttons = $('#buttons').hide();
 
