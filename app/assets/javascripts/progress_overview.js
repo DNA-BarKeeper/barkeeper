@@ -49,9 +49,10 @@ function changeDownloadButtonStatus() {
 // Main function to draw and set up the visualization, once we have the data.
 function drawProgressTree(data) {
     var parentDiv = document.getElementById("progress_tree");
+    var containerHeight = document.getElementById("progress_tree_container").clientHeight;
 
-    var width = parentDiv.clientWidth, // subtract padding and border width
-        height = 710,
+    var width = parentDiv.clientWidth,
+        height = containerHeight - 50,
         scale = 1;
 
     var root = d3.hierarchy(data)
@@ -66,7 +67,7 @@ function drawProgressTree(data) {
         }
     })
 
-    var radius = Math.max(width/2, leaveCnt * 30 / (2 * Math.PI)); // Calculate tree radius from number of leave nodes with a minimum distance of 30
+    var radius = Math.max(height/2, leaveCnt * 30 / (2 * Math.PI)); // Calculate tree radius from number of leave nodes with a minimum distance of 30
 
     var treeLayout = d3.cluster()
         .size([2 * Math.PI, radius - 150]);
