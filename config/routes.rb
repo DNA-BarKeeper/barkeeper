@@ -138,7 +138,6 @@ GBOLapp::Application.routes.draw do
 
     collection do
       get :filter
-      get :autocomplete
       get :taxonomy_tree, defaults: { format: 'json' }
       get :find_ancestry, defaults: { format: 'text' }
       get :export_as_csv
@@ -197,7 +196,11 @@ GBOLapp::Application.routes.draw do
 
   resources :micronic_plates
 
-  resources :markers
+  resources :markers do
+    collection do
+      get 'filter'
+    end
+  end
 
   resources :isolates do
     collection do

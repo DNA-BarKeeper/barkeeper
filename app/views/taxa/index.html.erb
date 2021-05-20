@@ -16,6 +16,13 @@
                                class: 'form-control root_select', id: 'taxonomy_root_select') %>
               </p>
 
+              <div class="search-taxonomy">
+                <p>
+                  Select a taxon to open and center it in the tree.
+                  <%= collection_select :taxon, :search, Taxon.order(:scientific_name), :id, :scientific_name, { include_blank: true }, { class:"form-control" } %>
+                </p>
+              </div>
+
               <button id='center_root' class="btn btn-default" title="Center root node">
                 <span class="glyphicon glyphicon-screenshot"></span>
               </button>
@@ -23,29 +30,19 @@
               <button id='center_selected_node' class="btn btn-default">
                 <span class="glyphicon glyphicon-map-marker"></span>
               </button>
-
-              <div class="input-group search-taxonomy">
-                <%= text_field :taxon, :search, data: { autocomplete_source: autocomplete_taxa_path } , class: 'form-control'%>
-                <span class="input-group-btn">
-                  <button id='start_search' class="btn btn-default" title="Find this taxon in the tree">
-                    <span class="glyphicon glyphicon-search"></span>
-                  </button>
-                </span>
-              </div>
             </div>
           </div>
           <div class="row">
             <div class="col-lg-12 sidebar-element">
-              <div class="sidebar-hl">Manual</div>
-              <p>This tree shows all taxa in your currently selected project that are descendants of the displayed root node.
-                <br>Orphaned taxa (those without a specified parent taxon) are listed on the page <b><%= link_to 'Orphaned taxon entries', orphans_taxa_path %></b>.</p>
               <p>
-                <strong>Filled grey circles</strong> can expand child taxa when clicked.
+                This tree shows all taxa in your currently selected project that are descendants of the displayed root node.
+                <br>Orphaned taxa (those without a specified parent taxon) are listed on the page <b><%= link_to 'Orphaned taxon entries', orphans_taxa_path %></b>.
               </p>
-              <p>
-                Clicking on a <strong>taxon's name</strong> will display some information about it in the 'Taxon' section of this page.
-              </p>
+              <p>Use your mousewheel to zoom the tree in or out and move it by left-clicking and dragging.</p>
+              <p><strong>Filled grey circles</strong> will expand child taxa when clicked.</p>
+              <p>Clicking on a <strong>taxon's name</strong> will display some information about it in the 'Taxon' section of this page.</p>
               <p>To see the all available information about a taxon or to edit it, click on the according button in the 'Taxon' section. A new tab will open.</p>
+              <p>Use the buttons in the 'Tree navigation' section to either center the root node or the last selected node (in case one is selected).</p>
             </div>
           </div>
           <div class="row">

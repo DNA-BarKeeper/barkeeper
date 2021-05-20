@@ -35,15 +35,8 @@ class IndividualsController < ApplicationController
   end
 
   def filter
-    @individuals = Individual.where('individuals.specimen_id ilike ?', "%#{params[:term]}%").in_project(current_project_id).limit(100)
-    size = Individual.where('individuals.specimen_id ilike ?', "%#{params[:term]}%").in_project(current_project_id).size
-
-    if size > 100
-      message = "and #{size} more..."
-      render json: @individuals.map(&:specimen_id).push(message)
-    else
-      render json: @individuals.map(&:specimen_id)
-    end
+    @individuals = Individual.where('individuals.specimen_id ilike ?', "%#{params[:term]}%").in_project(current_project_id)
+    render json: @individuals.map{ |individual| {:id=> individual.id, :name => individual.specimen_id }}
   end
 
   def show; end

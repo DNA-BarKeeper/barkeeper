@@ -33,7 +33,7 @@
 
 <div class="form-group">
   <%= f.label 'Responsibility' %><br>
-  <%= f.collection_select :responsibility_ids, Responsibility.order(:name), :id, :name, { include_blank:'<no selection>' }, { multiple:true, class: 'form-control' } %>
+  <%= f.collection_select :responsibility_ids, Responsibility.order(:name), :id, :name, {}, { multiple:true, class: 'form-control' } %>
 </div>
 
 <div class="form-group">

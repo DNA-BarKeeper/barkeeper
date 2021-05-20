@@ -11,7 +11,7 @@
       </div>
 
       <div class="form-group">
-        <%= f.label 'Lab' %>
+        <%= f.label :lab_id, 'Lab' %>
         <%= f.collection_select(:lab_id, Lab.all, :id, :labcode, {}, { class: 'form-control' }) %>
       </div>
 

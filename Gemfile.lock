@@ -89,7 +89,6 @@ GEM
     bio (2.0.2)
     bootsnap (1.7.5)
       msgpack (~> 1.0)
-    bootstrap-multiselect_rails (0.9.5)
     bootstrap-sass (3.4.1)
       autoprefixer-rails (>= 5.2.1)
       sassc (>= 2.0.0)
@@ -431,7 +430,6 @@ DEPENDENCIES
   binding_of_caller
   bio
   bootsnap
-  bootstrap-multiselect_rails
   bootstrap-sass
   bootstrap_progressbar
   builder
