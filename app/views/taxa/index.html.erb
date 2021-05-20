@@ -11,7 +11,7 @@
               <div class="sidebar-hl">Tree Navigation</div>
 
               <p>
-                Select a root taxon to show a phylogenetic tree of all its descendants.
+                Select a root taxon to show a taxonomy of all its descendants.
                 <%= select_tag('Root taxon', options_from_collection_for_select(Taxon.orphans.order(:taxonomic_rank).in_project(current_project_id), 'id', 'scientific_name'),
                                class: 'form-control root_select', id: 'taxonomy_root_select') %>
               </p>
