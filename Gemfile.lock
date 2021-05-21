@@ -435,7 +435,7 @@ DEPENDENCIES
   builder
   bullet
   cancancan
-  capistrano
+  capistrano (~> 3.14)
   capistrano-bundler
   capistrano-rails
   capistrano-rbenv
