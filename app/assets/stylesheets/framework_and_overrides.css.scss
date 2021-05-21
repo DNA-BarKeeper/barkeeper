@@ -402,3 +402,19 @@ div.search-taxonomy input {
 div.search-taxonomy span button {
   margin-right: 0!important;
 }
+
+// Select2 color schema overwrites
+.select2-container--bootstrap .select2-results__option--highlighted[aria-selected] {
+  background-color: #616161;
+}
+
+.select2-container--bootstrap.select2-container--focus .select2-selection, .select2-container--bootstrap.select2-container--open .select2-selection {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(97, 97, 97, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(97, 97, 97, 0.6);
+  border-color: #616161;
+}
+
+.select2-container--bootstrap .select2-dropdown {
+  border-color: #616161;
+
+}
