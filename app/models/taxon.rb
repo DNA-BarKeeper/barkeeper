@@ -33,7 +33,7 @@ class Taxon < ApplicationRecord
           children: children}
       end.to_json
     else
-      Taxon.find(root_id).subtree.to_depth(1).order(:position, :scientific_name)
+      Taxon.find(root_id).subtree.to_depth(3).order(:position, :scientific_name)
            .in_project(project_id).arrange_serializable do |parent, children|
         { id: parent.id,
           scientific_name: parent.scientific_name,
