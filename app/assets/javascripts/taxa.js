@@ -30,10 +30,7 @@ function loadTaxonomy() {
 }
 
 function initialize_buttons() {
-    disableButton($("#center_root"), "Please load a taxonomy first");
-
     disableButton($("#center_selected_node"), "Please select a taxon first");
-
     disableButton($("#edit_taxon"), "Please select a taxon first");
     disableButton($("#delete_taxon"), "Please select a taxon first");
 }
@@ -100,14 +97,12 @@ function drawTaxonomy(data) {
 
     update(root);
 
-    centerNode(root);
-
-    enableButton($("#center_root"), "Center root node");
+    alignTreeLeft(root);
 
     // Button to reset zoom and center root node
-    d3.select("#center_root")
+    d3.select("#reset_position")
         .on("click", function() {
-            centerNode(root);
+            alignTreeLeft(root);
         });
 
     // Button to reset zoom and center root node
@@ -312,6 +307,16 @@ function drawTaxonomy(data) {
             circle.classed("spinner",false);
             toggle(d);
         }.bind(this)) : toggle(d);
+    }
+
+    function alignTreeLeft(root) {
+        x = margin.left;
+        y = -root.x0 + height / 2;
+
+        d3.select('g').transition()
+            .duration(duration)
+            .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
+        zoom.transform(svg, d3.zoomIdentity.translate(x, y).scale(scale));
     }
 
     function centerNode(source) {
