@@ -114,10 +114,10 @@ GEM
     capistrano-sidekiq (1.0.3)
       capistrano (>= 3.9.0)
       sidekiq (>= 3.4, < 6.0)
-    capistrano3-puma (5.0.4)
+    capistrano3-puma (4.0.0)
       capistrano (~> 3.7)
       capistrano-bundler
-      puma (>= 4.0, < 6.0)
+      puma (~> 4.0)
     capybara (3.35.3)
       addressable
       mini_mime (>= 0.1.3)
@@ -259,7 +259,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (4.0.6)
-    puma (5.3.1)
+    puma (4.3.8)
       nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
@@ -435,12 +435,12 @@ DEPENDENCIES
   builder
   bullet
   cancancan
-  capistrano (~> 3.14)
+  capistrano
   capistrano-bundler
   capistrano-rails
   capistrano-rbenv
   capistrano-sidekiq (~> 1)
-  capistrano3-puma
+  capistrano3-puma (~> 4)
   capybara
   capybara-selenium
   coffee-rails
@@ -463,7 +463,7 @@ DEPENDENCIES
   net-ssh
   pg
   pg_search
-  puma
+  puma (~> 4)
   rails (= 5.2.4.6)
   redis
   roo-xls
