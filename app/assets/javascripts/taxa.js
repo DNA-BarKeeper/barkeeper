@@ -56,6 +56,7 @@ function drawTaxonomy(data) {
         scale = 1;
 
     var selected_node = null;
+    var selected_circle = null;
 
     // Append the SVG object to the parent div
     var svg = d3.select('#taxonomy_tree')
@@ -205,29 +206,7 @@ function drawTaxonomy(data) {
             .attr("fill-opacity", 1)
             .style('font', '14px sans-serif')
             .on('click', function(d) {
-                // Display taxon info in top left div
-                var text = "<b>Scientific name:</b> " + htmlSafe(d.data.scientific_name) + "<br>";
-                if (d.data.taxonomic_rank) text += "<b>Taxonomic rank</b>: " + htmlSafe(d.data.taxonomic_rank) + "<br>";
-                if (d.data.synonym) text += "<b>Synonym</b>: " + htmlSafe(d.data.synonym) + "<br>";
-                if (d.data.common_name) text += "<b>Common name:</b> " + htmlSafe(d.data.common_name) + "<br>";
-                if (d.data.author) text += "<b>Author:</b> " + htmlSafe(d.data.author) + "<br>";
-                if (d.data.comment) text += "<b>Comment:</b> " + htmlSafe(d.data.comment) + "<br>";
-                taxon_text.html(text);
-
-                // Set correct taxon edit and destroy links and enable buttons
-                var taxon_edit_link = d3.select('#edit_taxon').attr('href').replace(/(.*\/)(\d+)(\/.*)/, "$1" + d.data.id + "$3");
-                d3.select('#edit_taxon').attr('href', taxon_edit_link);
-                enableButton($('#edit_taxon'), 'Edit entry in a new tab');
-
-                var taxon_delete_link = d3.select('#delete_taxon').attr('href').replace(/(.*\/)(\d+)/, "$1" + d.data.id);
-                d3.select('#delete_taxon').attr('href', taxon_delete_link);
-                enableButton($('#delete_taxon'), 'Delete taxon entry');
-
-                selected_node = d;
-                enableButton($('#center_selected_node'), 'Center currently selected node');
-
-                // Display list of specimen associated with this taxon
-                display_specimen_Data(d);
+                selectNode(d, this);
             });
 
         // UPDATE
@@ -405,6 +384,52 @@ function drawTaxonomy(data) {
         });
 
         return promise; //return a promise if async. requests
+    }
+
+    function selectNode(d, current_circle) {
+        // Display taxon info in top left div
+        var text = "<b>Scientific name:</b> " + htmlSafe(d.data.scientific_name) + "<br>";
+        if (d.data.taxonomic_rank) text += "<b>Taxonomic rank</b>: " + htmlSafe(d.data.taxonomic_rank) + "<br>";
+        if (d.data.synonym) text += "<b>Synonym</b>: " + htmlSafe(d.data.synonym) + "<br>";
+        if (d.data.common_name) text += "<b>Common name:</b> " + htmlSafe(d.data.common_name) + "<br>";
+        if (d.data.author) text += "<b>Author:</b> " + htmlSafe(d.data.author) + "<br>";
+        if (d.data.comment) text += "<b>Comment:</b> " + htmlSafe(d.data.comment) + "<br>";
+        taxon_text.html(text);
+
+        // Set correct taxon edit and destroy links and enable buttons
+        var taxon_edit_link = d3.select('#edit_taxon').attr('href').replace(/(.*\/)(\d+)(\/.*)/, "$1" + d.data.id + "$3");
+        d3.select('#edit_taxon').attr('href', taxon_edit_link);
+        enableButton($('#edit_taxon'), 'Edit entry in a new tab');
+
+        var taxon_delete_link = d3.select('#delete_taxon').attr('href').replace(/(.*\/)(\d+)/, "$1" + d.data.id);
+        d3.select('#delete_taxon').attr('href', taxon_delete_link);
+        enableButton($('#delete_taxon'), 'Delete taxon entry');
+
+        selected_node = d;
+        enableButton($('#center_selected_node'), 'Center currently selected node');
+
+        // Reset previously selected circle to normal view if one was selected
+        if (selected_circle) {
+            d3.select(selected_circle)
+                .style("stroke-width", '1px')
+                .style("font-weight", 'normal');
+
+            d3.select(selected_circle.parentNode).selectAll("circle")
+                .style("fill", function (d) {
+                    return d.data.has_children ? "lightgrey" : "#fff";
+                });
+        }
+
+        selected_circle = current_circle;
+        d3.select(selected_circle)
+            .style("stroke-width", '2px')
+            .style("font-weight", 'bold');
+
+        d3.select(selected_circle.parentNode).selectAll("circle")
+            .style("fill", '#616161');
+
+        // Display list of specimen associated with this taxon
+        display_specimen_Data(d);
     }
 
     function display_specimen_Data(d) {
