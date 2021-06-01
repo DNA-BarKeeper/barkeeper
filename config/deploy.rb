@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Change these
-server '128.176.195.75/', port: 1694, roles: %i[web app db], primary: true
+server '128.176.195.75', port: 1694, roles: %i[web app db], primary: true
 
 set :repo_url,        'git@github.com:SarahW91/gbol5.git'
 set :application,     'gbol5'
