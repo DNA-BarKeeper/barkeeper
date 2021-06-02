@@ -439,7 +439,7 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano-rbenv
-  capistrano-sidekiq (~> 1)
+  capistrano-sidekiq
   capistrano3-puma (~> 4)
   capybara
   capybara-selenium
@@ -473,7 +473,7 @@ DEPENDENCIES
   select2-rails
   shoulda-callback-matchers
   shoulda-matchers
-  sidekiq (~> 5)
+  sidekiq
   sidekiq-client-cli
   sidekiq-limit_fetch
   simple_form
