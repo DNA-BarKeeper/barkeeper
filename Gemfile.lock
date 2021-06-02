@@ -9,7 +9,7 @@ GIT
       sass-rails
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     actioncable (5.2.4.6)
       actionpack (= 5.2.4.6)
