@@ -19,6 +19,6 @@ development:
 
 production:
   <<: *default
-  database: gbol_production
+  database: gbol5_production
   username: <%= Rails.application.credentials.gbol5_database_user %>
   password: <%= Rails.application.credentials.gbol5_database_password %>
