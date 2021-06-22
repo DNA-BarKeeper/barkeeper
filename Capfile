@@ -14,6 +14,7 @@ require 'capistrano/puma'
 install_plugin Capistrano::Puma
 
 require 'capistrano/sidekiq'
+install_plugin Capistrano::Sidekiq
 
 require 'whenever/capistrano'
 
