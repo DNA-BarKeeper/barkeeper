@@ -6,7 +6,7 @@ server '128.176.195.75', port: 1694, roles: %i[web app db], primary: true
 set :repo_url,        'git@github.com:SarahW91/gbol5.git'
 set :application,     'gbol5'
 set :user,            'sarah'
-set :rbenv_ruby,      '2.6.6'
+set :rbenv_ruby,      '2.6.7'
 set :puma_threads,    [1, 5]
 set :puma_workers,    2
 
