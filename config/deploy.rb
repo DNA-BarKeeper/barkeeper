@@ -40,7 +40,7 @@ set :puma_user, fetch(:user)
 set :ssh_options, port: 1694, forward_agent: true, user: fetch(:user), keys: %w[/home/sarah/.ssh/id_rsa]
 
 # Sidekiq setup
-set :sidekiq_user => 'sarah' #user to run sidekiq as
+set :sidekiq_user => nil #user to run sidekiq as
 set sidekiq_log: File.join(shared_path, 'log', 'sidekiq.log')
 set sidekiq_config: File.join(shared_path, 'config', 'sidekiq.yml')
 
