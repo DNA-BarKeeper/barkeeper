@@ -12,10 +12,12 @@ require 'capistrano/rbenv'
 
 require 'capistrano/puma'
 install_plugin Capistrano::Puma
+install_plugin Capistrano::Puma::Systemd
+install_plugin Capistrano::Puma::Monit
 
-require 'capistrano/sidekiq'
-install_plugin Capistrano::Sidekiq
-install_plugin Capistrano::Sidekiq::Monit
+# require 'capistrano/sidekiq'
+# install_plugin Capistrano::Sidekiq
+# install_plugin Capistrano::Sidekiq::Monit
 
 require 'whenever/capistrano'
 

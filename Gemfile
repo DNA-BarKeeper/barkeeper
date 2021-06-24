@@ -11,7 +11,7 @@ gem 'pg'
 gem 'pg_search'
 
 # Web server and background processing
-gem 'puma', "~>4"
+gem 'puma'
 gem 'redis' # Use Redis adapter to run Action Cable in production
 gem 'sidekiq'
 gem 'sidekiq-client-cli'
@@ -68,7 +68,7 @@ group :development do
   gem 'capistrano-rails',   require: false
   gem 'capistrano-rbenv',   require: false
   gem 'capistrano-sidekiq', require: false
-  gem 'capistrano3-puma', "~>4", require: false
+  gem 'capistrano3-puma', require: false
   gem 'better_errors' # Better error page for Rack apps
   gem 'bullet' # Checks for n+1 queries
   gem 'binding_of_caller' # Extends features of better_errors
