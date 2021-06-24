@@ -64,8 +64,8 @@ GEM
     autoprefixer-rails (10.2.5.1)
       execjs (> 0)
     aws-eventstream (1.1.1)
-    aws-partitions (1.469.0)
-    aws-sdk-core (3.114.3)
+    aws-partitions (1.470.0)
+    aws-sdk-core (3.115.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
@@ -97,7 +97,7 @@ GEM
     bullet (6.1.4)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
-    cancancan (3.2.2)
+    cancancan (3.3.0)
     capistrano (3.16.0)
       airbrussh (>= 1.0.0)
       i18n
@@ -115,10 +115,10 @@ GEM
       capistrano (>= 3.9.0)
       capistrano-bundler
       sidekiq (>= 6.0)
-    capistrano3-puma (4.0.0)
+    capistrano3-puma (5.0.4)
       capistrano (~> 3.7)
       capistrano-bundler
-      puma (~> 4.0)
+      puma (>= 4.0, < 6.0)
     capybara (3.35.3)
       addressable
       mini_mime (>= 0.1.3)
@@ -260,7 +260,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (4.0.6)
-    puma (4.3.8)
+    puma (5.3.2)
       nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
@@ -440,7 +440,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rbenv
   capistrano-sidekiq
-  capistrano3-puma (~> 4)
+  capistrano3-puma
   capybara
   capybara-selenium
   coffee-rails
@@ -463,7 +463,7 @@ DEPENDENCIES
   net-ssh
   pg
   pg_search
-  puma (~> 4)
+  puma
   rails (= 5.2.4.6)
   redis
   roo-xls
