@@ -21,6 +21,8 @@ set :whenever_variables, -> do
   "&rbenv_root=#{fetch :rbenv_path}'"
 end
 
+set :rbenv_custom_path, "/home/sarah/.rbenv"
+
 # Puma setup (Don't change these unless you know what you're doing)
 set :pty,             false
 set :use_sudo,        false
