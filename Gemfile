@@ -68,7 +68,7 @@ group :development do
   gem 'capistrano-rails',   require: false
   gem 'capistrano-rbenv',   require: false
   gem 'capistrano-sidekiq', github: 'seuros/capistrano-sidekiq', require: false
-  gem 'capistrano3-puma', require: false
+  gem 'capistrano3-puma', github: 'seuros/capistrano-puma', require: false
   gem 'better_errors' # Better error page for Rack apps
   gem 'bullet' # Checks for n+1 queries
   gem 'binding_of_caller' # Extends features of better_errors
