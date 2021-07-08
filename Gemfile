@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 ruby '2.6.6'
 
-gem 'rails', '5.2.4.5'
+gem 'rails', '5.2.4.6'
 
 # Postgres
 gem 'pg'
@@ -56,7 +56,7 @@ gem 'net-scp'
 gem 'net-sftp'
 gem 'net-ssh'
 gem 'roo-xls' # Handle excel files
-gem 'rubyzip' # Handle zip files
+gem 'rubyzip', '~> 2.3.0' # Handle zip files
 gem 'simple_form'
 gem 'sprockets-rails', require: 'sprockets/railtie'
 gem 'whenever', require: false # Runs scheduled jobs via cron
