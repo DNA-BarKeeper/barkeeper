@@ -56,7 +56,7 @@ gem 'net-scp'
 gem 'net-sftp'
 gem 'net-ssh'
 gem 'roo-xls' # Handle excel files
-gem 'rubyzip' # Handle zip files
+gem 'rubyzip', '~> 2.3.0' # Handle zip files
 gem 'simple_form'
 gem 'sprockets-rails', require: 'sprockets/railtie'
 gem 'whenever', require: false # Runs scheduled jobs via cron
