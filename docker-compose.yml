@@ -50,7 +50,7 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: ./Dockerfile.nginx
+      dockerfile: web.Dockerfile
       args:
         PROJECT_DOMAIN: ${PROJECT_DOMAIN}
         PORT: ${PORT}
