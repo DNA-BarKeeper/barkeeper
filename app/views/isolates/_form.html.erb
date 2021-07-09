@@ -6,7 +6,7 @@
     <h3 class="panel-title">Isolate <%= @isolate.display_name %>
 
       <% if @isolate.try(:individual).try(:taxon) %>
-          - <%=link_to(@isolate.individual.taxon.scientific_name, edit_taxon_path(@isolate.individual.taxon.id))  %>
+        - <%=link_to(@isolate.individual.taxon.scientific_name, edit_taxon_path(@isolate.individual.taxon.id))  %>
       <% end %>
     </h3>
   </div>
@@ -44,17 +44,17 @@
               <% if @isolate.individual %>
                   <%= link_to '', edit_individual_path(@isolate.individual), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@isolate.individual.specimen_id} " %>
               <% end %>
-              <%= f.text_field :individual_name, data: {autocomplete_source: filter_individuals_path}, class: 'form-control' %>
+              <%= f.collection_select :individual_id, Individual.order(:specimen_id), :id, :specimen_id, { include_blank: true }, { class:"form-control" } %>
             </div>
 
             <div class="form-group">
               <%= f.label :tissue_id, 'Tissue type' %>
-              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
+              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name, { :include_blank => true }, { class: 'form-control' }) %>
             </div>
 
             <div class="form-group">
               <%= f.label :plant_plate_id, 'Plate (Tissue)' %>
-              <%= f.collection_select(:plant_plate_id, PlantPlate.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
+              <%= f.collection_select(:plant_plate_id, PlantPlate.all.order(:name), :id, :name, { :include_blank => true }, { class: 'form-control' }) %>
             </div>
 
             <div class="form-group">
@@ -69,7 +69,7 @@
 
             <div class="form-group">
               <%= f.label :user_id, 'Isolated by' %>
-              <%= f.collection_select(:user_id, User.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
+              <%= f.collection_select(:user_id, User.all.order(:name), :id, :name, { :include_blank => true }, { class: 'form-control' }) %>
               <%= f.label :isolation_date, 'on' %><br />
               <%= f.text_field(:isolation_date, class: 'form-control') %>
             </div>

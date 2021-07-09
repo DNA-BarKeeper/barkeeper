@@ -16,7 +16,7 @@
 
           <div class="field">
             <%= f.label :name, 'Contig name' %><br />
-            <%= f.text_field :name, data: { autocomplete_source: filter_contigs_path }, include_blank: true, class: 'form-control' %>
+            <%= f.collection_select :name, Contig.order(:name), :id, :name, { include_blank: true }, { class:"form-control" } %>
           </div>
           <br/>
           <div>
@@ -39,7 +39,7 @@
 
           <div class="field">
             <%= f.label :verified_by %><br />
-            <%= f.text_field :verified_by, data: { autocomplete_source: User.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+            <%= f.collection_select :verified_by, User.order(:name), :id, :name, { include_blank: true }, { class:"form-control" } %>
           </div>
           <br/>
           <div>
@@ -54,17 +54,17 @@
           <br/>
           <div class="field">
             <%= f.label :marker %><br />
-            <%= f.text_field :marker, data: { autocomplete_source: Marker.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+            <%= f.collection_select :marker, Marker.order(:name), :id, :name, { include_blank: true }, { class:"form-control" } %>
           </div>
 
           <div class="field">
             <%= f.label :specimen %><br />
-            <%= f.text_field :specimen, data: { autocomplete_source: filter_individuals_path(format: 'json') }, include_blank: true, class: 'form-control' %>
+            <%= f.collection_select :specimen, Individual.order(:specimen_id), :id, :specimen_id, { include_blank: true }, { class:"form-control" } %>
           </div>
 
           <div class="field">
             <%= f.label :taxon, 'Associated Taxon' %><br />
-            <%= f.text_field :taxon, data: { autocomplete_source: filter_taxa_path }, include_blank: true, class: 'form-control' %>
+            <%= f.collection_select :taxon, Taxon.order(:scientific_name), :id, :scientific_name, { include_blank: true }, { class:"form-control" } %>
           </div>
 
           <div class="field">

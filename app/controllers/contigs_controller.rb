@@ -34,15 +34,8 @@ class ContigsController < ApplicationController
   end
 
   def filter
-    @contigs = Contig.in_project(current_project_id).order(:name).where('name ilike ?', "%#{params[:term]}%").limit(100)
-    size = Contig.in_project(current_project_id).order(:name).where('name ilike ?', "%#{params[:term]}%").size
-
-    if size > 100
-      message = "and #{size} more..."
-      render json: @contigs.map(&:name).push(message)
-    else
-      render json: @contigs.map(&:name)
-    end
+    @contigs = Contig.in_project(current_project_id).order(:name).where('contigs.name ilike ?', "%#{params[:term]}%")
+    render json: @contigs.map{ |contig| {:id=> contig.id, :name => contig.name }}
   end
 
   def show; end

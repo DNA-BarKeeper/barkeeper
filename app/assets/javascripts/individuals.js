@@ -1,23 +1,4 @@
 jQuery(function() {
-    $('#individuals').DataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#individuals').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 6 }
-        ],
-        "order": [5, 'desc']
-    });
-
-    $('#individual_project_ids').chosen({
-        allow_single_deselect: true,
-        no_results_text: 'No results matched'
-    });
-
-    $('#individual_taxon_name').autocomplete({
-        source: $('#individual_taxon_name').data('autocomplete-source')
-    });
-
     $('#individual_collected').datepicker({
         dateFormat: 'yy-mm-dd'
     });

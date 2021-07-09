@@ -66,6 +66,11 @@ class MarkersController < ApplicationController
     end
   end
 
+  def filter
+    @markers = Marker.where('markers.name ilike ?', "%#{params[:term]}%").in_project(current_project_id)
+    render json: @markers.map{ |marker| {:id=> marker.id, :name => marker.name }}
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

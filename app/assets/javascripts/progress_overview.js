@@ -50,9 +50,8 @@ function changeDownloadButtonStatus() {
 function drawProgressTree(data) {
     var parentDiv = document.getElementById("progress_tree");
 
-    var width = parentDiv.clientWidth, // subtract padding and border width
-        height = 710,
-        scale = 1;
+    var width = parentDiv.clientWidth,
+        height = 710;
 
     var root = d3.hierarchy(data)
         .sort((a, b) => d3.ascending(a.data.scientific_name, b.data.scientific_name));
@@ -67,6 +66,7 @@ function drawProgressTree(data) {
     })
 
     var radius = Math.max(width/2, leaveCnt * 30 / (2 * Math.PI)); // Calculate tree radius from number of leave nodes with a minimum distance of 30
+    var scale = height / ( 2 * radius);
 
     var treeLayout = d3.cluster()
         .size([2 * Math.PI, radius - 150]);
@@ -94,13 +94,13 @@ function drawProgressTree(data) {
     svg.call(zoom);
 
     // Trigger initial zoom with an initial transform
-    zoom.transform(svg, d3.zoomIdentity.translate($("#progress_svg").width() / 2, radius).scale(scale));
+    zoom.transform(svg, d3.zoomIdentity.translate($("#progress_svg").width() / 2, height/2).scale(scale)); // Initially zoom out to show full tree
 
     // Button to reset zoom and position
     d3.select("#reset_zoom")
         .on("click", function() {
             var current_width = $("#progress_svg").width();
-            zoom.transform(svg, d3.zoomIdentity.translate(current_width / 2, radius).scale(scale));
+            zoom.transform(svg, d3.zoomIdentity.translate(current_width / 2, height/2).scale(scale));
         });
     enableButton($('#reset_zoom'));
 

@@ -122,6 +122,7 @@ GBOLapp::Application.routes.draw do
   resources :taxa do
     member do
       get :show_individuals
+      get :show_children
       get :associated_specimen
     end
 
@@ -167,7 +168,11 @@ GBOLapp::Application.routes.draw do
 
   resources :micronic_plates
 
-  resources :markers
+  resources :markers do
+    collection do
+      get 'filter'
+    end
+  end
 
   resources :isolates do
     collection do

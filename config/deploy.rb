@@ -1,17 +1,14 @@
 # frozen_string_literal: true
 
 # Change these
-server '46.101.149.34', port: 1694, roles: %i[web app db], primary: true
+server 'gbol5.de', port: 1694, roles: %i[web app db], primary: true
 
 set :repo_url,        'git@github.com:SarahW91/gbol5.git'
 set :application,     'gbol5'
 set :user,            'sarah'
-set :rbenv_ruby,      '2.6.6'
+set :rbenv_ruby,      '2.6.7'
 set :puma_threads,    [1, 5]
 set :puma_workers,    2
-
-# Always deploy currently checked out branch
-set :branch, Regexp.last_match(1) if `git branch` =~ /\* (\S+)\s/m
 
 # Rbenv setup
 set :whenever_environment, fetch(:stage)
@@ -20,6 +17,8 @@ set :whenever_variables, -> do
   "'environment=#{fetch :whenever_environment}" \
   "&rbenv_root=#{fetch :rbenv_path}'"
 end
+
+set :rbenv_custom_path, "/home/sarah/.rbenv"
 
 # Puma setup (Don't change these unless you know what you're doing)
 set :pty,             false
@@ -30,8 +29,8 @@ set :deploy_to,       "/home/#{fetch(:user)}/apps/#{fetch(:application)}"
 set :puma_bind,       "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
 set :puma_state,      "#{shared_path}/tmp/pids/puma.state"
 set :puma_pid,        "#{shared_path}/tmp/pids/puma.pid"
-set :puma_access_log, "#{release_path}/log/puma.access.log"
-set :puma_error_log,  "#{release_path}/log/puma.error.log"
+set :puma_access_log, "#{shared_path}/log/puma.access.log"
+set :puma_error_log,  "#{shared_path}/log/puma.error.log"
 set :puma_preload_app, true
 set :puma_worker_timeout, nil
 set :puma_init_active_record, true # Change to false when not using ActiveRecord
@@ -40,8 +39,9 @@ set :puma_user, fetch(:user)
 set :ssh_options, port: 1694, forward_agent: true, user: fetch(:user), keys: %w[/home/sarah/.ssh/id_rsa]
 
 # Sidekiq setup
-set sidekiq_log: File.join(release_path, 'log', 'sidekiq.log')
+set sidekiq_log: File.join(shared_path, 'log', 'sidekiq.log')
 set sidekiq_config: File.join(shared_path, 'config', 'sidekiq.yml')
+set :sidekiq_user => 'sarah'
 
 ## Defaults:
 # set :scm,           :git
