@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_04_125603) do
+ActiveRecord::Schema.define(version: 2021_05_10_084110) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -171,25 +171,6 @@ ActiveRecord::Schema.define(version: 2021_05_04_125603) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "divisions", id: :serial, force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "families", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
-    t.string "author", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "order_id"
-  end
-
-  create_table "families_projects", id: false, force: :cascade do |t|
-    t.integer "family_id"
-    t.integer "project_id"
-  end
-
   create_table "freezers", id: :serial, force: :cascade do |t|
     t.string "freezercode", limit: 255
     t.datetime "created_at"
@@ -220,26 +201,6 @@ ActiveRecord::Schema.define(version: 2021_05_04_125603) do
     t.string "acronym"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "higher_order_taxa", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "german_name", limit: 255
-    t.integer "position"
-    t.string "ancestry"
-    t.index ["ancestry"], name: "index_higher_order_taxa_on_ancestry"
-  end
-
-  create_table "higher_order_taxa_markers", id: false, force: :cascade do |t|
-    t.integer "higher_order_taxon_id"
-    t.integer "marker_id"
-  end
-
-  create_table "higher_order_taxa_projects", id: false, force: :cascade do |t|
-    t.integer "higher_order_taxon_id"
-    t.integer "project_id"
   end
 
   create_table "homes", force: :cascade do |t|
@@ -278,7 +239,6 @@ ActiveRecord::Schema.define(version: 2021_05_04_125603) do
     t.datetime "updated_at"
     t.boolean "silica_gel"
     t.date "collected"
-    t.integer "species_id"
     t.string "herbarium_code", limit: 255
     t.string "country", limit: 255
     t.string "state_province", limit: 255
@@ -533,7 +493,6 @@ ActiveRecord::Schema.define(version: 2021_05_04_125603) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "comment"
-    t.integer "higher_order_taxon_id"
     t.string "set_tag_map_file_name"
     t.string "set_tag_map_content_type"
     t.integer "set_tag_map_file_size"
@@ -553,7 +512,6 @@ ActiveRecord::Schema.define(version: 2021_05_04_125603) do
     t.boolean "analysis_requested", default: false
     t.boolean "analysis_started", default: false
     t.bigint "taxon_id"
-    t.index ["higher_order_taxon_id"], name: "index_ngs_runs_on_higher_order_taxon_id"
     t.index ["isolate_id"], name: "index_ngs_runs_on_isolate_id"
     t.index ["taxon_id"], name: "index_ngs_runs_on_taxon_id"
   end
@@ -569,20 +527,6 @@ ActiveRecord::Schema.define(version: 2021_05_04_125603) do
     t.string "author", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "orders", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
-    t.string "author", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "higher_order_taxon_id"
-    t.integer "taxonomic_class_id"
-  end
-
-  create_table "orders_projects", id: false, force: :cascade do |t|
-    t.integer "order_id"
-    t.integer "project_id"
   end
 
   create_table "partial_cons", id: :serial, force: :cascade do |t|
@@ -699,11 +643,6 @@ ActiveRecord::Schema.define(version: 2021_05_04_125603) do
     t.index ["project_id", "shelf_id"], name: "index_projects_shelves_on_project_id_and_shelf_id"
   end
 
-  create_table "projects_species", id: false, force: :cascade do |t|
-    t.integer "project_id"
-    t.integer "species_id"
-  end
-
   create_table "projects_tag_primer_maps", id: false, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "tag_primer_map_id", null: false
@@ -742,32 +681,6 @@ ActiveRecord::Schema.define(version: 2021_05_04_125603) do
     t.index ["freezer_id"], name: "index_shelves_on_freezer_id"
   end
 
-  create_table "species", id: :serial, force: :cascade do |t|
-    t.string "author", limit: 255
-    t.string "genus_name", limit: 255
-    t.string "species_epithet", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "family_id"
-    t.string "infraspecific", limit: 255
-    t.text "comment"
-    t.string "german_name", limit: 255
-    t.string "author_infra", limit: 255
-    t.string "synonym", limit: 255
-    t.string "composed_name", limit: 255
-    t.string "species_component"
-  end
-
-  create_table "subdivisions", id: :serial, force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "position"
-    t.string "german_name"
-    t.integer "division_id"
-    t.index ["division_id"], name: "index_subdivisions_on_division_id"
-  end
-
   create_table "tag_primer_maps", id: :serial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -796,14 +709,6 @@ ActiveRecord::Schema.define(version: 2021_05_04_125603) do
     t.integer "children_count", default: 0
     t.integer "descendants_count", default: 0
     t.index ["ancestry"], name: "index_taxa_on_ancestry"
-  end
-
-  create_table "taxonomic_classes", id: :serial, force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "subdivision_id"
-    t.string "german_name"
   end
 
   create_table "tissues", id: :serial, force: :cascade do |t|
@@ -855,9 +760,7 @@ ActiveRecord::Schema.define(version: 2021_05_04_125603) do
   add_foreign_key "marker_sequence_searches", "projects"
   add_foreign_key "mislabel_analyses", "markers"
   add_foreign_key "mislabels", "marker_sequences"
-  add_foreign_key "ngs_runs", "higher_order_taxa"
   add_foreign_key "ngs_runs", "taxa"
   add_foreign_key "plant_plates", "lab_racks"
   add_foreign_key "shelves", "freezers"
-  add_foreign_key "subdivisions", "divisions"
 end

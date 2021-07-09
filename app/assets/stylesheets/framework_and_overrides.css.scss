@@ -171,64 +171,6 @@ body.about_page {
   padding: 3px;
 }
 
-// Overview diagram styles:
-
-.overview_diagram h3 {
-  font-size: 24px;
-}
-
-#main {
-  //float: left;
-  font-size: 12px;
-  font-weight: 400;
-  background-color: #fff;
-  //height: 750px;
-  //margin-top: 10px;
-  overflow-x: auto;
-}
-
-#sidebar {
-  float: right;
-  width: 130px;
-}
-
-#legend {
-  padding: 10px 0 0 3px;
-}
-
-.sequence {
-  width: 600px;
-  height: 70px;
-  font-size: 13px;
-}
-
-.sequence text, #legend text {
-  font-weight: 600;
-  fill: #fff;
-}
-
-.chart {
-  position: relative;
-}
-
-.chart path {
-  stroke: #fff;
-}
-
-.explanation {
-  position: absolute;
-  top: 190px;
-  left: 255px;
-  width: 140px;
-  text-align: center;
-  color: #666;
-}
-
-.percentage {
-  font-size: 2.5em;
-  display: inline-block;
-}
-
 // Advanced search styles:
 
 ul.ui-autocomplete {
@@ -306,15 +248,6 @@ html {
   line-height: 15px; /* Vertically center the text there */
 }
 
-// Styles for bootstrap-multiselects:
-.multiselect-container > li > a {
-  padding-left: 0;
-}
-
-.multiselect-item.multiselect-group > a {
-  padding-left: 0;
-}
-
 // Styles for read dropdown menu in contig view
 /* Dropdown Button */
 .dropbtn {
@@ -365,21 +298,6 @@ html {
 /* Styles for Devise */
 .radio, .checkbox {
   margin-left: 20px;
-}
-
-/* Styles for Chosen */
-.chosen-container-multi .chosen-choices {
-  //display: inline-block;
-  border: 1px solid lightgrey;
-  border-radius: 4px;
-  background-color: #fff;
-  background-image: none;
-  padding: 5px;
-}
-
-.chosen-container {
-  font-size: 14px;
-  width: 190px !important;
 }
 
 /* Do not show page control buttons in NGS result view */
@@ -485,6 +403,18 @@ div.search-taxonomy span button {
   margin-right: 0!important;
 }
 
-select.root_select {
-  width: 100%!important;
+// Select2 color schema overwrites
+.select2-container--bootstrap .select2-results__option--highlighted[aria-selected] {
+  background-color: #616161;
+}
+
+.select2-container--bootstrap.select2-container--focus .select2-selection, .select2-container--bootstrap.select2-container--open .select2-selection {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(97, 97, 97, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(97, 97, 97, 0.6);
+  border-color: #616161;
+}
+
+.select2-container--bootstrap .select2-dropdown {
+  border-color: #616161;
+
 }

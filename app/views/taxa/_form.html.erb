@@ -11,7 +11,10 @@
       <!-- Nav tabs -->
       <ul class="nav nav-tabs" role="tablist">
         <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
-        <% if @taxon.id %><li ><a href="#specimen" role="tab" data-toggle="tab">Specimens</a></li><% end %>
+        <% if @taxon.id %>
+          <li ><a href="#specimen" role="tab" data-toggle="tab">Specimens</a></li>
+          <li ><a href="#children" role="tab" data-toggle="tab">Child Taxa</a></li>
+        <% end %>
       </ul>
 
       <!-- Tab panes -->
@@ -39,16 +42,17 @@
           </div>
 
           <div class="form-group">
-            <%= f.label :parent_name, 'Parent taxon' %>
+            <%= f.label :parent_id, 'Parent taxon' %>
             <% if @taxon.parent %>
               <%= link_to '', edit_taxon_path(@taxon.parent), :class => "glyphicon glyphicon-share-alt" %>
             <% end %>
-            <%= f.text_field :parent_name , data: { autocomplete_source: filter_taxa_path } , class: 'form-control'%>
+            <br>
+            <%= f.collection_select :parent_id, Taxon.order(:taxonomic_rank), :id, :scientific_name, { include_blank: true }, { class:"form-control" } %>
           </div>
 
           <div class="form-group">
-            <%= f.label :taxonomic_rank %>
-            <%= f.select :taxonomic_rank, Taxon.taxonomic_ranks.keys.map { |r| [r.split('_')[1].capitalize, r] }, {}, { class: 'form-control' } %>
+            <%= f.label :taxonomic_rank %><br>
+            <%= f.select :taxonomic_rank, Taxon.taxonomic_ranks.keys.map { |r| [r.split('_')[1].capitalize, r] }, { include_blank: true }, { class:"form-control" } %>
           </div>
 
           <div class="form-group">
@@ -71,7 +75,7 @@
             <br>
             <p>Specimen directly associated with this Taxon:</p>
             <div class="wideTable">
-              <table id="individuals" data-source="<%= show_individuals_taxon_url(format: "json") %>" class="table table-striped table-hover table-bordered">
+              <table id="associated_individuals" data-source="<%= show_individuals_taxon_url(format: "json") %>" class="table table-striped table-hover table-bordered">
                 <thead>
                 <tr>
                   <th>Specimen ID</th>
@@ -79,6 +83,27 @@
                   <th>Herbarium</th>
                   <th>Collector</th>
                   <th>Collector's Field Number</th>
+                  <th>Last updated</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="tab-pane" id="children">
+            <br>
+            <p>Direct children of this taxon:</p>
+            <div class="wideTable">
+              <table id="direct_children" data-source="<%= show_children_taxon_url(format: "json") %>" class="table table-striped table-hover table-bordered">
+                <thead>
+                <tr>
+                  <th>Scientific name</th>
+                  <th>Synonym</th>
+                  <th>Common name</th>
+                  <th>Taxonomic rank</th>
                   <th>Last updated</th>
                   <th></th>
                 </tr>
