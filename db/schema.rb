@@ -1,25 +1,3 @@
-#
-# Barcode Workflow Manager - A web framework to assemble, analyze and manage DNA
-# barcode data and metadata.
-# Copyright (C) 2020 Kai Müller <kaimueller@uni-muenster.de>, Sarah Wiechers
-# <sarah.wiechers@uni-muenster.de>
-#
-# This file is part of Barcode Workflow Manager.
-#
-# Barcode Workflow Manager is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
-#
-# Barcode Workflow Manager is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-# along with Barcode Workflow Manager.  If not, see
-# <http://www.gnu.org/licenses/>.
-#
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -32,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_11_094430) do
+ActiveRecord::Schema.define(version: 2021_07_12_080701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -419,6 +397,7 @@ ActiveRecord::Schema.define(version: 2020_11_11_094430) do
     t.boolean "main", default: true
     t.bigint "home_id"
     t.boolean "display", default: true
+    t.integer "display_pos_index"
     t.index ["home_id"], name: "index_logos_on_home_id"
   end
 

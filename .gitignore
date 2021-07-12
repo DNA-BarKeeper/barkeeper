@@ -19,3 +19,4 @@ spec/examples.txt
 
 # Ignore local env variables
 .env
+.rbenv-vars
