@@ -62,6 +62,7 @@
               <thead>
               <tr>
                 <th>Display on About Page</th>
+                <th>Display Position Index</th>
                 <th>Title</th>
                 <th>URL</th>
                 <th>Current logo</th>
@@ -74,6 +75,7 @@
                 <tr>
                   <%= f.nested_fields_for :logos, @home.logos.with_attached_image.order(:title), wrapper_tag: :tr do |logos_form| %>
                     <td><%= logos_form.check_box :display, class: 'form-control' %></td>
+                    <td><%= logos_form.number_field :display_pos_index, class: 'form-control' %></td>
                     <td><%= logos_form.text_field :title, class: 'form-control' %></td>
                     <td><%= logos_form.text_field :url, class: 'form-control' %></td>
                     <td style="text-align: center;">
