@@ -27,7 +27,7 @@ module HomesHelper
     if @home.main_logo && @home.main_logo.image&.attached? && @home.main_logo.display
       logo_url = @home.main_logo.image.service_url
       content_tag :a, href: @home.main_logo.url do
-        content_tag :img, '', alt: 'project_logo', width: 100, class: 'pull-right', src: logo_url.html_safe
+        content_tag :img, '', alt: 'project_logo', width: 140, class: 'pull-right', src: logo_url.html_safe
       end
     end
   end
