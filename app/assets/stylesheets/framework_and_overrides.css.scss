@@ -449,6 +449,10 @@ div#ngs_run_results_wrapper div.dataTables_length {
   margin: auto;
 }
 
+.description small {
+  white-space: pre-wrap;
+}
+
 img {
   max-width: 100%;
   max-height: 100%;
