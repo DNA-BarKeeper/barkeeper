@@ -28,7 +28,6 @@ class NgsRun < ApplicationRecord
   validates_presence_of :name
   validates :name, uniqueness: true
 
-  belongs_to :higher_order_taxon # TODO: Remove
   belongs_to :taxon
   has_many :tag_primer_maps, dependent: :destroy
   has_many :clusters, dependent: :destroy
