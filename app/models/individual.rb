@@ -27,7 +27,8 @@ class Individual < ApplicationRecord
   include PgSearch::Model
 
   has_many :isolates
-  belongs_to :species
+  belongs_to :taxon
+  belongs_to :species # TODO: Remove
   belongs_to :herbarium
   belongs_to :tissue
 
@@ -36,40 +37,40 @@ class Individual < ApplicationRecord
 
   pg_search_scope :quick_search, against: %i[specimen_id herbarium collector collectors_field_number]
 
-  scope :without_species, -> { where(species: nil) }
+  scope :without_taxon, -> { where(taxon: nil) }
   scope :without_isolates, -> { left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
-  scope :no_species_isolates, -> { without_species.left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
+  scope :no_species_isolates, -> { without_taxon.left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }
   scope :bad_longitude, -> { where(longitude: nil).where.not(longitude_original: [nil, ''])
-                                 .where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}') }
+                                 .where('individuals.longitude_original NOT SIMILAR TO ?', '[0-9]+\.*[0-9]*') }
   scope :bad_latitude, -> { where(latitude: nil).where.not(latitude_original: [nil, ''])
-                                .where('individuals.latitude_original NOT SIMILAR TO ?', '[0-9]{1,}\.{0,}[0-9]{0,}') }
+                                .where('individuals.latitude_original NOT SIMILAR TO ?', '[0-9]+\.*[0-9]+') }
   scope :bad_location, -> { bad_latitude.or(Individual.bad_longitude) }
 
-  def self.to_csv(options = {})
-    # Change to_csv block to list attributes/values individually
-    CSV.generate(options) do |csv|
-      csv << column_names
-      all.each do |individual|
-        csv << individual.attributes.values_at(*column_names)
+  def self.to_csv(project_id)
+    header = %w{ Database_ID specimen_id taxon_name determination herbarium collectors_field_number collector collection_date
+state_province country latitude longitude elevation exposition locality habitat comments }
+
+    attributes = %w{ id specimen_id taxon_name determination herbarium_code collectors_field_number collector collected
+state_province country latitude longitude elevation exposition locality habitat comments }
+
+    CSV.generate(headers: true) do |csv|
+      csv << header.map { |entry| entry.humanize }
+
+      in_project(project_id).includes(:taxon).each do |individual|
+        csv << attributes.map{ |attr| individual.send(attr) }
       end
     end
   end
 
-  def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-    individuals = Individual.select('species_id').joins(species: { family: { order: :higher_order_taxon } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    individuals_s = Individual.select('species_component').joins(species: { family: { order: :higher_order_taxon } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    [individuals.count, individuals_s.distinct.count, individuals.distinct.count]
+  def taxon_name
+    self.try(:taxon)&.scientific_name
   end
 
-  def species_name
-    species.try(:composed_name)
-  end
-
-  def species_name=(name)
+  def taxon_name=(scientific_name)
     if name == ''
-      self.species = nil
+      self.taxon = nil
     else
-      self.species = Species.find_or_create_by(composed_name: name) if name.present? # TODO is it used? Add project if so
+      self.taxon = Taxon.find_by(scientific_name: scientific_name) if scientific_name.present?
     end
   end
 
@@ -128,29 +129,42 @@ class Individual < ApplicationRecord
         self.update(herbarium: herbarium) if herbarium
       end
 
-      if genus && species_epithet
-        if infraspecific
-          composed_name = "#{genus} #{infraspecific} #{species_epithet}"
+      if higher_taxon_rank == 'familia'
+        assigned_family = Taxon.find_or_create_by_sci_name_or_synonym(higher_taxon_name.capitalize, {taxonomic_rank: :is_family}) # TODO: Who is the parent in case family does not exist yet?
+        assigned_family.add_projects(projects.pluck(:id))
+      end
+
+      # Assign new individual to either genus, species or subspecies found or created by ABCD
+      if genus
+        parent_family = Taxon.find(assigned_family.id)
+        assigned_genus = Taxon.find_or_create_by(taxonomic_rank: :is_genus,
+                                                 scientific_name: genus,
+                                                 parent: parent_family)
+        assigned_genus.add_projects(projects.pluck(:id))
+
+        if species_epithet
+          parent_genus = Taxon.find(genus.id)
+          assigned_species = Taxon.find_or_create_by(taxonomic_rank: :is_species,
+                                                     scientific_name: genus + ' ' + species_epithet,
+                                                     parent: parent_genus)
+          assigned_species.add_projects(projects.pluck(:id))
+
+          if infraspecific
+            parent_species = Taxon.find(assigned_species.id)
+            assigned_subspecies = Taxon.find_or_create_by(taxonomic_rank: :is_subspecies,
+                                                          scientific_name: genus + ' ' + species_epithet + ' ' + infraspecific,
+                                                          parent: parent_species)
+            assigned_subspecies.add_projects(projects.pluck(:id))
+
+            self.update(taxon: assigned_subspecies)
+          else
+            self.update(taxon: assigned_species)
+          end
         else
-          composed_name = "#{genus} #{species_epithet}"
+          self.update(taxon: assigned_genus)
         end
-
-        species = Species.find_or_create_by(composed_name: composed_name)
-        species.add_projects(projects.pluck(:id))
-        species.update(genus_name: genus,
-                       species_epithet: species_epithet,
-                       infraspecific: infraspecific,
-                       species_component: "#{genus} #{species_epithet}")
-
-        if higher_taxon_rank == 'familia'
-          higher_taxon_name = 'Lamiaceae' if higher_taxon_name.capitalize == 'Labiatae'
-
-          family = Family.find_or_create_by(name: higher_taxon_name.capitalize)
-          family.add_projects(projects.pluck(:id))
-          species.update(family: family)
-        end
-
-        self.update(species: species)
+      elsif assigned_family
+        self.update(taxon: assigned_family)
       end
     rescue StandardError
       # puts 'Could not read ABCD.'

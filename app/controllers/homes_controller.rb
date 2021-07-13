@@ -25,8 +25,8 @@
 class HomesController < ApplicationController
   before_action :set_home, only: %i[show edit update]
 
-  def overview
-    authorize! :overview, :home
+  def progress
+    authorize! :progress, :home
   end
 
   def about

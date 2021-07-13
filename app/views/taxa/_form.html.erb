@@ -1,0 +1,96 @@
+<% provide(:title, @taxon.scientific_name) %>
+<%= show_val_errors(@taxon)%>
+
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= @taxon.scientific_name %></h3>
+  </div>
+  <div class="panel-body">
+    <%= form_for(@taxon) do |f| %>
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
+        <% if @taxon.id %><li ><a href="#specimen" role="tab" data-toggle="tab">Specimens</a></li><% end %>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <div class="tab-pane active" id="description">
+          <br>
+          <div class="form-group">
+            <%= f.label :scientific_name %>
+            <%= f.text_field :scientific_name, class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :common_name %>
+            <%= f.text_field :common_name, class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :synonym %>
+            <%= f.text_field :synonym, class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :author %>
+            <%= f.text_field :author, class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :parent_id, 'Parent taxon' %>
+            <% if @taxon.parent %>
+              <%= link_to '', edit_taxon_path(@taxon.parent), :class => "glyphicon glyphicon-share-alt" %>
+            <% end %>
+            <%= f.text_field :parent_name , data: { autocomplete_source: filter_taxa_path } , class: 'form-control'%>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :taxonomic_rank %>
+            <%= f.select :taxonomic_rank, Taxon.taxonomic_ranks.keys.map { |r| [r.split('_')[1].capitalize, r] }, {}, { class: 'form-control' } %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :position, 'Display position index' %>
+            <%= f.text_field :position,  class: 'form-control' %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :comment %>
+            <%= f.text_area :comment,  class: 'form-control' %>
+          </div>
+
+          <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@taxon) } %>
+
+          <%= f.submit 'Update', :class => 'btn btn-default' %>
+        </div>
+
+        <% if @taxon.id %>
+          <div class="tab-pane" id="specimen">
+            <br>
+            <p>Specimen directly associated with this Taxon:</p>
+            <div class="wideTable">
+              <table id="individuals" data-source="<%= show_individuals_taxon_url(format: "json") %>" class="table table-striped table-hover table-bordered">
+                <thead>
+                <tr>
+                  <th>Specimen ID</th>
+                  <th>Associated Taxon</th>
+                  <th>Herbarium</th>
+                  <th>Collector</th>
+                  <th>Collector's Field Number</th>
+                  <th>Last updated</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
