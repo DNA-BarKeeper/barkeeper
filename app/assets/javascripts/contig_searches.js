@@ -74,17 +74,8 @@ jQuery(function() {
         minLength: 2
     });
 
-    $('#contig_search_species').autocomplete({
-        source: $('#contig_search_species').data('autocomplete-source'),
-        minLength: 2
-    });
-
-    $('#contig_search_family').autocomplete({
-        source: $('#contig_search_family').data('autocomplete-source')
-    });
-
-    $('#contig_search_order').autocomplete({
-        source: $('#contig_search_order').data('autocomplete-source')
+    $('#contig_search_taxon').autocomplete({
+        source: $('#contig_search_taxon').data('autocomplete-source')
     });
 
     $('#contig_search_verified_by').autocomplete({

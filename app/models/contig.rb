@@ -171,15 +171,6 @@ class Contig < ApplicationRecord
     warning
   end
 
-  def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-    # TODO: (how to) includes spp. etc (on top of individual)
-    contigs = Contig.select('species_id').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    contigs_s = Contig.select('species_component').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    contigs_i = Contig.select('individual_id').includes(isolate: :individual).joins(isolate: { individual: { species: { family: { order: :higher_order_taxon } } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-
-    [contigs.count, contigs_s.distinct.count, contigs.distinct.count, contigs_i.distinct.count]
-  end
-
   def isolate_name
     isolate.try(:display_name)
   end
