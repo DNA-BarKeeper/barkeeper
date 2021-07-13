@@ -2,24 +2,9 @@ jQuery(function() {
     if (document.getElementById("taxonomy_tree") != null) {
         initialize_buttons();
 
-        $("#taxonomy_root_select").on("change", () => $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            url: 'taxa/taxonomy_tree',
-            dataType: 'json',
-            data: {
-                root_id: $('#taxonomy_root_select option:selected').val()
-            },
-            success: function (data) {
-                remove_selected_taxon_info();
-                deleteVisualization('#taxonomy_tree');
+        loadTaxonomy();
 
-                drawTaxonomy(data[0]);
-            },
-            error: function (_result) {
-                console.error("Error getting data.");
-            }
-        }));
+        $("#taxonomy_root_select").on("change", () => loadTaxonomy());
     }
 
     $('#taxon_parent_name').autocomplete({
@@ -44,9 +29,29 @@ jQuery(function() {
     });
 });
 
+function loadTaxonomy() {
+    $.ajax({
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        url: 'taxa/taxonomy_tree',
+        dataType: 'json',
+        data: {
+            root_id: $('#taxonomy_root_select option:selected').val()
+        },
+        success: function (data) {
+            remove_selected_taxon_info();
+            deleteVisualization('#taxonomy_tree');
+
+            drawTaxonomy(data[0]);
+        },
+        error: function (_result) {
+            console.error("Error getting data.");
+        }
+    });
+}
+
 function initialize_buttons() {
     disableButton($("#center_root"), "Please load a taxonomy first");
-    disableButton($("#reset_tree_pos"), "Please load a taxonomy first");
 
     disableButton($("#center_selected_node"), "Please select a taxon first");
 
@@ -101,8 +106,8 @@ function drawTaxonomy(data) {
         duration = 750,
         root;
 
-    // // Declares a tree layout and assigns the size
-    var treemap = d3.tree().size([width, height]);
+    // Declares a tree layout and assigns the size
+    var treemap = d3.tree().separation(function(a, b) { return a.parent == b.parent ? 2.5 : 2; }).nodeSize([2 * nodeRadius, 4 * nodeRadius]);
 
     // Assigns the data to a hierarchy using parent-child relationships
     root = d3.hierarchy(data, function(d) {
@@ -118,13 +123,6 @@ function drawTaxonomy(data) {
     centerNode(root);
 
     enableButton($("#center_root"), "Center root node");
-    enableButton($("#reset_tree_pos"), "Align tree to top left");
-
-    // Button to reset zoom and reset tree to top left
-    d3.select("#reset_tree_pos")
-        .on("click", function() {
-            zoom.transform(svg, d3.zoomIdentity.translate(margin.left, margin.top).scale(scale));
-        });
 
     // Button to reset zoom and center root node
     d3.select("#center_root")
@@ -170,23 +168,8 @@ function drawTaxonomy(data) {
     }
 
     function update(source) {
-        var levelHeight = [1];
-        var childCount = function(level, n) {
-            if (n.children && n.children.length > 0) {
-                if (levelHeight.length <= level + 1) levelHeight.push(0);
-
-                levelHeight[level + 1] += n.children.length;
-                n.children.forEach(function(d) {
-                    childCount(level + 1, d);
-                });
-            }
-        };
-        childCount(0, root);
-        var newHeight = d3.max(levelHeight) === 2 ? 2 * 50 + (25 * levelHeight.length) : d3.max(levelHeight) * 50; // Account for diagonals in height calculation
-
-        treemap = treemap.size([newHeight, width]);
-
-        treeData = treemap(root);
+        // Assigns the x and y position for the nodes
+        var treeData = treemap(root);
 
         // Compute the new tree layout.
         var nodes = treeData.descendants(),
