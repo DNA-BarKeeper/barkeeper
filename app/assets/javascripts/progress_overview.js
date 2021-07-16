@@ -50,16 +50,28 @@ function changeDownloadButtonStatus() {
 function drawProgressTree(data) {
     var parentDiv = document.getElementById("progress_tree");
 
-    var width = parentDiv.clientWidth - 17, // subtract padding and border width
-        height = 710,
-        scale = 1,
-        radius = Math.max(width/2 - 100, 500),
-        nodeRadius = 2;
+    var width = parentDiv.clientWidth,
+        height = 710;
 
-    var treeLayout = d3.cluster().size([2 * Math.PI, radius - 100]);
+    var root = d3.hierarchy(data)
+        .sort((a, b) => d3.ascending(a.data.scientific_name, b.data.scientific_name));
 
-    var root = treeLayout(d3.hierarchy(data)
-        .sort((a, b) => d3.ascending(a.data.scientific_name, b.data.scientific_name)));
+    var maxChildren = 0;
+    var leaveCnt = 0;
+    root.descendants().forEach(function(d) {
+        if (!d.children){
+            maxChildren = Math.max(maxChildren, d.data.size);
+            leaveCnt++;
+        }
+    })
+
+    var radius = Math.max(width/2, leaveCnt * 30 / (2 * Math.PI)); // Calculate tree radius from number of leave nodes with a minimum distance of 30
+    var scale = height / ( 2 * radius);
+
+    var treeLayout = d3.cluster()
+        .size([2 * Math.PI, radius - 150]);
+
+    treeLayout(root);
 
     var svg = d3.select('#progress_tree')
         .append("svg")
@@ -82,13 +94,13 @@ function drawProgressTree(data) {
     svg.call(zoom);
 
     // Trigger initial zoom with an initial transform
-    zoom.transform(svg, d3.zoomIdentity.translate(width / 2, radius).scale(scale));
+    zoom.transform(svg, d3.zoomIdentity.translate($("#progress_svg").width() / 2, height/2).scale(scale)); // Initially zoom out to show full tree
 
     // Button to reset zoom and position
     d3.select("#reset_zoom")
         .on("click", function() {
             var current_width = $("#progress_svg").width();
-            zoom.transform(svg, d3.zoomIdentity.translate(current_width / 2, radius).scale(scale));
+            zoom.transform(svg, d3.zoomIdentity.translate(current_width / 2, height/2).scale(scale));
         });
     enableButton($('#reset_zoom'));
 
@@ -152,11 +164,13 @@ function drawProgressTree(data) {
         })
         .on("mousemove", function(d) {
             var finished_percent = d.data.size === 0 ? '' : " (" + ((d.data.finished_size / d.data.size) * 100).toFixed(2) + "%)";
+            var sidebar_width = $("#sidebar_progress_tree").width();
+
             tooltip
                 .html(d.data.scientific_name + ":<br>" + d.data.size + " species (incl. subspecies)<br>" + d.data.finished_size
                     + " finished" + finished_percent)
-                .style("left", (d3.event.pageX - parentDiv.offsetLeft + 10) + "px")
-                .style("top", (d3.event.pageY - parentDiv.offsetTop + 20) + "px");
+                .style("left", (d3.event.pageX - document.getElementById('chart_column').offsetLeft + 20) + "px")
+                .style("top", (d3.event.pageY - document.getElementById('chart_column').offsetTop - document.getElementById('progress_tree').offsetTop + 28) + "px");
         })
         .on("mouseout", function mouseout() {
             tooltip.transition()
@@ -168,8 +182,14 @@ function drawProgressTree(data) {
                 .style("font-weight", 'normal');
         });
 
+    var nodeRadiusMin = 4;
+    var nodeRadiusMax = 40;
+    var nodeSizeScale = d3.scaleLinear()
+        .domain([0, maxChildren])
+        .range([nodeRadiusMin, nodeRadiusMax]);
+
     nodeEnter.append('circle')
-      .attr('r', d => d.children ? nodeRadius : ((d.data.size / 5) + 1))
+      .attr('r', d => d.children ? nodeRadiusMin : nodeSizeScale(d.data.size))
       .style("stroke", "#555")
         .attr("fill", function(d) { return nodeColor((d.data.finished_size / d.data.size) * 100) })
       .attr("transform", d => `
@@ -187,7 +207,7 @@ function drawProgressTree(data) {
 		`)
         .attr("dy", "0.31em")
         .attr("x", function(d) {
-            r = d.children ? nodeRadius : ((d.data.size / 5) + 1);
+            r = d.children ? nodeRadiusMin : nodeSizeScale(d.data.size);
             return d.x < Math.PI === !d.children ? (r + 6) : (0 - r - 6);
         })
         .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")

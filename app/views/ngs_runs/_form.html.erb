@@ -37,8 +37,8 @@
       </div>
 
       <div class="form-group">
-        <%= f.label 'Associated Taxon' %>
-        <%= f.text_field :taxon_name, data: { autocomplete_source: filter_taxa_path }, class: 'form-control'%>
+        <%= f.label :taxon_id, 'Associated Taxon' %>
+        <%= f.collection_select :taxon_id, Taxon.order(:scientific_name), :id, :scientific_name, { include_blank: true }, { class:"form-control" } %>
       </div>
 
       <div class="form-group">

@@ -92,12 +92,10 @@ RSpec.feature "Advanced marker sequence searches", type: :feature, js: true do
 
 
   def can_create
-    order = FactoryBot.create(:order)
-    family = FactoryBot.create(:family, order: order)
-    species1 = FactoryBot.create(:species, family: family, genus_name: "Luzula", species_epithet: "rubella")
-    species2 = FactoryBot.create(:species, family: family, genus_name: "Rosa", species_epithet: "arvensis")
-    individual1 = FactoryBot.create(:individual, species: species1)
-    individual2 = FactoryBot.create(:individual, species: species2)
+    taxon1 = FactoryBot.create(:taxon, scientific_name: "Luzula rubella")
+    taxon2 = FactoryBot.create(:taxon, scientific_name: "Rosa arvensis")
+    individual1 = FactoryBot.create(:individual, taxon: taxon1)
+    individual2 = FactoryBot.create(:individual, taxon: taxon2)
     isolate1 = FactoryBot.create(:isolate, individual: individual1)
     isolate2 = FactoryBot.create(:isolate, individual: individual2)
 
@@ -110,7 +108,7 @@ RSpec.feature "Advanced marker sequence searches", type: :feature, js: true do
 
     expect(current_path).to eql(new_marker_sequence_search_path)
 
-    fill_in 'Species', :with => species1.composed_name
+    fill_in 'Taxon', :with => taxon1.scientific_name
 
     expect(page).to have_button "Search"
     click_on 'Search'

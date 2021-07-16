@@ -16,7 +16,7 @@
         <br/>
         <div class="field">
           <%= f.label :specimen_id, 'Specimen ID' %><br />
-          <%= f.text_field :specimen_id, data: { autocomplete_source: filter_individuals_path }, class: 'form-control' %>
+          <%= f.collection_select :specimen_id, Individual.order(:specimen_id), :id, :specimen_id, { include_blank: true }, { class:"form-control" } %>
         </div>
         <div class="field">
           <%= f.label :DNA_bank_id, 'Associated DNA Bank ID' %><br />
@@ -54,13 +54,13 @@
         </div>
         <br/>
         <div class="field">
-          <%= f.label :herbarium, 'Herbarium (Acronym)' %><br />
-          <%= f.text_field :herbarium, data: { autocomplete_source: Herbarium.order(:acronym).map(&:acronym) }, class: 'form-control' %>
+          <%= f.label :herbarium, 'Herbarium' %><br />
+          <%= f.collection_select :herbarium, Herbarium.order(:name), :id, :name, { include_blank: true }, { class:"form-control" } %>
         </div>
         <br/>
         <div class="field">
           <%= f.label :taxon, 'Associated Taxon' %><br />
-          <%= f.text_field :taxon, data: { autocomplete_source: filter_taxa_path }, include_blank: true, class: 'form-control' %>
+          <%= f.collection_select :taxon, Taxon.order(:scientific_name), :id, :scientific_name, { include_blank: true }, { class:"form-control" } %>
         </div>
         <br>
         <div class="actions"><%= f.submit "Search", class: 'btn btn-default'%></div>
