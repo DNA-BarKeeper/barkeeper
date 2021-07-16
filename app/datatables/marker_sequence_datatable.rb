@@ -48,18 +48,17 @@ class MarkerSequenceDatatable
 
   def data
     marker_sequences.map do |marker_sequence|
-      species_name = ''
-      species_id = 0
+      taxon_name = ''
+      taxon_id = 0
 
-      if marker_sequence.try(:isolate).try(:individual).try(:species)
-        species_name = marker_sequence.isolate.individual.species.name_for_display
-        species_id = marker_sequence.isolate.individual.species.id
+      if marker_sequence.try(:isolate).try(:individual).try(:taxon)
+        taxon_name = marker_sequence.isolate.individual.taxon.scientific_name
+        taxon_id = marker_sequence.isolate.individual.taxon.id
       end
 
       [
         link_to(marker_sequence.name, edit_marker_sequence_path(marker_sequence)),
-        link_to(species_name, edit_species_path(species_id)),
-        # species_name,
+        link_to(taxon_name, edit_taxon_path(taxon_id)),
         marker_sequence.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
         link_to('Delete', marker_sequence, method: :delete, data: { confirm: 'Are you sure?' })
       ]
@@ -71,13 +70,13 @@ class MarkerSequenceDatatable
   end
 
   def fetch_marker_sequences
-    marker_sequences = MarkerSequence.includes(isolate: [individual: :species]).in_project(@current_default_project).order("#{sort_column} #{sort_direction}") # TODO: ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
+    marker_sequences = MarkerSequence.includes(isolate: [individual: :taxon]).in_project(@current_default_project).order("#{sort_column} #{sort_direction}") # TODO: ---> maybe add find_each (batches!) later -if possible, probably conflicts with sorting
     marker_sequences = marker_sequences.page(page).per_page(per_page)
 
     if params[:sSearch].present?
       marker_sequences = marker_sequences.where('marker_sequences.name ILIKE :search
-OR species.composed_name ILIKE :search', search: "%#{params[:sSearch]}%")
-      .references(isolate: [individual: :species])
+OR taxa.scientific_name ILIKE :search', search: "%#{params[:sSearch]}%")
+      .references(isolate: [individual: :taxon])
     end
 
     marker_sequences
@@ -92,7 +91,7 @@ OR species.composed_name ILIKE :search', search: "%#{params[:sSearch]}%")
   end
 
   def sort_column
-    columns = %w[marker_sequences.name species.composed_name marker_sequences.updated_at]
+    columns = %w[marker_sequences.name taxa.scientific_name marker_sequences.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

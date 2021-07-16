@@ -5,8 +5,8 @@
 
   <div class="panel-heading">
     <h3 class="panel-title">Specimen <%= @individual.specimen_id %>
-      <% if @individual.try(:species) %>
-          - <%=link_to(@individual.species.name_for_display, edit_species_path(@individual.species.id))  %>
+      <% if @individual.try(:taxon) %>
+          - <%=link_to(@individual.taxon.scientific_name, edit_taxon_path(@individual.taxon.id))  %>
       <% end %>
     </h3>
   </div>
@@ -40,11 +40,11 @@
             </div>
 
             <div class="form-group">
-              <%= f.label 'Species' %>
-              <% if @individual.species %>
-                  <%= link_to '', edit_species_path(@individual.species), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@individual.species.composed_name} " %>
+              <%= f.label 'Parent Taxon' %>
+              <% if @individual.taxon %>
+                  <%= link_to '', edit_taxon_path(@individual.taxon), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@individual.taxon.scientific_name} " %>
               <% end %>
-              <%= f.text_field :species_name, data: { autocomplete_source: filter_species_index_path }, class: 'form-control'%>
+              <%= f.text_field :taxon_name, data: { autocomplete_source: filter_taxa_path }, class: 'form-control'%>
             </div>
 
             <div class="form-group">

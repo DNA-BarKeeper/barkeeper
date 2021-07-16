@@ -47,14 +47,6 @@ class Isolate < ApplicationRecord
   scope :recent, -> { where('isolates.updated_at > ?', 1.hours.ago) }
   scope :no_controls, -> { where(negative_control: false) }
 
-  def self.spp_in_higher_order_taxon(higher_order_taxon_id)
-    isolates = Isolate.select(:species_id).includes(:individual).joins(individual: { species: { family: { order: :higher_order_taxon } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    isolates_s = Isolate.select(:species_component).includes(:individual).joins(individual: { species: { family: { order: :higher_order_taxon } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-    isolates_i = Isolate.select(:individual_id).joins(individual: { species: { family: { order: :higher_order_taxon } } }).where(orders: { higher_order_taxon_id: higher_order_taxon_id })
-
-    [isolates.size, isolates_s.distinct.count, isolates.distinct.count, isolates_i.distinct.count]
-  end
-
   def self.import(file, project_id)
     spreadsheet = Isolate.open_spreadsheet(file)
     header = spreadsheet.row(1)

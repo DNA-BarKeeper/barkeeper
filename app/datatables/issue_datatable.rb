@@ -73,7 +73,6 @@ class IssueDatatable
     issues = issues.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      # WORKS?: species = species.where("name like :search or family like :search", search: "%#{params[:sSearch]}%")
       issues = issues.where('issues.title ILIKE :search', search: "%#{params[:sSearch]}%") # TODO: --> fix to use case-insensitive / postgres
     end
     issues

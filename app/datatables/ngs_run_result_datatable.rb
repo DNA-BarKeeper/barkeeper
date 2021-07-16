@@ -47,22 +47,22 @@ class NgsRunResultDatatable
 
   def data
     isolates_data.map do |isolate|
-      species_path = ''
+      taxon_path = ''
       family_path = ''
 
-      if isolate.try(:individual).try(:species)
-        species_id = isolate.individual.species_id
-        species_path = link_to(isolate.individual.species.name_for_display, edit_species_path(species_id)) if species_id
+      if isolate.try(:individual).try(:taxon)
+        taxon_id = isolate.individual.taxon_id
+        taxon_path = link_to(isolate.individual.taxon.scientific_name, edit_taxon_path(taxon_id)) if taxon_id
 
-        if isolate.try(:individual).try(:species).try(:family)
-          family_id = isolate.individual.species.family_id
-          family_path = link_to(isolate.individual.species.family.name, edit_family_path(family_id)) if family_id
+        if isolate.try(:individual).try(:taxon).parent
+          family = isolate.individual.taxon.ancestors.where(taxonomic_rank: :is_family).first
+          family_path = link_to(family.scientific_name, edit_taxon_path(family.id)) if family
         end
       end
 
       values = [
           link_to(isolate.display_name, edit_isolate_path(isolate)),
-          species_path,
+          taxon_path,
           family_path,
           NgsResult.where(ngs_run_id: @analysis_id, isolate: isolate).sum(:total_sequences)
       ]
@@ -86,21 +86,21 @@ class NgsRunResultDatatable
   def isolates_data
     @analysis_result ||= NgsRun.find_by_id(@analysis_id)
                              .isolates
-                             .includes(individual: [species: :family])
+                             .includes(individual: :taxon)
                              .distinct
                              .reorder("#{sort_column} #{sort_direction}")
 
     if params[:sSearch].present?
       @analysis_result = @analysis_result
-                             .where('isolates.display_name ILIKE :search OR species.composed_name ILIKE :search OR families.name ILIKE :search', search: "%#{params[:sSearch]}%")
-                             .references(individual: [species: :family])
+                             .where('isolates.display_name ILIKE :search OR taxa.scientific_name ILIKE :search', search: "%#{params[:sSearch]}%")
+                             .references(individual: :taxon)
     end
 
     @analysis_result
   end
 
   def sort_column
-    columns = %w[isolates.display_name species.composed_name families.name]
+    columns = %w[isolates.display_name taxa.scientific_name]
     columns[params[:iSortCol_0].to_i]
   end
 

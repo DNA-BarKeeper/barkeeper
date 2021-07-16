@@ -46,19 +46,19 @@ class IndividualSearchResultDatatable
 
   def data
     individuals_data.map do |individual|
-      species_name = ''
-      species_id = 0
+      taxon_name = ''
+      taxon_id = 0
 
-      if individual.try(:species)
-        species_name = individual.species.name_for_display
-        species_id = individual.species.id
+      if individual.try(:taxon)
+        taxon_name = individual.taxon.scientific_name
+        taxon_id = individual.taxon.id
       end
 
       herbarium = link_to individual.herbarium.acronym, edit_herbarium_path(individual.herbarium) if individual.herbarium
 
       [
         link_to(individual.specimen_id, edit_individual_path(individual)),
-        link_to(species_name, edit_species_path(species_id)),
+        link_to(taxon_name, edit_taxon_path(taxon_id)),
         herbarium,
         individual.latitude_original,
         individual.longitude_original,
@@ -69,15 +69,15 @@ class IndividualSearchResultDatatable
   end
 
   def individuals_data
-    @search_result ||= IndividualSearch.find_by_id(@search_id).individuals.includes(:species, :herbarium).reorder("#{sort_column} #{sort_direction}")
+    @search_result ||= IndividualSearch.find_by_id(@search_id).individuals.includes(:taxon, :herbarium).reorder("#{sort_column} #{sort_direction}")
 
     @search_result = @search_result.page(page).per_page(per_page)
 
     if params[:sSearch].present?
       @search_result = @search_result.where('individuals.specimen_id ILIKE :search
-OR species.composed_name ILIKE :search
+OR taxa.scientific_name ILIKE :search
 OR herbaria.acronym ILIKE :search', search: "%#{params[:sSearch]}%")
-                                     .references(:species)
+                                     .references(:taxon)
     end
 
     @search_result
@@ -92,7 +92,7 @@ OR herbaria.acronym ILIKE :search', search: "%#{params[:sSearch]}%")
   end
 
   def sort_column
-    columns = %w[individuals.specimen_id species.composed_name herbaria.acronym individuals.latitude_original individuals.longitude_original individuals.updated_at]
+    columns = %w[individuals.specimen_id taxa.scientific_name herbaria.acronym individuals.latitude_original individuals.longitude_original individuals.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

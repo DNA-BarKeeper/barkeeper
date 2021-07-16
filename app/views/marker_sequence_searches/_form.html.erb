@@ -7,89 +7,82 @@
   </div>
 
   <div class="panel-body">
-    <%= form_for @marker_sequence_search do |f| %>
-      <div class="field">
-        <%= f.label :title, 'Title (if you leave this field empty the search will not be saved)' %><br />
-        <%= f.text_field :title, class: 'form-control' %>
-      </div>
-      <div class="field">
-        <%= f.label :name, 'Marker sequence name' %><br />
-        <%= f.text_field :name, data: { autocomplete_source: filter_contigs_path }, include_blank: true, class: 'form-control' %>
-      </div>
-      <br/>
-      <div>
-        <%= f.radio_button :verified, "verified" %>
-        <%= f.label :verified, "Verified" %>
-        <%= f.radio_button :verified, "unverified" %>
-        <%= f.label :unverified, "Unverified" %>
-        <%= f.radio_button :verified, "both", :checked => radio_checked(@marker_sequence_search, 'verified', 'both') %>
-        <%= f.label :both_verify, "Both" %>
-      </div>
-      <div class="field">
-        <%= f.label :verified_by %><br />
-        <%= f.text_field :verified_by, data: { autocomplete_source: User.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
-      </div>
-      <br/>
-      <div>
-        <%= f.check_box :has_species %>
-        <%= f.label :has_species, "Is assigned to a species" %>
-      </div>
-      <br/>
-      <div>
-        <%= f.check_box :no_isolate %>
-        <%= f.label :no_isolate, "Does not have an associated isolate" %>
-      </div>
-      <br/>
-      <div>
-        <%= f.label :has_warnings, 'Search for marker sequences with unsolved SATIVA warnings:' %><br>
-        <%= f.radio_button :has_warnings, "yes" %>
-        <%= f.label :yes, "Yes" %>
-        <%= f.radio_button :has_warnings, "no" %>
-        <%= f.label :no, "No" %>
-        <%= f.radio_button :has_warnings, "both", :checked => radio_checked(@marker_sequence_search, 'has_warnings', 'both') %>
-        <%= f.label :both, "Search for both" %>
-      </div>
-      <br/>
-      <div class="field">
-        <%= f.label :marker %><br />
-        <%= f.text_field :marker, data: { autocomplete_source: Marker.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
-      </div>
-      <div class="field">
-        <%= f.label :specimen %><br />
-        <%= f.text_field :specimen, data: { autocomplete_source: filter_individuals_path(format: 'json') }, include_blank: true, class: 'form-control' %>
-      </div>
-      <div class="field">
-        <%= f.label :species %><br />
-        <%= f.text_field :species, data: { autocomplete_source: filter_species_index_path }, include_blank: true, class: 'form-control' %>
-      </div>
-      <div class="field">
-        <%= f.label :family %><br />
-        <%= f.text_field :family, data: { autocomplete_source: filter_families_path }, include_blank: true, class: 'form-control' %>
-      </div>
-      <div class="field">
-        <%= f.label :higher_order_taxon %><br />
-        <%= f.text_field :higher_order_taxon, data: { autocomplete_source: HigherOrderTaxon.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
-      </div>
-      <div class="field">
-        <%= f.label :order %><br />
-        <%= f.text_field :order, data: { autocomplete_source: Order.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
-      </div>
-      <br>
-      <div class="field">
-        <%= f.label :age, "Sequence length between (leave blank to not use a length limit)" %><br />
-        <%= f.number_field :min_length, class: 'form-control' %> and <%= f.number_field :max_length, class: 'form-control' %>
-      </div>
-      <br>
-      <div class="field">
-        <%= f.label :age, "Created between" %><br />
-        <%= f.text_field :min_age, class: 'form-control' %> and <%= f.text_field :max_age, class: 'form-control' %>
-      </div>
-      <div class="field">
-        <%= f.label :update, "Updated between" %><br />
-        <%= f.text_field :min_update, class: 'form-control' %> and <%= f.text_field :max_update, class: 'form-control' %>
-      </div>
-      <br>
-      <div class="actions"><%= f.submit "Search", class: 'btn btn-default'%></div>
-    <% end %>
+    <div class="advanced_search">
+      <%= form_for @marker_sequence_search do |f| %>
+        <div class="field">
+          <%= f.label :title, 'Title (if you leave this field empty the search will not be saved)' %><br />
+          <%= f.text_field :title, class: 'form-control' %>
+        </div>
+        <div class="field">
+          <%= f.label :name, 'Marker sequence name' %><br />
+          <%= f.text_field :name, data: { autocomplete_source: filter_contigs_path }, include_blank: true, class: 'form-control' %>
+        </div>
+        <br/>
+        <div>
+          <%= f.radio_button :verified, "verified" %>
+          <%= f.label :verified, "Verified" %>
+          <%= f.radio_button :verified, "unverified" %>
+          <%= f.label :unverified, "Unverified" %>
+          <%= f.radio_button :verified, "both", :checked => radio_checked(@marker_sequence_search, 'verified', 'both') %>
+          <%= f.label :both_verify, "Both" %>
+        </div>
+        <div class="field">
+          <%= f.label :verified_by %><br />
+          <%= f.text_field :verified_by, data: { autocomplete_source: User.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+        </div>
+        <br/>
+        <div>
+          <%= f.check_box :has_taxon %>
+          <%= f.label :has_taxon, "Has an associated taxon" %>
+        </div>
+        <br/>
+        <div>
+          <%= f.check_box :no_isolate %>
+          <%= f.label :no_isolate, "Does not have an associated isolate" %>
+        </div>
+        <br/>
+        <div>
+          <%= f.label :has_warnings, 'Search for marker sequences with unsolved SATIVA warnings:' %><br>
+          <%= f.radio_button :has_warnings, "yes" %>
+          <%= f.label :yes, "Yes" %>
+          <%= f.radio_button :has_warnings, "no" %>
+          <%= f.label :no, "No" %>
+          <%= f.radio_button :has_warnings, "both", :checked => radio_checked(@marker_sequence_search, 'has_warnings', 'both') %>
+          <%= f.label :both, "Search for both" %>
+        </div>
+        <br/>
+        <div class="field">
+          <%= f.label :marker %><br />
+          <%= f.text_field :marker, data: { autocomplete_source: Marker.order(:name).map(&:name) }, include_blank: true, class: 'form-control' %>
+        </div>
+
+        <div class="field">
+          <%= f.label :specimen %><br />
+          <%= f.text_field :specimen, data: { autocomplete_source: filter_individuals_path(format: 'json') }, include_blank: true, class: 'form-control' %>
+        </div>
+
+        <div class="field">
+          <%= f.label :taxon %><br />
+          <%= f.text_field :taxon, data: { autocomplete_source: filter_taxon_path }, include_blank: true, class: 'form-control' %>
+        </div>
+        <br>
+        <div class="field">
+          <%= f.label :age, "Sequence length between (leave blank to not use a length limit)" %><br />
+          <%= f.number_field :min_length, class: 'form-control' %> and <%= f.number_field :max_length, class: 'form-control' %>
+        </div>
+        <br>
+        <div class="field">
+          <%= f.label :age, "Created between" %><br />
+          <%= f.text_field :min_age, class: 'form-control' %> and <%= f.text_field :max_age, class: 'form-control' %>
+        </div>
+
+        <div class="field">
+          <%= f.label :update, "Updated between" %><br />
+          <%= f.text_field :min_update, class: 'form-control' %> and <%= f.text_field :max_update, class: 'form-control' %>
+        </div>
+        <br>
+        <div class="actions"><%= f.submit "Search", class: 'btn btn-default'%></div>
+      <% end %>
+    </div>
   </div>
 </div>

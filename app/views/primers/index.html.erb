@@ -40,7 +40,7 @@
     <br>
 
     <div class="well">
-      Import Primers from spreadsheet <%= link_to '(Download template file)', 'https://s3-eu-west-1.amazonaws.com/gbol5/Primer+upload+template.xls' %>:<p></p>
+      <p>Import Primers from spreadsheet <%= link_to '(Download example / template file)', 'templates/Primer+upload+template.xls' %>:</p>
       <%= form_tag import_primers_path, multipart: true do %>
           <%= file_field_tag :file %>
           <br>
