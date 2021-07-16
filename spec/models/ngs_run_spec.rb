@@ -41,8 +41,8 @@ RSpec.describe NgsRun do
     should validate_uniqueness_of(:name)
   end
 
-  it "belongs to a higher order taxon" do
-    should belong_to(:higher_order_taxon)
+  it "belongs to a taxon" do
+    should belong_to(:taxon)
   end
 
   it "has many tag primer maps" do

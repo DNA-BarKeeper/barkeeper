@@ -5,8 +5,8 @@
 
   <div class="panel-heading">
     <h3 class="panel-title"><%= @primer_read.name %>
-      <% if @primer_read.try(:contig).try(:isolate).try(:individual).try(:species) %>
-          - <%= link_to(@primer_read.contig.isolate.individual.species.name_for_display, edit_species_path(@primer_read.contig.isolate.individual.species.id))  %>
+      <% if @primer_read.try(:contig).try(:isolate).try(:individual).try(:taxon) %>
+        - <%= link_to(@primer_read.contig.isolate.individual.taxon.scientific_name, edit_taxon_path(@primer_read.contig.isolate.individual.taxon.id))  %>
       <% end %>
     </h3>
   </div>
@@ -39,11 +39,11 @@
 
 
             <div class="form-group">
-              <%= f.label 'Contig' %>
+              <%= f.label :contig_id, 'Contig' %>
               <% if @primer_read.contig %>
                   <%= link_to '', edit_contig_path(@primer_read.contig), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@primer_read.contig.name} " %>
               <% end %>
-              <%= f.text_field :contig_name , data: {autocomplete_source: filter_contigs_path} , class: 'form-control'%>
+              <%= f.collection_select :contig_id, Contig.order(:name), :id, :name, { include_blank: true }, { class:"form-control" } %>
             </div>
 
             <div class="form-group">
