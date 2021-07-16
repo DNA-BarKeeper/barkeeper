@@ -2,54 +2,35 @@ jQuery(function() {
     if (document.getElementById("taxonomy_tree") != null) {
         initialize_buttons();
 
-        $("#taxonomy_root_select").on("change", () => $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            url: 'taxa/taxonomy_tree',
-            dataType: 'json',
-            data: {
-                root_id: $('#taxonomy_root_select option:selected').val()
-            },
-            success: function (data) {
-                remove_selected_taxon_info();
-                deleteVisualization('#taxonomy_tree');
+        loadTaxonomy();
 
-                drawTaxonomy(data[0]);
-            },
-            error: function (_result) {
-                console.error("Error getting data.");
-            }
-        }));
+        $("#taxonomy_root_select").on("change", () => loadTaxonomy());
     }
-
-    $('#taxon_parent_name').autocomplete({
-        source: $('#taxon_parent_name').data('autocomplete-source')});
-
-    $('#taxon_project_ids').chosen({
-        allow_single_deselect: true,
-        no_results_text: 'No results matched'
-    });
-
-    $('#taxon_search').autocomplete({
-        source: $('#taxon_search').data('autocomplete-source')});
-
-    $('#orphans').DataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#orphans').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 5 }
-        ],
-        "order": [ 0, 'asc' ]
-    });
 });
 
+function loadTaxonomy() {
+    $.ajax({
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        url: 'taxa/taxonomy_tree',
+        dataType: 'json',
+        data: {
+            root_id: $('#taxonomy_root_select option:selected').val()
+        },
+        success: function (data) {
+            remove_selected_taxon_info();
+            deleteVisualization('#taxonomy_tree');
+
+            drawTaxonomy(data[0]);
+        },
+        error: function (_result) {
+            console.error("Error getting data.");
+        }
+    });
+}
+
 function initialize_buttons() {
-    disableButton($("#center_root"), "Please load a taxonomy first");
-    disableButton($("#reset_tree_pos"), "Please load a taxonomy first");
-
     disableButton($("#center_selected_node"), "Please select a taxon first");
-
     disableButton($("#edit_taxon"), "Please select a taxon first");
     disableButton($("#delete_taxon"), "Please select a taxon first");
 }
@@ -72,6 +53,7 @@ function drawTaxonomy(data) {
         scale = 1;
 
     var selected_node = null;
+    var selected_circle = null;
 
     // Append the SVG object to the parent div
     var svg = d3.select('#taxonomy_tree')
@@ -101,8 +83,8 @@ function drawTaxonomy(data) {
         duration = 750,
         root;
 
-    // // Declares a tree layout and assigns the size
-    var treemap = d3.tree().size([width, height]);
+    // Declares a tree layout and assigns the size
+    var treemap = d3.tree().separation(function(a, b) { return a.parent == b.parent ? 2.5 : 2; }).nodeSize([2 * nodeRadius, 4 * nodeRadius]);
 
     // Assigns the data to a hierarchy using parent-child relationships
     root = d3.hierarchy(data, function(d) {
@@ -115,21 +97,12 @@ function drawTaxonomy(data) {
 
     update(root);
 
-    centerNode(root);
-
-    enableButton($("#center_root"), "Center root node");
-    enableButton($("#reset_tree_pos"), "Align tree to top left");
-
-    // Button to reset zoom and reset tree to top left
-    d3.select("#reset_tree_pos")
-        .on("click", function() {
-            zoom.transform(svg, d3.zoomIdentity.translate(margin.left, margin.top).scale(scale));
-        });
+    alignTreeLeft(root);
 
     // Button to reset zoom and center root node
-    d3.select("#center_root")
+    d3.select("#reset_position")
         .on("click", function() {
-            centerNode(root);
+            alignTreeLeft(root);
         });
 
     // Button to reset zoom and center root node
@@ -140,18 +113,12 @@ function drawTaxonomy(data) {
             }
         });
 
-    d3.select('#start_search')
-        .on("click", function() { startTaxonSearch() });
-
-    document.getElementById('taxon_search')
-        .addEventListener("keydown", function (e) {
-        if (e.code === "Enter") {
-            startTaxonSearch();
-        }
+    $('#taxon_search').on('select2:select', function (e) {
+        startTaxonSearch();
     });
 
     function startTaxonSearch() {
-        var taxon_name = document.getElementById('taxon_search').value;
+        var taxon_name = $('#taxon_search').select2('data')[0].text;
 
         $.ajax({
             type: "GET",
@@ -170,23 +137,8 @@ function drawTaxonomy(data) {
     }
 
     function update(source) {
-        var levelHeight = [1];
-        var childCount = function(level, n) {
-            if (n.children && n.children.length > 0) {
-                if (levelHeight.length <= level + 1) levelHeight.push(0);
-
-                levelHeight[level + 1] += n.children.length;
-                n.children.forEach(function(d) {
-                    childCount(level + 1, d);
-                });
-            }
-        };
-        childCount(0, root);
-        var newHeight = d3.max(levelHeight) === 2 ? 2 * 50 + (25 * levelHeight.length) : d3.max(levelHeight) * 50; // Account for diagonals in height calculation
-
-        treemap = treemap.size([newHeight, width]);
-
-        treeData = treemap(root);
+        // Assigns the x and y position for the nodes
+        var treeData = treemap(root);
 
         // Compute the new tree layout.
         var nodes = treeData.descendants(),
@@ -249,29 +201,7 @@ function drawTaxonomy(data) {
             .attr("fill-opacity", 1)
             .style('font', '14px sans-serif')
             .on('click', function(d) {
-                // Display taxon info in top left div
-                var text = "<b>Scientific name:</b> " + htmlSafe(d.data.scientific_name) + "<br>";
-                if (d.data.taxonomic_rank) text += "<b>Taxonomic rank</b>: " + htmlSafe(d.data.taxonomic_rank) + "<br>";
-                if (d.data.synonym) text += "<b>Synonym</b>: " + htmlSafe(d.data.synonym) + "<br>";
-                if (d.data.common_name) text += "<b>Common name:</b> " + htmlSafe(d.data.common_name) + "<br>";
-                if (d.data.author) text += "<b>Author:</b> " + htmlSafe(d.data.author) + "<br>";
-                if (d.data.comment) text += "<b>Comment:</b> " + htmlSafe(d.data.comment) + "<br>";
-                taxon_text.html(text);
-
-                // Set correct taxon edit and destroy links and enable buttons
-                var taxon_edit_link = d3.select('#edit_taxon').attr('href').replace(/(.*\/)(\d+)(\/.*)/, "$1" + d.data.id + "$3");
-                d3.select('#edit_taxon').attr('href', taxon_edit_link);
-                enableButton($('#edit_taxon'), 'Edit entry in a new tab');
-
-                var taxon_delete_link = d3.select('#delete_taxon').attr('href').replace(/(.*\/)(\d+)/, "$1" + d.data.id);
-                d3.select('#delete_taxon').attr('href', taxon_delete_link);
-                enableButton($('#delete_taxon'), 'Delete taxon entry');
-
-                selected_node = d;
-                enableButton($('#center_selected_node'), 'Center currently selected node');
-
-                // Display list of specimen associated with this taxon
-                display_specimen_Data(d);
+                selectNode(d, this);
             });
 
         // UPDATE
@@ -379,6 +309,16 @@ function drawTaxonomy(data) {
         }.bind(this)) : toggle(d);
     }
 
+    function alignTreeLeft(root) {
+        x = margin.left;
+        y = -root.x0 + height / 2;
+
+        d3.select('g').transition()
+            .duration(duration)
+            .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
+        zoom.transform(svg, d3.zoomIdentity.translate(x, y).scale(scale));
+    }
+
     function centerNode(source) {
         x = -source.y0;
         y = -source.x0;
@@ -449,6 +389,52 @@ function drawTaxonomy(data) {
         });
 
         return promise; //return a promise if async. requests
+    }
+
+    function selectNode(d, current_circle) {
+        // Display taxon info in top left div
+        var text = "<b>Scientific name:</b> " + htmlSafe(d.data.scientific_name) + "<br>";
+        if (d.data.taxonomic_rank) text += "<b>Taxonomic rank</b>: " + htmlSafe(d.data.taxonomic_rank) + "<br>";
+        if (d.data.synonym) text += "<b>Synonym</b>: " + htmlSafe(d.data.synonym) + "<br>";
+        if (d.data.common_name) text += "<b>Common name:</b> " + htmlSafe(d.data.common_name) + "<br>";
+        if (d.data.author) text += "<b>Author:</b> " + htmlSafe(d.data.author) + "<br>";
+        if (d.data.comment) text += "<b>Comment:</b> " + htmlSafe(d.data.comment) + "<br>";
+        taxon_text.html(text);
+
+        // Set correct taxon edit and destroy links and enable buttons
+        var taxon_edit_link = d3.select('#edit_taxon').attr('href').replace(/(.*\/)(\d+)(\/.*)/, "$1" + d.data.id + "$3");
+        d3.select('#edit_taxon').attr('href', taxon_edit_link);
+        enableButton($('#edit_taxon'), 'Edit entry in a new tab');
+
+        var taxon_delete_link = d3.select('#delete_taxon').attr('href').replace(/(.*\/)(\d+)/, "$1" + d.data.id);
+        d3.select('#delete_taxon').attr('href', taxon_delete_link);
+        enableButton($('#delete_taxon'), 'Delete taxon entry');
+
+        selected_node = d;
+        enableButton($('#center_selected_node'), 'Center currently selected node');
+
+        // Reset previously selected circle to normal view if one was selected
+        if (selected_circle) {
+            d3.select(selected_circle)
+                .style("stroke-width", '1px')
+                .style("font-weight", 'normal');
+
+            d3.select(selected_circle.parentNode).selectAll("circle")
+                .style("fill", function (d) {
+                    return d.data.has_children ? "lightgrey" : "#fff";
+                });
+        }
+
+        selected_circle = current_circle;
+        d3.select(selected_circle)
+            .style("stroke-width", '2px')
+            .style("font-weight", 'bold');
+
+        d3.select(selected_circle.parentNode).selectAll("circle")
+            .style("fill", '#616161');
+
+        // Display list of specimen associated with this taxon
+        display_specimen_Data(d);
     }
 
     function display_specimen_Data(d) {

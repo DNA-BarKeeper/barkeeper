@@ -2,10 +2,10 @@ class Taxon < ApplicationRecord
   extend Import
   include ProjectRecord
 
-  has_many :individuals
-  has_many :ngs_runs
+  has_many :individuals, dependent: :nullify
+  has_many :ngs_runs, dependent: :nullify
 
-  has_ancestry  cache_depth: true, counter_cache: true
+  has_ancestry  cache_depth: true, counter_cache: true, orphan_strategy: :adopt
 
   validates_presence_of :scientific_name
   validates_uniqueness_of :scientific_name
@@ -33,7 +33,7 @@ class Taxon < ApplicationRecord
           children: children}
       end.to_json
     else
-      Taxon.find(root_id).subtree.to_depth(1).order(:position, :scientific_name)
+      Taxon.find(root_id).subtree.to_depth(3).order(:position, :scientific_name)
            .in_project(project_id).arrange_serializable do |parent, children|
         { id: parent.id,
           scientific_name: parent.scientific_name,
