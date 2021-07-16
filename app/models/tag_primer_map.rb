@@ -74,18 +74,18 @@ class TagPrimerMap < ApplicationRecord
 
       sample_id.match(/\D+\d+|\D+\z/)[0]
 
-      isolate = Isolate.includes(individual: :species).find_by_lab_isolation_nr(sample_id)
+      isolate = Isolate.includes(individual: :taxon).find_by_lab_isolation_nr(sample_id)
       unless isolate
-        isolate = Isolate.includes(individual: :species).create(lab_isolation_nr: sample_id)
+        isolate = Isolate.includes(individual: :taxon).create(lab_isolation_nr: sample_id)
         isolate.add_projects(project_ids)
         isolate.save
       end
 
-      species = isolate&.individual&.species
-      species_name = species.composed_name.gsub(' ', '_') if species
+      taxon = isolate&.individual&.taxon
+      taxon_name = taxon.scientific_name.gsub(' ', '_') if taxon
 
       description = [sample_id]
-      description << species_name if species_name
+      description << taxon_name if taxon_name
       description << row['TagID'] if row['TagID']
       description << row['Region'] if row['Region']
 

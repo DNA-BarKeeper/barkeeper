@@ -30,35 +30,6 @@ class SpeciesController < ApplicationController
 
   before_action :set_species, only: %i[show edit update destroy]
 
-  def create_xls
-    SpeciesExport.perform_async(current_project_id)
-    redirect_to species_index_path,
-                notice: "Writing Excel file to S3 in background. May take a minute or so. Download from Species index page > 'Download last species export'."
-  end
-
-  def xls
-    require 'open-uri'
-
-    export = SpeciesExporter.last.species_export
-
-    if export.attached?
-      begin
-        data = open(export.service_url)
-        send_data(data.read, filename: 'species_export.xls',
-                             type: 'application/vnd.ms-excel',
-                             disposition: 'attachment',
-                             stream: 'true',
-                             buffer_size: '4096')
-      rescue OpenURI::HTTPError # Species XLS could not be found on server
-        redirect_to species_index_path,
-                    alert: 'The species XLS file could not be opened. Please try to export it again or contact an administrator if the issue persists.'
-      end
-    else
-      redirect_to species_index_path,
-                  notice: 'Please wait while the file is being written to the server.'
-    end
-  end
-
   # GET /species
   # GET /species.json
   def index

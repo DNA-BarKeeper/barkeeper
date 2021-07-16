@@ -47,14 +47,14 @@ class ClusterDatatable
 
   def data
     clusters.map do |cluster|
-      species_name = ''
-      species_id = 0
+      taxon_name = ''
+      taxon_id = 0
       individual_name = ''
       individual_id = 0
 
-      if cluster.try(:isolate).try(:individual).try(:species)
-        species_name = cluster.isolate.individual.species.name_for_display
-        species_id = cluster.isolate.individual.species.id
+      if cluster.try(:isolate).try(:individual).try(:taxon)
+        taxon_name = cluster.isolate.individual.taxon.scientific_name
+        taxon_id = cluster.isolate.individual.taxon.id
         individual_name = cluster.isolate.individual.specimen_id
         individual_id = cluster.isolate.individual.id
       end
@@ -62,7 +62,7 @@ class ClusterDatatable
       [
           link_to(cluster.name, cluster_path(cluster)),
           link_to(cluster.ngs_run.name, edit_ngs_run_path(cluster.ngs_run)),
-          link_to(species_name, edit_species_path(species_id)),
+          link_to(taxon_name, edit_taxon_path(taxon_id)),
           link_to(individual_name, edit_individual_path(individual_id)),
           cluster.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
           link_to('Delete', cluster, method: :delete, data: { confirm: 'Are you sure?' })
@@ -76,12 +76,12 @@ class ClusterDatatable
 
   def fetch_clusters
     if @isolate_id
-      clusters = Cluster.includes(:ngs_run, isolate: [individual: :species])
+      clusters = Cluster.includes(:ngs_run, isolate: [individual: :taxon])
                      .where(isolate_id: @isolate_id)
                      .in_project(@current_default_project)
                      .order("#{sort_column} #{sort_direction}")
     else
-      clusters = Cluster.includes(:ngs_run, isolate: [individual: :species])
+      clusters = Cluster.includes(:ngs_run, isolate: [individual: :taxon])
                      .in_project(@current_default_project)
                      .order("#{sort_column} #{sort_direction}")
     end
@@ -102,7 +102,7 @@ class ClusterDatatable
   end
 
   def sort_column
-    columns = %w[clusters.name ngs_runs.name species.composed_name individuals.specimen_id clusters.updated_at]
+    columns = %w[clusters.name ngs_runs.name taxa.scientific_name individuals.specimen_id clusters.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

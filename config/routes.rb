@@ -8,10 +8,10 @@ BarcodeWorkflowManager::Application.routes.draw do
   match 'impressum', to: 'homes#impressum', via: 'get'
   match 'privacy_policy', to: 'homes#privacy_policy', via: 'get'
 
-  match 'overview', to: 'homes#overview', via: 'get'
-  get 'overview_diagram/index'
-  get 'overview_diagram/all_species', defaults: { format: 'json' }
-  get 'overview_diagram/finished_species_marker', defaults: { format: 'json' }
+  match 'progress', to: 'homes#progress', via: 'get'
+  get 'progress_overview/index'
+  get 'progress_overview/export_progress_csv'
+  get 'progress_overview/progress_tree', defaults: { format: 'json' }
 
   get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'
@@ -35,6 +35,10 @@ BarcodeWorkflowManager::Application.routes.draw do
     get :export_as_pde
   end
 
+  resources :individual_searches do
+    get :export_as_csv
+  end
+
   resources :ngs_runs do
     collection do
       post :revised_tpm
@@ -49,8 +53,6 @@ BarcodeWorkflowManager::Application.routes.draw do
   end
 
   resources :clusters
-
-  resources :individual_searches
 
   resources :herbaria
 
@@ -89,8 +91,7 @@ BarcodeWorkflowManager::Application.routes.draw do
     collection do
       get :filter
       get :problematic_specimens
-      get :create_xls
-      get :xls
+      get :export_as_csv
     end
   end
 
@@ -129,14 +130,28 @@ BarcodeWorkflowManager::Application.routes.draw do
     end
   end
 
+  resources :taxa do
+    member do
+      get :show_individuals
+      get :associated_specimen
+    end
+
+    collection do
+      get :filter
+      get :taxonomy_tree, defaults: { format: 'json' }
+      get :find_ancestry, defaults: { format: 'text' }
+      get :export_as_csv
+      get :orphans
+      post :import_csv
+    end
+  end
+
   resources :species do
     collection do
       get :filter
       get :get_mar
       get :get_bry
       get :get_ant
-      get :create_xls
-      get :xls
       post :import_stuttgart
       post :import_berlin
       post :import_gbolii
@@ -147,11 +162,8 @@ BarcodeWorkflowManager::Application.routes.draw do
     end
   end
 
-  resources :primer_pos_on_genomes
-
   resources :projects do
     collection do
-      get :search_taxa
       get :add_to_taxa
     end
   end
@@ -173,8 +185,6 @@ BarcodeWorkflowManager::Application.routes.draw do
   resources :orders
 
   resources :tissues
-
-  resources :statuses
 
   resources :primers do
     collection do
