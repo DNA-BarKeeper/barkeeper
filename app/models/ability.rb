@@ -36,11 +36,10 @@ class Ability
     can %i[edit index filter taxonomy_tree associated_specimen find_ancestry show_individuals], Taxon
     can %i[edit index filter], Individual
     can %i[edit index], Herbarium
-
     can %i[edit index filter show_individuals xls], Species
     can %i[edit index filter show_species], Family
+    can %i[edit index filter], Order
     can %i[edit index show_species], HigherOrderTaxon
-
     can %i[edit index filter change_via_script compare_contigs as_fasq], Contig
     can %i[edit index filter], Isolate
     can [:filter], MarkerSequence

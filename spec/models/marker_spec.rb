@@ -37,8 +37,8 @@ RSpec.describe Marker do
     should validate_presence_of(:name)
   end
 
-  it "has and belongs to many higher order taxa" do
-    should have_and_belong_to_many(:higher_order_taxa)
+  it "has and belongs to many taxa" do
+    should have_and_belong_to_many(:taxa)
   end
 
   it "have many marker sequences" do

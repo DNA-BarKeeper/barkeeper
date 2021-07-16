@@ -7,8 +7,8 @@ BarcodeWorkflowManager::Application.routes.draw do
   match 'documentation', to: 'homes#documentation', via: 'get'
   match 'impressum', to: 'homes#impressum', via: 'get'
   match 'privacy_policy', to: 'homes#privacy_policy', via: 'get'
-  match 'progress', to: 'homes#progress', via: 'get'
 
+  match 'progress', to: 'homes#progress', via: 'get'
   get 'progress_overview/index'
   get 'progress_overview/export_progress_csv'
   get 'progress_overview/progress_tree', defaults: { format: 'json' }
@@ -120,19 +120,10 @@ BarcodeWorkflowManager::Application.routes.draw do
 
   resources :issues
 
-  resources :higher_order_taxa do
-    collection do
-      get 'hierarchy_tree', defaults: { format: 'json' }
-    end
-
-    member do
-      get 'show_species'
-    end
-  end
-
   resources :taxa do
     member do
       get :show_individuals
+      get :show_children
       get :associated_specimen
     end
 
@@ -143,22 +134,6 @@ BarcodeWorkflowManager::Application.routes.draw do
       get :export_as_csv
       get :orphans
       post :import_csv
-    end
-  end
-
-  resources :species do
-    collection do
-      get :filter
-      get :get_mar
-      get :get_bry
-      get :get_ant
-      post :import_stuttgart
-      post :import_berlin
-      post :import_gbolii
-    end
-
-    member do
-      get 'show_individuals'
     end
   end
 
@@ -182,8 +157,6 @@ BarcodeWorkflowManager::Application.routes.draw do
     end
   end
 
-  resources :orders
-
   resources :tissues
 
   resources :primers do
@@ -196,7 +169,11 @@ BarcodeWorkflowManager::Application.routes.draw do
 
   resources :micronic_plates
 
-  resources :markers
+  resources :markers do
+    collection do
+      get 'filter'
+    end
+  end
 
   resources :isolates do
     collection do
@@ -219,15 +196,6 @@ BarcodeWorkflowManager::Application.routes.draw do
   resources :mislabels do
     member do
       get :solve
-    end
-  end
-
-  resources :families do
-    collection do
-      get 'filter'
-    end
-    member do
-      get 'show_species'
     end
   end
 

@@ -40,24 +40,24 @@
             </div>
 
             <div class="form-group">
-              <%= f.label 'Parent Taxon' %>
+              <%= f.label :taxon_id, 'Parent Taxon' %>
               <% if @individual.taxon %>
                   <%= link_to '', edit_taxon_path(@individual.taxon), :class => 'glyphicon glyphicon-share-alt', :title => "go to #{@individual.taxon.scientific_name} " %>
               <% end %>
-              <%= f.text_field :taxon_name, data: { autocomplete_source: filter_taxa_path }, class: 'form-control'%>
+              <%= f.collection_select :taxon_id, Taxon.order(:scientific_name), :id, :scientific_name, { include_blank: true }, { class:"form-control" } %>
             </div>
 
             <div class="form-group">
-              <%= f.label 'Herbarium' %>
+              <%= f.label :herbarium_id, 'Herbarium' %>
               <% if @individual.herbarium %>
                 <%= link_to '', edit_herbarium_path(@individual.herbarium), :class => "glyphicon glyphicon-share-alt" %>
               <% end %>
-              <%= f.collection_select(:herbarium_id, Herbarium.all, :id, :name, { include_blank: '<no selection>' }, { class: 'form-control' }) %>
+              <%= f.collection_select(:herbarium_id, Herbarium.all, :id, :name, {}, { class: 'form-control' }) %>
             </div>
 
             <div class="form-group">
               <%= f.label :tissue_id, 'Tissue type' %>
-              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name, { :include_blank => '<no selection>' }, { class: 'form-control' }) %>
+              <%= f.collection_select(:tissue_id, Tissue.all.order(:name), :id, :name, {}, { class: 'form-control' }) %>
             </div>
 
             <div class="form-group">
