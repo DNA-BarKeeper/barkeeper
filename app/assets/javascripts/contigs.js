@@ -22,56 +22,7 @@
  */
 
 jQuery(function() {
-
-    //initially hide global spinner
-    var $global_spinner=$(".sk-circle").hide();
-    var $buttons = $('#buttons').hide();
-
-    $(document)
-        .ajaxStart(function () {
-            $global_spinner.show();
-        })
-        .ajaxStop(function () {
-            $global_spinner.hide();
-            $buttons.show();
-        });
-
-
-    $('#contigs').DataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#contigs').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 5 }
-        ],
-        "order": [ 4, 'desc' ]
-    });
-
-    $('#contigs-duplicates').DataTable({
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#contigs-duplicates').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 5 }
-        ],
-        "order": [ 0, 'asc' ]
-    });
-
-    $('#contig_isolate_name').autocomplete({
-        source: $('#contig_isolate_name').data('autocomplete-source')
-    });
-
-    $('#contig_marker_sequence_name').autocomplete({
-        source: $('#contig_marker_sequence_name').data('autocomplete-source')
-    });
-
-    $('#contig_project_ids').chosen({
-        allow_single_deselect: true,
-        no_results_text: 'No results matched'
-    });
-
     // do for all div with class partial_con
-
     $('.single-page-button').click(function () {
         $('button.first-page-button').attr("disabled", true);
         $('button.last-page-button').attr("disabled", true);
