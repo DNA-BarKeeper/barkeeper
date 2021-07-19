@@ -1,8 +1,33 @@
-development:
-  url: <%= ENV['DATABASE_URL'].gsub('?', '_development?') %>
+#development:
+#  url: <%#= ENV['DATABASE_URL'].gsub('?', '_development?') %>
+
+#test:
+#  url: <%#= ENV['DATABASE_URL'].gsub('?', '_test?') %>
+
+#production:
+#  url: <%#= ENV['DATABASE_URL'].gsub('?', '_production?') %>
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  host: localhost
+  timeout: 5000
 
 test:
-  url: <%= ENV['DATABASE_URL'].gsub('?', '_test?') %>
+  <<: *default
+  database: barcode_workflow_manager_test
+  username: barcode_workflow_manager
+  password: mypassword
+
+development:
+  <<: *default
+  database: barcode_workflow_manager_development
+  username: barcode_workflow_manager
+  password: mypassword
 
 production:
-  url: <%= ENV['DATABASE_URL'].gsub('?', '_production?') %>
+  <<: *default
+  database: barcode_workflow_manager_production
+  username: barcode_workflow_manager
+  password: mypassword
