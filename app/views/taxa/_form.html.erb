@@ -42,7 +42,7 @@
           </div>
 
           <div class="form-group">
-            <%= f.label :parent_name, 'Parent taxon' %>
+            <%= f.label :parent_id, 'Parent taxon' %>
             <% if @taxon.parent %>
               <%= link_to '', edit_taxon_path(@taxon.parent), :class => "glyphicon glyphicon-share-alt" %>
             <% end %>

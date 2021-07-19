@@ -12,8 +12,8 @@ gem 'pg_search'
 
 # Web server and background processing
 gem 'puma'
-gem 'redis-rails', '~> 5'
-gem 'sidekiq', "~> 5"
+gem 'redis-rails'
+gem 'sidekiq'
 gem 'sidekiq-client-cli'
 gem 'sidekiq-limit_fetch'
 gem 'sinatra', require: false # Needed to monitor sidekiq jobs
@@ -34,7 +34,6 @@ gem 'aws-sdk-s3', require: false
 gem 'active_storage_validations'
 
 # Javascript
-gem 'bootstrap-multiselect_rails' # multi select boxes using bootstrap
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
 gem 'nested_form_fields'
 gem 'jquery-fileupload-rails'
@@ -67,8 +66,8 @@ group :development do
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails',   require: false
   gem 'capistrano-rbenv',   require: false
-  gem 'capistrano-sidekiq', "~>1", require: false
-  gem 'capistrano3-puma', require: false
+  gem 'capistrano-sidekiq', github: 'seuros/capistrano-sidekiq', require: false
+  gem 'capistrano3-puma', github: 'seuros/capistrano-puma', require: false
   gem 'better_errors' # Better error page for Rack apps
   gem 'bullet' # Checks for n+1 queries
   gem 'binding_of_caller' # Extends features of better_errors
