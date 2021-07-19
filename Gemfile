@@ -35,7 +35,6 @@ gem 'active_storage_validations'
 
 # Javascript
 gem 'bootstrap-multiselect_rails' # multi select boxes using bootstrap
-gem 'chosen-rails' # Javascript select boxes
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
 gem 'nested_form_fields'
 gem 'jquery-fileupload-rails'
