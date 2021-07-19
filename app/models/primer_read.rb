@@ -48,26 +48,6 @@ class PrimerRead < ApplicationRecord
   scope :unprocessed, -> { where(processed: false) }
   scope :contig_not_verified, -> { joins(:contig).where(contigs: { verified: false, verified_by: nil }) }
 
-  def self.in_higher_order_taxon(higher_order_taxon_id)
-    count = 0
-
-    HigherOrderTaxon.find(higher_order_taxon_id).orders.each do |ord|
-      ord.families.each do |fam|
-        fam.species.each do |sp|
-          sp.individuals.each do |ind|
-            ind.isolates.each do |iso|
-              iso.contigs.each do |con|
-                count += con.primer_reads.count
-              end
-            end
-          end
-        end
-      end
-    end
-
-    count
-  end
-
   def file_name_id
     name.gsub('.', "_#{id}.")
   end

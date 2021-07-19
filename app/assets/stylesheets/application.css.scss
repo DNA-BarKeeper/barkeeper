@@ -37,9 +37,9 @@
  *= require_self
  *= require dataTables/jquery.dataTables
  *= require dataTables/extras/dataTables.scroller
- *= require chosen
+ *= require select2
+ *= require select2-bootstrap
  *= require jquery-ui/datepicker
- *= require bootstrap-multiselect
  *= require_tree .
  */
 

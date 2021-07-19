@@ -30,13 +30,26 @@
 //= require jquery.autosize
 //= require jquery-fileupload/basic
 //= require jquery-fileupload/vendor/tmpl
-//= require chosen.jquery
 //= require bootstrap
 //= require keyboard_shortcuts
 //= require d3.min
-//= require bootstrap-multiselect
+//= require select2
 //= require_tree .
 
+jQuery(function() {
+    // Initially hide global spinner
+    var $global_spinner = $(".sk-circle").hide();
+    var $buttons = $('#buttons').hide();
+
+    $(document)
+        .ajaxStart(function () {
+            $global_spinner.show();
+        })
+        .ajaxStop(function () {
+            $global_spinner.hide();
+            $buttons.show();
+        });
+});
 
 // Make datatables warning more meaningful
 $.fn.dataTable.ext.errMode = () => alert('An error occurred while loading the data table. Please contact an admin if the error persists.');

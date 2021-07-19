@@ -57,8 +57,8 @@ class MicronicPlateDatatable
 
       if micronic_plate.lab_rack
         lab_rack = link_to micronic_plate.lab_rack.rackcode, edit_lab_rack_path(micronic_plate.lab_rack)
-        shelf = micronic_plate.lab_rack.shelf
-        freezer = micronic_plate.lab_rack.freezer.freezercode if micronic_plate.lab_rack.freezer
+        shelf = link_to micronic_plate.lab_rack.shelf.name, edit_shelf_path(micronic_plate.lab_rack.shelf)
+        freezer = link_to micronic_plate.lab_rack.shelf.freezer.freezercode, edit_freezer_path(micronic_plate.lab_rack.shelf.freezer) if micronic_plate.lab_rack.shelf.freezer
       end
 
       rack_position = micronic_plate.location_in_rack
@@ -80,7 +80,7 @@ class MicronicPlateDatatable
   end
 
   def fetch_micronic_plates
-    micronic_plates = MicronicPlate.includes(lab_rack: [freezer: [:lab, :shelves]]).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+    micronic_plates = MicronicPlate.includes(lab_rack: [shelf: [freezer: :lab]]).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
     micronic_plates = micronic_plates.page(page).per_page(per_page)
 
@@ -90,7 +90,7 @@ OR lab_racks.rackcode ILIKE :search
 OR micronic_plates.location_in_rack ILIKE :search
 OR shelves.name ILIKE :search
 OR freezers.freezercode ILIKE :search', search: "%#{params[:sSearch]}%")
-                            .references(freezer: [:lab, :shelves]) if params[:sSearch].present?
+                            .references(shelf: [freezer: :lab]) if params[:sSearch].present?
     end
 
     micronic_plates

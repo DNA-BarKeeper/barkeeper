@@ -51,15 +51,8 @@ class IsolatesController < ApplicationController
   end
 
   def filter
-    @isolates = Isolate.select(:display_name, :id).where('display_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).limit(50)
-    size = Isolate.select(:display_name, :id).where('display_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).size
-
-    if size > 50
-      message = "and #{size - 50} more..."
-      render json: @isolates.map(&:display_name).push(message)
-    else
-      render json: @isolates.map(&:display_name)
-    end
+    @isolates = Isolate.select(:display_name, :id).where('isolates.display_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id)
+    render json: @isolates.map{ |isolate| {:id=> isolate.id, :name => isolate.display_name }}
   end
 
   def import
