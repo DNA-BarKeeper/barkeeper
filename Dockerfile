@@ -1,4 +1,4 @@
-FROM ruby:2.6.6
+FROM ruby:2.6.7
 
 LABEL maintainer="Barcode Workflow Manager (Kai Müller, Sarah Wiechers)"
 
