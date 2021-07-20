@@ -1,13 +1,13 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Documentation</h3>
+    <h3 class="panel-title">User Manual</h3>
   </div>
 
   <div class="panel-body documentation">
     <div>
       <h1>Source code</h1>
-      You can find the full source code of the Barcode Worklflow Manager web framework that is used to run this web
+      You can find the full source code of the Barcode Workflow Manager web framework that is used to run this web
       application on <a href="https://github.com/SarahW91/barcode_workflow_manager" target='_blank'>GitHub.</a>
       <a href="https://github.com/SarahW91/barcode_workflow_manager" target='_blank'>
         <img alt="Github Mark" src=<%= asset_path('GitHub-Mark-64px.png') %> />
@@ -16,7 +16,7 @@
     <hr>
     <div>
       <h1>License</h1>
-      The Barcode Worklflow Manager web framework is published under the Affero GPL 3.0 license.
+      The Barcode Workflow Manager web framework is published under the Affero GPL 3.0 license.
       <a href="https://www.gnu.org/licenses/agpl-3.0.html" target='_blank'>
         <img alt="AGPL v3 Logo" width="100" src=<%= asset_path('agplv3-155x51.png') %> />
       </a>
@@ -35,13 +35,13 @@
           <img alt="Dataflow" src=<%= asset_path('Manual/Dataflow_new.png') %> />
         </a>
       </p>
-      <p>Different types of records can be uploaded to the app that will then automatically start processes in the background like assembly of primer reads or quality checks. Other features require user interaction like manual edits or verification. </p>
+      <p>Different types of records can be uploaded to the app that will then automatically perform certain tasks like assembly of primer reads or quality checks in the background while users can continue their work on the app. Other features require user interaction like manual edits or verification. </p>
       <p>This manual will describe the different workflows and features of the app in more detail.</p>
       <h3 id="the-main-menu">The main menu</h3>
       <p>To help navigate the different types of data and features the main menu is structured into different sections: </p>
-      <p>The first main menu item with the name of the currently active project contains links to general information like the about page or a progress overview as well as to advanced search features and analysis features included in the app as a drop down menu. More information about projects, advanced search and analyses can be found in this manual.</p>
+      <p>The first main menu item with the name of the currently active project contains links to general information like the about page or a diagram depicting the project&#39;s progress as well as to advanced search features and analysis features included in the app as a drop down menu. More information about projects, advanced search and analyses can be found in this manual.</p>
       <p>The second and third menu items hold links to record collections belonging either to the category <strong>Taxa</strong> (taxonomic information) or <strong>DNA</strong> (molecular information).</p>
-      <p>The <strong>Admin</strong> menu item is only available for project admins and supervisors and contains links to user and project management pages.</p>
+      <p>The <strong>Admin</strong> menu item is only available for project administrators and supervisors and contains links to app, user and project management pages.</p>
       <p>By clicking on one&#39;s username, a site with information and options regarding the currently logged in user can be opened.</p>
       <h3 id="data-tables">Data tables</h3>
       <p>If you navigate to a record page, e.g. the one containing specimen record, you will see the according data in a table structure. Tables like this exist for many types of records within the app.</p>
@@ -56,27 +56,30 @@
           <img alt="Specimen View" src=<%= asset_path('Manual/specimen_view.png') %> />
         </a>
       </p>
-      <p>Below the main table you find a link to <strong>create a new record</strong> of this type. The form that opens will look similar to the edit page but with blank fields. Some information like the name of a record usually has to be entered to allow creation while other fields are optional. After saving a record, you will then be able to see it in the main table.</p>
+      <p>Below the main table you find a button to <strong>create a new record</strong> of this type. The form that opens will look similar to the edit page but with blank fields. Some information like the name of a record usually has to be entered to allow creation while other fields are optional. After saving a record, you will then be able to see it in the main table.</p>
       <p>In case of some records (species, isolates, primers) you can <strong>add multiple new records</strong> at a time by uploading a table file (templates can be downloaded) containing data about these records.</p>
       <p>
         <a href=<%= asset_path('Manual/primer_reads.png') %> target="_blank">
           <img alt="Primer Reads Index" src=<%= asset_path('Manual/primer_reads.png') %> />
         </a>
       </p>
-      <p>To <strong>add new primer reads</strong>, you can upload AB1 and SCF files which will then automatically be processed by the app. You can find out more about you options to edit and assemble primer reads in this manual.</p>
+      <p>To <strong>add new primer reads</strong>, you can upload one or multiple AB1 and SCF files which will then automatically be processed by the app. You can find out more about you options to edit and assemble primer reads in this manual.</p>
+      <p>Below the specimen data table you will find a button to download the database contents in CSV format. This will contain all information and meta information about all specimens in your currently selected project.</p>
       <h3 id="projects">Projects</h3>
-      <p>All records within the app are assigned to projects. This allows you to group specific records for analyses and display only those that you currently want to work with. Only admins are able to create new projects and assign records to them. </p>
+      <p>All records within the app are assigned to projects. This allows you to group specific records for analyses and display only those that you currently want to work with. Only administrators are able to create new projects and assign records to them. </p>
       <p>Each user can change the currently displayed project in their profile view. This will affect what is displayed in all data tables across the app.The name of the currently active project is shown in the main menu bar at the top of the page.</p>
       <p>On each view page of single records the projects this record belongs to are displayed.</p>
-      <h3 id="progress-overview">Progress overview</h3>
-      <p>You can find the overview page as a sub menu item (<em>Current project name</em> → Overview) of the main menu.</p>
-      <p>Here you can see the progress of your your currently selected project as an interactive diagram:</p>
+      <h3 id="progress-status">Progress status</h3>
+      <p>You can find the progress diagram page as a sub menu item (<em>Current project name</em> <em>→</em> <em>Progress status</em>) of the main menu.</p>
+      <p>Here you can see the progress of your your currently selected project as interactive diagrams:</p>
       <p>
-        <a href=<%= asset_path('Manual/overview_diagrams.png') %> target="_blank">
-          <img alt="Overview diagrams" src=<%= asset_path('Manual/overview_diagrams.png') %> />
+        <a href=<%= asset_path('Manual/progress_status.png') %> target="_blank">
+          <img alt="Progress status" src=<%= asset_path('Manual/progress_status.png') %> />
         </a>
       </p>
-      <p>By hovering over (or tapping in mobile mode) a section of the diagram you will see how many percent of the target species already have an associated marker sequences in the database. On the left side you see a diagram with all target species and their taxon structure. The progress diagram is available for all target markers of your project. Just select one from the dropdown select on the right side to display the diagram.</p>
+      <p>On the top left you are able to select any marker in your current project to display a progress diagram for it. You can use your mouse to drag the diagram around and zoom in and out with your mouse wheel. Use the button in the section tree navigation to re-center the tree again and return it to its original zoom status.</p>
+      <p>The leaves of the tree represent families in your project&#39;s taxonomy whereas the size of the nodes represents the number of species in these families. The node color represents the amount of species within that have at least one finished marker sequence for the selected marker. The color scale in the top left helps you estimate the value. If you hover over a name or a node, a tooltip with  exact values will appear.</p>
+      <p>It is possible to download a CSV table with the exact number of marker sequences associated to each species for the selected marker.</p>
       <h2 id="user-area">User area</h2>
       <p>
         <a href=<%= asset_path('Manual/profile_info.png') %> target="_blank">
@@ -86,7 +89,7 @@
       <p>By clicking on your user name in the top right corner while logged in, you can review and edit your personal information. Some fields like role, responsibilities and lab association can only be changed by admins since they affect your permissions within the app. You yourself can change your user name, e-mail address and password.</p>
       <p>On this page you can also change the currently selected project out of all projects you are associated with.</p>
       <p>This will affect what records are displayed throughout the app!</p>
-      <p>In the last section of this page your past advanced searches can be accessed. See the manual section about Advanced Search to find out more about this feature.</p>
+      <p>In the last section of this page your past advanced searches can be accessed. See the manual section about advanced searches to find out more about this feature.</p>
       <h2 id="advanced-searches">Advanced searches</h2>
       <p>On top of quickly sorting and filtering each data table, for some types of records (contigs, specimens, marker sequences) a more advanced search feature is available.</p>
       <p>
@@ -94,14 +97,31 @@
           <img alt="Advanced Specimen Search" src=<%= asset_path('Manual/advanced_specimen_search.png') %> />
         </a>
       </p>
-      <p>Here you can specify multiple search criteria at once and thereby look for specific records or groups of records that fit this description. If you fill in the title field, the search will later be available from the page linked to in your profile as mentioned above. </p>
+      <p>Here you can specify multiple search criteria at once and thereby look for specific records or groups of records that fit this description. If you fill in the title field, the search will later be available from the page linked to in your profile as mentioned before. </p>
       <p>The search result will always reflect the current state of the database and not remain as it were when the search was created!</p>
       <p>You can use the fact that search results always reflect the current state of records to your advantage e. g. by checking if there are still records with unsolved issues or some that remain unverified while you work on these tasks.</p>
-      <p>You can also download search results in different formats. Contig search results can be downloaded either as a PDE file that only contains the sequences (primer reads and consensus) or as an archive that contains the raw reads as AB1 or SCF files as well. To download an archive it is necessary to trigger its creation on the server and wait a couple of minutes until it is ready for download. Marker sequence search results can be downloaded as FASTA or PDE files. At the moment it is not possible to download specimen search results.</p>
+      <p>You can also download the search results in different formats. Contig search results can be downloaded either as a PDE file that only contains the sequences (primer reads and consensus) or as an archive that contains the raw reads as AB1 or SCF files as well. To download an archive it is necessary to trigger its creation on the server and wait a couple of minutes until it is ready for download. Marker sequence search results can be downloaded as FASTA or PDE files. Specimen search results can be downloaded as CSV tables.</p>
+      <h2 id="taxonomy">Taxonomy</h2>
+      <p>To review the hierarchical structure of taxa uploaded to the Barcode Workflow Manager you can view an interactive diagram of their taxonomy in the Taxa menu.</p>
+      <p>
+        <a href=<%= asset_path('Manual/taxonomy.png') %> target="_blank">
+          <img alt="Taxonomy" src=<%= asset_path('Manual/taxonomy.png') %> />
+        </a>
+      </p>
+      <p>If multiple root taxa are available you can choose one in the top left drop down menu of the Tree Navigation section. The first root taxon will already be displayed when the page is loaded. To search for a specific taxon in the tree, if if this node is currently not visible, use the search field below. You can drag the tree around and zoom in or out using your mouse. Reset to the original position and zoom factor by clicking the left button in the Tree Navigation section.</p>
+      <p>Filled grey circles in the tree indicate that this node has children. If they are currently not visible you can click the node to expand them, otherwise clicking a parent node will hide the child nodes again. Clicking on the name of a taxon will select it and display more details about it in a separate section to the left of the tree. If a taxon is selected you can also use the right button in the Tree Navigation section to center it.</p>
+      <p>If a selected taxon has associated Specimen records, these will be displayed in a section on the left as well.</p>
+      <p>Furthermore, you are able to download a CSV table with all data and metadata concerning all taxa in your currently selected project.</p>
+      <p>The downloaded CSV will not reflect the currently displayed taxonomy.</p>
+      <p>To add taxa to the app, you can either add single taxa manually or upload a CSV file. In this case, please follow the template that is available for download. In this CSV you can specify a parent taxon either by its name or its ID in the app. If the specified parent cannot be found in the database, no parent will be added and the taxon will appear as an &quot;orphaned&quot; entry. If no taxonomic rank is specified, the taxon will appear in the app as &quot;unranked&quot;.</p>
+      <p>You can find the ID of each record in the link shown in you browser when you visit a taxon record&#39;s page. It will look like <em>https://&lt;main_domain&gt;/taxa/<strong>&lt;ID&gt;</strong>/edit</em></p>
+      <p>Each scientific name may only refer to one specific taxon record and not be used again. If a taxon name has synonyms, please rather use the according field instead of creating more taxon records.</p>
       <h2 id="primer-reads-and-contigs">Primer Reads and Contigs</h2>
       <h3 id="read-upload-and-editing">Read upload and editing</h3>
-      <p>Primer reads in AB1 or SCF format can be uploaded via the file input on the primer read index page. You can upload a single file or multiple ones at once.</p>
-      <p>After uploading a read, the app will automatically try to assign it to a contig and a primer. For this to work it is very important that all file names follow the pattern <em>&lt;isolate_identifier&lt;_&gt;primer_name&gt;.scf/ab1</em>. It is also important that a record for the used primer was added to the app before uploading the read file. Multiple reads generated from the same isolate will automatically be assigned to the same contig. </p>
+      <p>Primer reads in AB1 or SCF format can be uploaded via the file input on the primer read index page. You can upload a single file or multiple ones at the same time.</p>
+      <p>After uploading a read, the app will automatically try to assign it to a contig and a primer. Multiple reads generated from the same isolate will automatically be assigned to the same contig.</p>
+      <p>For this to work it is very important that all file names follow the pattern <em>\&lt;isolate_identifier\&gt;_\&lt;primer_name\&gt;.scf/ab1</em>!
+        It is also important that a record for the used primer was added to the app before uploading the read file. </p>
       <p>The app will attempt to trim the reads based on some preset parameters (in a window of 10 bases, at least 8 have to have a quality score above 30). These parameters can be changed before attempting to trim the read again. Alternatively you can trim the read manually using the graphic interface or by typing the indices of readable bases in the according form fields. To use the graphic interface just click the border of the grey and white areas (start or end of read) and drag it to the desired position. On this page you can also decide whether or not a read should be used in a contig assembly.</p>
       <p>
         <a href=<%= asset_path('Manual/primer_read_view.png') %> target="_blank">
@@ -110,8 +130,8 @@
       </p>
       <p>The app will also extract base calls from the raw files. If some base calls are not appropriate, you can change them in this view by clicking on a base and typing the appropriate symbol instead. Hit enter to save the new base call.</p>
       <p>Below the primer read view you can find some navigation controls to move over the read or jump to specific base indices.</p>
-      <p>In the description tab you find more information about the read and its associated records in the app (primer, marker, contig). You can change its orientation and restart the automatic primer and contig assignment process.</p>
-      <p>In the files tab you can download the trimmed read as a FASTA file or the original file (AB1/SCF).</p>
+      <p>In the <em>Description</em> tab you find more information about the read and its associated records in the app (primer, marker, contig). You can change its orientation and restart the automatic primer and contig assignment process in case it did not give the desired results the first time.</p>
+      <p>In the <em>Files</em> tab you can download the trimmed read as a FASTA file or the original file (AB1/SCF).</p>
       <h3 id="contig-assembly-and-verification">Contig assembly and verification</h3>
       <p>After more than one read was uploaded and assigned to the same contig, the app will automatically try to assemble them to a contig. It uses a slightly modified Needleman-Wunsch-algorithm to achieve this. The default parameters for assembly can be modified in the Description tab of each contig. Here it can be specified how long overlapping regions need to be and how many mismatches will be allowed in the overlapping region (in %). If an assembly fails, it can help to relax these parameters a little or check the quality of the primer reads again.</p>
       <p>Furthermore, it is possible to exclude specific reads from assembly either directly in the contig view from the context menu that opens by clicking on the &quot;i&quot; symbol next to the read name (as shown below) or in the primer read view.</p>
@@ -120,7 +140,7 @@
           <img alt="Contig View" src=<%= asset_path('Manual/contig_view.png') %> />
         </a>
       </p>
-      <p>To visualize the assembly and get a better impression of overlapping areas the user can move the primer reads up and down. The bottom line will always show the consensus sequence as calculated by the app. If necessary, single reads can be displayed as a more detailed view above the contig view by clicking on their name. This detailed view can be toggled on and off for each individual read. By clicking on a specific base within a read the app will directly jump to that position when it opens the detailed read view. If you would rather open the view page of a read in a new browser tab where more information is available, you can open it from the context menu.</p>
+      <p>To visualize the assembly and get a better impression of overlapping areas the user can move the primer reads up and down. The bottom line will always show the consensus sequence as calculated by the app. If necessary, single reads can be displayed as a more detailed view above the contig view by clicking on their name. This detailed view can be toggled on and off for each individual read. By clicking on a specific base within a read, the app will directly jump to that position when it opens the detailed read view. If you would rather open the view page of a read in a new browser tab where more information is available, you can open it from the context menu.</p>
       <p>Below the contig view all reads that could or should not be assembled (because they have low quality, weren&#39;t appropriately trimmed yet or have been excluded by the user) are listed.</p>
       <p>If you are satisfied with the assembly and would like to accept the consensus sequence as a marker sequence and use it in further analyses, you can click on the verify button below. A new record for a marker sequence will then be created by the app. If you change your mind at a later point, it is also possible to reverse the verification. All verified contigs will show who verified it and when. It is also possible to search for contigs verified by a specific person in the advanced contig search.</p>
       <h2 id="sativa-mislabel-analysis">SATIVA mislabel analysis</h2>
@@ -130,10 +150,9 @@
           <img alt="SATIVA warning" src=<%= asset_path('Manual/sativa_warning.png') %> />
         </a>
       </p>
-      <p>Such incongruences could be the result of the contamination of DNA samples or other problems in the lab workflow. If multiple sequences per isolate show issues, the associated isolate and specimen will also be tagged, allowing to check for potential misidentifications that may be underlying the problematic taxonomic label. Users can then review the problematic sequences and associated records and either make changes to the data or mark the issue as solved without making changes if the issue turned out to be a false positive by the SATIVA algorithm.</p>
+      <p>Such incongruences could be the result of contamination of DNA samples or other problems in the lab workflow. If multiple sequences per isolate show issues, the associated isolate and specimen will also be tagged, allowing to check for potential misidentifications that may be underlying the problematic taxonomic label. Users can then review the problematic sequences and associated records and either make changes to the data or mark the issue as solved without making changes if the issue turned out to be a false positive by the SATIVA algorithm.</p>
       <hr>
       <p>(1) Kozlov, A. M., Zhang, J., Yilmaz, P., Glöckner, F. O., Stamatakis, A., M., H., C.L., S., J.A.A., N., J., B., &amp; T.M., P. (2016). Phylogeny-aware identification and correction of taxonomically mislabeled sequences. Nucleic Acids Research, 44(11), 5022–5033. <a href="https://doi.org/10.1093/nar/gkw396">https://doi.org/10.1093/nar/gkw396</a></p>
-
     </div>
   </div>
 </div>
