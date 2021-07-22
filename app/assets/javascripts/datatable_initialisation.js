@@ -63,14 +63,6 @@ jQuery(function() {
         "order": [ 0, 'desc' ]
     } );
 
-    // MARKERS
-    $('#markers').DataTable( {
-        "columnDefs": [
-            { "orderable": false, "targets": 2 }
-        ],
-        "order": [ 7, 'desc' ]
-    } );
-
     // MICRONIC PLATES
     $('#micronic_plates').DataTable( {
         bProcessing: true,
