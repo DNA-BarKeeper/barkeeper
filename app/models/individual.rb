@@ -31,6 +31,9 @@ class Individual < ApplicationRecord
   belongs_to :herbarium
   belongs_to :tissue
 
+  has_many_attached :voucher_images
+  validates :voucher_images, limit: { min: 0, max: 5 }
+
   after_save :assign_dna_bank_info, if: :identifier_has_changed?
   after_save :update_isolate_tissue, if: :saved_change_to_tissue_id?
 
