@@ -61,6 +61,12 @@ class IndividualsController < ApplicationController
     render json: @individuals.map{ |individual| {:id=> individual.id, :name => individual.specimen_id }}
   end
 
+  def delete_voucher_image
+    @voucher_image = ActiveStorage::Attachment.find(params[:voucher_image_id])
+    @voucher_image.purge
+    redirect_back(fallback_location: individuals_path)
+  end
+
   def show; end
 
   def new
@@ -118,6 +124,6 @@ class IndividualsController < ApplicationController
                                        :latitude_original, :longitude_original, :elevation, :exposition, :habitat,
                                        :substrate, :life_form, :collectors_field_number, :collected, :determination,
                                        :revision, :confirmation, :comments, :taxon_id, :taxon_name, :tissue_id,
-                                       project_ids: [])
+                                       voucher_images: [], project_ids: [])
   end
 end

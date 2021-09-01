@@ -88,6 +88,10 @@ BarcodeWorkflowManager::Application.routes.draw do
   end
 
   resources :individuals do
+    member do
+      delete :delete_voucher_image
+    end
+
     collection do
       get :filter
       get :problematic_specimens
