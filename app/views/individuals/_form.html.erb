@@ -112,38 +112,72 @@
           <div class="tab-pane" id="image">
             <br>
             <% if @individual.voucher_images.attached? %>
-              <!-- The dots/circles -->
-              <div style="text-align:center">
-                <% (1..@individual.voucher_images.size).each do |index| %>
-                  <span class="dot" data-index="<%= index %>"></span>
-                <% end %>
-              </div>
-              <br>
-              <!-- Slideshow container -->
-              <div class="slideshow-container">
-                <% @individual.voucher_images.each do |voucher_image| %>
-                  <!-- Full-width images with number and tooltip text -->
-                  <div class="mySlides fading">
-                    <%= image_tag voucher_image.variant(resize: "400x400").processed.service_url, title: voucher_image.filename,
-                                  style: 'width: 100%' %>
-                  </div>
-
-                  <!-- Delete button-->
-                  <%= link_to '', delete_voucher_image_individual_path(@individual, voucher_image_id: voucher_image.id),
-                              :class => "glyphicon glyphicon-trash remove-image",
-                              method: :delete,
-                              title: 'Remove image',
-                              data: { confirm: 'Are you sure?' } %>
-                <% end %>
-
-                <!-- Next and previous buttons -->
-                <a class="prev">&#10094;</a>
-                <a class="next">&#10095;</a>
+              <div id='slideshow-wrapper'>
+                <!-- The dots/circles -->
+                <div style="text-align:center">
+                  <% (1..@individual.voucher_images.size).each do |index| %>
+                    <span class="dot" data-index="<%= index %>"></span>
+                  <% end %>
+                </div>
                 <br>
+                <!-- Slideshow container -->
+                <div class="slideshow-container">
+                  <% @individual.voucher_images.each_with_index do |voucher_image, index| %>
+                    <div class="mySlides fading" title="<%= voucher_image.filename %>" >
+                      <%= image_tag voucher_image.variant(resize: "400x400").processed.service_url,
+                                    class: 'preview-image',
+                                    data: { index: (index + 1)},
+                                    style: 'width: 100%' %>
+                    </div>
+
+                    <!-- Delete button-->
+                    <%= link_to '', delete_voucher_image_individual_path(@individual, voucher_image_id: voucher_image.id),
+                                :class => "glyphicon glyphicon-trash remove-image",
+                                method: :delete,
+                                title: 'Remove image',
+                                data: { confirm: 'Are you sure?' } %>
+                  <% end %>
+
+                  <!-- Next and previous buttons -->
+                  <a class="prev">&#10094;</a>
+                  <a class="next">&#10095;</a>
+                </div>
+
+                <!-- The Modal/Lightbox -->
+                <div id="myModal" class="modal">
+                <span class="close-icon cursor">&times;</span>
+
+                <div class="modal-content">
+                  <% @individual.voucher_images.each do |voucher_image| %>
+                    <div class="modalSlides">
+                      <%= image_tag voucher_image.service_url,
+                                    style: 'width: 100%' %>
+                    </div>
+
+                    <!-- Delete button-->
+                    <%= link_to '', delete_voucher_image_individual_path(@individual, voucher_image_id: voucher_image.id),
+                                :class => "glyphicon glyphicon-trash remove-image-modal",
+                                method: :delete,
+                                title: 'Remove image',
+                                data: { confirm: 'Are you sure?' } %>
+                  <% end %>
+
+                  <!-- Next/previous controls -->
+                  <a class="prev">&#10094;</a>
+                  <a class="next">&#10095;</a>
+
+                  <!-- Caption text -->
+                  <div class="caption-container">
+                    <p id="caption"></p>
+                  </div>
+                </div>
+              </div>
               </div>
             <% end %>
             <br>
-            <td><%= f.file_field :voucher_images, multiple: true, class: 'form-control' %></td>
+            <td>
+                <%= f.file_field :voucher_images, multiple: true, style: 'margin: 0 auto', class: 'form-control' %>
+            </td>
           </div>
 
           <div class="tab-pane" id="locality" >
