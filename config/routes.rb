@@ -129,6 +129,7 @@ BarcodeWorkflowManager::Application.routes.draw do
       get :show_individuals
       get :show_children
       get :associated_specimen
+      delete :delete_voucher_image
     end
 
     collection do

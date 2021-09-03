@@ -65,6 +65,12 @@ class TaxaController < ApplicationController
     redirect_to taxa_path, notice: "Successfully imported or updated #{cnt} taxon entries."
   end
 
+  def delete_voucher_image
+    @voucher_image = ActiveStorage::Attachment.find(params[:voucher_image_id])
+    @voucher_image.purge
+    redirect_back(fallback_location: individuals_path)
+  end
+
   def show; end
 
   def new
@@ -118,6 +124,6 @@ class TaxaController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def taxon_params
     params.require(:taxon).permit(:parent_id, :parent_name, :position, :scientific_name, :common_name, :author,
-                                  :comment, :synonym, :taxonomic_rank, project_ids: [])
+                                  :comment, :synonym, :taxonomic_rank, voucher_images: [], project_ids: [])
   end
 end
