@@ -101,4 +101,19 @@ jQuery(function() {
             closeModal();
         }
     });
+
+    // Support changing slides and closing modal via keyboard
+    document.body.addEventListener('keydown', function logEventKey(e) {
+        switch (e.key) {
+            case 'ArrowLeft':
+                plusSlides(-1);
+                break;
+            case 'ArrowRight':
+                plusSlides(1);
+                break;
+            case 'Escape':
+                closeModal();
+                break;
+        }
+    });
 });
