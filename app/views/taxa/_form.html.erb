@@ -11,6 +11,7 @@
       <!-- Nav tabs -->
       <ul class="nav nav-tabs" role="tablist">
         <li class="active"><a href="#description" role="tab" data-toggle="tab">Description</a></li>
+        <li><a href="#image" role="tab" data-toggle="tab">Image</a></li>
         <% if @taxon.id %>
           <li ><a href="#specimen" role="tab" data-toggle="tab">Specimens</a></li>
           <li ><a href="#children" role="tab" data-toggle="tab">Child Taxa</a></li>
@@ -68,6 +69,78 @@
           <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@taxon) } %>
 
           <%= f.submit 'Update', :class => 'btn btn-default' %>
+        </div>
+
+        <div class="tab-pane" id="image">
+          <br>
+          <% if @taxon.voucher_images.attached? %>
+            <div id='slideshow-wrapper'>
+              <!-- The dots/circles -->
+              <div style="text-align:center">
+                <% (1..@taxon.voucher_images.size).each do |index| %>
+                  <span class="dot" data-index="<%= index %>"></span>
+                <% end %>
+              </div>
+              <br>
+              <!-- Slideshow container -->
+              <div class="slideshow-container">
+                <% @taxon.voucher_images.each_with_index do |voucher_image, index| %>
+                  <div class="mySlides fading" title="<%= voucher_image.filename %>" >
+                    <%= image_tag voucher_image.variant(resize: "400x400").processed.service_url,
+                                  class: 'preview-image',
+                                  data: { index: (index + 1)},
+                                  style: 'width: 100%' %>
+                  </div>
+
+                  <!-- Delete button-->
+                  <%= link_to '', delete_voucher_image_taxon_path(@taxon, voucher_image_id: voucher_image.id),
+                              :class => "glyphicon glyphicon-trash remove-image",
+                              method: :delete,
+                              title: 'Remove image',
+                              data: { confirm: 'Are you sure?' } %>
+                <% end %>
+
+                <!-- Next and previous buttons -->
+                <a class="prev">&#10094;</a>
+                <a class="next">&#10095;</a>
+              </div>
+
+              <!-- The Modal/Lightbox -->
+              <div id="myModal" class="modal">
+                <span class="close-icon cursor">&times;</span>
+
+                <div class="modal-content">
+                  <% @taxon.voucher_images.each do |voucher_image| %>
+                    <div class="modalSlides">
+                      <%= image_tag voucher_image.service_url,
+                                    style: 'width: 100%' %>
+                    </div>
+
+                    <!-- Delete button-->
+                    <%= link_to '', delete_voucher_image_taxon_path(@taxon, voucher_image_id: voucher_image.id),
+                                :class => "glyphicon glyphicon-trash remove-image-modal",
+                                method: :delete,
+                                title: 'Remove image',
+                                data: { confirm: 'Are you sure?' } %>
+                  <% end %>
+
+                  <!-- Next/previous controls -->
+                  <a class="prev">&#10094;</a>
+                  <a class="next">&#10095;</a>
+
+                  <!-- Caption text -->
+                  <div class="caption-container">
+                    <p id="caption"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+          <br>
+          <td>
+            <%= f.label :voucher_images, 'Upload up to five images:', style: 'width: 100%; text-align: center;' %>
+            <%= f.file_field :voucher_images, multiple: true, style: 'margin: 0 auto', class: 'form-control' %>
+          </td>
         </div>
 
         <% if @taxon.id %>

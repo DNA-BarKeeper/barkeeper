@@ -11,6 +11,9 @@ class Taxon < ApplicationRecord
   validates_uniqueness_of :scientific_name
   validates_presence_of :taxonomic_rank
 
+  has_many_attached :voucher_images
+  validates :voucher_images, limit: { min: 0, max: 5 }
+
   after_save :update_descendants_counter_cache
   after_destroy :update_descendants_counter_cache
 
