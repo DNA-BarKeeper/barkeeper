@@ -56,13 +56,9 @@ class NgsRun < ApplicationRecord
 
   def parse_package_map
     if set_tag_map.attached?
-      begin
-        package_map_file = open(set_tag_map.service_url)
-        package_map = Bio::FastaFormat.open(package_map_file)
-        package_map.each do |entry|
-          tag_primer_maps.where(name: entry.definition)&.first&.update(tag: entry.seq)
-        end
-      rescue OpenURI::HTTPError
+      fasta_temp = Tempfile.open { |tempfile| tempfile << set_tag_map.download }
+      Bio::FlatFile.open(fasta_temp.path).each_entry do |entry|
+        tag_primer_maps.where(name: entry.definition)&.first&.update(tag: entry.seq)
       end
     end
   end
@@ -89,7 +85,7 @@ class NgsRun < ApplicationRecord
     tag_primer_maps.each do |tp_map|
       if tp_map.tag_primer_map.attached?
         begin
-          tpm_file = open(tp_map.tag_primer_map.service_url)
+          tpm_file = Tempfile.open { |tempfile| tempfile << tp_map.tag_primer_map.download }
           tp_map = CSV.read(tpm_file, { col_sep: "\t", headers: true })
           nonexistent << tp_map['#SampleID'].select { |id| !Isolate.exists?(lab_isolation_nr: id.match(/\D+\d+|\D+\z/)[0]) }
         rescue OpenURI::HTTPError
@@ -115,7 +111,7 @@ class NgsRun < ApplicationRecord
     # Check if the correct number of TPMs was uploaded
     if set_tag_map.attached?
       begin
-        set_tag_map_file = open(set_tag_map.service_url)
+        set_tag_map_file = Tempfile.open { |tempfile| tempfile << set_tag_map.download }
         package_cnt = Bio::FastaFormat.open(set_tag_map_file).entries.size
         valid = (package_cnt == tag_primer_maps.size) && package_cnt.positive?
       rescue OpenURI::HTTPError

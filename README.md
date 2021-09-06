@@ -10,7 +10,6 @@ If you don't know what Docker is, read their excellent [Get Started with Docker 
 
 ### Prerequisites
 Here's what you need to prepare before you can start the setup process:
-- Create an [Amazon Web Storage](https://aws.amazon.com/de/products/storage/) bucket and have your credentials for it ready.
 - Make sure that you have a stable internet connection during all steps of the setup process.
 - Have a server set up running Ubuntu 16.04 or higher versions. You will also need a user with sudo rights during the installation process. 
 It is highly recommended that you establish suitable server security measures like a properly configured firewall.

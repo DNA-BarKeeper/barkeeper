@@ -26,12 +26,12 @@ class TagPrimerMap < ApplicationRecord
   belongs_to :ngs_run
 
   has_one_attached :tag_primer_map
-  validates :tag_primer_map, attached: true, content_type: [:text, :csv] # Using only type text/csv leads to weird errors depending on file content
+  validates :tag_primer_map, attached: true, content_type: ['text/plain', :csv] # Using only type text/csv leads to weird errors depending on file content
 
   after_save :set_name
 
   def set_name
-    self.update_column(:name, tag_primer_map.filename.to_s.split('_')[1].split('.').first) if tag_primer_map.attached?
+    self.update_column(:name, tag_primer_map.filename.to_s.split('.')[0]) if tag_primer_map.attached?
   end
 
   def check_tag_primer_map
@@ -125,12 +125,6 @@ class TagPrimerMap < ApplicationRecord
   private
 
   def open_tag_primer_map
-    require 'open-uri'
-
-    begin
-      open(tag_primer_map.service_url)
-    rescue OpenURI::HTTPError # TPM file could not be found on server
-      nil
-    end
+    @tempfile ||= Tempfile.open { |tempfile| tempfile << tag_primer_map.download }
   end
 end

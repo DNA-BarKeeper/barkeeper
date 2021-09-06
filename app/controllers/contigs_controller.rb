@@ -118,7 +118,7 @@ class ContigsController < ApplicationController
   end
 
   def analysis_output
-    redirect_to TxtUploader.last.uploaded_file.service_url
+    redirect_to TxtUploader.last.uploaded_file.url
   end
 
   def import

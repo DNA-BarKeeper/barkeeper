@@ -495,7 +495,7 @@ div.search-taxonomy span button {
 .mySlides:hover {opacity: 0.8;}
 
 /* Next & previous buttons */
-.prev, .next {
+.prev-button, .next-button {
   cursor: pointer;
   position: absolute;
   top: 50%;
@@ -511,13 +511,13 @@ div.search-taxonomy span button {
 }
 
 /* Position the "next button" to the right */
-.next {
+.next-button {
   right: 0;
   border-radius: 3px 0 0 3px;
 }
 
 /* On hover, add a black background color with a little bit see-through */
-.prev:hover, .next:hover {
+.prev-button:hover, .next-button:hover {
   background-color: rgba(0,0,0,0.6);
   color: #717171;
 }

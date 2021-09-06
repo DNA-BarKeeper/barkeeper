@@ -81,8 +81,8 @@ jQuery(function() {
         showSlides(slideIndex);
     }
 
-    $('a.prev').click(function() { plusSlides(-1) });
-    $('a.next').click(function() { plusSlides(1) });
+    $('a.prev-button').click(function() { plusSlides(-1) });
+    $('a.next-button').click(function() { plusSlides(1) });
 
     $('span.dot').click(function() {
         var index = parseInt(this.getAttribute("data-index"));
@@ -97,7 +97,7 @@ jQuery(function() {
 
     $(document).click(function(event) {
         // If you click on anything except the modal itself, close the modal
-        if (!$(event.target).closest(".modalSlides,.preview-image,.next,.prev").length) {
+        if (!$(event.target).closest(".modalSlides,.preview-image,.next-button,.prev-button").length) {
             closeModal();
         }
     });

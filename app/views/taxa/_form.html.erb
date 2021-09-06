@@ -86,7 +86,7 @@
               <div class="slideshow-container">
                 <% @taxon.voucher_images.each_with_index do |voucher_image, index| %>
                   <div class="mySlides fading" title="<%= voucher_image.filename %>" >
-                    <%= image_tag voucher_image.variant(resize: "400x400").processed.service_url,
+                    <%= image_tag url_for(voucher_image.variant(resize: "400x400")),
                                   class: 'preview-image',
                                   data: { index: (index + 1)},
                                   style: 'width: 100%' %>
@@ -101,8 +101,8 @@
                 <% end %>
 
                 <!-- Next and previous buttons -->
-                <a class="prev">&#10094;</a>
-                <a class="next">&#10095;</a>
+                <a class="prev-button">&#10094;</a>
+                <a class="next-button">&#10095;</a>
               </div>
 
               <!-- The Modal/Lightbox -->
@@ -112,7 +112,7 @@
                 <div class="modal-content">
                   <% @taxon.voucher_images.each do |voucher_image| %>
                     <div class="modalSlides">
-                      <%= image_tag voucher_image.service_url,
+                      <%= image_tag url_for(voucher_image),
                                     style: 'width: 100%' %>
                     </div>
 
@@ -125,8 +125,8 @@
                   <% end %>
 
                   <!-- Next/previous controls -->
-                  <a class="prev">&#10094;</a>
-                  <a class="next">&#10095;</a>
+                  <a class="prev-button">&#10094;</a>
+                  <a class="next-button">&#10095;</a>
 
                   <!-- Caption text -->
                   <div class="caption-container">

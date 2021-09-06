@@ -25,9 +25,8 @@
 module HomesHelper
   def main_project_logo
     if @home.main_logo && @home.main_logo.image&.attached? && @home.main_logo.display
-      logo_url = @home.main_logo.image.service_url
       content_tag :a, href: @home.main_logo.url do
-        content_tag :img, '', alt: 'project_logo', width: 140, class: 'pull-right', src: logo_url.html_safe
+        content_tag :img, '', alt: 'project_logo', width: 140, class: 'pull-right', src: url_for(@home.main_logo.image)
       end
     end
   end
@@ -53,7 +52,7 @@ module HomesHelper
         if logo.image.attached? && logo.url
           logos_html << (content_tag :div, style: 'height: 70px;', class: "col-sm-#{partner_logos.size}" do
             content_tag :a, href: logo.url, target: '_blank' do
-              image_tag logo.image, title: logo.title, class: 'partner_logo'
+              image_tag url_for(logo.image), title: logo.title, class: 'partner_logo'
             end
           end)
         end
