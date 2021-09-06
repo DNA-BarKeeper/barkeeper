@@ -39,7 +39,7 @@
           <div class="form-group">
             <%= f.label :background_image, 'About Page Background' %><br>
             <% if @home.background_image.attached? %>
-              <%= image_tag @home.background_image.variant(resize: "100x100").processed.service_url %><br>
+              <%= image_tag url_for(@home.background_image.variant(resize: "100x100").processed) %><br>
               <%= f.check_box(:delete_background_image) %>
               <%= "Remove current image ('#{@home.background_image.filename}')" %>
             <% end %>
@@ -80,7 +80,7 @@
                     <td><%= logos_form.text_field :url, class: 'form-control' %></td>
                     <td style="text-align: center;">
                       <% if logos_form.object.image.attached? %>
-                        <%= image_tag logos_form.object.image.variant(resize: "100x100").processed.service_url %><br>
+                        <%= image_tag url_for(logos_form.object.image.variant(resize: "100x100").processed) %><br>
                         <%= "'#{logos_form.object.image.filename}'" %>
                       <% end %>
                     </td>
