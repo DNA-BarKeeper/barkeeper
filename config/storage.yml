@@ -14,7 +14,7 @@ production:
 
 disk:
   service: Disk
-  root: <%= ENV['STORAGE_PATH'] %>
+  root: <%= Rails.root.join("storage") %>
 
 amazon:
   service: S3
