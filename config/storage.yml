@@ -4,15 +4,15 @@ test:
 
 development:
   service: Mirror
-  primary: amazon
+  primary: disk
   mirrors:
-    - disk
+    - amazon
 
 production:
   service: Mirror
-  primary: amazon
+  primary: disk
   mirrors:
-    - disk
+    - amazon
 
 disk:
   service: Disk
