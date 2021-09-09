@@ -3,24 +3,9 @@ test:
   root: <%= Rails.root.join("tmp/storage") %>
 
 development:
-  service: Mirror
-  primary: disk
-  mirrors:
-    - amazon
-
-production:
-  service: Mirror
-  primary: disk
-  mirrors:
-    - amazon
-
-disk:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
-amazon:
-  service: S3
-  access_key_id: <%= ENV['AWS_SECRET_KEY_ID'] %>
-  secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
-  region: <%= ENV['S3_REGION'] %>
-  bucket: <%= ENV['S3_BUCKET_NAME'] %>
+production:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>
