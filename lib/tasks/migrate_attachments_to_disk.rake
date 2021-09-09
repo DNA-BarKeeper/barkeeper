@@ -25,11 +25,13 @@ namespace :migrate_attachments do
       end if local_file.present?
 
       # If no local file exists then download a remote file and upload it to the mirrors (thanks @Rystraum)
-      services.first.open blob.key, checksum: blob.checksum do |temp_file|
+      if !local_file.present?
+        temp_file = Tempfile.open(binmode: true) { |tempfile| tempfile << services.first.download(blob.key) }
+
         mirrors.each do |mirror|
-          mirror.upload blob.key, temp_file, checksum: blob.checksum
+          mirror.upload blob.key, File.open(temp_file.path), checksum: blob.checksum
         end
-      end unless local_file.present?
+      end
     end
   end
 end
