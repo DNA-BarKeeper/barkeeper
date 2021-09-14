@@ -35,11 +35,11 @@
 </div>
 
 <p>
-  <%= link_to 'Start a new specimen search', new_individual_search_path, class: 'btn btn-default' %>
-  <%= link_to 'Go to your specimen searches index', individual_searches_path, class: 'btn btn-default' %>
-  <%= link_to 'Go to specimens index', individuals_path, class: 'btn btn-default' %>
+  <%= link_to 'Download results as CSV table', individual_search_export_as_csv_path(@individual_search), class: 'btn btn-default' %>
 </p>
 
 <p>
-  <%= link_to 'Download results as CSV table', individual_search_export_as_csv_path(@individual_search), class: 'btn btn-default' %>
+  <%= link_to 'Start a new specimen search', new_individual_search_path, class: 'btn btn-default' %>
+  <%= link_to 'Go to your specimen searches index', individual_searches_path, class: 'btn btn-default' %>
+  <%= link_to 'Go to specimens index', individuals_path, class: 'btn btn-default' %>
 </p>
