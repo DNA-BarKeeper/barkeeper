@@ -29,7 +29,8 @@ class MislabelsController < ApplicationController
 
   def solve
     if @mislabel.solved_by || @mislabel.solved
-      redirect_back(fallback_location: marker_sequences_path, warning: 'Mislabel warning was already marked as solved.')
+      @mislabel.update(solved_by: nil, solved_at: nil, solved: false)
+      redirect_back(fallback_location: marker_sequences_path, warning: 'Mislabel warning marked as unsolved.')
     else
       @mislabel.update(solved_by: current_user.id, solved_at: Time.now, solved: true)
       redirect_back(fallback_location: marker_sequences_path, notice: 'Mislabel warning marked as solved.')
