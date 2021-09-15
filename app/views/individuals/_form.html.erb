@@ -145,33 +145,33 @@
 
                 <!-- The Modal/Lightbox -->
                 <div id="myModal" class="modal">
-                <span class="close-icon cursor">&times;</span>
+                  <span class="close-icon cursor">&times;</span>
 
-                <div class="modal-content">
-                  <% @individual.voucher_images.each do |voucher_image| %>
-                    <div class="modalSlides">
-                      <%= image_tag url_for(voucher_image),
-                                    style: 'width: 100%' %>
+                  <div class="modal-content">
+                    <% @individual.voucher_images.each do |voucher_image| %>
+                      <div class="modalSlides">
+                        <%= image_tag url_for(voucher_image),
+                                      style: 'width: 100%' %>
+                      </div>
+
+                      <!-- Delete button-->
+                      <%= link_to '', delete_voucher_image_individual_path(@individual, voucher_image_id: voucher_image.id),
+                                  :class => "glyphicon glyphicon-trash remove-image-modal",
+                                  method: :delete,
+                                  title: 'Remove image',
+                                  data: { confirm: 'Are you sure?' } %>
+                    <% end %>
+
+                    <!-- Next/previous controls -->
+                    <a class="prev-button">&#10094;</a>
+                    <a class="next-button">&#10095;</a>
+
+                    <!-- Caption text -->
+                    <div class="caption-container">
+                      <p id="caption"></p>
                     </div>
-
-                    <!-- Delete button-->
-                    <%= link_to '', delete_voucher_image_individual_path(@individual, voucher_image_id: voucher_image.id),
-                                :class => "glyphicon glyphicon-trash remove-image-modal",
-                                method: :delete,
-                                title: 'Remove image',
-                                data: { confirm: 'Are you sure?' } %>
-                  <% end %>
-
-                  <!-- Next/previous controls -->
-                  <a class="prev-button">&#10094;</a>
-                  <a class="next-button">&#10095;</a>
-
-                  <!-- Caption text -->
-                  <div class="caption-container">
-                    <p id="caption"></p>
                   </div>
                 </div>
-              </div>
               </div>
             <% end %>
             <br>
