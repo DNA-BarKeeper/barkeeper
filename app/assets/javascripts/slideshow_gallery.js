@@ -17,8 +17,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Barcode Workflow Manager.  If not, see
- * <http://www.gnu.org/licenses/>.
+ * along with Barcode Workflow Manager. If not, see <http://www.gnu.org/licenses/>.
  */
 
 jQuery(function() {
@@ -79,6 +78,28 @@ jQuery(function() {
     if (document.getElementById("slideshow-wrapper") != null) {
         var slideIndex = 1;
         showSlides(slideIndex);
+
+        $(document).click(function(event) {
+            // If you click on anything except the modal itself, close the modal
+            if (!$(event.target).closest(".modalSlides,.preview-image,.next-button,.prev-button,.caption-container").length) {
+                closeModal();
+            }
+        });
+
+        // Support changing slides and closing modal via keyboard
+        document.body.addEventListener('keydown', function logEventKey(e) {
+            switch (e.key) {
+                case 'ArrowLeft':
+                    plusSlides(-1);
+                    break;
+                case 'ArrowRight':
+                    plusSlides(1);
+                    break;
+                case 'Escape':
+                    closeModal();
+                    break;
+            }
+        });
     }
 
     $('a.prev-button').click(function() { plusSlides(-1) });
@@ -93,27 +114,5 @@ jQuery(function() {
         openModal();
         var index = parseInt(this.getAttribute("data-index"));
         currentSlide(index);
-    });
-
-    $(document).click(function(event) {
-        // If you click on anything except the modal itself, close the modal
-        if (!$(event.target).closest(".modalSlides,.preview-image,.next-button,.prev-button").length) {
-            closeModal();
-        }
-    });
-
-    // Support changing slides and closing modal via keyboard
-    document.body.addEventListener('keydown', function logEventKey(e) {
-        switch (e.key) {
-            case 'ArrowLeft':
-                plusSlides(-1);
-                break;
-            case 'ArrowRight':
-                plusSlides(1);
-                break;
-            case 'Escape':
-                closeModal();
-                break;
-        }
     });
 });
