@@ -23,10 +23,13 @@
 # frozen_string_literal: true
 
 class PlantPlate < ApplicationRecord
+  include PgSearch::Model
   include ProjectRecord
 
   has_many :isolates
   belongs_to :lab_rack
 
   validates_presence_of :name
+
+  multisearchable against: [:name]
 end

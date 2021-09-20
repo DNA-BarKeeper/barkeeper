@@ -23,9 +23,13 @@
 # frozen_string_literal: true
 
 class Tissue < ApplicationRecord
+  include PgSearch::Model
+
   has_many :isolates
   has_many :individuals
 
   validates_presence_of :name
+
+  multisearchable against: [:name]
 end
 

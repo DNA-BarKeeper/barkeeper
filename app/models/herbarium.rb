@@ -21,9 +21,13 @@
 # <http://www.gnu.org/licenses/>.
 #
 class Herbarium < ApplicationRecord
+  include PgSearch::Model
+
   validates_presence_of :acronym
   validates :acronym, uniqueness: true
 
   has_many :individuals
+
+  multisearchable against: [:acronym, :name]
 end
 

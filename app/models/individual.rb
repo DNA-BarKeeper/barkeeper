@@ -37,7 +37,8 @@ class Individual < ApplicationRecord
   after_save :assign_dna_bank_info, if: :identifier_has_changed?
   after_save :update_isolate_tissue, if: :saved_change_to_tissue_id?
 
-  pg_search_scope :quick_search, against: %i[specimen_id herbarium collector collectors_field_number]
+  multisearchable against: [:DNA_bank_id, :collector, :collectors_field_number, :comments, :country, :habitat,
+                            :locality, :specimen_id]
 
   scope :without_taxon, -> { where(taxon: nil) }
   scope :without_isolates, -> { left_outer_joins(:isolates).select(:id).group(:id).having('count(isolates.id) = 0') }

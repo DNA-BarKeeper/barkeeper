@@ -61,4 +61,14 @@ module HomesHelper
 
     logos_html
   end
+
+  def multisearch_result(results)
+    content_tag :ul do
+      results.map do |result|
+        content_tag :li do
+          result.content + ' ' + result.searchable_id.to_s + ' (' + result.searchable_type + ')'
+        end
+      end.join.html_safe
+    end.html_safe
+  end
 end

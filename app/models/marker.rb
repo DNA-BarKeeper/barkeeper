@@ -23,6 +23,7 @@
 # frozen_string_literal: true
 
 class Marker < ApplicationRecord
+  include PgSearch::Model
   include ProjectRecord
 
   has_many :marker_sequences
@@ -35,5 +36,5 @@ class Marker < ApplicationRecord
 
   validates_presence_of :name
 
-  scope :gbol_marker, -> { in_project(Project.find_by_name('GBOL5')) } # TODO: Entfernen, sobald overview table angepasst wurde
+  multisearchable against: [:alt_name, :name]
 end

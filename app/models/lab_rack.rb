@@ -23,10 +23,13 @@
 # frozen_string_literal: true
 
 class LabRack < ApplicationRecord
+  include PgSearch::Model
   include ProjectRecord
 
   belongs_to :shelf
   has_many :plant_plates
   has_many :micronic_plates
+
+  multisearchable against: [:rackcode, :rack_position]
 end
 

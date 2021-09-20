@@ -25,6 +25,11 @@
 class HomesController < ApplicationController
   before_action :set_home, only: %i[show edit update]
 
+  def multisearch_app
+    authorize! :multisearch_app, :home
+    @result = PgSearch.multisearch(params[:search])
+  end
+
   def progress
     authorize! :progress, :home
   end

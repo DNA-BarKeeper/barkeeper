@@ -24,6 +24,7 @@
 
 class Isolate < ApplicationRecord
   extend Import
+  include PgSearch::Model
   include ProjectRecord
 
   has_many :marker_sequences
@@ -43,6 +44,8 @@ class Isolate < ApplicationRecord
   before_validation :assign_display_name
 
   # after_save :assign_specimen
+
+  multisearchable against: [:display_name, :dna_bank_id, :lab_isolation_nr]
 
   scope :recent, -> { where('isolates.updated_at > ?', 1.hours.ago) }
   scope :no_controls, -> { where(negative_control: false) }

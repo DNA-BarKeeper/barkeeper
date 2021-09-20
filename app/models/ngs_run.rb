@@ -23,6 +23,7 @@
 class NgsRun < ApplicationRecord
   require 'open-uri'
 
+  include PgSearch::Model
   include ProjectRecord
 
   validates_presence_of :name
@@ -41,6 +42,8 @@ class NgsRun < ApplicationRecord
 
   has_one_attached :results
   validates :results, content_type: :zip
+
+  multisearchable against: [:comment, :name]
 
   attr_accessor :delete_set_tag_map
   before_validation :remove_set_tag_map
