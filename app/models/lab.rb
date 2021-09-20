@@ -23,6 +23,7 @@
 # frozen_string_literal: true
 
 class Lab < ApplicationRecord
+  include PgSearch::Model
   include ProjectRecord
 
   has_many :users
@@ -30,4 +31,6 @@ class Lab < ApplicationRecord
   has_many :aliquots
 
   validates_presence_of :labcode
+
+  multisearchable against: [:labcode]
 end

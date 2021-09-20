@@ -1,6 +1,7 @@
 class Taxon < ApplicationRecord
   extend Import
   include ProjectRecord
+  include PgSearch::Model
 
   has_many :individuals, dependent: :nullify
   has_many :ngs_runs, dependent: :nullify
@@ -16,6 +17,8 @@ class Taxon < ApplicationRecord
 
   after_save :update_descendants_counter_cache
   after_destroy :update_descendants_counter_cache
+
+  multisearchable against: [:scientific_name, :author, :comment, :common_name, :synonym]
 
   scope :orphans, -> { where(ancestry_depth: 0) }
 

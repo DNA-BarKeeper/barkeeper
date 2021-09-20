@@ -24,12 +24,15 @@
 
 class Primer < ApplicationRecord
   extend Import
+  include PgSearch::Model
   include ProjectRecord
 
   belongs_to :marker
   has_many :primer_reads
 
   validates_presence_of :name
+
+  multisearchable against: [:alt_name, :author, :labcode, :name, :notes, :target_group]
 
   # Import primer data from spreadsheet
   def self.import(file, project_id)

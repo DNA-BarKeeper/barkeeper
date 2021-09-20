@@ -23,10 +23,13 @@
 # frozen_string_literal: true
 
 class Shelf < ApplicationRecord
+  include PgSearch::Model
   include ProjectRecord
 
   belongs_to :freezer
 
   validates_presence_of :name
+
+  multisearchable against: [:name]
 end
 

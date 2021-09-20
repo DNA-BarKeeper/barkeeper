@@ -24,6 +24,7 @@
 
 # noinspection RubyStringKeysInHashInspection
 class Contig < ApplicationRecord
+  include PgSearch::Model
   include Export
   include ProjectRecord
 
@@ -38,6 +39,8 @@ class Contig < ApplicationRecord
   after_save { marker_sequence&.destroy unless assembled? }
 
   validates_presence_of :name
+
+  multisearchable against: [:comment, :name]
 
   scope :assembled, -> { where(assembled: true) }
   scope :not_assembled, -> { where.not(assembled: true) }

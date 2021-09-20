@@ -23,6 +23,7 @@
 # frozen_string_literal: true
 
 class PrimerRead < ApplicationRecord
+  include PgSearch::Model
   include ProjectRecord
 
   belongs_to :contig
@@ -34,6 +35,8 @@ class PrimerRead < ApplicationRecord
   validates :chromatogram, attached: true, content_type: 'application/octet-stream'
 
   before_create :default_name
+
+  multisearchable against: [:comment, :name]
 
   scope :assembled, -> { use_for_assembly.where(assembled: true) }
   scope :not_assembled, -> { use_for_assembly.where(assembled: false) }

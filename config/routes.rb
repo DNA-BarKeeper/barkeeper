@@ -21,7 +21,11 @@ BarcodeWorkflowManager::Application.routes.draw do
 
   get 'primer_reads/:id/edit/:pos', action: :go_to_pos, controller: 'primer_reads'
 
-  resources :homes
+  resources :homes do
+    collection do
+      get :multisearch_app
+    end
+  end
 
   resources :contig_searches do
     get :delete_all
