@@ -62,11 +62,31 @@ module HomesHelper
     logos_html
   end
 
-  def multisearch_result(results)
+  def multisearch_results(results)
     content_tag :ul do
       results.map do |result|
         content_tag :li do
-          result.content + ' ' + result.searchable_id.to_s + ' (' + result.searchable_type + ')'
+          case result.searchable_type
+          when 'Freezer'
+            result_title = result.searchable.freezercode
+          when 'Individual'
+            result_title = result.searchable.specimen_id
+          when 'Isolate'
+            result_title = result.searchable.display_name
+          when 'Lab'
+            result_title = result.searchable.labcode
+          when 'LabRack'
+            result_title = result.searchable.rackcode
+          when 'Taxon'
+            result_title = result.searchable.scientific_name
+          else
+            result_title = result.searchable.name
+          end
+
+          result_title +=  ' (' + result.searchable_type + ')'
+          result_type = result.searchable_type.to_s.underscore
+
+          link_to result_title, send("edit_#{result_type}_path", result.searchable_id)
         end
       end.join.html_safe
     end.html_safe
