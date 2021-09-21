@@ -5,10 +5,10 @@
   </div>
 
   <div class="panel-body">
-    Hello, good user! <br>
-    I found <%= pluralize(@result.size, 'record')%> for your search term "<%= params[:search] %>"!
+    <%= pluralize(@results.size, 'record')%> were found for your search term "<%= params[:search] %>":
   </div>
   <div>
-    <%= multisearch_result(@result) %>
+    <%= will_paginate @results, renderer: BootstrapPagination::Rails %>
+    <%= multisearch_results(@results) %>
   </div>
 </div>
