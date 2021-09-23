@@ -23,7 +23,7 @@
 # frozen_string_literal: true
 
 class HomesController < ApplicationController
-  before_action :set_home, only: %i[show edit update]
+  before_action :set_home, only: %i[show edit update delete_background_image]
 
   def multisearch_app
     authorize! :multisearch_app, :home
@@ -73,6 +73,13 @@ class HomesController < ApplicationController
     end
   end
 
+  def delete_background_image
+    authorize! :delete_background_image, :home
+
+    @home.remove_background_image_attachment
+    redirect_back(fallback_location: root_path)
+  end
+
   private
 
   def set_home
@@ -80,7 +87,7 @@ class HomesController < ApplicationController
   end
 
   def home_params
-    params.require(:home).permit(:description, :subtitle, :title, :background_image, :delete_background_image, :main_logo_id,
+    params.require(:home).permit(:description, :subtitle, :title, :background_image, :main_logo_id,
                                  logos_attributes: [:title, :url, :image, :display, :display_pos_index, :_destroy, :id])
   end
 end
