@@ -73,25 +73,17 @@ class NgsRunsController < ApplicationController
   end
 
   def update
-    params[:ngs_run].delete(:set_tag_map) if params[:ngs_run][:set_tag_map].blank?
-
-    if params[:ngs_run][:tag_primer_map].blank?
-      params[:ngs_run].delete(:tag_primer_map)
-    else
-      params[:ngs_run][:tag_primer_map].each do |tpm|
-        # Only add TPM if Package map is available or none was added before
-        if !params[:ngs_run][:set_tag_map].blank? || @ngs_run.set_tag_map.attached? || @ngs_run.tag_primer_maps.size.zero?
-          map = TagPrimerMap.create(tag_primer_map: tpm)
-          @ngs_run.tag_primer_maps << map
-        else
-          map = TagPrimerMap.create(tag_primer_map: tpm)
-          @ngs_run.tag_primer_maps.delete_all
-          @ngs_run.tag_primer_maps << map
-        end
+    params[:ngs_run][:tag_primer_map].each do |tpm|
+      # Only add TPM if Package map is available or none was added before
+      if !params[:ngs_run][:set_tag_map].blank? || @ngs_run.set_tag_map.attached? || @ngs_run.tag_primer_maps.size.zero?
+        map = TagPrimerMap.create(tag_primer_map: tpm)
+        @ngs_run.tag_primer_maps << map
+      else
+        map = TagPrimerMap.create(tag_primer_map: tpm)
+        @ngs_run.tag_primer_maps.delete_all
+        @ngs_run.tag_primer_maps << map
       end
     end
-
-    @ngs_run.remove_tag_primer_maps(params[:delete_tag_primer_maps]) unless params[:delete_tag_primer_maps].blank?
 
     respond_to do |format|
       if @ngs_run.update(ngs_run_params)
@@ -160,6 +152,12 @@ class NgsRunsController < ApplicationController
     end
   end
 
+  def delete_attached_file
+    @file_attachment = ActiveStorage::Attachment.find(params[:attachment_id])
+    @file_attachment.purge
+    redirect_back(fallback_location: ngs_runs_path)
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_ngs_run
@@ -170,6 +168,6 @@ class NgsRunsController < ApplicationController
   def ngs_run_params
     params.require(:ngs_run).permit(:name, :analysis_requested, :analysis_started, :comment, :primer_mismatches,
                                     :quality_threshold, :tag_mismatches, :fastq_location, :tag_primer_map,
-                                    :set_tag_map, :taxon_id, :delete_set_tag_map, :results, :delete_tag_primer_maps)
+                                    :set_tag_map, :taxon_id, :results)
   end
 end

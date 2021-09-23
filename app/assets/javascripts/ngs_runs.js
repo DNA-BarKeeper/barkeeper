@@ -26,7 +26,7 @@ jQuery(function() {
     var set_tag_map = $('#ngs_run_set_tag_map');
     var tag_primer_map = $("#ngs_run_tag_primer_map");
 
-    if(set_tag_map.val() || $('#ngs_run_delete_set_tag_map').length) { // Package Map is selected or was uploaded before
+    if(set_tag_map.val()) { // Package Map is selected or was uploaded before
         tag_primer_map.attr('multiple','multiple')
     }
     else {

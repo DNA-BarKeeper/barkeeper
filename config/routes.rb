@@ -53,6 +53,7 @@ BarcodeWorkflowManager::Application.routes.draw do
       post :import
       post :submit_analysis_request
       post :start_analysis
+      delete :delete_attached_file
     end
   end
 
