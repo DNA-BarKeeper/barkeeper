@@ -6,12 +6,14 @@
 
   <div class="panel-body">
     <p>
-      <%= pluralize(@results.size, 'record')%> were found for your search term "<%= params[:search] %>":
+      <%= pluralize(@results.size, 'record')%> were found for your search term "<%= params[:search] %>"
     </p>
 
-    <div class="multisearch-results">
-      <%= multisearch_results(@results) %>
-      <%= will_paginate @results, renderer: BootstrapPagination::Rails, previous_label: "&laquo;", next_label: "&raquo;",class: "small-font" %>
-    </div>
+    <% if @results.size.positive? %>
+      <div class="multisearch-results">
+        <%= multisearch_results(@results) %>
+        <%= will_paginate @results, renderer: BootstrapPagination::Rails, previous_label: "&laquo;", next_label: "&raquo;",class: "small-font" %>
+      </div>
+    <% end %>
   </div>
 </div>
