@@ -27,7 +27,7 @@ class HomesController < ApplicationController
 
   def multisearch_app
     authorize! :multisearch_app, :home
-    @results = PgSearch.multisearch(params[:search]).paginate(:page => params[:page], :per_page => 3)
+    @results = PgSearch.multisearch(params[:search]).paginate(:page => params[:page], :per_page => 10)
   end
 
   def progress
