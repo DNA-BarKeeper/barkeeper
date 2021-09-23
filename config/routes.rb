@@ -22,6 +22,10 @@ BarcodeWorkflowManager::Application.routes.draw do
   get 'primer_reads/:id/edit/:pos', action: :go_to_pos, controller: 'primer_reads'
 
   resources :homes do
+    member do
+      delete :delete_background_image
+    end
+
     collection do
       get :multisearch_app
     end

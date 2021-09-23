@@ -640,13 +640,18 @@ div.search-taxonomy span button {
   margin-right: auto;
 }
 
-.docImage {
-  border-radius: 3px;
-  cursor: pointer;
+.doc-image {
   max-width:50%;
 }
 
-.docImage:hover {
+/* Lightbox modal */
+
+.lightbox-image {
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.lightbox-image:hover {
   opacity: 0.7;
   border: 2px solid grey;
 }
@@ -693,4 +698,10 @@ div.search-taxonomy span button {
 .pagination > .active > span:hover {
   background-color: lightgrey;
   border-color: lightgrey;
+}
+
+/* Home - Background image preview */
+.image_preview_container {
+  max-width: 500px;
+  position: relative;
 }
