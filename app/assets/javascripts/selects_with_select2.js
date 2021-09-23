@@ -49,6 +49,8 @@ jQuery(function() {
 
     // MARKERS
     $('#marker_project_ids').select2(select2MultiselectOptions);
+    $('#marker_expected_reads').select2(select2SingleSelectOptions('a number'));
+
 
     // MARKER SEQUENCES
     $('#marker_sequence_isolate_id').select2((select2AutocompleteOptions("/isolates/filter", "an isolate")));
