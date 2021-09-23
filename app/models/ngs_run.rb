@@ -45,17 +45,7 @@ class NgsRun < ApplicationRecord
 
   multisearchable against: [:comment, :name]
 
-  attr_accessor :delete_set_tag_map
-  before_validation :remove_set_tag_map
-
   after_save :parse_package_map
-
-  def remove_set_tag_map
-    if delete_set_tag_map == '1'
-      set_tag_map.purge
-      tag_primer_maps.offset(1).destroy_all
-    end
-  end
 
   def parse_package_map
     if set_tag_map.attached?

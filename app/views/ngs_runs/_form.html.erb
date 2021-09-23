@@ -48,30 +48,50 @@
 
       <div class="form-group">
         <%= f.label :set_tag_map, 'Platepool set (*.fasta)' %>
-        <%= f.file_field :set_tag_map, class: 'form-control' %>
-
         <% if @ngs_run.set_tag_map.attached? %>
-          <%= f.check_box(:delete_set_tag_map) %>
-          <%= "Remove current file ('#{@ngs_run.set_tag_map.filename}')" %>
+          <p>
+            <%= link_to '', delete_attached_file_ngs_run_path(@ngs_run, attachment_id: @ngs_run.set_tag_map.id),
+                        :class => "glyphicon glyphicon-remove",
+                        method: :delete,
+                        title: 'Remove attachment',
+                        style: 'color: red;',
+                        data: { confirm: 'Are you sure you want to delete this attachment? This action can not be undone.' } %>
+
+            <%= "Current file: '#{@ngs_run.set_tag_map.filename}'" %>
+          </p>
         <% end %>
+        <p>
+          <%= f.file_field :set_tag_map, class: 'form-control' %>
+        </p>
       </div>
 
       <div class="form-group">
         <%= f.label :tag_primer_map, 'Tag Primer Map (*.txt, *.csv)' %>
-        <%= link_to '(Show template file)', 'https://s3-eu-west-1.amazonaws.com/gbol5/tagPrimerMap_template.txt' %>
-        <br>
-        <%= 'Only one can be added unless a platepool set file is provided!' %>
-        <%= f.file_field :tag_primer_map, class: 'form-control', multiple: true %>
+        <p>
+          <%= link_to 'Download example / template file', 'templates/tagPrimerMap_template.txt' %>
+        </p>
 
         <% if @ngs_run.tag_primer_maps.size.positive? %>
           <% @ngs_run.tag_primer_maps.with_attached_tag_primer_map.each do |tpm| %>
             <% if tpm.tag_primer_map.attached? %>
-              <%= check_box 'delete_tag_primer_maps', tpm.id, {}, tpm.id %>
-              <%= "Remove current file ('#{tpm.tag_primer_map.filename}')" %>
-              <br>
+              <p>
+                <%= link_to '', delete_attached_file_ngs_run_path(@ngs_run, attachment_id: tpm.tag_primer_map.id),
+                            :class => "glyphicon glyphicon-remove",
+                            method: :delete,
+                            title: 'Remove attachment',
+                            style: 'color: red;',
+                            data: { confirm: 'Are you sure you want to delete this attachment? This action can not be undone.' } %>
+
+                <%= "Current file: '#{tpm.tag_primer_map.filename}'" %>
+              </p>
             <% end %>
           <% end %>
         <% end %>
+
+        <p>
+          <%= 'Only one file can be added unless a platepool set file is provided!' %>
+          <%= f.file_field :tag_primer_map, class: 'form-control', multiple: true %>
+        </p>
       </div>
 
       <div class="form-group">
