@@ -63,32 +63,31 @@ module HomesHelper
   end
 
   def multisearch_results(results)
-    content_tag :ul do
-      results.map do |result|
-        content_tag :li do
-          case result.searchable_type
-          when 'Freezer'
-            result_title = result.searchable.freezercode
-          when 'Individual'
-            result_title = result.searchable.specimen_id
-          when 'Isolate'
-            result_title = result.searchable.display_name
-          when 'Lab'
-            result_title = result.searchable.labcode
-          when 'LabRack'
-            result_title = result.searchable.rackcode
-          when 'Taxon'
-            result_title = result.searchable.scientific_name
-          else
-            result_title = result.searchable.name
-          end
-
-          result_title +=  ' (' + result.searchable_type + ')'
-          result_type = result.searchable_type.to_s.underscore
-
-          link_to result_title, send("edit_#{result_type}_path", result.searchable_id)
+    results.map do |result|
+      content_tag :p do
+        case result.searchable_type
+        when 'Freezer'
+          result_title = result.searchable.freezercode
+        when 'Individual'
+          result_title = result.searchable.specimen_id
+        when 'Isolate'
+          result_title = result.searchable.display_name
+        when 'Lab'
+          result_title = result.searchable.labcode
+        when 'LabRack'
+          result_title = result.searchable.rackcode
+        when 'Taxon'
+          result_title = result.searchable.scientific_name
+        else
+          result_title = result.searchable.name
         end
-      end.join.html_safe
-    end.html_safe
+
+        # result_title +=  ' (' + result.searchable_type + ')'
+        result_type = result.searchable_type.to_s.underscore
+
+        content_tag(:span, content_tag(:b, result.searchable_type + ':'), class: 'multisearch-result-entry') +
+          content_tag(:span, link_to(result_title, send("edit_#{result_type}_path", result.searchable_id)), class: 'multisearch-result-entry')
+      end
+    end.join.html_safe
   end
 end

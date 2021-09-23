@@ -668,3 +668,29 @@ div.search-taxonomy span button {
     width: 100%;
   }
 }
+
+/* Multisearch */
+
+.multisearch-result-entry {
+  display: block;
+}
+
+.multisearch-results {
+  border: 1px solid lightgrey;
+  border-radius: 3px;
+  padding: 15px 15px 0 15px;
+}
+
+.pagination > li > a {
+  color: grey;
+}
+
+.pagination > .active > span {
+  background-color: grey;
+  border-color: grey;
+}
+
+.pagination > .active > span:hover {
+  background-color: lightgrey;
+  border-color: lightgrey;
+}

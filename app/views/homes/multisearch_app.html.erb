@@ -5,10 +5,13 @@
   </div>
 
   <div class="panel-body">
-    <%= pluralize(@results.size, 'record')%> were found for your search term "<%= params[:search] %>":
-  </div>
-  <div>
-    <%= will_paginate @results, renderer: BootstrapPagination::Rails %>
-    <%= multisearch_results(@results) %>
+    <p>
+      <%= pluralize(@results.size, 'record')%> were found for your search term "<%= params[:search] %>":
+    </p>
+
+    <div class="multisearch-results">
+      <%= multisearch_results(@results) %>
+      <%= will_paginate @results, renderer: BootstrapPagination::Rails, previous_label: "&laquo;", next_label: "&raquo;",class: "small-font" %>
+    </div>
   </div>
 </div>
