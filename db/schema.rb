@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_12_080701) do
+ActiveRecord::Schema.define(version: 2021_09_24_080302) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -86,15 +86,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_080701) do
     t.index ["cluster_id", "project_id"], name: "index_clusters_projects_on_cluster_id_and_project_id"
   end
 
-  create_table "contig_pde_uploaders", id: :serial, force: :cascade do |t|
-    t.string "uploaded_file_file_name"
-    t.string "uploaded_file_content_type"
-    t.integer "uploaded_file_file_size"
-    t.datetime "uploaded_file_updated_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "contig_searches", id: :serial, force: :cascade do |t|
     t.string "taxon"
     t.string "specimen"
@@ -111,10 +102,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_080701) do
     t.string "title"
     t.integer "user_id"
     t.integer "project_id"
-    t.string "search_result_archive_file_name"
-    t.string "search_result_archive_content_type"
-    t.integer "search_result_archive_file_size"
-    t.datetime "search_result_archive_updated_at"
     t.integer "has_warnings"
     t.string "verified_by"
     t.index ["project_id"], name: "index_contig_searches_on_project_id"
@@ -146,16 +133,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_080701) do
     t.integer "project_id"
   end
 
-  create_table "copies", id: :serial, force: :cascade do |t|
-    t.string "well_pos_plant_plate"
-    t.integer "lab_nr"
-    t.integer "micronic_tube_id"
-    t.string "well_pos_micronic_plate"
-    t.decimal "concentration"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
@@ -182,18 +159,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_080701) do
     t.integer "freezer_id", null: false
     t.integer "project_id", null: false
     t.index ["freezer_id", "project_id"], name: "index_freezers_projects_on_freezer_id_and_project_id"
-  end
-
-  create_table "genera", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
-    t.string "author", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "helps", id: :serial, force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "herbaria", id: :serial, force: :cascade do |t|
@@ -464,14 +429,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_080701) do
     t.index ["mislabel_analysis_id"], name: "index_mislabels_on_mislabel_analysis_id"
   end
 
-  create_table "news", id: :serial, force: :cascade do |t|
-    t.string "title", limit: 255
-    t.text "body"
-    t.datetime "published"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "ngs_results", id: :serial, force: :cascade do |t|
     t.integer "isolate_id"
     t.integer "marker_id"
@@ -494,20 +451,12 @@ ActiveRecord::Schema.define(version: 2021_07_12_080701) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "comment"
-    t.string "set_tag_map_file_name"
-    t.string "set_tag_map_content_type"
-    t.integer "set_tag_map_file_size"
-    t.datetime "set_tag_map_updated_at"
     t.integer "isolate_id"
     t.string "name"
     t.integer "sequences_pre"
     t.integer "sequences_filtered"
     t.integer "sequences_high_qual"
     t.integer "sequences_one_primer"
-    t.string "results_file_name"
-    t.string "results_content_type"
-    t.integer "results_file_size"
-    t.datetime "results_updated_at"
     t.integer "sequences_short"
     t.string "fastq_location"
     t.boolean "analysis_requested", default: false
@@ -521,13 +470,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_080701) do
     t.integer "ngs_run_id", null: false
     t.integer "project_id", null: false
     t.index ["ngs_run_id", "project_id"], name: "index_ngs_runs_projects_on_ngs_run_id_and_project_id"
-  end
-
-  create_table "oders", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
-    t.string "author", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "partial_cons", id: :serial, force: :cascade do |t|
@@ -568,10 +510,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_080701) do
     t.string "pherogram_url", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "chromatogram_file_name", limit: 255
-    t.string "chromatogram_content_type", limit: 255
-    t.integer "chromatogram_file_size"
-    t.datetime "chromatogram_updated_at"
     t.integer "primer_id"
     t.integer "isolate_id"
     t.integer "contig_id"
@@ -686,10 +624,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_080701) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "ngs_run_id"
-    t.string "tag_primer_map_file_name"
-    t.string "tag_primer_map_content_type"
-    t.integer "tag_primer_map_file_size"
-    t.datetime "tag_primer_map_updated_at"
     t.string "name"
     t.string "tag"
     t.index ["ngs_run_id"], name: "index_tag_primer_maps_on_ngs_run_id"
@@ -721,10 +655,6 @@ ActiveRecord::Schema.define(version: 2021_07_12_080701) do
   create_table "txt_uploaders", id: :serial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "uploaded_file_file_name"
-    t.string "uploaded_file_content_type"
-    t.integer "uploaded_file_file_size"
-    t.datetime "uploaded_file_updated_at"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
