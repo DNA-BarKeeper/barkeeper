@@ -33,7 +33,6 @@ class Isolate < ApplicationRecord
   has_many :ngs_results
   has_many :ngs_runs, through: :clusters
   has_many :aliquots
-  belongs_to :micronic_plate # TODO remove after all values are transferred to aliquots
   belongs_to :plant_plate
   belongs_to :tissue
   belongs_to :individual
