@@ -28,10 +28,7 @@ namespace :export do
     ms = MarkerSequence.where(id: contigs.map(&:marker_sequence_id))
     isolates = Isolate.where(id: contigs.map(&:isolate_id))
     specimen = Individual.where(id: isolates.map(&:individual_id))
-    species = Species.where(id: specimen.map(&:species_id))
-    families = Family.where(id: species.map(&:family_id))
-    orders = Order.where(id: families.map(&:order_id))
-    hots = HigherOrderTaxon.where(id: orders.map(&:higher_order_taxon_id))
+    taxa = Taxon.where(id: specimen.map(&:taxon_id))
 
     output = File.open("seeds.rb", 'w')
 
@@ -44,10 +41,7 @@ namespace :export do
     seeds_commands(ms, output)
     seeds_commands_isolates(isolates, output)
     seeds_commands_specimen(specimen, output) #CAUTION: Comment out autoassign in isolate.rb before running db:seed!
-    seeds_commands(species, output)
-    seeds_commands(families, output)
-    seeds_commands(orders, output)
-    seeds_commands(hots, output)
+    seeds_commands(taxa, output)
 
     output.close
   end
