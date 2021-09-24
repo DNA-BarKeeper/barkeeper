@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_24_080302) do
+ActiveRecord::Schema.define(version: 2021_09_24_130043) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -239,32 +239,16 @@ ActiveRecord::Schema.define(version: 2021_09_24_080302) do
 
   create_table "isolates", id: :serial, force: :cascade do |t|
     t.string "well_pos_plant_plate", limit: 255
-    t.string "micronic_tube_id", limit: 255
-    t.string "well_pos_micronic_plate", limit: 255
-    t.decimal "concentration"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "tissue_id"
-    t.integer "micronic_plate_id"
     t.integer "plant_plate_id"
     t.integer "individual_id"
     t.string "dna_bank_id", limit: 255
     t.string "lab_isolation_nr", limit: 255
     t.boolean "negative_control", default: false
-    t.integer "lab_id_orig"
-    t.integer "lab_id_copy"
     t.datetime "isolation_date"
-    t.integer "micronic_plate_id_orig"
-    t.integer "micronic_plate_id_copy"
-    t.string "well_pos_micronic_plate_orig"
-    t.string "well_pos_micronic_plate_copy"
-    t.decimal "concentration_orig", precision: 15, scale: 2
-    t.decimal "concentration_copy", precision: 15, scale: 2
-    t.string "micronic_tube_id_orig"
-    t.string "micronic_tube_id_copy"
     t.integer "user_id"
-    t.text "comment_orig"
-    t.text "comment_copy"
     t.string "display_name"
   end
 
