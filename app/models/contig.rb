@@ -36,7 +36,7 @@ class Contig < ApplicationRecord
   has_many :partial_cons, dependent: :destroy
 
   before_destroy { marker_sequence&.destroy }
-  after_save { marker_sequence&.destroy unless assembled? }
+  after_save { marker_sequence&.destroy unless assembled? && verified? }
 
   validates_presence_of :name
 
@@ -174,6 +174,22 @@ class Contig < ApplicationRecord
     warning
   end
 
+  def verify_contig(current_user)
+    self.update(verified_by: current_user.id, verified_at: Time.now, assembled: true, verified: true)
+
+    # Create or update marker sequence
+    ms = MarkerSequence.find_or_create_by(name: self.name)
+    partial_cons = self.partial_cons.first
+
+    ms.sequence = partial_cons.aligned_sequence.delete('-').delete('?')
+    ms.contigs << self
+    ms.marker = self.marker
+    ms.isolate = self.isolate
+    ms.add_projects(self.projects.pluck(:id))
+
+    ms.save
+  end
+
   def isolate_name
     isolate.try(:display_name)
   end
@@ -274,13 +290,14 @@ class Contig < ApplicationRecord
   def post_assembly(update_ms, sequence, msg)
     if update_ms
       update(assembled: true)
-      ms = MarkerSequence.find_or_create_by(name: name)
-      ms.sequence = sequence
+      MarkerSequence.find_or_create_by(name: name)
+
+      ms = MarkerSequence.find_by(name: name)
+      ms.update(sequence: sequence,
+                marker: self.marker,
+                isolate: self.isolate)
       ms.contigs << self
-      ms.marker = marker
-      ms.isolate = isolate
       ms.add_projects(projects.pluck(:id))
-      ms.save
 
       self.marker_sequence = ms
     end

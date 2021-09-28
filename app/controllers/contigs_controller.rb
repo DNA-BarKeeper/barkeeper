@@ -290,48 +290,30 @@ class ContigsController < ApplicationController
       ContigAssembly.perform_async(c.id)
     end
 
-    redirect_to contigs_path, notice: "Assembly for #{contigs.size} contigs started in background."
+    redirect_to contigs_path, notice: "Assembly for #{contigs.size} contigs started in the background."
   end
 
   def verify
     if @contig.verified_by || @contig.verified
       @contig.update(verified_by: nil, verified_at: nil, verified: false)
-      redirect_to edit_contig_path, notice: 'Set to non-verified.'
+      redirect_to edit_contig_path, notice: 'Contig set to non-verified.'
     else
-      @contig.update(verified_by: current_user.id, verified_at: Time.now, assembled: true, verified: true)
+      @contig.verify_contig(current_user)
 
-      # generate / update marker sequence
-      ms = MarkerSequence.find_or_create_by(name: @contig.name)
-      partial_cons = @contig.partial_cons.first
-      ms.sequence = partial_cons.aligned_sequence.delete('-')
-      ms.sequence = ms.sequence.delete('?')
-      ms.contigs << @contig
-      ms.marker = @contig.marker
-      ms.isolate = @contig.isolate
-      ms.add_projects(@contig.projects.pluck(:id))
-      ms.save
-
-      redirect_to edit_contig_path, notice: 'Verified & linked marker sequence updated.'
+      redirect_to edit_contig_path, notice: 'Verified and updated the linked marker sequence.'
     end
   end
 
   def verify_next
-    @contig.update(verified_by: current_user.id, verified_at: Time.now, assembled: true, verified: true)
-
-    # Generate or update MarkerSequence
-    ms = MarkerSequence.find_or_create_by(name: @contig.name)
-    partial_cons = @contig.partial_cons.first
-    ms.sequence = partial_cons.aligned_sequence.delete('-')
-    ms.sequence = ms.sequence.delete('?')
-    ms.contigs << @contig
-    ms.marker = @contig.marker
-    ms.isolate = @contig.isolate
-    ms.add_projects(@contig.projects.pluck(:id))
-    ms.save
+    @contig.verify_contig(current_user)
 
     @next_contig = Contig.in_project(current_project_id).need_verification.first
 
-    redirect_to edit_contig_path(@next_contig), notice: "Verified & linked marker sequence updated for #{@contig.name}. Showing #{@next_contig.name}."
+    if @next_contig
+      redirect_to edit_contig_path(@next_contig), notice: "Verified and updated the linked marker sequence for #{@contig.name}. Showing #{@next_contig.name}."
+    else
+      redirect_to contigs_path, notice: "All assembled contigs in your current project are verified."
+    end
   end
 
   def overlap
@@ -342,7 +324,7 @@ class ContigsController < ApplicationController
       msg = 'Assembly finished.'
     else
       ContigAssembly.perform_async(@contig.id)
-      msg = 'Assembly started in background.'
+      msg = 'Assembly started in the background.'
     end
 
     redirect_back(fallback_location: contigs_path, notice: msg)
@@ -351,7 +333,7 @@ class ContigsController < ApplicationController
   def overlap_background
     ContigAssembly.perform_async(@contig.id)
     # @contig.auto_overlap
-    redirect_to edit_contig_path, notice: 'Assembly started in background.'
+    redirect_to edit_contig_path, notice: 'Assembly started in the background.'
   end
 
   def pde
@@ -374,7 +356,6 @@ class ContigsController < ApplicationController
     send_data(fasta, filename: "#{@contig.name}_raw.fas", type: 'application/txt')
   end
 
-  # TODO: Not used anywhere yet, talk to Susi about her needs for this export
   def fastq
     use_mira = params[:mira] == 1 || params[:mira] == '1'
 
@@ -437,11 +418,9 @@ class ContigsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   # TODO mira and marker only used by fastq export
-  # TODO contig_names is only used by contig compare feature
   # TODO filename and fastastring are only used by change via script action
-  # TODO: isolate_name used in form for contig, but cant that be done via id?
   def contig_params
-    params.require(:contig).permit(:mira, :marker, :marker_id, :overlap_length, :allowed_mismatch_percent, :imported, :contig_names,
+    params.require(:contig).permit(:mira, :marker, :marker_id, :overlap_length, :allowed_mismatch_percent, :imported,
                                    :filename, :fastastring, :comment, :assembled, :name, :consensus, :marker_id,
                                    :isolate_id, :marker_sequence_id, :term, :isolate_name, :verified, :verified_by,
                                    project_ids: [])
