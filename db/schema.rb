@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_24_130043) do
+ActiveRecord::Schema.define(version: 2021_09_28_114830) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -634,11 +634,6 @@ ActiveRecord::Schema.define(version: 2021_09_24_130043) do
     t.string "name", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "txt_uploaders", id: :serial, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "users", id: :serial, force: :cascade do |t|

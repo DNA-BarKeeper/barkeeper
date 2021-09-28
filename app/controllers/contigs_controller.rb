@@ -27,9 +27,9 @@ class ContigsController < ApplicationController
 
   load_and_authorize_resource
 
-  http_basic_authenticate_with name: ENV['API_USER_NAME'], password: ENV['API_PASSWORD'], only: [:as_fasq, :change_via_script, :compare_contigs]
+  http_basic_authenticate_with name: ENV['API_USER_NAME'], password: ENV['API_PASSWORD'], only: [:as_fasq, :change_via_script]
 
-  skip_before_action :verify_authenticity_token, only: [:as_fasq, :change_via_script, :compare_contigs]
+  skip_before_action :verify_authenticity_token, only: [:as_fasq, :change_via_script]
 
   before_action :set_contig, only: %i[verify_next verify pde fasta fasta_trimmed fasta_raw overlap overlap_background show edit
                                       update destroy]
@@ -107,18 +107,6 @@ class ContigsController < ApplicationController
       format.html { redirect_to contigs_path, notice: 'Contig and associated reads and marker sequence were successfully deleted.' }
       format.json { head :no_content }
     end
-  end
-
-  def compare_contigs
-    contig_names = params[:contig_names]
-
-    CompareContigs.perform_async(contig_names)
-
-    send_data("Comparison started as background process, may take a minute or so. View results under https://#{ENV['PROJECT_DOMAIN']}/analysis_output\n", filename: 'msg.txt', type: 'application/txt')
-  end
-
-  def analysis_output
-    redirect_to TxtUploader.last.uploaded_file.url
   end
 
   def import
