@@ -13,7 +13,6 @@ BarcodeWorkflowManager::Application.routes.draw do
   get 'progress_overview/export_progress_csv'
   get 'progress_overview/progress_tree', defaults: { format: 'json' }
 
-  get 'analysis_output', action: :analysis_output, controller: 'contigs'
   get 'reads_without_contigs', action: :reads_without_contigs, controller: 'primer_reads'
 
   get 'partial_cons/:id/:page/:width_in_bases', action: :show_page, controller: 'partial_cons', defaults: { format: 'json' }
@@ -79,7 +78,6 @@ BarcodeWorkflowManager::Application.routes.draw do
       get 'duplicates'
       post :import
       post :change_via_script
-      post :compare_contigs # TODO: Marked for removal
       post :as_fasq
       get 'externally_verified'
     end

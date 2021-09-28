@@ -38,12 +38,11 @@ class Ability
     can %i[edit index filter], Individual
     can %i[edit index], Herbarium
 
-    can %i[edit index filter change_via_script compare_contigs as_fasq], Contig
+    can %i[edit index filter change_via_script as_fasq], Contig
     can %i[edit index filter], Isolate
     can [:filter], MarkerSequence
     can :manage, PartialCon
     can %i[edit index], PrimerRead
-    can :manage, TxtUploader
     can :download_results, MislabelAnalysis
     can [:import, :revised_tpm], NgsRun
 
