@@ -82,10 +82,10 @@
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin area<b class="caret"></b></a>
       <ul class="dropdown-menu">
-        <li><%= link_to 'Users', users_path %></li>
         <li><%= link_to 'Home configuration', edit_home_path(Home.where(active: true).first) %></li>
+        <li class="divider"></li>
+        <li><%= link_to 'Users', users_path %></li>
         <li><%= link_to 'Projects', projects_path %></li>
-        <li><%= link_to 'Responsibilities', responsibilities_path %></li>
       </ul>
     </li>
   <% end %>

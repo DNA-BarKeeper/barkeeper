@@ -9,10 +9,10 @@
   <%= user.projects&.order(:name).map { |project| project.name }.join(', ') %>
 </td>
 <td>
-  <%= user.role&.capitalize %>
+  <%= user.role&.humanize %>
 </td>
 <td>
-  <%= user.responsibilities&.map { |responsibility| responsibility.name }.join(', ') %>
+  <%= user.responsibility&.humanize %>
 </td>
 <td>
   <%= user.last_sign_in_at %>
