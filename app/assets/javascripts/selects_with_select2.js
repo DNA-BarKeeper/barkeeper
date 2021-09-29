@@ -51,7 +51,6 @@ jQuery(function() {
     $('#marker_project_ids').select2(select2MultiselectOptions);
     $('#marker_expected_reads').select2(select2SingleSelectOptions('a number'));
 
-
     // MARKER SEQUENCES
     $('#marker_sequence_isolate_id').select2((select2AutocompleteOptions("/isolates/filter", "an isolate")));
     $('#marker_sequence_marker_id').select2(select2SingleSelectOptions('a marker'));
@@ -106,20 +105,11 @@ jQuery(function() {
     $('#taxon_search').select2(select2AutocompleteOptions("/taxa/filter", "a taxon", 'auto'));
 
     // USERS
+    $("#user_default_project_id").select2(select2SingleSelectOptions('a project'));
     $("#user_lab_id").select2(select2SingleSelectOptions('a lab'));
-    $("#user_responsibility_ids").select2(select2MultiselectOptions);
+    $("#user_responsibility").select2(select2SingleSelectOptions('a responsibility'));
+    $("#user_role").select2(select2SingleSelectOptions('a role'));
     $("#user_project_ids").select2(select2MultiselectOptions);
-
-    // DEPRECATED
-    $('#family_project_ids').select2(select2MultiselectOptions);
-
-    $('#order_project_ids').select2(select2MultiselectOptions);
-
-    $('#species_project_ids').select2(select2MultiselectOptions);
-
-    $('#higher_order_taxon_marker_ids').select2(select2MultiselectOptions);
-
-    $('#higher_order_taxon_project_ids').select2(select2MultiselectOptions);
 });
 
 let select2MultiselectOptions = {

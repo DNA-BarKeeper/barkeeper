@@ -19,21 +19,23 @@
 </div>
 
 <div class="form-group">
-  <% roles = current_user.admin? ? User.roles.keys : User.roles.keys.reject {|role| role == 'admin'} %>
-  <% roles.each do |role| %>
-    <%= f.radio_button :role, role %>
-    <%= f.label role.to_sym %>
-  <% end %>
+  <%= f.label 'Role' %><br>
+  <% roles = current_user.admin? ? User.roles : User.roles.reject {|role| role == 'admin'} %>
+  <%= f.select :role, roles.keys.map { |role| [role.humanize, role] },
+               { include_blank: true },
+               { class: 'form-control' } %>
 </div>
 
 <div class="form-group">
   <%= f.label 'Lab' %><br>
-  <%= f.collection_select :lab_id, Lab.order(:labcode), :id, :labcode, {}, { class: 'form-control' } %>
+  <%= f.collection_select :lab_id, Lab.order(:labcode), :id, :labcode, { include_blank: true }, { class: 'form-control' } %>
 </div>
 
 <div class="form-group">
-  <%= f.label 'Responsibility' %><br>
-  <%= f.collection_select :responsibility_ids, Responsibility.order(:name), :id, :name, {}, { multiple:true, class: 'form-control' } %>
+  <%= f.label 'Responsibility area' %><br>
+  <%= f.select :responsibility, User.responsibilities.keys.map { |responsibility| [responsibility.humanize, responsibility] },
+               { include_blank: true },
+               { class: 'form-control' } %>
 </div>
 
 <div class="form-group">

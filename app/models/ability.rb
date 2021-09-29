@@ -47,67 +47,64 @@ class Ability
     can [:import, :revised_tpm], NgsRun
 
     # Additional permissions for logged in users
-    if user.present?
-      can :manage, :all
+    return unless user.present?
+    can :manage, :all
 
-      # Additional permissions for guests
-      if user.guest?
-        cannot %i[change_base change_left_clip change_right_clip], PrimerRead
-        cannot %i[create update destroy], :all
-        can :edit, :all
-      end
-
-      cannot :manage, User
-      cannot :manage, Project
-      cannot :manage, Responsibility
-      cannot %i[create destroy], MislabelAnalysis
-      cannot %i[create destroy], Mislabel
-      cannot :start_analysis, NgsRun # TODO: remove when feature is done
-
-      can %i[read search_taxa add_to_taxa], Project, id: user.project_ids
-
-      cannot :edit, Cluster
-
-      # Additional permissions for administrators and supervisors
-      if user.admin? || user.supervisor?
-        can :manage, User
-        can :manage, Project
-        can :manage, Responsibility
-        can :manage, MislabelAnalysis
-        can :manage, Mislabel
-        can :manage, Cluster
-        can :manage, NgsRun
-        can :update, Home # No user can add or destroy Home object, it's only created via seeding
-
-        cannot %i[create update destroy], User, role: 'admin' if user.supervisor?
-      end
-
-      can %i[home show edit update destroy], User, id: user.id # User can see and edit own profile
-
-      cannot :manage, ContigSearch
-      can :create, ContigSearch
-      can :manage, ContigSearch, user_id: user.id # Users can only edit their own searches
-
-      cannot :manage, MarkerSequenceSearch
-      can :create, MarkerSequenceSearch
-      can :manage, MarkerSequenceSearch, user_id: user.id # Users can only edit their own searches
-
-      cannot :manage, IndividualSearch
-      can :create, IndividualSearch
-      can :manage, IndividualSearch, user_id: user.id # Users can only edit their own searches
-
-      if user.responsibilities.exists?(name: 'lab') # Restrictions for users in project "lab"
-        cannot %i[create update destroy], [Taxon, Individual]
-        can :edit, [Taxon, Individual]
-      elsif user.responsibilities.exists?(name: 'taxonomy') # Restrictions for users in project "taxonomy"
-        cannot %i[create update destroy], [Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker,
-                                           MarkerSequence, MicronicPlate, PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
-        can :edit, [Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker, MarkerSequence, MicronicPlate,
-                    PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
-        cannot %i[change_base change_left_clip change_right_clip], PrimerRead
-      end
-
-      cannot :delete_all, ContigSearch unless user.responsibilities.exists?(name: 'delete_contigs') || user.admin? || user.supervisor?
+    # Additional permissions for guests
+    if user.guest?
+      cannot %i[change_base change_left_clip change_right_clip], PrimerRead
+      cannot %i[create update destroy], :all
+      can :edit, :all
     end
+
+    cannot :manage, User
+    cannot :manage, Project
+    cannot %i[create destroy], MislabelAnalysis
+    cannot %i[create destroy], Mislabel
+    cannot :start_analysis, NgsRun # TODO: remove when feature is done
+
+    can %i[read search_taxa add_to_taxa], Project, id: user.project_ids
+
+    cannot :edit, Cluster
+
+    # Additional permissions for administrators and supervisors
+    if user.admin? || user.supervisor?
+      can :manage, User
+      can :manage, Project
+      can :manage, MislabelAnalysis
+      can :manage, Mislabel
+      can :manage, Cluster
+      can :manage, NgsRun
+      can :update, Home # No user can add or destroy Home object, it's only created via seeding
+
+      cannot %i[create update destroy], User, role: 'admin' if user.supervisor?
+    end
+
+    can %i[home show edit update destroy], User, id: user.id # User can see and edit own profile
+
+    cannot :manage, ContigSearch
+    can :create, ContigSearch
+    can :manage, ContigSearch, user_id: user.id # Users can only edit their own searches
+
+    cannot :manage, MarkerSequenceSearch
+    can :create, MarkerSequenceSearch
+    can :manage, MarkerSequenceSearch, user_id: user.id # Users can only edit their own searches
+
+    cannot :manage, IndividualSearch
+    can :create, IndividualSearch
+    can :manage, IndividualSearch, user_id: user.id # Users can only edit their own searches
+
+    if user.lab? # Restrictions for users with responsibility "lab"
+      cannot %i[create update destroy], [Taxon, Individual]
+      can :edit, [Taxon, Individual]
+    elsif user.taxonomy? # Restrictions for users with responsibility "taxonomy"
+      cannot %i[create update destroy], [Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker,
+                                         MarkerSequence, MicronicPlate, PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
+      can :edit, [Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker, MarkerSequence, MicronicPlate,
+                  PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
+      cannot %i[change_base change_left_clip change_right_clip], PrimerRead
+    end
+
+    cannot :delete_all, ContigSearch unless user.bulk_delete_contigs? || user.admin? || user.supervisor?
   end
 end

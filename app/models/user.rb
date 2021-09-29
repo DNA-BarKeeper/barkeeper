@@ -34,7 +34,6 @@ class User < ApplicationRecord
   has_many :contig_searches
   has_many :individual_searches
   has_many :marker_sequence_searches
-  has_and_belongs_to_many :responsibilities
 
   validates_presence_of :email # Necessary for devise
   validates :projects, presence: true
@@ -42,6 +41,7 @@ class User < ApplicationRecord
   before_save :default_project
 
   enum role: %i[guest user supervisor admin]
+  enum responsibility: %i[taxonomy lab bulk_delete_contigs]
 
   def default_project
     self.default_project_id ||= projects&.first&.id

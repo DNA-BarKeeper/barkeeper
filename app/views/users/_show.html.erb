@@ -10,7 +10,7 @@
 
 <p>
   <strong>Role:</strong>
-  <%= @user.role.capitalize %>
+  <%= @user.role&.humanize %>
 </p>
 
 <p>
@@ -19,6 +19,6 @@
 </p>
 
 <p>
-  <strong>Responsibilities:</strong>
-  <%= @user.responsibilities&.map { |responsibility| responsibility.name.capitalize }.join(', ') %>
+  <strong>Responsibility area:</strong>
+  <%= @user.responsibility&.humanize %>
 </p>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_28_114830) do
+ActiveRecord::Schema.define(version: 2021_09_29_074353) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -583,19 +583,6 @@ ActiveRecord::Schema.define(version: 2021_09_28_114830) do
     t.integer "user_id"
   end
 
-  create_table "responsibilities", id: :serial, force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "responsibilities_users", id: false, force: :cascade do |t|
-    t.integer "responsibility_id", null: false
-    t.integer "user_id", null: false
-    t.index ["responsibility_id", "user_id"], name: "index_responsibilities_users_on_responsibility_id_and_user_id"
-  end
-
   create_table "shelves", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255
     t.datetime "created_at"
@@ -653,6 +640,7 @@ ActiveRecord::Schema.define(version: 2021_09_28_114830) do
     t.integer "lab_id"
     t.integer "role"
     t.integer "default_project_id"
+    t.integer "responsibility"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
