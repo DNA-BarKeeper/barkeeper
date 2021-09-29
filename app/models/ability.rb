@@ -103,6 +103,7 @@ class Ability
       can :edit, [Contig, Freezer, Isolate, Issue, Lab, LabRack, Marker, MarkerSequence, MicronicPlate,
                   PartialCon, PlantPlate, Primer, PrimerRead, Shelf, Tissue]
       cannot %i[change_base change_left_clip change_right_clip], PrimerRead
+      cannot %i[verify verify_next], Contig
     end
 
     cannot :delete_all, ContigSearch unless user.bulk_delete_contigs? || user.admin? || user.supervisor?
