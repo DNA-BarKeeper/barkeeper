@@ -46,13 +46,13 @@
         <%= form_tag add_to_taxa_projects_path, :method => :get do %>
           <p>Select a taxon in order to associate it and all its descendants to the selected project:</p>
           <div>
-            <%= label :associated_project, 'Projects' %><br>
-            <%= collection_select :associated_project, :ids, user_projects, :id, :name, {}, { multiple: true } %>
+            <%= label :add_project, 'Project' %><br>
+            <%= collection_select :add_project, :associated_project, user_projects, :id, :name, { include_blank: true }, {} %>
           </div>
           <br>
           <div>
             <%= label :query, 'Taxon' %><br>
-            <%= collection_select :query, :associated_taxon, Taxon.order(:scientific_name), :id, :scientific_name, { include_blank: true }, { class:"form-control", style: 'display: inline;' } %>
+            <%= collection_select :query, :associated_taxon, Taxon.order(:scientific_name), :id, :scientific_name, { include_blank: true }, {} %>
           </div>
           <br>
           <%= button_to 'Associate taxa', { type: 'Submit', method: 'get' }, { class: 'btn btn-default' } %>

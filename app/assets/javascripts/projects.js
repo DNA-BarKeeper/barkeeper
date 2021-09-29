@@ -25,24 +25,21 @@ jQuery(function() {
     $('#query_associated_taxon').on('select2:select', function (e) {
         changeSubmitButtonStatus();
     });
-    $('#associated_project_ids').on('select2:select', function (e) {
+    $('#add_project_associated_project').on('select2:select', function (e) {
         changeSubmitButtonStatus();
     });
 
-    // $('#query_associated_taxon').on('select2:select', changeSubmitButtonStatus());
-    // $('#associated_project_ids').on('select2:select', changeSubmitButtonStatus());
-
     // Submit button is disabled on page load
-    disableButton($('input[type="submit"][value="Associate taxa"]'), 'Please select at least one project and one taxon.');
+    disableButton($('input[type="submit"][value="Associate taxa"]'), 'Please select a project and a parent taxon.');
 });
 
 function noneSelected() {
     var no_taxon_selected = true;
     var no_project_selected = true;
 
-    if ($('#associated_project_ids').hasClass("select2-hidden-accessible")) {
+    if ($('#add_project_associated_project').hasClass("select2-hidden-accessible")) {
         no_taxon_selected = $('#query_associated_taxon').select2('data')[0].text == '';
-        no_project_selected = !$('#associated_project_ids').select2('data').length;
+        no_project_selected = $('#add_project_associated_project').select2('data')[0].text == '';
     }
 
     return no_taxon_selected || no_project_selected;
@@ -54,7 +51,7 @@ function changeSubmitButtonStatus() {
     var button = $('input[type="submit"][value="Associate taxa"]');
 
     if (noneSelected()) {
-        disableButton(button, 'Please select at least one project and one taxon.');
+        disableButton(button, 'Please select a project and a parent taxon.');
     }
     else {
         enableButton(button);

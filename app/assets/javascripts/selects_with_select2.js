@@ -83,7 +83,7 @@ jQuery(function() {
 
     // PROJECTS
     $('#project_user_ids').select2(select2MultiselectOptions);
-    $( '#associated_project_ids').select2(select2MultiselectOptions);
+    $( '#add_project_associated_project').select2(select2SingleSelectOptions('a project'));
     $('#query_associated_taxon').select2((select2AutocompleteOptions("/taxa/filter", "a taxon")));
 
     // SHELVES

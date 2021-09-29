@@ -91,10 +91,10 @@ class ProjectsController < ApplicationController
 
   def add_to_taxa
     taxon_id = params[:query][:associated_taxon]
-    Project.where(id: params[:project][:id]).each { |project| project.add_project_to_taxonomy(taxon_id) }
+    Project.where(id: params[:add_project][:associated_project]).each { |project| project.add_project_to_taxonomy(taxon_id) }
 
     respond_to do |format|
-      format.html { redirect_to projects_url, notice: 'Added project(s) to selected taxon and all descendants.' }
+      format.html { redirect_to projects_url, notice: 'Added project to selected taxon and all descendants.' }
       format.json { head :no_content }
     end
   end
