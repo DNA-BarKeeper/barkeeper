@@ -1,8 +1,12 @@
+<% provide(:title, @project.name) %>
 <%= show_val_errors(@project)%>
 
 <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= @project.name %></h3>
+  </div>
+
   <div class="panel-body">
-    <h4><%= @project.name%></h4>
     <%= form_for(@project) do |f| %>
       <div class="form-group">
         <%= f.label :name %>
@@ -29,9 +33,7 @@
         <%= f.collection_select(:user_ids, User.all, :id, :name, {}, { multiple: true, class: 'form-control' }) %>
       </div>
 
-      <div class="form-actions">
-        <%= f.button :submit %>
-      </div>
+      <%= f.submit 'Submit', :class => 'btn btn-default' %>
     <% end %>
   </div>
 </div>
