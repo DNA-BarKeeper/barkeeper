@@ -12,8 +12,8 @@
     <li><%= link_to 'About', about_path %></li>
     <li><%= link_to 'Progress status', progress_overview_index_path %></li>
     <li class="<%= link_disabled %>"><%= link_to 'Projects', projects_path %></li>
-    <li class="divider"></li>
     <% if user_signed_in? %>
+      <li class="divider"></li>
       <li ><%= link_to 'Advanced contig search', new_contig_search_path %></li>
       <li ><%= link_to 'Advanced marker sequence search', new_marker_sequence_search_path %></li>
       <li ><%= link_to 'Advanced specimen search', new_individual_search_path %></li>
