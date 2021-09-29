@@ -66,7 +66,7 @@
             <%= f.text_area :comment,  class: 'form-control' %>
           </div>
 
-          <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@taxon) } %>
+          <%= render :partial => 'shared/associated_projects', :locals => { :form => f } %>
 
           <%= f.submit 'Update', :class => 'btn btn-default' %>
         </div>

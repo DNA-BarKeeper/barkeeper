@@ -46,21 +46,11 @@ module ApplicationHelper
   end
 
   def current_project_name
-    if user_signed_in?
+    if user_signed_in? && current_user.default_project_id.present?
       Project.find(current_user.default_project_id).name
     else
       'Project'
     end
-  end
-
-  def associated_projects(record)
-    projects = if user_signed_in?
-                 current_user.projects.select(:id, :name)
-               else
-                 record.projects.select(:id, :name)
-               end
-
-    projects
   end
 
   # Returns the full title on a per-page basis.

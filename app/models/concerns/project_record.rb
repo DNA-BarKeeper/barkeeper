@@ -28,28 +28,26 @@ module ProjectRecord
 
   included do
     has_and_belongs_to_many :projects, -> { distinct }
-
-    before_create do
-      add_project(0)
-    end
   end
 
   module ClassMethods
     def in_project(project_id)
-      joins(:projects).where(projects: { id: project_id }).distinct
+      if project_id
+        joins(:projects).where(projects: { id: project_id }).distinct
+      else
+        all
+      end
     end
   end
 
-  # Adds all of the given projects as well as the general project if not already added
+  # Adds all of the given projects if not already added
   def add_projects(project_ids)
     project_ids.each { |p| add_single_project(p) }
-    add_single_project(Project.where('name like ?', 'All%').first.id)
   end
 
-  # Adds the given project as well as the general project if not already added
+  # Adds the given project if not already added
   def add_project(project_id)
     add_single_project(project_id)
-    add_single_project(Project.where('name like ?', 'All%').first.id)
   end
 
   def add_project_and_save(project_id)
@@ -60,7 +58,9 @@ module ProjectRecord
   private
 
   def add_single_project(project_id)
-    project = Project.find_by_id(project_id)
-    projects << project unless projects.include?(project) || !project
+    if project_id
+      project = Project.find_by_id(project_id)
+      projects << project unless projects.include?(project) || !project
+    end
   end
 end

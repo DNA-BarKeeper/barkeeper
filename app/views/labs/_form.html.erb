@@ -10,7 +10,7 @@
         <%= f.text_field :labcode, :autofocus => true, class: 'form-control' %>
       </div>
 
-      <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@lab) } %>
+      <%= render :partial => 'shared/associated_projects', :locals => { :form => f } %>
 
       <%= f.submit 'Update', :class => 'btn btn-default' %>
     <% end %>

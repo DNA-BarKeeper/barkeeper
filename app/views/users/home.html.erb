@@ -21,7 +21,7 @@
 
       <%= form_for @user do |f| %>
         <%= f.label 'Currently selected project:' %>
-        <%= f.collection_select :default_project_id, @user.projects, :id, :name %><br>
+        <%= f.collection_select :default_project_id, @user.projects, :id, :name, { include_blank: true } %><br>
 
         <div class="form-actions">
           <%= f.submit 'Change selected project',

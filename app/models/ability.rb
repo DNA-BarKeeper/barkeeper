@@ -53,6 +53,7 @@ class Ability
     # Additional permissions for guests
     if user.guest?
       cannot %i[change_base change_left_clip change_right_clip], PrimerRead
+      cannot %i[verify verify_next], Contig
       cannot %i[create update destroy], :all
       can :edit, :all
     end
@@ -63,7 +64,7 @@ class Ability
     cannot %i[create destroy], Mislabel
     cannot :start_analysis, NgsRun # TODO: remove when feature is done
 
-    can %i[read search_taxa add_to_taxa], Project, id: user.project_ids
+    can %i[read add_project_to_taxonomy], Project, id: user.project_ids
 
     cannot :edit, Cluster
 

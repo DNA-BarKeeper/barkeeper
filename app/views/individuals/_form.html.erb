@@ -106,7 +106,7 @@
               <%= f.text_area :comments, class: 'form-control' %>
             </div>
 
-            <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@individual) } %>
+            <%= render :partial => 'shared/associated_projects', :locals => { :form => f } %>
           </div>
 
           <div class="tab-pane" id="image">

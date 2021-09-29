@@ -19,7 +19,7 @@
 
       <div class="vertical-spacer"></div>
 
-      <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@marker) } %>
+      <%= render :partial => 'shared/associated_projects', :locals => { :form => f } %>
 
       <%= f.submit 'Update', :class => 'btn btn-default' %>
   <% end %></div>
