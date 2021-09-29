@@ -64,7 +64,7 @@ class Ability
     cannot %i[create destroy], Mislabel
     cannot :start_analysis, NgsRun # TODO: remove when feature is done
 
-    can %i[read add_project_to_taxonomy], Project, id: user.project_ids
+    can %i[read add_to_taxa], Project
 
     cannot :edit, Cluster
 
