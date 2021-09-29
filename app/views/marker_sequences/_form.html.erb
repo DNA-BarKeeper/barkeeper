@@ -62,7 +62,7 @@
               <%= f.collection_select(:marker_id, Marker.all, :id, :name, {}, { class: 'form-control' }) %>
             </div>
 
-            <%= render :partial => 'shared/associated_projects', :locals => { :form => f, :projects => associated_projects(@marker_sequence) } %>
+            <%= render :partial => 'shared/associated_projects', :locals => { :form => f } %>
           </div>
 
           <div class="tab-pane" id="assigned_contigs">
