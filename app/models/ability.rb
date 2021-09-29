@@ -58,14 +58,13 @@ class Ability
       can :edit, :all
     end
 
+    cannot %i[create update destroy], Project
+    can :edit, Project
+
     cannot :manage, User
-    cannot :manage, Project
     cannot %i[create destroy], MislabelAnalysis
     cannot %i[create destroy], Mislabel
     cannot :start_analysis, NgsRun # TODO: remove when feature is done
-
-    can %i[read add_to_taxa], Project
-
     cannot :edit, Cluster
 
     # Additional permissions for administrators and supervisors

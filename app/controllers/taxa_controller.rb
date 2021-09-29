@@ -86,7 +86,7 @@ class TaxaController < ApplicationController
     respond_to do |format|
       if @taxon.save
         format.html { redirect_to taxa_path, notice: 'Taxon was successfully created.' }
-        format.json { render :show, status: :created, location: @taxon }
+        format.json { render :edit, status: :created, location: @taxon }
       else
         format.html { render :new }
         format.json { render json: @taxon.errors, status: :unprocessable_entity }
@@ -98,7 +98,7 @@ class TaxaController < ApplicationController
     respond_to do |format|
       if @taxon.update(taxon_params)
         format.html { redirect_to taxa_path, notice: 'Taxon was successfully updated.' }
-        format.json { render :show, status: :ok, location: @taxon }
+        format.json { render :edit, status: :ok, location: @taxon }
       else
         format.html { render :edit }
         format.json { render json: @taxon.errors, status: :unprocessable_entity }
