@@ -103,4 +103,8 @@ module ApplicationHelper
       'danger'
     end
   end
+
+  def current_project_id
+    (user_signed_in? && current_user.default_project_id.present?) ? current_user.default_project_id : nil
+  end
 end
