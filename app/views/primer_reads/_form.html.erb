@@ -134,7 +134,7 @@
     <hr>
 
     <% unless @pos %>
-      <% @pos = 1 %>
+      <% @pos = 0 %>
     <% end %>
 
     <%= content_tag 'div', class: 'alignment', id: "chromatogram_container_#{@primer_read.id}", data: {read_id: @primer_read.id} do %>
