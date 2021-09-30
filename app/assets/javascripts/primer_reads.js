@@ -27,7 +27,21 @@ jQuery(function() {
         var input_id = "#go-to-pos_" + $(this).data('readId');
         var pos = $(input_id).val();
 
-        scroll_with_highlight(pos, read_id);
+        if (pos > 0) {
+            scroll_with_highlight(pos, read_id);
+        }
+    });
+
+    // Support using keyboard to confirm 'go to position' input
+    $('.go-to-pos').on('keypress',function(e) {
+        if( e.keyCode === 13 ) {
+            var read_id = $(this)[0].id.split('_')[1];
+            var pos = $(this).val();
+
+            if (pos > 0) {
+                scroll_with_highlight(pos, read_id);
+            }
+        }
     });
 
     $('.scroll-left-button').click( function () {
@@ -216,16 +230,18 @@ function draw_chromatogram(div_id, chromatogram){
 
     var highlighted_base = $('#' + div_id).data("pos");
 
-    var highlight_pos = chromatogram.peak_indices[highlighted_base - 1];
+    if (highlighted_base > 0) {
+        var highlight_pos = chromatogram.peak_indices[highlighted_base - 1];
 
-    var highlight = svg.append('rect')
-        .attr("x", highlight_pos - 7)
-        .attr("y", 15)
-        .attr("width", 12)
-        .attr("height", 20)
-        .attr("fill", "#fcff00")
-        .attr("class", "highlight");
-
+        svg.append('rect')
+            .attr("x", highlight_pos - 7)
+            .attr("y", 15)
+            .attr("width", 12)
+            .attr("height", 250)
+            .attr("fill", 'orange')
+            .attr('opacity', '0.6')
+            .attr("class", "highlight");
+    }
 
     //draw traces
 
@@ -515,10 +531,14 @@ function scroll_with_highlight(position, read_id) {
         .attr("x", chromatogram_position - 7)
         .attr("y", 15)
         .attr("width", 12)
-        .attr("height", 20)
-        .attr("fill", "#fcff00")
+        .attr("height", 250)
+        .attr("fill", 'orange')
+        .attr('opacity', '0.6')
         .attr("class", "highlight")
         .moveToBack();
+
+    svg.selectAll("rect.left_clip_area").moveToBack();
+    svg.selectAll("rect.right_clip_area").moveToBack();
 }
 
 function tempAlert(msg, duration, div_id) {
