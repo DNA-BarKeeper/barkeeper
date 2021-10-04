@@ -42,9 +42,9 @@ class TaxonDatatable
 
   def fetch_taxa
     if @parent_id
-      taxa = Taxon.find(@parent_id)&.children&.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      taxa = Taxon.in_project(@current_default_project).find(@parent_id)&.children&.order("#{sort_column} #{sort_direction}")
     else
-      taxa = Taxon.orphans.in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      taxa = Taxon.in_project(@current_default_project).orphans.order("#{sort_column} #{sort_direction}")
     end
 
     taxa = taxa.page(page).per_page(per_page)
