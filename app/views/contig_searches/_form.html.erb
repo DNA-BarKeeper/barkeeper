@@ -16,7 +16,7 @@
 
           <div class="field">
             <%= f.label :name, 'Contig name' %><br />
-            <%= f.collection_select :name, Contig.order(:name), :id, :name, { include_blank: true }, { class:"form-control" } %>
+            <%= f.collection_select :name, Contig.order(:name), :name, :name, { include_blank: true }, { class:"form-control" } %>
           </div>
           <br/>
           <div>
@@ -39,7 +39,7 @@
 
           <div class="field">
             <%= f.label :verified_by %><br />
-            <%= f.collection_select :verified_by, User.order(:name), :id, :name, { include_blank: true }, { class:"form-control" } %>
+            <%= f.collection_select :verified_by, User.order(:name), :name, :name, { include_blank: true }, { class:"form-control" } %>
           </div>
           <br/>
           <div>
@@ -54,17 +54,17 @@
           <br/>
           <div class="field">
             <%= f.label :marker %><br />
-            <%= f.collection_select :marker, Marker.order(:name), :id, :name, { include_blank: true }, { class:"form-control" } %>
+            <%= f.collection_select :marker, Marker.order(:name), :name, :name, { include_blank: true }, { class:"form-control" } %>
           </div>
 
           <div class="field">
             <%= f.label :specimen %><br />
-            <%= f.collection_select :specimen, Individual.order(:specimen_id), :id, :specimen_id, { include_blank: true }, { class:"form-control" } %>
+            <%= f.collection_select :specimen, Individual.order(:specimen_id), :specimen_id, :specimen_id, { include_blank: true }, { class:"form-control" } %>
           </div>
 
           <div class="field">
             <%= f.label :taxon, 'Associated Taxon' %><br />
-            <%= f.collection_select :taxon, Taxon.order(:scientific_name), :id, :scientific_name, { include_blank: true }, { class:"form-control" } %>
+            <%= f.collection_select :taxon, Taxon.order(:scientific_name), :scientific_name, :scientific_name, { include_blank: true }, { class:"form-control" } %>
           </div>
 
           <div class="field">

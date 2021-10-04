@@ -58,7 +58,12 @@ class IndividualsController < ApplicationController
 
   def filter
     @individuals = Individual.where('individuals.specimen_id ilike ?', "%#{params[:term]}%").in_project(current_project_id)
-    render json: @individuals.map{ |individual| {:id=> individual.id, :name => individual.specimen_id }}
+
+    if params[:name_only] == '1'
+      render json: @individuals.map{ |individual| {:id=> individual.specimen_id, :name => individual.specimen_id }}
+    else
+      render json: @individuals.map{ |individual| {:id=> individual.id, :name => individual.specimen_id }}
+    end
   end
 
   def delete_voucher_image

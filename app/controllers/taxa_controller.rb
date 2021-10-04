@@ -41,7 +41,12 @@ class TaxaController < ApplicationController
 
   def filter
     @taxa = Taxon.where('scientific_name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:scientific_name)
-    render json: @taxa.map{ |taxon| {:id=> taxon.id, :name => taxon.scientific_name }}
+
+    if params[:name_only] == '1'
+      render json: @taxa.map{ |taxon| {:id=> taxon.scientific_name, :name => taxon.scientific_name }}
+    else
+      render json: @taxa.map{ |taxon| {:id=> taxon.id, :name => taxon.scientific_name }}
+    end
   end
 
   def export_as_csv
