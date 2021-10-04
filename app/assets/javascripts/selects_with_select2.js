@@ -9,10 +9,10 @@ jQuery(function() {
     $('#contig_project_ids').select2(select2MultiselectOptions);
 
     // CONTIG SEARCHES
-    $('#contig_search_name').select2((select2AutocompleteOptions("/contigs/filter", "a contig")));
+    $('#contig_search_name').select2((select2AutocompleteOptions("/contigs/filter?name_only=1", "a contig")));
     $('#contig_search_marker').select2(select2SingleSelectOptions('a marker'));
-    $('#contig_search_specimen').select2((select2AutocompleteOptions("/individuals/filter", "a specimen")));
-    $('#contig_search_taxon').select2((select2AutocompleteOptions("/taxa/filter", "a taxon")));
+    $('#contig_search_specimen').select2((select2AutocompleteOptions("/individuals/filter?name_only=1", "a specimen")));
+    $('#contig_search_taxon').select2((select2AutocompleteOptions("/taxa/filter?name_only=1", "a taxon")));
     $('#contig_search_verified_by').select2(select2SingleSelectOptions('a user'));
 
     // FREEZERS
@@ -26,9 +26,9 @@ jQuery(function() {
     $('#individual_project_ids').select2(select2MultiselectOptions);
 
     // INDIVIDUAL SEARCHES
-    $('#individual_search_specimen_id').select2((select2AutocompleteOptions("/individuals/filter", "a specimen")));
-    $('#individual_search_herbarium_id').select2(select2SingleSelectOptions('an herbarium'));
-    $('#individual_search_taxon').select2((select2AutocompleteOptions("/taxa/filter", "a taxon")));
+    $('#individual_search_specimen_id').select2((select2AutocompleteOptions("/individuals/filter?name_only=1", "a specimen")));
+    $('#individual_search_herbarium').select2(select2SingleSelectOptions('an herbarium'));
+    $('#individual_search_taxon').select2((select2AutocompleteOptions("/taxa/filter?name_only=1", "a taxon")));
 
     // ISOLATES
     $('#isolate_project_ids').select2(select2MultiselectOptions);
@@ -57,10 +57,10 @@ jQuery(function() {
     $('#marker_sequence_project_ids').select2(select2MultiselectOptions);
 
     // MARKER SEQUENCE SEARCHES
-    $('#marker_sequence_search_name').select2((select2AutocompleteOptions("/marker_sequences/filter", "a marker sequence name")));
+    $('#marker_sequence_search_name').select2((select2AutocompleteOptions("/marker_sequences/filter?name_only=1", "a marker sequence name")));
     $('#marker_sequence_search_marker').select2(select2SingleSelectOptions('a marker'));
-    $('#marker_sequence_search_specimen').select2((select2AutocompleteOptions("/individuals/filter", "a specimen")));
-    $('#marker_sequence_search_taxon').select2((select2AutocompleteOptions("/taxa/filter", "a taxon")));
+    $('#marker_sequence_search_specimen').select2((select2AutocompleteOptions("/individuals/filter?name_only=1", "a specimen")));
+    $('#marker_sequence_search_taxon').select2((select2AutocompleteOptions("/taxa/filter?name_only=1", "a taxon")));
     $('#marker_sequence_search_verified_by').select2(select2SingleSelectOptions('a user'));
 
     // MICRONIC PLATES

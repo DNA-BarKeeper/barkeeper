@@ -40,7 +40,12 @@ class MarkerSequencesController < ApplicationController
 
   def filter
     @marker_sequences = MarkerSequence.where('marker_sequences.name ILIKE ?', "%#{params[:term]}%").in_project(current_project_id).order(:name)
-    render json: @marker_sequences.map{ |ms| {:id=> ms.id, :name => ms.name }}
+
+    if params[:name_only] == '1'
+      render json: @marker_sequences.map{ |ms| {:id=> ms.name, :name => ms.name }}
+    else
+      render json: @marker_sequences.map{ |ms| {:id=> ms.id, :name => ms.name }}
+    end
   end
 
   # GET /marker_sequences/1

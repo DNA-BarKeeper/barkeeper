@@ -16,7 +16,7 @@
         <br/>
         <div class="field">
           <%= f.label :specimen_id, 'Specimen ID' %><br />
-          <%= f.collection_select :specimen_id, Individual.order(:specimen_id), :id, :specimen_id, { include_blank: true }, { class:"form-control" } %>
+          <%= f.collection_select :specimen_id, Individual.order(:specimen_id), :specimen_id, :specimen_id, { include_blank: true }, { class:"form-control" } %>
         </div>
         <div class="field">
           <%= f.label :DNA_bank_id, 'Associated DNA Bank ID' %><br />
@@ -55,12 +55,12 @@
         <br/>
         <div class="field">
           <%= f.label :herbarium, 'Herbarium' %><br />
-          <%= f.collection_select :herbarium, Herbarium.order(:name), :id, :name, { include_blank: true }, { class:"form-control" } %>
+          <%= f.collection_select :herbarium, Herbarium.order(:name), :name, :name, { include_blank: true }, { class:"form-control" } %>
         </div>
         <br/>
         <div class="field">
           <%= f.label :taxon, 'Associated Taxon' %><br />
-          <%= f.collection_select :taxon, Taxon.order(:scientific_name), :id, :scientific_name, { include_blank: true }, { class:"form-control" } %>
+          <%= f.collection_select :taxon, Taxon.order(:scientific_name), :scientific_name, :scientific_name, { include_blank: true }, { class:"form-control" } %>
         </div>
         <br>
         <div class="actions"><%= f.submit "Search", class: 'btn btn-default'%></div>

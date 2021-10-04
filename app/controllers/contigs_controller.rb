@@ -57,7 +57,12 @@ class ContigsController < ApplicationController
 
   def filter
     @contigs = Contig.in_project(current_project_id).order(:name).where('contigs.name ilike ?', "%#{params[:term]}%")
-    render json: @contigs.map{ |contig| {:id=> contig.id, :name => contig.name }}
+
+    if params[:name_only] == '1'
+      render json: @contigs.map{ |contig| {:id=> contig.name, :name => contig.name }}
+    else
+      render json: @contigs.map{ |contig| {:id=> contig.id, :name => contig.name }}
+    end
   end
 
   def show; end
