@@ -122,7 +122,7 @@ class IsolatesController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def isolate_params
     params.require(:isolate).permit(:id, :isolation_date, :user_id, :well_pos_plant_plate,
-                                    :lab_isolation_nr, :tissue_id, :plant_plate_id, :individual_name,
+                                    :lab_isolation_nr, :tissue_id, :plant_plate_id, :individual_id,
                                     :dna_bank_id, :negative_control, project_ids: [],
                                     aliquots_attributes: [:id, :comment, :concentration, :is_original, :lab_id,
                                                           :well_pos_micronic_plate, :micronic_tube, :micronic_plate_id,

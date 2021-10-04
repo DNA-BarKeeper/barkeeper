@@ -34,12 +34,12 @@ class Ability
     can %i[about progress documentation impressum privacy_policy multisearch_app], :home
     can :manage, :progress_overview
 
-    can %i[edit index filter taxonomy_tree associated_specimen find_ancestry show_individuals], Taxon
+    can %i[edit index filter taxonomy_tree associated_specimen find_ancestry show_individuals show_children], Taxon
     can %i[edit index filter], Individual
     can %i[edit index], Herbarium
 
     can %i[edit index filter change_via_script as_fasq], Contig
-    can %i[edit index filter], Isolate
+    can %i[edit index filter show_clusters], Isolate
     can [:filter], MarkerSequence
     can :manage, PartialCon
     can %i[edit index], PrimerRead
