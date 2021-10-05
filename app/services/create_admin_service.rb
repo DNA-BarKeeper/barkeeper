@@ -23,13 +23,12 @@
 # frozen_string_literal: true
 
 class CreateAdminService
-  def call(projects)
+  def call()
     user = User.find_or_create_by!(email: ENV['ADMIN_EMAIL']) do |user|
       user.password = ENV['ADMIN_PASSWORD']
       user.password_confirmation = ENV['ADMIN_PASSWORD']
       user.name = ENV['ADMIN_NAME']
       user.role = 'admin'
-      user.projects = projects
     end
   end
 end

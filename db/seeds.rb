@@ -32,6 +32,6 @@
 
 Home.create!(active: true, title: ENV.fetch('MAIN_PROJECT_NAME', 'New initiative'))
 
-user = CreateAdminService.new.call([project])
+user = CreateAdminService.new.call
 
 puts +'CREATED ADMIN USER: ' << user.email

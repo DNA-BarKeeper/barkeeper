@@ -19,6 +19,9 @@ jQuery(function() {
     $('#freezer_lab_id').select2(select2SingleSelectOptions('a lab'));
     $('#freezer_project_ids').select2(select2MultiselectOptions);
 
+    // HOMES
+    $('#home_main_logo_id').select2(select2SingleSelectOptions('a logo'));
+
     // INDIVIDUALS
     $('#individual_taxon_id').select2((select2AutocompleteOptions("/taxa/filter", "a taxon")));
     $('#individual_herbarium_id').select2(select2SingleSelectOptions('an herbarium'));
