@@ -65,11 +65,11 @@
 
           <div class="form-group">
             <%= f.label :main_logo, 'Main Project Logo' %>
-            <%= f.collection_select(:main_logo_id, @home.logos.order(:title), :id, :title, {:include_blank => 'None'}, {class: 'form-control'})  %>
+            <%= f.collection_select :main_logo_id, @home.logos.order(:title), :id, :title, { include_blank: true }, { class: 'form-control' } %>
           </div>
 
           <div class="form-group" style="overflow: auto;">
-            <%= f.label :main_logo, 'Logos' %>
+            <%= f.label :logos, 'Logos' %>
 
             <table style="overflow: auto;" class="table table-striped table-hover table-bordered" >
               <thead>
