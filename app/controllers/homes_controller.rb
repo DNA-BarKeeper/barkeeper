@@ -64,8 +64,8 @@ class HomesController < ApplicationController
 
     respond_to do |format|
       if @home.update(home_params)
-        format.html { redirect_to root_path, notice: 'Home parameters were successfully updated.' }
-        format.json { render :root, status: :ok }
+        format.html { redirect_to edit_home_path(@home), notice: 'Home parameters were successfully updated.' }
+        format.json { render :edit, status: :ok }
       else
         format.html { render :edit }
         format.json { render json: @home.errors, status: :unprocessable_entity }

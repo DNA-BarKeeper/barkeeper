@@ -31,11 +31,11 @@ class Logo < ApplicationRecord
   has_one_attached :image
   validates :image, content_type: [:jpg, :png, :svg]
 
-  after_save :process_variant
+  before_destroy :remove_main_logo_id, prepend: true
 
-  def process_variant
-    if image.attached?
-      image.variant(resize: "100x100").processed
+  def remove_main_logo_id
+    if Home.first.main_logo_id == id
+      Home.first.update(main_logo: nil)
     end
   end
 end
