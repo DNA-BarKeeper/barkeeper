@@ -22,6 +22,14 @@
  */
 
 jQuery(function() {
+    $('#project_start').datepicker({
+        dateFormat: 'yy-mm-dd'
+    });
+
+    $('#project_due').datepicker({
+        dateFormat: 'yy-mm-dd'
+    });
+
     $('#query_associated_taxon').on('select2:select', function (e) {
         changeSubmitButtonStatus();
     });

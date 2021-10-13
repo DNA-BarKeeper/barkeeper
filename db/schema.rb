@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_29_074353) do
+ActiveRecord::Schema.define(version: 2021_10_13_094729) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -120,7 +120,7 @@ ActiveRecord::Schema.define(version: 2021_09_29_074353) do
     t.text "fas"
     t.boolean "verified", default: false
     t.integer "verified_by"
-    t.datetime "verified_at"
+    t.date "verified_at"
     t.string "comment"
     t.boolean "imported", default: false
     t.integer "partial_cons_count"
@@ -247,7 +247,7 @@ ActiveRecord::Schema.define(version: 2021_09_29_074353) do
     t.string "dna_bank_id", limit: 255
     t.string "lab_isolation_nr", limit: 255
     t.boolean "negative_control", default: false
-    t.datetime "isolation_date"
+    t.date "isolation_date"
     t.integer "user_id"
     t.string "display_name"
   end
@@ -408,7 +408,7 @@ ActiveRecord::Schema.define(version: 2021_09_29_074353) do
     t.integer "marker_sequence_id"
     t.boolean "solved", default: false
     t.integer "solved_by"
-    t.datetime "solved_at"
+    t.date "solved_at"
     t.index ["marker_sequence_id"], name: "index_mislabels_on_marker_sequence_id"
     t.index ["mislabel_analysis_id"], name: "index_mislabels_on_mislabel_analysis_id"
   end
@@ -554,8 +554,8 @@ ActiveRecord::Schema.define(version: 2021_09_29_074353) do
   create_table "projects", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255
     t.text "description"
-    t.datetime "start"
-    t.datetime "due"
+    t.date "start"
+    t.date "due"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

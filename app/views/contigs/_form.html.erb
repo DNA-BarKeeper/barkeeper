@@ -380,7 +380,7 @@
                           <% user= '?'%>
                       <%end%>
 
-                      Verified by <%=  user %> on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>
+                      Verified by <%=  user %> on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d")%>
 
                       <%= link_to  verify_contig_path(@contig), title: 'Remove verification' do %>
                         <span class="glyphicon glyphicon-remove" title="Remove verification" style="color: #E65A5A;"></span>
@@ -389,7 +389,7 @@
                   <% else %>
 
                       <% if @contig.verified %>
-                          Verified on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d %H:%M:%S")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %>
+                          Verified on <%= @contig.verified_at.in_time_zone("CET").strftime("%Y-%m-%d")%>. <%= link_to '(Remove)', verify_contig_path(@contig) %>
                       <% else %>
                           <%= link_to verify_next_contig_path(@contig), :class => 'btn btn-default' do %>
                               <span class = "glyphicon glyphicon-ok grey"></span> Verify & next

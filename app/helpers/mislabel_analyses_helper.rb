@@ -44,7 +44,7 @@ module MislabelAnalysesHelper
           rescue ActiveRecord::RecordNotFound
             user = 'unknown user'
           end
-          user_date = "Solved by #{user} on #{mislabel.solved_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S')} (".html_safe
+          user_date = "Solved by #{user} on #{mislabel.solved_at.in_time_zone('CET').strftime('%Y-%m-%d')} (".html_safe
           solved_by = user_date + link_to('Mark as unsolved', solve_mislabel_path(mislabel)) + ")"
         else
           solved = content_tag(:span, '', class: %w(glyphicon glyphicon-exclamation-sign), style: 'color: red;')

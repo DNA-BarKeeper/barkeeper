@@ -36,7 +36,7 @@ module Import
     end
   end
 
-  def read_abcd(id, query_field = 'UnitID')
+  def query_dna_bank(id, query_field = 'UnitID')
     query_id = id
     abcd_query_field = ''
 
@@ -65,20 +65,18 @@ module Import
 
     if search_hits > 0
       unit = doc.at_xpath('//abcd21:Unit')
-      results[:unit_id] = query_field == 'UnitID' ? id : doc.at_xpath('//abcd21:Unit/abcd21:UnitID').content.strip
-      results[:specimen_unit_id] = unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID').content.strip
-      results[:genus] = unit.at_xpath('//abcd21:GenusOrMonomial').content.strip
-      results[:species_epithet] = unit.at_xpath('//abcd21:FirstEpithet').content.strip
-      results[:infraspecific] = unit.at_xpath('//abcd21:InfraspecificEpithet').content.strip
-      results[:herbarium] = unit.at_xpath('//abcd21:SourceInstitutionCode').content.strip
-      results[:collector] = unit.at_xpath('//abcd21:GatheringAgent').content.strip
-      results[:locality] = unit.at_xpath('//abcd21:LocalityText').content.strip
-      results[:longitude] = unit.at_xpath('//abcd21:LongitudeDecimal').content.strip
-      results[:latitude] = unit.at_xpath('//abcd21:LatitudeDecimal').content.strip
-      results[:higher_taxon_rank] = unit.at_xpath('//abcd21:HigherTaxonRank').content.strip
-      results[:higher_taxon_name] = unit.at_xpath('//abcd21:HigherTaxonName').content.strip
-    else
-      puts "No entries could be found for #{query_field} #{id}."
+      results[:unit_id] = query_field == 'UnitID' ? id : doc.at_xpath('//abcd21:Unit/abcd21:UnitID')&.content&.strip
+      results[:specimen_unit_id] = unit.at_xpath('//abcd21:UnitAssociation/abcd21:UnitID')&.content&.strip
+      results[:genus] = unit.at_xpath('//abcd21:GenusOrMonomial')&.content&.strip
+      results[:species_epithet] = unit.at_xpath('//abcd21:FirstEpithet')&.content&.strip
+      results[:infraspecific] = unit.at_xpath('//abcd21:InfraspecificEpithet')&.content&.strip
+      results[:herbarium] = unit.at_xpath('//abcd21:SourceInstitutionCode')&.content&.strip
+      results[:collector] = unit.at_xpath('//abcd21:GatheringAgent')&.content&.strip
+      results[:locality] = unit.at_xpath('//abcd21:LocalityText')&.content&.strip
+      results[:longitude] = unit.at_xpath('//abcd21:LongitudeDecimal')&.content&.strip
+      results[:latitude] = unit.at_xpath('//abcd21:LatitudeDecimal')&.content&.strip
+      results[:higher_taxon_rank] = unit.at_xpath('//abcd21:HigherTaxonRank')&.content&.strip
+      results[:higher_taxon_name] = unit.at_xpath('//abcd21:HigherTaxonName')&.content&.strip
     end
 
     results

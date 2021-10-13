@@ -42,7 +42,7 @@ class Isolate < ApplicationRecord
   validates :display_name, presence: { message: "Either a DNA Bank Number or a lab isolation number must be provided!" }
   before_validation :assign_display_name
 
-  # after_save :assign_specimen
+  after_save :assign_specimen
 
   multisearchable against: [:display_name, :dna_bank_id, :lab_isolation_nr]
 
@@ -130,9 +130,9 @@ class Isolate < ApplicationRecord
   def assign_specimen
     if saved_change_to_lab_isolation_nr? || saved_change_to_dna_bank_id?
       if dna_bank_id
-        assign_specimen_info(Isolate.read_abcd(dna_bank_id))
+        assign_specimen_info(Isolate.query_dna_bank(dna_bank_id))
       else
-        assign_specimen_info(Isolate.read_abcd(lab_isolation_nr))
+        assign_specimen_info(Isolate.query_dna_bank(lab_isolation_nr))
       end
     end
   end
@@ -164,36 +164,62 @@ class Isolate < ApplicationRecord
       individual.update(locality: abcd_results[:locality]) if abcd_results[:locality]
       individual.update(longitude: abcd_results[:longitude]) if abcd_results[:longitude]
       individual.update(latitude: abcd_results[:latitude]) if abcd_results[:latitude]
-      individual.update(herbarium: abcd_results[:herbarium]) if abcd_results[:herbarium]
 
-      if abcd_results[:genus] && abcd_results[:species_epithet]
-        if abcd_results[:infraspecific]
-          composed_name = "#{abcd_results[:genus]} #{abcd_results[:infraspecific]} #{abcd_results[:species_epithet]}"
-        else
-          composed_name = "#{abcd_results[:genus]} #{abcd_results[:species_epithet]}"
-        end
-
-        species = Species.find_or_create_by(composed_name: composed_name)
-        species.add_projects(projects.pluck(:id))
-        species.update(genus_name: abcd_results[:genus],
-                       species_epithet: abcd_results[:species_epithet],
-                       infraspecific: abcd_results[:infraspecific],
-                       species_component: "#{abcd_results[:genus]} #{abcd_results[:species_epithet]}")
-
-        if abcd_results[:higher_taxon_rank] == 'familia'
-          abcd_results[:higher_taxon_name] = 'Lamiaceae' if abcd_results[:higher_taxon_name].capitalize == 'Labiatae'
-
-          family = Family.find_or_create_by(name: abcd_results[:higher_taxon_name].capitalize)
-          family.add_projects(projects.pluck(:id))
-          species.update(family: family)
-        end
-
-        individual.update(species: species)
+      if abcd_results[:herbarium]
+        herbarium = Herbarium.find_or_create_by(acronym: abcd_results[:herbarium])
+        individual.update(herbarium: herbarium)
       end
 
-      self.update_column(:individual_id, individual.id) # Does not trigger callbacks to avoid infinite loop
+      if abcd_results[:higher_taxon_name] && abcd_results[:higher_taxon_rank]
+        abcd_results[:higher_taxon_name] = 'Lamiaceae' if abcd_results[:higher_taxon_name].capitalize == 'Labiatae'
 
-      puts 'Done.'
+        taxon = Taxon.find_or_create_by(scientific_name: abcd_results[:higher_taxon_name].capitalize)
+        taxon.add_projects(projects.pluck(:id))
+
+        case abcd_results[:higher_taxon_rank]
+        when 'phylum'
+          taxonomic_rank = :is_division
+        when 'classis'
+          taxonomic_rank = :is_class
+        when 'ordo'
+          taxonomic_rank = :is_order
+        when 'familia'
+          taxonomic_rank = :is_family
+        else
+          taxonomic_rank = nil
+        end
+        taxon.update(taxonomic_rank: taxonomic_rank)
+      end
+
+      if abcd_results[:genus]
+        parent = taxon
+
+        taxon = Taxon.find_or_create_by(scientific_name: abcd_results[:genus], taxonomic_rank: :is_genus)
+        taxon.add_projects(projects.pluck(:id))
+        taxon.update(parent: parent)
+
+        if abcd_results[:species_epithet]
+          parent = taxon
+          composed_name = "#{abcd_results[:genus]} #{abcd_results[:species_epithet]}"
+
+          taxon = Taxon.find_or_create_by(scientific_name: composed_name, taxonomic_rank: :is_species)
+          taxon.add_projects(projects.pluck(:id))
+          taxon.update(parent: parent)
+
+          if abcd_results[:infraspecific]
+            parent = taxon
+            composed_name = "#{abcd_results[:genus]} #{abcd_results[:infraspecific]} #{abcd_results[:species_epithet]}"
+
+            taxon = Taxon.find_or_create_by(scientific_name: composed_name, taxonomic_rank: :is_subspecies)
+            taxon.add_projects(projects.pluck(:id))
+            taxon.update(parent: parent)
+          end
+        end
+      end
+
+      individual.update(taxon: taxon)
+
+      self.update_column(:individual_id, individual.id) # Does not trigger callbacks to avoid infinite loop
     end
   end
 end
