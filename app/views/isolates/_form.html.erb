@@ -30,13 +30,13 @@
             <br>
 
             <div class="form-group">
-              <%= f.label :dna_bank_id, 'DNA Bank ID' %>
-              <%= f.text_field :dna_bank_id,  class: 'form-control' %>
+              <%= f.label :lab_isolation_nr, 'Lab isolation number' %>
+              <%= f.text_field :lab_isolation_nr,  class: 'form-control' %>
             </div>
 
             <div class="form-group">
-              <%= f.label :lab_isolation_nr, 'Lab isolation number' %>
-              <%= f.text_field :lab_isolation_nr,  class: 'form-control' %>
+              <%= f.label :dna_bank_id, 'DNA Bank ID' %>
+              <%= f.text_field :dna_bank_id,  class: 'form-control' %>
             </div>
 
             <div class="form-group">
@@ -70,8 +70,8 @@
             <div class="form-group">
               <%= f.label :user_id, 'Isolated by' %>
               <%= f.collection_select(:user_id, User.all.order(:name), :id, :name, { :include_blank => true }, { class: 'form-control' }) %>
-              <%= f.label :isolation_date, 'on' %><br />
-              <%= f.text_field(:isolation_date, class: 'form-control') %>
+              <%= f.label :isolation_date, 'on' %><br>
+              <%= f.text_field :isolation_date, class: 'form-control' %>
             </div>
 
             <div class="vertical-spacer"></div>
