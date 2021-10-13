@@ -37,6 +37,13 @@ class PrimerRead < ApplicationRecord
   before_create :default_name
 
   multisearchable against: [:comment, :name]
+  pg_search_scope :search_partial_name,
+                  against: :name,
+                  using: {
+                    trigram: {
+                      threshold: 0.2
+                    }
+                  }
 
   scope :assembled, -> { use_for_assembly.where(assembled: true) }
   scope :not_assembled, -> { use_for_assembly.where(assembled: false) }
