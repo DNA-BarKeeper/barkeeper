@@ -32,6 +32,8 @@ class Primer < ApplicationRecord
 
   validates_presence_of :name
 
+  after_save :auto_assign_primer_reads if :saved_change_to_name?
+
   multisearchable against: [:alt_name, :author, :labcode, :name, :notes, :target_group]
 
   # Import primer data from spreadsheet
@@ -56,5 +58,9 @@ class Primer < ApplicationRecord
 
       primer.save!
     end
+  end
+
+  def auto_assign_primer_reads
+    PrimerRead.search_partial_name(name).map(&:auto_assign)
   end
 end
