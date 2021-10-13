@@ -49,6 +49,15 @@ jQuery(function() {
             $global_spinner.hide();
             $buttons.show();
         });
+
+    // Jump to correct nav tab (isolates)
+    var hash = window.location;
+    $('.nav-tabs a[href="' + hash + '"]').tab('show');
+
+    // User profile
+    $(document).on('ready page:change', function() {
+        $('.btn-warning').tooltip();
+    });
 });
 
 // Make datatables warning more meaningful
