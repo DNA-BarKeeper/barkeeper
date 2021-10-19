@@ -27,16 +27,19 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable, :recoverable, :registerable, :rememberable, :trackable, :timeoutable, :validatable
 
   belongs_to :lab
   has_many :contig_searches
   has_many :individual_searches
   has_many :marker_sequence_searches
 
-  validates_presence_of :email # Necessary for devise
+  validates_presence_of :email # Necessary for Devise
 
   enum role: %i[guest user supervisor admin]
   enum responsibility: %i[taxonomy lab bulk_delete_contigs]
+
+  def send_devise_notification(notification, *args)
+    devise_mailer.send(notification, self, *args).deliver_later
+  end
 end

@@ -2,7 +2,7 @@
 
 <p>
   <% if user_signed_in? %>
-    <% if !@ngs_run.analysis_requested && !@ngs_run.analysis_started %>
+    <% unless @ngs_run.analysis_requested || @ngs_run.analysis_started %>
       <%= link_to 'Submit analysis request',
                   submit_analysis_request_ngs_run_path(@ngs_run),
                   method: :post,

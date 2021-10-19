@@ -3,6 +3,7 @@
 :queues:
   - default
   - pherogram_processing
+  - mailers
 
 :limits:
   pherogram_processing: 1

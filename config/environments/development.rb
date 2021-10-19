@@ -66,8 +66,11 @@ Rails.application.configure do
     Bullet.rails_logger = true
   end
 
-  # For Devise
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 } # Necessary for Devise mails
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = { address: 'localhost', port: 1025 }
+  config.action_mailer.smtp_settings = {
+    :address => 'maildev',
+    :port => 25,
+    :openssl_verify_mode => 'none'
+  }
 end
