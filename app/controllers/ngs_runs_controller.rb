@@ -28,7 +28,7 @@ class NgsRunsController < ApplicationController
   http_basic_authenticate_with name: ENV['API_USER_NAME'], password: ENV['API_PASSWORD'], only: [:import, :revised_tpm]
   skip_before_action :verify_authenticity_token, only: [:import, :revised_tpm]
 
-  before_action :set_ngs_run, only: [:show, :edit, :update, :destroy, :import, :analysis_results]
+  before_action :set_ngs_run, only: [:show, :edit, :update, :destroy, :import, :analysis_results, :submit_analysis_request]
 
   def index
     respond_to do |format|
@@ -105,7 +105,8 @@ class NgsRunsController < ApplicationController
   end
 
   def submit_analysis_request
-    @ngs_run.submit_request(current_user, edit_ngs_run_url(@ngs_run))
+    NgsRunMailer.with(user: current_user, ngs_run: @ngs_run).request_submitted.deliver_later
+    @ngs_run.update(analysis_requested: true)
     redirect_to ngs_runs_path, notice: 'Request for analysis successfully submitted. An admin is informed. Please check in later to see results.'
   end
 

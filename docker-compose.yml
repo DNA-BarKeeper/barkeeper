@@ -62,6 +62,11 @@ services:
     ports:
       - ${PORT}:${PORT}
 
+  maildev:
+    image: djfarrelly/maildev
+    ports:
+      - "1080:80"
+
 volumes:
   bwm-redis:
   bwm-postgres:

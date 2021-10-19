@@ -14,6 +14,22 @@ install:
 	@echo "Starting Barcode Workflow Manager..."
 	@docker-compose up
 
+update:
+	@echo "Removing Barcode Workflow Manager containers..."
+	@docker-compose rm -s -v -f
+
+	@echo "Getting updates..."
+	@git pull
+
+	@echo "Migrating database..."
+	@docker-compose run --user "$(id -u):$(id -g)" app rails db:migrate
+
+	@echo "Precompiling assets..."
+	@docker-compose run --user "$(id -u):$(id -g)" app rails assets:precompile
+
+	@echo "Starting Barcode Workflow Manager..."
+	@docker-compose up
+
 secret:
 	@echo "Generating a secret key..."
 	@docker-compose run --user "$(id -u):$(id -g)" app rails secret

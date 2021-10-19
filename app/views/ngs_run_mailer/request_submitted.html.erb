@@ -1,0 +1,13 @@
+<h1>
+  <%= @user.name %> is requesting to start an SMRT raw data analysis with the following parameters:
+</h1>
+<p>Run Title: <%= @ngs_run.name %><br></p>
+<p>Quality threshold: <%= @ngs_run.quality_threshold %><br></p>
+<p>Primer mismatches: <%= @ngs_run.primer_mismatches %><br></p>
+<p>Barcode mismatches: <%= @ngs_run.tag_mismatches %><br></p>
+<% if @ngs_run.taxon %>
+  <p>Taxon: <%= @ngs_run.taxon.scientific_name %><br></p>
+<% end %>
+<p>
+  Please visit <%= link_to 'here', edit_ngs_run_url(@ngs_run) %> to start the analysis.<br>
+</p>

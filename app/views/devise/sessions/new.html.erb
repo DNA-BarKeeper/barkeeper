@@ -3,7 +3,7 @@
 
     <h3>Login</h3>
 
-    <%= devise_error_messages! %>
+    <%= render "devise/shared/error_messages", resource: resource %>
 
     <div class="form-group">
       <%= f.label :email %>

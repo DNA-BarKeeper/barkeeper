@@ -120,24 +120,6 @@ class NgsRun < ApplicationRecord
     valid
   end
 
-  def submit_request(current_user, route)
-    subject = "NGS raw data analysis request by #{current_user.name}"
-    recipients = User.where(role: 'admin').map(&:email)
-
-    text = "#{current_user.name} is requesting to start an SMRT raw data analysis with the following parameters:\n"
-    text << "Run Title: #{name}\n"
-    text << "Quality threshold: #{quality_threshold}\n"
-    text << "Primer mismatches: #{primer_mismatches}\n"
-    text << "Barcode mismatches: #{tag_mismatches}\n"
-    text << "Taxon: #{taxon.name}\n" if taxon
-    text << "Please visit #{route} to start the analysis."
-
-    `echo "#{text}" | mail -s "#{subject}" #{recipients.join(',')}`
-
-    self.analysis_requested = true
-    self.save!
-  end
-
   def run_pipe
     Net::SSH.start(ENV['REMOTE_SERVER_PATH'], ENV['REMOTE_USER'], keys: remote_key_list) do |session|
       analysis_dir = "#{ENV['BARCODING_PIPE_RESULTS_PATH']}/#{name}"
