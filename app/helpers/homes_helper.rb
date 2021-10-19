@@ -50,7 +50,7 @@ module HomesHelper
       partner_logos = @home.logos.where(display: true).where(main: false).with_attached_image
       partner_logos.order(:display_pos_index).each do |logo|
         if logo.image.attached? && logo.url
-          logos_html << (content_tag :div, style: 'height: 70px;', class: "col-sm-#{partner_logos.size}" do
+          logos_html << (content_tag :div, style: 'height: 80px;', class: "col-lg-4" do
             content_tag :a, href: logo.url, target: '_blank' do
               image_tag url_for(logo.image), title: logo.title, class: 'partner_logo'
             end
