@@ -69,7 +69,7 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   config.action_mailer.raise_delivery_errors = true
 
-  config.action_mailer.default_url_options = { host: ENV['PROJECT_DOMAIN'], port: ENV['PUMA_PORT'] } # Necessary for Devise mails
+  config.action_mailer.default_url_options = { host: ENV['PROJECT_DOMAIN'] } # Necessary for Devise mails
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     :address => 'mail',
