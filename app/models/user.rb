@@ -26,7 +26,7 @@ class User < ApplicationRecord
   include ProjectRecord
 
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
+  # :confirmable, :lockable and :omniauthable
   devise :database_authenticatable, :recoverable, :registerable, :rememberable, :trackable, :timeoutable, :validatable
 
   belongs_to :lab
