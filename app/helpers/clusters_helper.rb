@@ -44,23 +44,19 @@ module ClustersHelper
   def taxonomic_lineage(taxonomy)
     lineage = taxonomy.split(',')
 
-    lineage_str = +''.html_safe
+    lineage_str = ''.dup
 
-    lineage.each_with_index do |taxon, i|
-      tax_entity = PgSearch.multisearch(taxon)[0]
+    lineage.each_with_index do |taxon_name, i|
+      taxon = Taxon.find_by_scientific_name(taxon_name)
+      taxon_display = link_to(taxon.scientific_name, edit_polymorphic_path(taxon)) if taxon
 
-      if tax_entity&.content == taxon
-        tax_object = tax_entity.searchable_type.constantize.find(tax_entity.searchable_id)
-        taxon_display = link_to(tax_object.name, edit_polymorphic_path(tax_object))
-      end
-
-      taxon_display ||= taxon
+      taxon_display ||= taxon_name
 
       lineage_str << "- " * i
       lineage_str << taxon_display
-      lineage_str << tag(:br)
+      lineage_str << "<br>"
     end
 
-    lineage_str
+    lineage_str.html_safe
   end
 end
