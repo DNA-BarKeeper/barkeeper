@@ -38,9 +38,10 @@ class IndividualsController < ApplicationController
 
   def export_as_csv
     authorize! :export_as_csv, :individual
+    project_name = current_project_id ? Project.find(current_project_id).name : ENV['MAIN_PROJECT_NAME']
 
     send_data(Individual.to_csv(current_project_id),
-              filename: "specimen_project_#{Project.find(current_project_id).name}.csv",
+              filename: "specimen_project_#{project_name}.csv",
               type: 'application/csv')
   end
 
