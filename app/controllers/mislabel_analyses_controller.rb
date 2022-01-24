@@ -54,7 +54,7 @@ class MislabelAnalysesController < ApplicationController
 
   def download_results
     if @mislabel_analysis.download_results
-      send_data("SATIVA results were successfully imported into the Barcode Workflow Manager web app!\n", filename: 'msg.txt', type: 'application/txt')
+      send_data("SATIVA results were successfully imported into the BarKeeper web app!\n", filename: 'msg.txt', type: 'application/txt')
     else
       send_data("ERROR: The result file could not be found on the server!\n", filename: 'msg.txt', type: 'application/txt')
     end

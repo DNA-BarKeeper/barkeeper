@@ -1,12 +1,12 @@
 FROM ruby:2.6.7
 
-LABEL maintainer="Barcode Workflow Manager (Kai Müller, Sarah Wiechers)"
+LABEL maintainer="BarKeeper (Kai Müller, Sarah Wiechers)"
 
 ARG PUMA_PORT
 
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs cmake
 
-ENV RAILS_ROOT /var/www/barcode_workflow_manager
+ENV RAILS_ROOT /var/www/barkeeper
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 

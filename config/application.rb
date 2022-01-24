@@ -9,7 +9,7 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module BarcodeWorkflowManager
+module BarKeeper
   class Application < Rails::Application
     config.load_defaults 5.2
 
@@ -32,7 +32,7 @@ module BarcodeWorkflowManager
     # Since we're using Redis for Sidekiq, we might as well use Redis to back
     # our cache store. This keeps our application stateless as well.
     config.cache_store = :redis_store, ENV['CACHE_URL'],
-                         { namespace: 'barcode_workflow_manager::cache' }
+                         { namespace: 'barkeeper::cache' }
 
     config.serve_static_assets = true
 
