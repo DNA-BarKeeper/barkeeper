@@ -5,11 +5,11 @@ namespace :copyright do
   task headers: :environment do
     args = {
         :license => 'AGPL3',
-        :copyright_software => 'Barcode Workflow Manager',
-        :copyright_software_description => "A web framework to assemble, analyze and manage DNA barcode data and metadata.",
+        :copyright_software => 'BarKeeper',
+        :copyright_software_description => "A versatile web framework to assemble, analyze and manage DNA barcoding data and metadata.",
         :copyright_holders => ['Kai Müller <kaimueller@uni-muenster.de>', 'Sarah Wiechers <sarah.wiechers@uni-muenster.de>'],
-        :copyright_years => ['2020'],
-        :add_path => 'app:db:docker:lib:spec',
+        :copyright_years => ['2022'],
+        :add_path => 'app:db:docker:lib/tasks:spec',
         :output_dir => '.'
     }
 
@@ -19,10 +19,10 @@ namespace :copyright do
   task headers_dry_run: :environment do
     args = {
         :license => 'AGPL3',
-        :copyright_software => 'Barcode Workflow Manager',
-        :copyright_software_description => "A web framework to assemble, analyze and manage DNA barcode data and metadata.",
+        :copyright_software => 'BarKeeper',
+        :copyright_software_description => "A versatile web framework to assemble, analyze and manage DNA barcoding data and metadata.",
         :copyright_holders => ['Kai Müller <kaimueller@uni-muenster.de>', 'Sarah Wiechers <sarah.wiechers@uni-muenster.de>'],
-        :copyright_years => ['2020'],
+        :copyright_years => ['2022'],
         :add_path => 'app:db:docker:lib/tasks:spec',
         :output_dir => '/tmp',
         :dry_run => true
