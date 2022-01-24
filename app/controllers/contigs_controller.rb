@@ -407,7 +407,7 @@ class ContigsController < ApplicationController
           not_included_str += "#{contig_name}: not verified.\n"
         end
       else
-        not_included_str += "#{contig_name}: no record in Barcode Workflow Manager web app.\n"
+        not_included_str += "#{contig_name}: no record in BarKeeper web app.\n"
       end
     end
 

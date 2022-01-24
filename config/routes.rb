@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-BarcodeWorkflowManager::Application.routes.draw do
+BarKeeper::Application.routes.draw do
   root to: 'homes#about'
 
   match 'about', to: 'homes#about', via: 'get'

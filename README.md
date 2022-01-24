@@ -1,11 +1,11 @@
-# Barcode Workflow Manager
+# BarKeeper
 
-A web framework to assemble, analyze and manage DNA barcode data and metadata.
+A versatile web framework to assemble, analyze and manage DNA barcode data and metadata.
 
 - Example usage: https://gbol5.de
 
-## Using BWM for your own project
-You can set up your own project with the Barcode Workflow Manager Web Framework easily by running it via Docker. 
+## Using BarKeeper for your own project
+You can set up your own project with BarKeeper Web Framework easily by running it via Docker. 
 If you don't know what Docker is, read their excellent [Get Started with Docker guide](https://docs.docker.com/get-started/).
 
 ### Prerequisites
@@ -45,22 +45,22 @@ environment variable `PORT`. The value of the variable `PUMA_PORT` should genera
 - You are done! Now you and your team can use the new app and start uploading data!
 
 - To stop and restart the app use the commands `make stop` followed by `make start` or just `make restart`.
-- To remove BWM containers created on your system use `make remove`.
+- To remove BarKeeper containers created on your system use `make remove`.
 
 ### License
 
-Copyright (C) 2020 Kai Müller <kaimueller@uni-muenster.de>, Sarah Wiechers <sarah.wiechers@uni-muenster.de>
+Copyright (C) 2022 Kai Müller <kaimueller@uni-muenster.de>, Sarah Wiechers <sarah.wiechers@uni-muenster.de>
 
-Barcode Workflow Manager is free software: you can redistribute it and/or modify
+BarKeeper is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.
 
-Barcode Workflow Manager is distributed in the hope that it will be useful,
+BarKeeper is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with Barcode Workflow Manager.  If not, see
+along with BarKeeper.  If not, see
 <http://www.gnu.org/licenses/>.
