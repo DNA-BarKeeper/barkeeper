@@ -1,4 +1,4 @@
-FROM ruby:2.6.7
+FROM ruby:2.7.0
 
 LABEL maintainer="BarKeeper (Kai Müller, Sarah Wiechers)"
 
