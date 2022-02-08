@@ -49,7 +49,7 @@
       <div class="form-group">
         <%= f.label :set_tag_map, 'Platepool set (*.fasta)' %>
         <% if @ngs_run.set_tag_map.attached? %>
-          <p>
+          <p class='remove_set_tag_map'>
             <%= link_to '', delete_attached_file_ngs_run_path(@ngs_run, attachment_id: @ngs_run.set_tag_map.id),
                         :class => "glyphicon glyphicon-remove",
                         method: :delete,
@@ -75,7 +75,7 @@
           <% @ngs_run.tag_primer_maps.with_attached_tag_primer_map.each do |tpm| %>
             <% if tpm.tag_primer_map.attached? %>
               <p>
-                <%= link_to '', delete_attached_file_ngs_run_path(@ngs_run, attachment_id: tpm.tag_primer_map.id),
+                <%= link_to '', delete_attached_tpm_ngs_run_path(@ngs_run, attachment_id: tpm.id),
                             :class => "glyphicon glyphicon-remove",
                             method: :delete,
                             title: 'Remove attachment',
