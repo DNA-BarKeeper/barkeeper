@@ -25,7 +25,7 @@ jQuery(function() {
     var set_tag_map = $('#ngs_run_set_tag_map');
     var tag_primer_map = $("#ngs_run_tag_primer_map");
 
-    if(set_tag_map.val()) { // Package Map is selected or was uploaded before
+    if(set_tag_map.val() || document.getElementsByClassName('remove_set_tag_map').length > 0) { // Package Map is selected or was uploaded before
         tag_primer_map.attr('multiple','multiple')
     }
     else {
@@ -33,7 +33,7 @@ jQuery(function() {
     }
 
     set_tag_map.change(function() {
-        if($(this).val()) {
+        if($(this).val() || document.getElementsByClassName('remove_set_tag_map').length > 0) {
             tag_primer_map.attr('multiple','multiple')
         }
         else {

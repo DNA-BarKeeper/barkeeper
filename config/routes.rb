@@ -57,6 +57,7 @@ BarKeeper::Application.routes.draw do
       post :submit_analysis_request
       post :start_analysis
       delete :delete_attached_file
+      delete :delete_attached_tpm
     end
   end
 

@@ -56,10 +56,6 @@ class NgsRun < ApplicationRecord
     end
   end
 
-  def remove_tag_primer_maps(checked_values)
-    checked_values.values.each { |id| TagPrimerMap.find(id).destroy unless id == '0' }
-  end
-
   def taxon_name
     self.try(:taxon)&.scientific_name
   end
@@ -104,8 +100,7 @@ class NgsRun < ApplicationRecord
     # Check if the correct number of TPMs was uploaded
     if set_tag_map.attached?
       begin
-        set_tag_map_file = Tempfile.open { |tempfile| tempfile << set_tag_map.download }
-        package_cnt = Bio::FastaFormat.open(set_tag_map_file).entries.size
+        package_cnt = set_tag_map.download.count('>')
         valid = (package_cnt == tag_primer_maps.size) && package_cnt.positive?
       rescue OpenURI::HTTPError
         return false
