@@ -106,7 +106,7 @@ module Export
 
     def pde_contigs(contigs, add_reads)
       contigs.each do |contig|
-        taxon = contig.try(:isolate).try(:individual).try(:taxon)&.composed_name
+        taxon = contig.try(:isolate).try(:individual).try(:taxon)&.scientific_name
         contig_name = taxon.blank? ? contig.name : [contig.name, taxon.tr(' ', '_')].join('_')
 
         contig.partial_cons.each do |partial_con|
