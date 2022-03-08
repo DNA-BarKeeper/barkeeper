@@ -2,7 +2,7 @@
 
 A versatile web framework to assemble, analyze and manage DNA barcode data and metadata.
 
-- Example usage: https://gbol5.de
+- Example implementation: barkeeper.uni-muenster.de (credentials: user@example.com - barkeeper2022)
 
 ## Using BarKeeper for your own project
 You can set up your own project with BarKeeper Web Framework easily by running it via Docker. 
