@@ -58,9 +58,14 @@ class IsolatesController < ApplicationController
   def import
     file = params[:file]
 
-    IsolateImporter.perform_async(file, current_user.default_project_id)
-    redirect_to isolates_path,
-                notice: "Isolate and specimen data will be imported in the background."
+    if file
+      IsolateImporter.perform_async(params[:file], current_user.default_project_id)
+      redirect_to isolates_path,
+                  notice: "Isolate and specimen data will be imported in the background."
+    else
+      redirect_to isolates_path,
+                  alert: "Please provide an appropriate file containing isolate and specimen data."
+    end
   end
 
   def show; end
