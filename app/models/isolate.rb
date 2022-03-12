@@ -49,8 +49,8 @@ class Isolate < ApplicationRecord
   scope :recent, -> { where('isolates.updated_at > ?', 1.hours.ago) }
   scope :no_controls, -> { where(negative_control: false) }
 
-  def self.import(file, project_id)
-    spreadsheet = Isolate.open_spreadsheet(file)
+  def self.import(file_path, project_id)
+    spreadsheet = Roo::CSV.new(file_path)
     header = spreadsheet.row(1)
 
     (2..spreadsheet.last_row).each do |i|
