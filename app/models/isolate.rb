@@ -65,13 +65,12 @@ class Isolate < ApplicationRecord
       isolate = Isolate.where('lab_isolation_nr ILIKE ?', lab_isolation_nr).first
       isolate ||= Isolate.new(lab_isolation_nr: lab_isolation_nr)
 
-      plant_plate = PlantPlate.find_or_create_by(name: row['GBoL5 Tissue Plate No.'].to_i.to_s)
       plant_plate.add_project(project_id)
       isolate.plant_plate = plant_plate
 
-      isolate.well_pos_plant_plate = row['G5o Well']
+      isolate.well_pos_plant_plate = row['Well']
 
-      isolate.micronic_tube_id = row['Tube ID 2D (G5o Micronic)']
+      isolate.micronic_tube_id = row['Tube ID 2D (Micronic)']
 
       isolate.tissue_id = 2 # Seems to be always "Leaf (Herbarium)", so no import needed
 
