@@ -58,19 +58,14 @@ class Isolate < ApplicationRecord
 
       # Update existing isolate or create new, case-insensitive!
       lab_isolation_nr = row['Isolation No.']
-      lab_isolation_nr ||= row['DNA Bank No'] # TODO: Not necessary anymore
+      lab_isolation_nr ||= row['DNA Bank No.']
 
       next unless lab_isolation_nr # Cannot save isolate without lab_isolation_nr
 
       isolate = Isolate.where('lab_isolation_nr ILIKE ?', lab_isolation_nr).first
       isolate ||= Isolate.new(lab_isolation_nr: lab_isolation_nr)
 
-      plant_plate.add_project(project_id)
-      isolate.plant_plate = plant_plate
-
-      isolate.well_pos_plant_plate = row['Well']
-
-      isolate.micronic_tube_id = row['Tube ID 2D (Micronic)']
+      isolate.dna_bank_id = row['DNA Bank No.'] if row['DNA Bank No.']
 
       isolate.tissue_id = 2 # Seems to be always "Leaf (Herbarium)", so no import needed
 
@@ -103,12 +98,22 @@ class Isolate < ApplicationRecord
       individual.collectors_field_number = row['Collection number']
       individual.collection_date = row['Date']
       begin
-        individual.collected = Date.parse(row['Date'])
+        individual.collected = Date.parse(row['Date']) if row['Date']
       end
       individual.determination = row['Determination']
       individual.revision = row['Revision']
       individual.confirmation = row['Confirmation']
       individual.comments = row['Comments']
+
+      if row['Genus'] && row['Species']
+        if row['Subspecies']
+          taxon = Taxon.find_or_create_by(scientific_name: [row['Genus'], row['Species'], row['Subspecies']].join(' '))
+        else
+          taxon = Taxon.find_or_create_by(scientific_name: [row['Genus'], row['Species']].join(' '))
+        end
+      end
+
+      individual.taxon = taxon if taxon
 
       individual.add_project(project_id)
 

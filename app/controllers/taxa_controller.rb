@@ -72,9 +72,10 @@ class TaxaController < ApplicationController
 
   def export_as_csv
     authorize! :export_as_csv, :taxon
+    file_name = current_project_id ? "taxa_project_#{Project.find(current_project_id).name}.csv" : "taxa.csv"
 
     send_data(Taxon.to_csv(current_project_id),
-              filename: "taxa_project_#{Project.find(current_project_id).name}.csv",
+              filename: file_name,
               type: 'application/csv')
   end
 
@@ -86,6 +87,8 @@ class TaxaController < ApplicationController
   end
 
   def import_csv
+    authorize! :import_csv, :taxon
+
     file = params[:file]
     cnt = Taxon.import_from_csv(file, current_project_id)
     redirect_to taxa_path, notice: "Successfully imported or updated #{cnt} taxon entries."

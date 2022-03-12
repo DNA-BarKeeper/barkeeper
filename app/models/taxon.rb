@@ -97,8 +97,9 @@ class Taxon < ApplicationRecord
 
     CSV.generate(headers: true) do |csv|
       csv << header.map { |entry| entry.humanize }
+      taxa = project_id ? in_project(project_id) : all
 
-      in_project(project_id).each do |taxon|
+      taxa.each do |taxon|
         csv << attributes.map{ |attr| taxon.send(attr) }
       end
     end
@@ -136,11 +137,13 @@ class Taxon < ApplicationRecord
         parent = Taxon.find(parent_identifier.to_i)
       else
         parent = Taxon.find_by_sci_name_or_synonym(parent_identifier)
+        parent ||= Taxon.create(scientific_name: parent_identifier, taxonomic_rank: 'is_unranked')
+        parent.save!
       end
 
       taxon.update(synonym: synonym, common_name: common_name, taxonomic_rank: taxonomic_rank, author: author,
                    comment: comment, parent: parent)
-      taxon.add_project(project_id)
+      taxon.add_project(project_id) if project_id
       taxon.save!
       cnt += 1
     end
