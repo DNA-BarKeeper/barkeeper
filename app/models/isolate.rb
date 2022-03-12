@@ -57,8 +57,8 @@ class Isolate < ApplicationRecord
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
       # Update existing isolate or create new, case-insensitive!
-      lab_isolation_nr = row['GBoL Isolation No.']
-      lab_isolation_nr ||= row['DNA Bank No'] # TODO: Not correct/necessary anymore, change!
+      lab_isolation_nr = row['Isolation No.']
+      lab_isolation_nr ||= row['DNA Bank No'] # TODO: Not necessary anymore
 
       next unless lab_isolation_nr # Cannot save isolate without lab_isolation_nr
 

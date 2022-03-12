@@ -163,7 +163,7 @@ class PrimerRead < ApplicationRecord
     create_issue = false
 
     # Try to find matching primer
-    regex_read_name = /^([A-Za-z0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # Match group 1: GBOL number, 2: stuff, 3: primer name, 4: file extension
+    regex_read_name = /^([A-Za-z0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # Match group 1: Isolation number, 2: stuff, 3: primer name, 4: file extension
     name_components = self.name.match(regex_read_name)
 
     if name_components
@@ -215,7 +215,7 @@ class PrimerRead < ApplicationRecord
 
         if marker
           # Try to find matching isolate
-          isolate_component = name_components[1] # GBoL number
+          isolate_component = name_components[1] # Isolation number
 
           # BGBM cases:
           regex_db_number = /^.*(DB)[\s_]?([0-9]+)(.*)_([A-Za-z0-9-]+)\.(scf|ab1)$/ # match group 1+2: DNABank number, 3: stuff, 4: primer name, 5: file extension
