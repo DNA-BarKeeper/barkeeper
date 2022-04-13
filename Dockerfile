@@ -13,9 +13,11 @@ ENV RAILS_ROOT /var/www/barkeeper
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
+COPY Gemfile Gemfile
+COPY Gemfile.lock Gemfile.lock
+
 ENV BUNDLER_VERSION=2.3.5
 RUN gem install rails bundler:2.3.5
-COPY Gemfile Gemfile
 
 RUN bundle install
 RUN chown -R barkeeper:barkeeper $RAILS_ROOT
