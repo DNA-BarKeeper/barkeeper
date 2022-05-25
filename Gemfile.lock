@@ -221,6 +221,8 @@ GEM
       railties (>= 3.2.16)
     launchy (2.5.0)
       addressable (~> 2.7)
+    leaflet-rails (1.7.0)
+      rails (>= 4.2.0)
     licensed (3.6.0)
       bundler (>= 1.10)
       licensee (>= 9.15.2, < 10.0.0)
@@ -512,6 +514,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   launchy
+  leaflet-rails
   licensed
   meta_request
   mime-types

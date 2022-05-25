@@ -49,6 +49,7 @@ gem 'builder'
 gem 'copyright-header', require: false
 gem 'image_processing'
 gem 'jbuilder' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem 'leaflet-rails'
 gem 'mime-types'
 gem 'net-scp'
 gem 'net-sftp'
