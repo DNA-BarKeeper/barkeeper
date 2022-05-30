@@ -19,7 +19,8 @@ COPY Gemfile.lock Gemfile.lock
 ENV BUNDLER_VERSION=2.3.5
 RUN gem install rails bundler:2.3.5
 
-RUN bundle install --without development test
+RUN bundle config set --local without [:test]
+RUN bundle install
 RUN chown -R barkeeper:barkeeper $RAILS_ROOT
 
 RUN bundle exec rails assets:precompile
