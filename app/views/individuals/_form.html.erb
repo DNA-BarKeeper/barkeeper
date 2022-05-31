@@ -183,6 +183,21 @@
 
           <div class="tab-pane" id="locality" >
             <br>
+
+            <%= map(:center => {
+              :latlng => [@individual.latitude, @individual.longitude],
+              :zoom => 10
+            },
+                    :markers => [
+                      {
+                        :latlng => [@individual.latitude, @individual.longitude],
+                        :popup => "Was found here"
+                      }
+                    ]
+                ) %>
+
+            <br>
+
             <div class="form-group">
               <%= f.label :country %>
               <%= f.text_field :country, class: 'form-control' %>
