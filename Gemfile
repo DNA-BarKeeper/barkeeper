@@ -46,9 +46,12 @@ gem 'bootsnap'
 gem 'bootstrap-sass'
 gem 'bootstrap_progressbar'
 gem 'builder'
+gem 'country_select', '~> 6.0'
 gem 'copyright-header', require: false
 gem 'image_processing'
 gem 'jbuilder' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem "geo_coord", require: "geo/coord"
+gem 'leaflet-rails'
 gem 'mime-types'
 gem 'net-scp'
 gem 'net-sftp'

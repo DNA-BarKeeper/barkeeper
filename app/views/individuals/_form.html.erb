@@ -183,60 +183,72 @@
 
           <div class="tab-pane" id="locality" >
             <br>
-            <div class="form-group">
-              <%= f.label :country %>
-              <%= f.text_field :country, class: 'form-control' %>
-            </div>
+            <div class="container" style="width: 100%">
+              <div class="row">
+                <div class="col-lg-2">
+                  <div class="row">
+                    <div class="col-lg-12 sidebar-element">
+                      <div class="form-group">
+                        <%= f.label 'Latitude' %>
+                        <%= f.number_field :latitude, step: 0.0001, class: 'form-control' %>
+                        <%= "Original latitude value during bulk import was <b>#{@individual.latitude_original}</b>".html_safe if @individual.latitude_original.present? %>
+                      </div>
 
-            <div class="form-group">
-              <%= f.label 'State/Province' %>
-              <%= f.text_field :state_province, class: 'form-control' %>
-            </div>
+                      <div class="form-group">
+                        <%= f.label 'Longitude' %>
+                        <%= f.number_field :longitude, step: 0.0001, class: 'form-control' %>
+                        <%= "Original longitude value during bulk import was <b>#{@individual.longitude_original}</b>".html_safe if @individual.longitude_original.present? %>
+                      </div>
 
-            <div class="form-group">
-              <%= f.label :locality %>
-              <%= f.text_area :locality, class: 'form-control' %>
-            </div>
-            <div class="form-group">
-              <%= f.label 'Latitude' %>
-              <%= f.text_field :latitude, class: 'form-control' %>
-            </div>
+                      <div class="form-group">
+                        <%= f.label :elevation %>
+                        <%= f.number_field :elevation, step: 0.0001, class: 'form-control' %>
+                        <%= "Original elevation value during bulk import was <b>#{@individual.elevation_orig}</b>".html_safe if @individual.elevation_orig.present? %>
+                      </div>
+                    </div>
+                  </div>
 
-            <div class="form-group">
-              <%= f.label 'Longitude' %>
-              <%= f.text_field :longitude, class: 'form-control' %>
-            </div>
+                  <div class="row">
+                    <div class="col-lg-12 sidebar-element">
+                      <div class="form-group">
+                        <%= f.label :country %>
+                        <%= f.country_select :country, { priority_countries: ["EC", "DE"], selected: "EC" } , { class: 'form-control' } %>
+                      </div>
 
-            <div class="form-group">
-              <%= f.label 'Latitude (original)' %>
-              <%= f.text_field :latitude_original, class: 'form-control' %>
-            </div>
+                      <div class="form-group">
+                        <%= f.label 'State/Province' %>
+                        <%= f.text_field :state_province, class: 'form-control' %>
+                      </div>
 
-            <div class="form-group">
-              <%= f.label 'Longitude (original)' %>
-              <%= f.text_field :longitude_original, class: 'form-control' %>
-            </div>
+                      <div class="form-group">
+                        <%= f.label :locality %>
+                        <%= f.text_area :locality, class: 'form-control' %>
+                      </div>
 
-            <div class="form-group">
-              <%= f.label :elevation %>
-              <%= f.text_field :elevation, class: 'form-control' %>
-            </div>
+                      <div class="form-group">
+                        <%= f.label :habitat %>
+                        <%= f.text_area :habitat, class: 'form-control' %>
+                      </div>
 
-            <div class="form-group">
-              <%= f.label :exposition %>
-              <%= f.text_field :exposition, class: 'form-control' %>
-            </div>
+                      <div class="form-group">
+                        <%= f.label :substrate %>
+                        <%= f.text_field :substrate, class: 'form-control' %>
+                      </div>
 
-            <div class="form-group">
-              <%= f.label :habitat %>
-              <%= f.text_area :habitat, class: 'form-control' %>
-            </div>
+                      <div class="form-group">
+                        <%= f.label :exposition %>
+                        <%= f.text_field :exposition, class: 'form-control' %>
+                      </div>
 
-            <div class="form-group">
-              <%= f.label :substrate %>
-              <%= f.text_field :substrate, class: 'form-control' %>
-            </div>
+                    </div>
+                  </div>
+                </div>
 
+                <div class="col-lg-10">
+                  <div id="map"></div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="tab-pane" id="assigned_isolates">

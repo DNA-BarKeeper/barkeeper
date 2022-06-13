@@ -87,7 +87,7 @@ class IndividualsController < ApplicationController
 
     respond_to do |format|
       if @individual.save
-        format.html { redirect_back fallback_location: individuals_path, notice: 'Specimen was successfully created.' }
+        format.html { redirect_to individuals_path, notice: 'Specimen was successfully created.' }
         format.json { render :show, status: :created, location: @individual }
       else
         format.html { render :new }
@@ -96,10 +96,15 @@ class IndividualsController < ApplicationController
     end
   end
 
+  # returns locality info for map rendering
+  def locality
+    render json: { latitude: @individual.latitude, longitude: @individual.longitude, elevation: @individual.elevation }.to_json
+  end
+
   def update
     respond_to do |format|
       if @individual.update(individual_params)
-        format.html { redirect_back fallback_location: individuals_path, notice: 'Specimen was successfully updated.' }
+        format.html { redirect_to individuals_path, notice: 'Specimen was successfully updated.' }
         format.json { render :show, status: :ok, location: @individual }
       else
         format.html { render :edit }
