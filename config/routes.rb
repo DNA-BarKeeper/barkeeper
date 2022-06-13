@@ -98,6 +98,7 @@ BarKeeper::Application.routes.draw do
   resources :individuals do
     member do
       delete :delete_voucher_image
+      get :locality
     end
 
     collection do
