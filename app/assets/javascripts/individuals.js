@@ -42,7 +42,7 @@ function renderMap() {
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 15,
-                attribution: '© OpenStreetMap'
+                attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
             }).addTo(map);
 
             var marker = L.marker([data.latitude, data.longitude]).addTo(map);
