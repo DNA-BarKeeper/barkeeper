@@ -38,10 +38,10 @@ function renderMap() {
             root_id: $('#taxonomy_root_select option:selected').val()
         },
         success: function (data) {
-            var map = L.map('map').setView([data.latitude, data.longitude], 13);
+            var map = L.map('map').setView([data.latitude, data.longitude], 10);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 10,
+                maxZoom: 15,
                 attribution: '© OpenStreetMap'
             }).addTo(map);
 
