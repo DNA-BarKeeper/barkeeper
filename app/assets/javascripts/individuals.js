@@ -40,6 +40,9 @@ function renderMap() {
         success: function (data) {
             var map = L.map('map').setView([data.latitude, data.longitude], 10);
 
+            // Please check the Open Street Map Tile Usage Policy to see if you might need to use a different tile layer
+            // provider for your implementation:
+            // https://operations.osmfoundation.org/policies/tiles/
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 15,
                 attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
