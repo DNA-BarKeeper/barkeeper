@@ -212,7 +212,7 @@
                     <div class="col-lg-12 sidebar-element">
                       <div class="form-group">
                         <%= f.label :country %>
-                        <%= f.country_select :country, { priority_countries: ["EC", "DE"], selected: "EC" } , { class: 'form-control' } %>
+                        <%= f.country_select :country, { priority_countries: ["DE"], include_blank: 'Select a country'} , { class: 'form-control' } %>
                       </div>
 
                       <div class="form-group">
@@ -245,7 +245,11 @@
                 </div>
 
                 <div class="col-lg-10">
-                  <div id="map"></div>
+                  <% if @individual.latitude && @individual.longitude %>
+                    <div id="map"></div>
+                  <% else %>
+                    <p>Please add values for latitude and longitude to see a map of the locality here.</p>
+                  <% end %>
                 </div>
               </div>
             </div>
