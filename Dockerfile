@@ -20,7 +20,7 @@ COPY Gemfile.lock Gemfile.lock
 ENV BUNDLER_VERSION=2.3.5
 RUN gem install rails bundler:2.3.5
 
-RUN if [ "$RAILS_ENV" = "production" ]; then bundle config set --local without test:development; else bundle config set --local without test; fi
+RUN if [ "$RAILS_ENV" = "development" ]; then bundle config set --local without test; else bundle config set --local without test:development; fi
 RUN bundle install
 RUN chown -R barkeeper:barkeeper $RAILS_ROOT
 
