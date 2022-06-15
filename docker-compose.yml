@@ -19,13 +19,10 @@ services:
       - barkeeper-redis:/var/lib/redis/data
 
   app:
-    build:
-      context: .
-      args:
-        PUMA_PORT: ${PUMA_PORT}
+    image: barkeeper
     depends_on:
-      - 'postgres'
-      - 'sidekiq'
+      - postgres
+      - sidekiq
     volumes:
       - .:/var/www/barkeeper
     ports:
@@ -34,10 +31,12 @@ services:
       - .env
 
   sidekiq:
+    image: barkeeper
     build:
       context: .
       args:
         PUMA_PORT: ${PUMA_PORT}
+        RAILS_ENV: ${RAILS_ENV}
     command: bundle exec sidekiq
     depends_on:
       - postgres
