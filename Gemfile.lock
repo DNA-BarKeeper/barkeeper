@@ -510,6 +510,7 @@ DEPENDENCIES
   launchy
   leaflet-rails
   licensed
+  listen
   meta_request
   mime-types
   nested_form_fields
