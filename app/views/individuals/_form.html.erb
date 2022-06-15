@@ -191,13 +191,13 @@
                       <div class="form-group">
                         <%= f.label 'Latitude' %>
                         <%= f.number_field :latitude, step: 0.0001, class: 'form-control' %>
-                        <%= "Original latitude value during bulk import was <b>#{@individual.latitude_original}</b>".html_safe if @individual.latitude_original.present? %>
+                        <%= "Original latitude value during import was <b>#{@individual.latitude_original}</b>".html_safe if @individual.latitude_original.present? %>
                       </div>
 
                       <div class="form-group">
                         <%= f.label 'Longitude' %>
                         <%= f.number_field :longitude, step: 0.0001, class: 'form-control' %>
-                        <%= "Original longitude value during bulk import was <b>#{@individual.longitude_original}</b>".html_safe if @individual.longitude_original.present? %>
+                        <%= "Original longitude value during import was <b>#{@individual.longitude_original}</b>".html_safe if @individual.longitude_original.present? %>
                       </div>
 
                       <div class="form-group">

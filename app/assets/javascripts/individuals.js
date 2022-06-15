@@ -25,7 +25,9 @@ jQuery(function() {
         dateFormat: 'yy-mm-dd'
     });
 
-    renderMap();
+    if (document.getElementById("map") != null) {
+        renderMap();
+    }
 });
 
 function renderMap() {
