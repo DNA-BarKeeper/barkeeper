@@ -34,9 +34,9 @@ module ApplicationHelper
 
       home = Home.where(active: true).first
       if home.background_image.attached?
-        styles += "style=\"background: url(#{url_for(home.background_image)}) no-repeat center fixed;\""
+        styles += "style=\"background: url(#{url_for(home.background_image)}) repeat center fixed; background-size: contain; background-color: #101010;\""
       else
-        styles += "style=\"background-color: grey;\""
+        styles += "style=\"background-color: #101010;\""
       end
     else
       styles += "class=\"\""
