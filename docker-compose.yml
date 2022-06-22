@@ -61,10 +61,6 @@ services:
       - .env
     ports:
       - ${PORT}:${PORT}
-      - 443:443
-    restart: always
-    volumes:
-      - ./certbot/www:/var/www/certbot/:ro
 
   mail:
     image: boky/postfix:latest

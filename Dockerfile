@@ -6,6 +6,7 @@ RUN addgroup --gid 1000 barkeeper
 RUN adduser --disabled-password --gecos '' --uid 1000 --gid 1000 barkeeper
 
 ARG PUMA_PORT
+ARG RAILS_ENV
 
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs cmake
 
@@ -19,10 +20,11 @@ COPY Gemfile.lock Gemfile.lock
 ENV BUNDLER_VERSION=2.3.5
 RUN gem install rails bundler:2.3.5
 
+RUN if [ "$RAILS_ENV" = "production" ]; then bundle config set --local without test:development; else bundle config set --local without test; fi
 RUN bundle install
 RUN chown -R barkeeper:barkeeper $RAILS_ROOT
 
-RUN bundle exec rails assets:precompile
+RUN rails assets:precompile
 EXPOSE $PUMA_PORT
 
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

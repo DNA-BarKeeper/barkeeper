@@ -704,3 +704,14 @@ div.search-taxonomy span button {
   max-width: 500px;
   position: relative;
 }
+
+#map {
+  height: 710px;
+  border-color: lightgrey;
+  border-width: 2px;
+  border-style: solid;
+}
+
+#locality input.form-control, select.form-control, textarea.form-control {
+  width: 100% !important;
+}

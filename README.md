@@ -47,6 +47,13 @@ environment variable `PORT`. The value of the variable `PUMA_PORT` should genera
 - To stop and restart the app use the commands `make stop` followed by `make start` or just `make restart`.
 - To remove BarKeeper containers created on your system use `make remove`.
 
+
+### Further notes
+- BarKeeper uses location data maps with map tiles from the Open Street Map Foundation. Please check if your 
+implementation might need to use a different provider of map tiles as per their 
+[Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/) to avoid being blocked from their services. 
+You can change the map tile layer in the app/assets/individuals.js file.
+
 ### License
 
 Copyright (C) 2022 Kai Müller <kaimueller@uni-muenster.de>, Sarah Wiechers <sarah.wiechers@uni-muenster.de>
