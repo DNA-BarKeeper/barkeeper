@@ -10,6 +10,7 @@ services:
       - '5432:5432'
     volumes:
       - barkeeper-postgres:/var/lib/postgresql/data
+    restart: always
 
   redis:
     image: 'redis:6.2.6'
@@ -17,6 +18,7 @@ services:
       - '6379:6379'
     volumes:
       - barkeeper-redis:/var/lib/redis/data
+    restart: always
 
   app:
     image: barkeeper
@@ -29,6 +31,7 @@ services:
       - ${PUMA_PORT}:${PUMA_PORT}
     env_file:
       - .env
+    restart: always
 
   sidekiq:
     image: barkeeper
@@ -45,6 +48,7 @@ services:
       - .:/var/www/barkeeper
     env_file:
       - .env
+    restart: always
 
   nginx:
     build:
@@ -60,6 +64,7 @@ services:
       - .env
     ports:
       - ${PORT}:${PORT}
+    restart: always
 
   mail:
     image: boky/postfix:latest
@@ -67,6 +72,7 @@ services:
       ALLOWED_SENDER_DOMAINS: ${PROJECT_DOMAIN}
     ports:
       - '1578:578'
+    restart: always
 
 volumes:
   barkeeper-redis:

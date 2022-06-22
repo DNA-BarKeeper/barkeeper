@@ -210,6 +210,7 @@ ActiveRecord::Schema.define(version: 2022_06_03_124135) do
     t.text "locality"
     t.string "latitude_original", limit: 255
     t.string "longitude_original", limit: 255
+    t.string "elevation_orig", limit: 255
     t.string "exposition", limit: 255
     t.text "habitat"
     t.string "substrate", limit: 255
@@ -226,7 +227,6 @@ ActiveRecord::Schema.define(version: 2022_06_03_124135) do
     t.integer "herbarium_id"
     t.integer "tissue_id"
     t.bigint "taxon_id"
-    t.string "elevation_orig"
     t.decimal "elevation"
     t.index ["herbarium_id"], name: "index_individuals_on_herbarium_id"
     t.index ["taxon_id"], name: "index_individuals_on_taxon_id"
