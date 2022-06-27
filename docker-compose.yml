@@ -57,14 +57,26 @@ services:
       args:
         PROJECT_DOMAIN: ${PROJECT_DOMAIN}
         PORT: ${PORT}
+        SSL_PORT: ${SSL_PORT}
         PUMA_PORT: ${PUMA_PORT}
     depends_on:
       - app
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
     env_file:
       - .env
     ports:
       - ${PORT}:${PORT}
+      - ${SSL_PORT}:${SSL_PORT}
     restart: always
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
 
   mail:
     image: boky/postfix:latest
