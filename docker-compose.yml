@@ -61,15 +61,14 @@ services:
         PUMA_PORT: ${PUMA_PORT}
     depends_on:
       - app
-    volumes:
-      - ./nginx/conf/:/etc/nginx/conf.d/:ro
-      - ./certbot/www:/var/www/certbot/:ro
-      - ./certbot/conf/:/etc/nginx/ssl/:ro
     env_file:
       - .env
     ports:
       - ${PORT}:${PORT}
       - ${SSL_PORT}:${SSL_PORT}
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/letsencrypt/:ro
     restart: always
 
   certbot:
@@ -77,6 +76,9 @@ services:
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
+    command: certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d ${PROJECT_DOMAIN} --email ${ADMIN_EMAIL}
+    depends_on:
+      - nginx
 
   mail:
     image: boky/postfix:latest
