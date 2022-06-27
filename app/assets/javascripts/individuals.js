@@ -24,4 +24,47 @@ jQuery(function() {
     $('#individual_collected').datepicker({
         dateFormat: 'yy-mm-dd'
     });
+
+    if (document.getElementById("map") != null) {
+        renderMap();
+    }
 });
+
+function renderMap() {
+    $.ajax({
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        url: 'locality',
+        dataType: 'json',
+        data: {
+            root_id: $('#taxonomy_root_select option:selected').val()
+        },
+        success: function (data) {
+            var map = L.map('map').setView([data.latitude, data.longitude], 10);
+
+            // Please check the Open Street Map Tile Usage Policy to see if you might need to use a different tile layer
+            // provider for your implementation:
+            // https://operations.osmfoundation.org/policies/tiles/
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 15,
+                attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+            }).addTo(map);
+
+            var marker = L.marker([data.latitude, data.longitude]).addTo(map);
+            marker.bindPopup("Latitude: " + data.latitude
+                + "<br>Longitude: " + data.longitude
+                + "<br>Elevation: " + data.elevation);
+
+            var localityTab = document.getElementById('locality');
+            var observer1 = new MutationObserver(function(){
+                if(localityTab.style.display != 'none'){
+                    map.invalidateSize();
+                }
+            });
+            observer1.observe(localityTab, {attributes: true});
+        },
+        error: function (_result) {
+            console.error("Error getting data.");
+        }
+    });
+}

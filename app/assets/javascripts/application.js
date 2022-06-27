@@ -34,6 +34,7 @@
 //= require keyboard_shortcuts
 //= require d3.min
 //= require select2
+//= require leaflet
 //= require_tree .
 
 jQuery(function() {

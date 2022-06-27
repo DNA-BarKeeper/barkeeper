@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 ruby '2.7.0'
 
-gem 'rails', '5.2.4.6'
+gem 'rails', '5.2.7.1'
 
 # Postgres
 gem 'pg'
@@ -46,9 +46,12 @@ gem 'bootsnap'
 gem 'bootstrap-sass'
 gem 'bootstrap_progressbar'
 gem 'builder'
+gem 'country_select', '~> 6.0'
 gem 'copyright-header', require: false
 gem 'image_processing'
 gem 'jbuilder' # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem "geo_coord", require: "geo/coord"
+gem 'leaflet-rails'
 gem 'mime-types'
 gem 'net-scp'
 gem 'net-sftp'
@@ -67,7 +70,8 @@ group :development do
   gem 'binding_of_caller' # Extends features of better_errors
   gem 'meta_request' # Supporting gem for Google Chrome Rails Panel
   gem 'licensed' # Check compatibility of gem licenses
-  gem 'spring' # Spring speeds up development by keeping your application running in the background
+  gem 'listen'
+  gem 'spring', '~> 3' # Spring speeds up development by keeping your application running in the background
   gem 'yard' # Documentation generation tool
 end
 

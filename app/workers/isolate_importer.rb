@@ -22,18 +22,11 @@
 
 # frozen_string_literal: true
 
-class Marker < ApplicationRecord
-  include PgSearch::Model
-  include ProjectRecord
+# Worker that imports Isolate and Specimen data
+class IsolateImporter
+  include Sidekiq::Worker
 
-  has_many :marker_sequences
-  has_many :contigs
-  has_many :clusters
-  has_many :ngs_results
-  has_many :primers
-  has_many :mislabel_analyses
-
-  validates_presence_of :name
-
-  multisearchable against: [:alt_name, :name]
+  def perform(file_path, project_id)
+    Isolate.import(file_path, project_id)
+  end
 end

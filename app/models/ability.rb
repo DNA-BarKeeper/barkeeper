@@ -35,7 +35,7 @@ class Ability
     can :manage, :progress_overview
 
     can %i[edit index filter taxonomy_tree associated_specimen find_ancestry show_individuals show_children], Taxon
-    can %i[edit index filter], Individual
+    can %i[edit index filter locality], Individual
     can %i[edit index], Herbarium
 
     can %i[edit index filter change_via_script as_fasq], Contig

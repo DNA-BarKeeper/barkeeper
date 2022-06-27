@@ -44,6 +44,10 @@ div.isolate-copy {
   padding: 10px;
 }
 
+.navbar {
+  border-radius: 0px;
+}
+
 .nav-shadow {
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
 }
@@ -94,10 +98,8 @@ a.my-btn {
 // to make views framework-neutral
 main {
   @extend .container;
-  padding-top: 20px;
   padding-bottom: 20px;
   width: 100%;
-  margin-top: 51px; // Accommodate the navbar
   margin-bottom: 20px;
 }
 
@@ -703,4 +705,15 @@ div.search-taxonomy span button {
 .image_preview_container {
   max-width: 500px;
   position: relative;
+}
+
+#map {
+  height: 710px;
+  border-color: lightgrey;
+  border-width: 2px;
+  border-style: solid;
+}
+
+#locality input.form-control, select.form-control, textarea.form-control {
+  width: 100% !important;
 }

@@ -23,6 +23,7 @@
 # frozen_string_literal: true
 
 class Individual < ApplicationRecord
+  extend Import
   include ProjectRecord
   include PgSearch::Model
 
@@ -34,7 +35,9 @@ class Individual < ApplicationRecord
   has_many_attached :voucher_images
   validates :voucher_images, limit: { min: 0, max: 5 }
 
-  after_save :assign_dna_bank_info, if: :identifier_has_changed?
+  validates_presence_of :specimen_id, message: "ID can't be blank"
+
+  after_save :import_abcd, if: :identifier_has_changed?
   after_save :update_isolate_tissue, if: :saved_change_to_tissue_id?
 
   multisearchable against: [:DNA_bank_id, :collector, :collectors_field_number, :comments, :country, :habitat,
@@ -81,8 +84,14 @@ state_province country latitude longitude elevation exposition locality habitat 
     saved_change_to_specimen_id? || saved_change_to_DNA_bank_id?
   end
 
-  def assign_dna_bank_info
-    query_dna_bank(specimen_id) if specimen_id
+  def import_abcd
+    identifier = specimen_id
+    identifier ||= DNA_bank_id
+
+    if identifier
+      abcd_results = Individual.query_dna_bank(identifier, 'Herbar_BinHum')
+      read_abcd_results(abcd_results)
+    end
   end
 
   def update_isolate_tissue
@@ -90,89 +99,71 @@ state_province country latitude longitude elevation exposition locality habitat 
     isolates.update_all(tissue_id: self.tissue_id)
   end
 
-  private
+  def read_abcd_results(abcd_results)
+    self.collector = abcd_results[:collector] if abcd_results[:collector]
+    self.locality = abcd_results[:locality] if abcd_results[:locality]
 
-  def query_dna_bank(specimen_id)
-    # puts "Query for Specimen ID '#{specimen_id}'...\n"
-    service_url = "http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar_BiNHum&query=<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.1</requestFormat><responseFormat start='0' limit='200'>http://www.tdwg.org/schemas/abcd/2.1</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/UnitID'>#{specimen_id}</like></filter><count>false</count></search></request>"
-
-    url = URI.parse(service_url)
-    req = Net::HTTP::Get.new(url.to_s)
-    res = Net::HTTP.start(url.host, url.port) { |http| http.request(req) }
-    doc = Nokogiri::XML(res.body)
-
-    begin
-      unit = doc.at_xpath('//abcd21:Unit')
-
-      unit_type = unit.at_xpath('//abcd21:KindOfUnit').content # Contains info if its a herbarium or tissue sample
-      genus = unit.at_xpath('//abcd21:GenusOrMonomial').content
-      species_epithet = unit.at_xpath('//abcd21:FirstEpithet').content
-      infraspecific = unit.at_xpath('//abcd21:InfraspecificEpithet').content
-      herbarium_name = unit.at_xpath('//abcd21:SourceInstitutionCode').content
-      collector = unit.at_xpath('//abcd21:GatheringAgent').content
-      locality = unit.at_xpath('//abcd21:LocalityText').content
-      longitude = unit.at_xpath('//abcd21:LongitudeDecimal').content
-      latitude = unit.at_xpath('//abcd21:LatitudeDecimal').content
-      higher_taxon_rank = unit.at_xpath('//abcd21:HigherTaxonRank').content
-      higher_taxon_name = unit.at_xpath('//abcd21:HigherTaxonName').content
-
-      if unit_type == 'tissue'
-        self.update(tissue: Tissue.find_by(name: 'Leaf (Silica)'))
-      elsif unit_type == 'herbarium sheet'
-        self.update(tissue: Tissue.find_by(name: 'Leaf (Herbarium)'))
-      end
-
-      self.update(collector: collector.strip) if collector
-      self.update(locality: locality) if locality
-      self.update(longitude: longitude) if longitude
-      self.update(latitude: latitude) if latitude
-
-      if herbarium_name
-        herbarium = Herbarium.find_by(acronym: herbarium_name)
-        self.update(herbarium: herbarium) if herbarium
-      end
-
-      if higher_taxon_rank == 'familia'
-        assigned_family = Taxon.find_or_create_by_sci_name_or_synonym(higher_taxon_name.capitalize, {taxonomic_rank: :is_family}) # TODO: Who is the parent in case family does not exist yet?
-        assigned_family.add_projects(projects.pluck(:id))
-      end
-
-      # Assign new individual to either genus, species or subspecies found or created by ABCD
-      if genus
-        parent_family = Taxon.find(assigned_family.id)
-        assigned_genus = Taxon.find_or_create_by(taxonomic_rank: :is_genus,
-                                                 scientific_name: genus,
-                                                 parent: parent_family)
-        assigned_genus.add_projects(projects.pluck(:id))
-
-        if species_epithet
-          parent_genus = Taxon.find(genus.id)
-          assigned_species = Taxon.find_or_create_by(taxonomic_rank: :is_species,
-                                                     scientific_name: genus + ' ' + species_epithet,
-                                                     parent: parent_genus)
-          assigned_species.add_projects(projects.pluck(:id))
-
-          if infraspecific
-            parent_species = Taxon.find(assigned_species.id)
-            assigned_subspecies = Taxon.find_or_create_by(taxonomic_rank: :is_subspecies,
-                                                          scientific_name: genus + ' ' + species_epithet + ' ' + infraspecific,
-                                                          parent: parent_species)
-            assigned_subspecies.add_projects(projects.pluck(:id))
-
-            self.update(taxon: assigned_subspecies)
-          else
-            self.update(taxon: assigned_species)
-          end
-        else
-          self.update(taxon: assigned_genus)
-        end
-      elsif assigned_family
-        self.update(taxon: assigned_family)
-      end
-    rescue StandardError
-      # puts 'Could not read ABCD.'
-    else # No exceptions occurred
-      # puts 'Successfully finished.'
+    coordinates = Geo::Coord.parse("#{abcd_results[:latitude]}, #{abcd_results[:longitude]}")
+    if coordinates
+      self.latitude = coordinates.latitude if coordinates.latitude
+      self.longitude = coordinates.longitude if coordinates.longitude
     end
+    self.latitude_original = abcd_results[:latitude] if abcd_results[:latitude]
+    self.longitude_original = abcd_results[:longitude] if abcd_results[:longitude]
+
+    if abcd_results[:herbarium]
+      herbarium = Herbarium.find_or_create_by(acronym: abcd_results[:herbarium])
+      self.herbarium = herbarium
+    end
+
+    if abcd_results[:higher_taxon_name] && abcd_results[:higher_taxon_rank]
+      abcd_results[:higher_taxon_name] = 'Lamiaceae' if abcd_results[:higher_taxon_name].capitalize == 'Labiatae'
+
+      taxon = Taxon.find_or_create_by(scientific_name: abcd_results[:higher_taxon_name].capitalize)
+      taxon.add_projects(projects.pluck(:id))
+
+      case abcd_results[:higher_taxon_rank]
+      when 'phylum'
+        taxonomic_rank = :is_division
+      when 'classis'
+        taxonomic_rank = :is_class
+      when 'ordo'
+        taxonomic_rank = :is_order
+      when 'familia'
+        taxonomic_rank = :is_family
+      else
+        taxonomic_rank = nil
+      end
+      taxon.update(taxonomic_rank: taxonomic_rank)
+    end
+
+    if abcd_results[:genus]
+      parent = taxon
+
+      taxon = Taxon.find_or_create_by(scientific_name: abcd_results[:genus], taxonomic_rank: :is_genus)
+      taxon.add_projects(projects.pluck(:id))
+      taxon.update(parent: parent)
+
+      if abcd_results[:species_epithet]
+        parent = taxon
+        composed_name = "#{abcd_results[:genus]} #{abcd_results[:species_epithet]}"
+
+        taxon = Taxon.find_or_create_by(scientific_name: composed_name, taxonomic_rank: :is_species)
+        taxon.add_projects(projects.pluck(:id))
+        taxon.update(parent: parent)
+
+        if abcd_results[:infraspecific]
+          parent = taxon
+          composed_name = "#{abcd_results[:genus]} #{abcd_results[:infraspecific]} #{abcd_results[:species_epithet]}"
+
+          taxon = Taxon.find_or_create_by(scientific_name: composed_name, taxonomic_rank: :is_subspecies)
+          taxon.add_projects(projects.pluck(:id))
+          taxon.update(parent: parent)
+        end
+      end
+    end
+
+    update(taxon: taxon)
+    save!
   end
 end
