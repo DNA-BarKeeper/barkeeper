@@ -68,14 +68,14 @@ services:
       - ${SSL_PORT}:${SSL_PORT}
     volumes:
       - ./certbot/www:/var/www/certbot/:ro
-      - ./certbot/conf/:/etc/nginx/ssl/:ro
+#      - ./certbot/conf/:/etc/nginx/ssl/:ro
     restart: always
 
   certbot:
     image: certbot/certbot:latest
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
+#      - ./certbot/conf/:/etc/letsencrypt/:rw
 
   mail:
     image: boky/postfix:latest
