@@ -57,6 +57,7 @@ services:
       args:
         PROJECT_DOMAIN: ${PROJECT_DOMAIN}
         PORT: ${PORT}
+        SSL_PORT: ${SSL_PORT}
         PUMA_PORT: ${PUMA_PORT}
     depends_on:
       - app

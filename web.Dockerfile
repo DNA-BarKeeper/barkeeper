@@ -13,7 +13,7 @@ RUN mkdir log
 
 COPY public public/
 COPY nginx.conf /tmp/docker.nginx
-RUN envsubst '${RAILS_ROOT} ${PROJECT_DOMAIN} ${PUMA_PORT}' < /tmp/docker.nginx > /etc/nginx/conf.d/default.conf
+RUN envsubst '${RAILS_ROOT} ${PROJECT_DOMAIN} ${PUMA_PORT} ${PORT}' < /tmp/docker.nginx > /etc/nginx/conf.d/default.conf
 
 EXPOSE ${PORT}
 

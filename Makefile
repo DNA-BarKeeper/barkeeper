@@ -33,7 +33,13 @@ remove:
 restart: remove start
 
 start-dev:
-	@echo "Starting BarKeeper..."
+	@echo "Starting BarKeeper in Development environment..."
 	@docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 
 restart-dev: remove start-dev
+
+start-ssl:
+	@echo "Starting BarKeeper with SSL certificates (by Let's Encrypt)..."
+	@docker-compose -f docker-compose.yml -f docker-compose.ssl.yml up
+
+restart-ssl: remove start-ssl
