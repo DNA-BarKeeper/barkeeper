@@ -24,11 +24,11 @@
           <p>Leave these fields blank if you don't want to change your password.</p>
           <div class="form-group">
             <%= f.label :password %>
-            <%= f.password_field :password, :autocomplete => 'off', class: 'form-control' %>
+            <%= f.password_field :password, :autocomplete => 'new-password', class: 'form-control' %>
           </div>
           <div class="form-group">
             <%= f.label :password_confirmation %>
-            <%= f.password_field :password_confirmation, class: 'form-control' %>
+            <%= f.password_field :password_confirmation, :autocomplete => 'new-password', class: 'form-control' %>
           </div>
         </fieldset>
 
