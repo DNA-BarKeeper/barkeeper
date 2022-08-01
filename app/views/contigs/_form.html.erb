@@ -16,6 +16,7 @@
       <li class="active"><a href="#assembly" role="tab" data-toggle="tab">Assembly</a></li>
       <li><a href="#downloads" role="tab" data-toggle="tab">Downloads</a></li>
       <%= render :partial => 'shared/sativa_nav_tab', :locals => { :marker_sequences => [@contig.marker_sequence] } %>
+      <%= render :partial => 'shared/issue_nav_tab', :locals => { :record => @contig } %>
     </ul>
 
     <!-- Tab panes -->
