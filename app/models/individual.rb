@@ -56,7 +56,7 @@ class Individual < ApplicationRecord
     header = %w{ Database_ID specimen_id taxon_name determination collection collectors_field_number collector collection_date
 state_province country latitude longitude elevation exposition locality habitat comments }
 
-    attributes = %w{ id specimen_id taxon_name determination herbarium_code collectors_field_number collector collected
+    attributes = %w{ id specimen_id taxon_name determination collection_name collectors_field_number collector collected
 state_province country latitude longitude elevation exposition locality habitat comments }
 
     CSV.generate(headers: true) do |csv|
@@ -70,6 +70,10 @@ state_province country latitude longitude elevation exposition locality habitat 
 
   def taxon_name
     self.try(:taxon)&.scientific_name
+  end
+
+  def collection_name
+    self.try(:collection)&.name
   end
 
   def taxon_name=(scientific_name)

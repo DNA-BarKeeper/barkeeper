@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_05_085607) do
+ActiveRecord::Schema.define(version: 2022_08_05_113213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -204,7 +204,6 @@ ActiveRecord::Schema.define(version: 2022_08_05_085607) do
     t.datetime "updated_at"
     t.boolean "silica_gel"
     t.date "collected"
-    t.string "herbarium_code", limit: 255
     t.string "country", limit: 255
     t.string "state_province", limit: 255
     t.text "locality"
