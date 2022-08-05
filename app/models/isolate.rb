@@ -67,7 +67,7 @@ class Isolate < ApplicationRecord
 
       isolate.dna_bank_id = row['DNA Bank No.'] if row['DNA Bank No.']
 
-      isolate.tissue_id = 2 # Seems to be always "Leaf (Herbarium)", so no import needed
+      isolate.tissue_id = 2 # Seems to be always "Leaf (Collection)", so no import needed
 
       isolate.negative_control = true if row['Tissue Type'] == 'control'
 
@@ -82,7 +82,7 @@ class Isolate < ApplicationRecord
       individual = Individual.find_or_create_by(specimen_id: individual) # Assign to existing or new individual
 
       individual.collector = row['Collector']
-      individual.herbarium = row['Herbarium']
+      individual.collection = row['Collection']
       individual.country = row['Country']
       individual.state_province = row['State/Province']
       individual.locality = row['Locality']

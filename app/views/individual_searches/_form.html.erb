@@ -54,8 +54,8 @@
         </div>
         <br/>
         <div class="field">
-          <%= f.label :herbarium, 'Herbarium' %><br />
-          <%= f.collection_select :herbarium, Herbarium.order(:name), :name, :name, { include_blank: true }, { class:"form-control" } %>
+          <%= f.label :collection, 'Collection' %><br />
+          <%= f.collection_select :collection, Collection.order(:name), :name, :name, { include_blank: true }, { class:"form-control" } %>
         </div>
         <br/>
         <div class="field">

@@ -1,13 +1,13 @@
-<% provide(:name, @herbarium.name) %>
-<%= show_val_errors(@herbarium)%>
+<% provide(:name, @collection.name) %>
+<%= show_val_errors(@collection)%>
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3  class="panel-title"><%= @herbarium.name%></h3>
+    <h3  class="panel-title"><%= @collection.name%></h3>
   </div>
 
   <div class="panel-body">
-    <%= form_for(@herbarium) do |f| %>
+    <%= form_for(@collection) do |f| %>
       <div class="form-group">
         <%= f.label :name %>
         <%= f.text_field :name,  class: 'form-control' %>

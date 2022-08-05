@@ -38,7 +38,7 @@ class IndividualSearch < ApplicationRecord
   end
 
   def to_csv
-    header = %w{ Database_ID specimen_id taxon_name determination herbarium collectors_field_number collector collection_date
+    header = %w{ Database_ID specimen_id taxon_name determination collection collectors_field_number collector collection_date
 state_province country latitude longitude elevation exposition locality habitat comments }
 
     attributes = %w{ id specimen_id taxon_name determination herbarium_code collectors_field_number collector collected
@@ -77,7 +77,7 @@ state_province country latitude longitude elevation exposition locality habitat 
       individuals = individuals.without_taxon if has_taxon == 'no_taxon'
     end
 
-    individuals = individuals.joins(:herbarium).where('herbaria.acronym ilike ?', "%#{herbarium}%") if herbarium.present?
+    individuals = individuals.joins(:collection).where('collections.acronym ilike ?', "%#{collection}%") if collection.present?
 
     individuals = individuals.joins(:taxon).where('taxa.scientific_name ilike ?', "%#{taxon}%") if taxon.present?
 

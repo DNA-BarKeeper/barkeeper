@@ -46,13 +46,13 @@ jQuery(function() {
 
     // INDIVIDUALS
     $('#individual_taxon_id').select2((select2AutocompleteOptions("/taxa/filter", "a taxon")));
-    $('#individual_herbarium_id').select2(select2SingleSelectOptions('an herbarium'));
+    $('#individual_collection_id').select2(select2SingleSelectOptions('a collection'));
     $('#individual_tissue_id').select2(select2SingleSelectOptions('a tissue type'));
     $('#individual_project_ids').select2(select2MultiselectOptions);
 
     // INDIVIDUAL SEARCHES
     $('#individual_search_specimen_id').select2((select2AutocompleteOptions("/individuals/filter?name_only=1", "a specimen")));
-    $('#individual_search_herbarium').select2(select2SingleSelectOptions('an herbarium'));
+    $('#individual_search_collection').select2(select2SingleSelectOptions('a collection'));
     $('#individual_search_taxon').select2((select2AutocompleteOptions("/taxa/filter?name_only=1", "a taxon")));
 
     // ISOLATES

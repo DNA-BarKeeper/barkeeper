@@ -22,7 +22,7 @@
 
 # frozen_string_literal: true
 
-class HerbariumDatatable
+class CollectionDatatable
   include Rails.application.routes.url_helpers
   delegate :url_helpers, to: 'Rails.application.routes'
 
@@ -35,8 +35,8 @@ class HerbariumDatatable
   def as_json(_options = {})
     {
         sEcho: params[:sEcho].to_i,
-        iTotalRecords: Herbarium.count,
-        iTotalDisplayRecords: herbaria.total_entries,
+        iTotalRecords: Collection.count,
+        iTotalDisplayRecords: collections.total_entries,
         aaData: data
     }
   end
@@ -44,34 +44,34 @@ class HerbariumDatatable
   private
 
   def data
-    herbaria.map do |herbarium|
+    collections.map do |collection|
       name = ''
 
-      name = link_to herbarium.name, edit_herbarium_path(herbarium) if herbarium.name
+      name = link_to collection.name, edit_collection_path(collection) if collection.name
 
       [
           name,
-          herbarium.acronym,
-          herbarium.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
-          link_to('Delete', herbarium, method: :delete, data: { confirm: 'Are you sure?' })
+          collection.acronym,
+          collection.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
+          link_to('Delete', collection, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end
 
-  def herbaria
-    @herbaria ||= fetch_herbaria
+  def collections
+    @collections ||= fetch_collections
   end
 
-  def fetch_herbaria
-    herbaria = Herbarium.all.order("#{sort_column} #{sort_direction}")
+  def fetch_collections
+    collections = Collection.all.order("#{sort_column} #{sort_direction}")
 
-    herbaria = herbaria.page(page).per_page(per_page)
+    collections = collections.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      herbaria = herbaria.where('herbaria.name ILIKE :search OR herbaria.acronym ILIKE :search', search: "%#{params[:sSearch]}%")
+      collections = collections.where('collections.name ILIKE :search OR collections.acronym ILIKE :search', search: "%#{params[:sSearch]}%")
     end
 
-    herbaria
+    collections
   end
 
   def page
@@ -83,7 +83,7 @@ class HerbariumDatatable
   end
 
   def sort_column
-    columns = %w[herbaria.name herbaria.acronym herbaria.updated_at]
+    columns = %w[collections.name collections.acronym collections.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

@@ -28,7 +28,7 @@ FactoryBot.define do
     is.has_issue { Faker::Number.between(from: 0, to: 2) }
     is.has_problematic_location { Faker::Number.between(from: 0, to: 2) }
     is.has_taxon { Faker::Number.between(from: 0, to: 2) }
-    is.herbarium { Faker::Lorem.word }
+    is.collection { Faker::Lorem.word }
     is.taxon { Faker::Lorem.word }
     is.title { Faker::Lorem.word }
   end

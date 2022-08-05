@@ -32,11 +32,11 @@ jQuery(function() {
         "order": [ 2, 'desc' ]
     } );
 
-    //HERBARIA
-    $('#herbaria').DataTable( {
+    //COLLECTIONS
+    $('#collections').DataTable( {
         bProcessing: true,
         bServerSide: true,
-        sAjaxSource: $('#herbaria').data('source'),
+        sAjaxSource: $('#collections').data('source'),
         "columnDefs": [
             { "orderable": false, "targets": 3 }
         ],

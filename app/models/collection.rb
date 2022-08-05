@@ -20,7 +20,7 @@
 # along with BarKeeper.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-class Herbarium < ApplicationRecord
+class Collection < ApplicationRecord
   include PgSearch::Model
 
   validates_presence_of :acronym

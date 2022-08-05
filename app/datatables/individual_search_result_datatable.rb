@@ -54,12 +54,12 @@ class IndividualSearchResultDatatable
         taxon_id = individual.taxon.id
       end
 
-      herbarium = link_to individual.herbarium.acronym, edit_herbarium_path(individual.herbarium) if individual.herbarium
+      collection = link_to individual.collection.acronym, edit_collection_path(individual.collection) if individual.collection
 
       [
         link_to(individual.specimen_id, edit_individual_path(individual)),
         link_to(taxon_name, edit_taxon_path(taxon_id)),
-        herbarium,
+        collection,
         individual.latitude_original,
         individual.longitude_original,
         individual.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
@@ -69,14 +69,14 @@ class IndividualSearchResultDatatable
   end
 
   def individuals_data
-    @search_result ||= IndividualSearch.find_by_id(@search_id).individuals.includes(:taxon, :herbarium).reorder("#{sort_column} #{sort_direction}")
+    @search_result ||= IndividualSearch.find_by_id(@search_id).individuals.includes(:taxon, :collection).reorder("#{sort_column} #{sort_direction}")
 
     @search_result = @search_result.page(page).per_page(per_page)
 
     if params[:sSearch].present?
       @search_result = @search_result.where('individuals.specimen_id ILIKE :search
 OR taxa.scientific_name ILIKE :search
-OR herbaria.acronym ILIKE :search', search: "%#{params[:sSearch]}%")
+OR collections.acronym ILIKE :search', search: "%#{params[:sSearch]}%")
                                      .references(:taxon)
     end
 
@@ -92,7 +92,7 @@ OR herbaria.acronym ILIKE :search', search: "%#{params[:sSearch]}%")
   end
 
   def sort_column
-    columns = %w[individuals.specimen_id taxa.scientific_name herbaria.acronym individuals.latitude_original individuals.longitude_original individuals.updated_at]
+    columns = %w[individuals.specimen_id taxa.scientific_name collections.acronym individuals.latitude_original individuals.longitude_original individuals.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

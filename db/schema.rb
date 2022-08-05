@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_03_124135) do
+ActiveRecord::Schema.define(version: 2022_08_05_085607) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -84,6 +84,13 @@ ActiveRecord::Schema.define(version: 2022_06_03_124135) do
     t.integer "cluster_id", null: false
     t.integer "project_id", null: false
     t.index ["cluster_id", "project_id"], name: "index_clusters_projects_on_cluster_id_and_project_id"
+  end
+
+  create_table "collections", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.string "acronym"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "contig_searches", id: :serial, force: :cascade do |t|
@@ -161,13 +168,6 @@ ActiveRecord::Schema.define(version: 2022_06_03_124135) do
     t.index ["freezer_id", "project_id"], name: "index_freezers_projects_on_freezer_id_and_project_id"
   end
 
-  create_table "herbaria", id: :serial, force: :cascade do |t|
-    t.string "name"
-    t.string "acronym"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "homes", force: :cascade do |t|
     t.string "title"
     t.string "subtitle"
@@ -191,7 +191,7 @@ ActiveRecord::Schema.define(version: 2022_06_03_124135) do
     t.datetime "updated_at", null: false
     t.integer "project_id"
     t.integer "user_id"
-    t.string "herbarium"
+    t.string "collection"
     t.index ["project_id"], name: "index_individual_searches_on_project_id"
     t.index ["user_id"], name: "index_individual_searches_on_user_id"
   end
@@ -210,7 +210,6 @@ ActiveRecord::Schema.define(version: 2022_06_03_124135) do
     t.text "locality"
     t.string "latitude_original", limit: 255
     t.string "longitude_original", limit: 255
-    t.string "elevation_orig", limit: 255
     t.string "exposition", limit: 255
     t.text "habitat"
     t.string "substrate", limit: 255
@@ -224,11 +223,12 @@ ActiveRecord::Schema.define(version: 2022_06_03_124135) do
     t.decimal "latitude", precision: 15, scale: 6
     t.decimal "longitude", precision: 15, scale: 6
     t.boolean "has_issue"
-    t.integer "herbarium_id"
+    t.integer "collection_id"
     t.integer "tissue_id"
     t.bigint "taxon_id"
+    t.string "elevation_orig"
     t.decimal "elevation"
-    t.index ["herbarium_id"], name: "index_individuals_on_herbarium_id"
+    t.index ["collection_id"], name: "index_individuals_on_collection_id"
     t.index ["taxon_id"], name: "index_individuals_on_taxon_id"
     t.index ["tissue_id"], name: "index_individuals_on_tissue_id"
   end
@@ -651,7 +651,7 @@ ActiveRecord::Schema.define(version: 2022_06_03_124135) do
   add_foreign_key "homes", "logos", column: "main_logo_id"
   add_foreign_key "individual_searches", "projects"
   add_foreign_key "individual_searches", "users"
-  add_foreign_key "individuals", "herbaria"
+  add_foreign_key "individuals", "collections"
   add_foreign_key "individuals", "taxa"
   add_foreign_key "individuals", "tissues"
   add_foreign_key "lab_racks", "shelves"
