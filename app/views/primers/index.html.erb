@@ -51,4 +51,9 @@
   </div>
 </div>
 
-<%= link_to 'New Primer', new_primer_path %>
+<p>
+  <%= link_to new_primer_path, class: 'btn btn-default', title: 'Create a new primer entry' do %>
+    <span class="glyphicon glyphicon-unchecked"></span>
+  <% end %>
+  Create a new primer entry
+</p>

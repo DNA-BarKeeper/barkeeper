@@ -20,6 +20,11 @@
 </div>
 
 <% if user_signed_in? %>
-  <%= link_to 'New NGS Run', new_ngs_run_path, class: 'btn btn-default' %>
+  <p>
+    <%= link_to new_ngs_run_path, class: 'btn btn-default', title: 'Create a new NGS run' do %>
+      <span class="glyphicon glyphicon-unchecked"></span>
+    <% end %>
+    Create a new NGS run
+  </p>
 <% end %>
 

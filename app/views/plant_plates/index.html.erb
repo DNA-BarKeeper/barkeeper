@@ -28,5 +28,9 @@
 
 </div>
 
-<%= link_to 'New Plate (Tissue)', new_plant_plate_path %>
-
+<p>
+  <%= link_to new_plant_plate_path, class: 'btn btn-default', title: 'Create a new plate (tissue) entry' do %>
+    <span class="glyphicon glyphicon-unchecked"></span>
+  <% end %>
+  Create a new plate (tissue) entry
+</p>

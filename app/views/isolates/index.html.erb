@@ -46,5 +46,8 @@
 </div>
 
 <p>
-<%= link_to ' New Isolate', new_isolate_path %>
+  <%= link_to new_isolate_path, class: 'btn btn-default', title: 'Create a new isolate entry' do %>
+    <span class="glyphicon glyphicon-unchecked"></span>
+  <% end %>
+  Create a new isolate entry
 </p>
