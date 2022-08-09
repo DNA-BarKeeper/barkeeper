@@ -8,19 +8,27 @@ A versatile web framework to assemble, analyze and manage DNA barcode data and m
 You can set up your own project with BarKeeper Web Framework easily by running it via Docker. 
 If you don't know what Docker is, read their excellent [Get Started with Docker guide](https://docs.docker.com/get-started/).
 
+For testing purposes BarKeeper can be set up on any server or personal computer with an OS capable of running Docker. 
+However, for running BarKeeper in a production environment we strongly recommend setting up a server with a current 
+version of Ubuntu and sufficient hardware to handle your projects needs. Remember that this needs to be done only once per project. 
+Every other member will be able to use BarKeeper simply from their web browser without the need of installing anything else.
+
 ### Prerequisites
 Here's what you need to prepare before you can start the setup process:
 - Make sure that you have a stable internet connection during all steps of the setup process.
-- Have a server set up running Ubuntu 16.04 or higher versions. You will also need a user with sudo rights during the installation process. 
-It is highly recommended that you establish suitable server security measures like a properly configured firewall.
-- Install Docker (choose the appropriate tutorial for Ubuntu Linux [here](https://docs.docker.com/install/)). The installed Docker version needs to be 18.06 or higher.
-- Install Docker Compose. You can find detailed instructions [here](https://docs.docker.com/compose/gettingstarted/). 
-The installed Docker-Compose version needs to be 1.27 or higher.
-- Clone the code from this repository to a suitable location on your server.
+- Have a server or Desktop computer running any OS capable of supporting Docker. Setup was tested on machines running 
+Ubuntu 16.04 up to 22.04. Older versions of Ubuntu will likely work as well but are not getting security updates any longer 
+(this is also true for Ubuntu 16.04 by now) so using those cannot be recommended in a production environment.
+- You will also need a user with superuser or administrative rights during the installation process. 
+- It is highly recommended that you establish suitable server security measures like a properly configured firewall.
+- Install Docker (choose the appropriate tutorial for your OS [here](https://docs.docker.com/install/)). The setup 
+was tested with Docker version 18.06 and higher. Older versions may work but this cannot be guaranteed.
+- Install Docker Compose stand-alone or as part of your Docker installation. You can find detailed instructions [here](https://docs.docker.com/compose/gettingstarted/).
+  The setup was tested with Docker-Compose version 1.27 and higher. Older versions may work but this cannot be guaranteed.
+- Clone the code from this repository to a suitable location on your computer or server.
 - Make sure the ports used by redis and postgres are not already in use on your machine (redis: 6379, Postgres: 5432).
 - If you want to run mislabel analyses on the sequences stored in your database on a remote server (SSH address can be specified in .env file)
 make sure that the SATIVA files are available and the alignment tool MAFFT is installed there. More information about SATIVA can be found [here](https://github.com/amkozlov/sativa).
-  
 
 ### Setup
 - Find the file *.env-example* and copy it to a new file *.env* in the main directory of the repository you just cloned.
@@ -38,7 +46,8 @@ environment variable `PORT`. The value of the variable `PUMA_PORT` should genera
 - Now you can install the whole app by running `make install`.
 - You should be able to see the about page of your project's new app on your domain now.
     - HTTPS is not enabled yet. If you want to configure this, you will have to change the *nginx.conf* file manually 
-    and install a certificate. You can find more information [here](http://nginx.org/en/docs/http/configuring_https_servers.html).
+    and install a certificate. You can find more information [here](http://nginx.org/en/docs/http/configuring_https_servers.html)
+  or contact the developers of BarKeeper for help on this.
 - Use the admin credentials you added to the *.env* file to initially log in and create new records for your project.
     - You can start by going to the **Admin area > Home configuration** page and change the About page background and 
     add a description of your project.
