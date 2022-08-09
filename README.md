@@ -10,7 +10,7 @@ If you don't know what Docker is, read their excellent [Get Started with Docker 
 
 For testing purposes BarKeeper can be set up on any server or personal computer with an OS capable of running Docker. 
 However, for running BarKeeper in a production environment we strongly recommend setting up a server with a current 
-version of Ubuntu and sufficient hardware to handle your projects needs. Remember that this needs to be done only once per project. 
+version of Ubuntu and sufficient hardware to handle your project's needs. Remember that this needs to be done only once per project. 
 Every other member will be able to use BarKeeper simply from their web browser without the need of installing anything else.
 
 ### Prerequisites
