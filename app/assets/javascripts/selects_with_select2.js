@@ -112,6 +112,7 @@ jQuery(function() {
     $('#query_associated_taxon').select2((select2AutocompleteOptions("/taxa/filter", "a taxon")));
 
     // SHELVES
+    $('#shelf_freezer_id').select2(select2SingleSelectOptions('a freezer'));
     $('#shelf_project_ids').select2(select2MultiselectOptions);
 
     // TAXA

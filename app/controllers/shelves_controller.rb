@@ -32,7 +32,10 @@ class ShelvesController < ApplicationController
   # GET /shelves
   # GET /shelves.json
   def index
-    @shelves = Shelf.in_project(current_project_id).order(:name)
+    respond_to do |format|
+      format.html
+      format.json { render json: ShelfDatatable.new(view_context, current_project_id) }
+    end
   end
 
   # GET /shelves/1
@@ -55,8 +58,8 @@ class ShelvesController < ApplicationController
 
     respond_to do |format|
       if @shelf.save
-        format.html { redirect_to @shelf, notice: 'Shelf was successfully created.' }
-        format.json { render :show, status: :created, location: @shelf }
+        format.html { redirect_to edit_shelf_path(@shelf), notice: 'Shelf was successfully created.' }
+        format.json { render :edit, status: :created, location: @shelf }
       else
         format.html { render :new }
         format.json { render json: @shelf.errors, status: :unprocessable_entity }
@@ -69,8 +72,8 @@ class ShelvesController < ApplicationController
   def update
     respond_to do |format|
       if @shelf.update(shelf_params)
-        format.html { redirect_to @shelf, notice: 'Shelf was successfully updated.' }
-        format.json { render :show, status: :ok, location: @shelf }
+        format.html { redirect_to edit_shelf_path(@shelf), notice: 'Shelf was successfully updated.' }
+        format.json { render :edit, status: :ok, location: @shelf }
       else
         format.html { render :edit }
         format.json { render json: @shelf.errors, status: :unprocessable_entity }
@@ -97,6 +100,6 @@ class ShelvesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def shelf_params
-    params.require(:shelf).permit(:name, project_ids: [])
+    params.require(:shelf).permit(:name, :freezer_id, project_ids: [])
   end
 end

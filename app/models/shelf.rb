@@ -27,8 +27,10 @@ class Shelf < ApplicationRecord
   include ProjectRecord
 
   belongs_to :freezer
+  has_many :lab_racks, dependent: :destroy
 
   validates_presence_of :name
+  validates :name, uniqueness: true
 
   multisearchable against: [:name]
 end

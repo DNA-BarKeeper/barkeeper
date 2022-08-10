@@ -85,6 +85,17 @@ jQuery(function() {
         "order": [ 0, 'desc' ]
     } );
 
+    // SHELVES
+    $('#shelves').DataTable( {
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#shelves').data('source'),
+        "columnDefs": [
+            { "orderable": false, "targets": 3 }
+        ],
+        "order": [ 0, 'desc' ]
+    } );
+
     // MICRONIC PLATES
     $('#micronic_plates').DataTable( {
         bProcessing: true,

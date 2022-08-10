@@ -57,8 +57,8 @@ class MicronicPlateDatatable
 
       if micronic_plate.lab_rack
         lab_rack = link_to micronic_plate.lab_rack.rackcode, edit_lab_rack_path(micronic_plate.lab_rack)
-        shelf = link_to micronic_plate.lab_rack.shelf.name, edit_shelf_path(micronic_plate.lab_rack.shelf)
-        freezer = link_to micronic_plate.lab_rack.shelf.freezer.freezercode, edit_freezer_path(micronic_plate.lab_rack.shelf.freezer) if micronic_plate.lab_rack.shelf.freezer
+        shelf = link_to micronic_plate.lab_rack.shelf.name, edit_shelf_path(micronic_plate.lab_rack.shelf) if micronic_plate.lab_rack.shelf
+        freezer = link_to micronic_plate.lab_rack.shelf&.freezer&.freezercode, edit_freezer_path(micronic_plate.lab_rack.shelf.freezer) if micronic_plate.lab_rack.shelf&.freezer
       end
 
       rack_position = micronic_plate.location_in_rack
