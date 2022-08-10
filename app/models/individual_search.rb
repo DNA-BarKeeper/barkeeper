@@ -77,7 +77,7 @@ state_province country latitude longitude elevation exposition locality habitat 
       individuals = individuals.without_taxon if has_taxon == 'no_taxon'
     end
 
-    individuals = individuals.joins(:collection).where('collections.acronym ilike ?', "%#{collection}%") if collection.present?
+    individuals = individuals.joins(:collection).where('collections.name ilike ?', "%#{collection}%") if collection.present?
 
     individuals = individuals.joins(:taxon).where('taxa.scientific_name ilike ?', "%#{taxon}%") if taxon.present?
 
