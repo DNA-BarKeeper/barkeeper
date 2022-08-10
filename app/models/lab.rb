@@ -26,9 +26,9 @@ class Lab < ApplicationRecord
   include PgSearch::Model
   include ProjectRecord
 
-  has_many :users
-  has_many :freezers
-  has_many :aliquots
+  has_many :users, dependent: :nullify
+  has_many :freezers, dependent: :destroy
+  has_many :aliquots, dependent: :destroy
 
   validates_presence_of :labcode
 

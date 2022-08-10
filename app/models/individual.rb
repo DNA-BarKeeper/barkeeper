@@ -27,7 +27,7 @@ class Individual < ApplicationRecord
   include ProjectRecord
   include PgSearch::Model
 
-  has_many :isolates
+  has_many :isolates, dependent: :destroy
   belongs_to :taxon
   belongs_to :collection
   belongs_to :tissue

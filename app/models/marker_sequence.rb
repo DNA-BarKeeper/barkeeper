@@ -25,7 +25,7 @@
 class MarkerSequence < ApplicationRecord
   include ProjectRecord
 
-  has_many :contigs
+  has_many :contigs, dependent: :nullify
   has_many :mislabels, dependent: :destroy
   has_and_belongs_to_many :mislabel_analyses
   belongs_to :marker

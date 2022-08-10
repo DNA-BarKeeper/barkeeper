@@ -27,7 +27,7 @@ class Collection < ApplicationRecord
   validates :name, uniqueness: true
   validates :acronym, uniqueness: true
 
-  has_many :individuals
+  has_many :individuals, dependent: :nullify
 
   multisearchable against: [:acronym, :name]
 end

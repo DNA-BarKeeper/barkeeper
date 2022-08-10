@@ -27,12 +27,12 @@ class Isolate < ApplicationRecord
   include PgSearch::Model
   include ProjectRecord
 
-  has_many :marker_sequences
-  has_many :contigs
-  has_many :clusters
-  has_many :ngs_results
+  has_many :marker_sequences, dependent: :destroy
+  has_many :contigs, dependent: :destroy
+  has_many :clusters, dependent: :destroy
+  has_many :ngs_results, dependent: :nullify
   has_many :ngs_runs, through: :clusters
-  has_many :aliquots
+  has_many :aliquots, dependent: :destroy
   belongs_to :plant_plate
   belongs_to :tissue
   belongs_to :individual

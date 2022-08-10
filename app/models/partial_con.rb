@@ -24,7 +24,7 @@
 
 class PartialCon < ApplicationRecord
   belongs_to :contig, counter_cache: true
-  has_many :primer_reads
+  has_many :primer_reads, dependent: :nullify
 
   def mira_consensus_qualities
     group_probs_all_pos = []

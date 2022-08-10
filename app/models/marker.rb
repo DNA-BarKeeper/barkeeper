@@ -26,12 +26,12 @@ class Marker < ApplicationRecord
   include PgSearch::Model
   include ProjectRecord
 
-  has_many :marker_sequences
-  has_many :contigs
-  has_many :clusters
-  has_many :ngs_results
-  has_many :primers
-  has_many :mislabel_analyses
+  has_many :marker_sequences, dependent: :nullify
+  has_many :contigs, dependent: :nullify
+  has_many :clusters, dependent: :nullify
+  has_many :ngs_results, dependent: :nullify
+  has_many :primers, dependent: :nullify
+  has_many :mislabel_analyses, dependent: :nullify
 
   validates_presence_of :name
 

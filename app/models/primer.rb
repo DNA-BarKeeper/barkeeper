@@ -28,7 +28,7 @@ class Primer < ApplicationRecord
   include ProjectRecord
 
   belongs_to :marker
-  has_many :primer_reads
+  has_many :primer_reads, dependent: :nullify
 
   validates_presence_of :name
 

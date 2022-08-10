@@ -27,8 +27,8 @@ class LabRack < ApplicationRecord
   include ProjectRecord
 
   belongs_to :shelf
-  has_many :plant_plates
-  has_many :micronic_plates
+  has_many :plant_plates, dependent: :destroy
+  has_many :micronic_plates, dependent: :destroy
 
   multisearchable against: [:rackcode, :rack_position]
 end
