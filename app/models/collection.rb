@@ -23,7 +23,8 @@
 class Collection < ApplicationRecord
   include PgSearch::Model
 
-  validates_presence_of :acronym
+  validates_presence_of :name
+  validates :name, uniqueness: true
   validates :acronym, uniqueness: true
 
   has_many :individuals
