@@ -61,16 +61,16 @@
       <h3 id="data-tables">Data tables</h3>
       <p>If you navigate to a record index page, e.g. the one containing specimen records, you will see the according data in a table structure. Tables like this exist for many types of records within the app.</p>
       <p>
-        <img class="lightbox-image doc-image" alt="Specimens Index" src=<%= asset_path('Manual/specimens_table.png') %> />
+        <img class="lightbox-image doc-image" alt="Specimens Index" src=<%= asset_path('Manual/specimens_datatable.png') %> />
       </p>
       <p>In this main table you can find some data and metadata for each record and can <strong>sort and filter</strong> the table view to your needs. By using the delete link you can also <strong>delete single records</strong> if necessary. By clicking on a name or ID you get to the <strong>view page</strong> of this single record, for example a single specimen, where you can view and edit all information concerning this specific record:</p>
       <p>
-        <img class="lightbox-image doc-image" alt="Specimen View" src=<%= asset_path('Manual/specimen_view.png') %> />
+        <img class="lightbox-image doc-image" alt="Specimen View" src=<%= asset_path('Manual/specimen_detail_view.png') %> />
       </p>
       <p>Below the main table you find a button to <strong>create a new record</strong> of this type. The form that opens will look similar to the edit page but with blank fields. Some information like the name of a record usually has to be entered to allow creation while other fields are optional. After saving a record, you will then be able to see it in the main table.</p>
       <p>In case of some records (species, isolates, primers) you can <strong>add multiple new records</strong> at a time by uploading a table file (templates can be downloaded) containing data about these records.</p>
       <p>
-        <img class="lightbox-image doc-image" alt="Primer Reads Index" src=<%= asset_path('Manual/primer_reads.png') %> />
+        <img class="lightbox-image doc-image" alt="Primer Reads Index" src=<%= asset_path('Manual/primer_reads_datatable.png') %> />
       </p>
       <p>To <strong>add new primer reads</strong>, you can upload one or multiple AB1 and SCF files which will then automatically be processed by the app. You can find out more about your options to edit and assemble primer reads in this manual.</p>
       <p>Below the specimen data table you will find a button to download the database contents in CSV format. This will contain all information and meta information about all specimens in your currently selected project.</p>
@@ -90,7 +90,7 @@
       <p>It is possible to download a CSV table with the exact number of marker sequences associated to each species for the selected marker.</p>
       <h2 id="user-area">User area</h2>
       <p>
-        <img class="lightbox-image doc-image" alt="User Area" src=<%= asset_path('Manual/profile_info.png') %> />
+        <img class="lightbox-image doc-image" alt="User Area" src=<%= asset_path('Manual/user_profile.png') %> />
       </p>
       <p>By clicking on the user icon in the top right corner while logged in, you can review and edit your personal information. Some fields like role, responsibilities and lab association can only be changed by admins since they affect your permissions within the app. You yourself can change your user name, e-mail address and password.</p>
       <p>On this page you can also change the currently selected project out of all projects you are associated with.</p>
@@ -127,7 +127,7 @@
         It is also important that a record for the used primer was added to the app before uploading the read file. </p>
       <p>The app will attempt to trim the reads based on some preset parameters (in a window of 10 bases, at least 8 have to have a quality score above 30). These parameters can be changed before attempting to trim the read again. Alternatively you can trim the read manually using the graphic interface or by typing the indices of readable bases in the according form fields. To use the graphic interface just click the border of the grey and white areas (start or end of read) and drag it to the desired position. On this page you can also decide whether or not a read should be used in a contig assembly.</p>
       <p>
-        <img class="lightbox-image doc-image" alt="Primer Read View" src=<%= asset_path('Manual/primer_read_view.png') %> />
+        <img class="lightbox-image doc-image" alt="Primer Read View" src=<%= asset_path('Manual/primer_read_detail_view.png') %> />
       </p>
       <p>The app will also extract base calls from the raw files. If some base calls are not appropriate, you can change them in this view by clicking on a base and typing the appropriate symbol instead. Hit enter to save the new base call.</p>
       <p>Below the primer read view you can find some navigation controls to move over the read or jump to specific base indices.</p>
@@ -137,7 +137,7 @@
       <p>After more than one read was uploaded and assigned to the same contig, the app will automatically try to assemble them to a contig. It uses a slightly modified Needleman-Wunsch-algorithm to achieve this. The default parameters for assembly can be modified in the Description tab of each contig. Here it can be specified how long overlapping regions need to be and how many mismatches will be allowed in the overlapping region (in %). If an assembly fails, it can help to relax these parameters a little or check the quality of the primer reads again.</p>
       <p>Furthermore, it is possible to exclude specific reads from assembly either directly in the contig view from the context menu that opens by clicking on the &quot;i&quot; symbol next to the read name (as shown below) or in the primer read view.</p>
       <p>
-        <img class="lightbox-image doc-image" alt="Contig View" src=<%= asset_path('Manual/contig_view.png') %> />
+        <img class="lightbox-image doc-image" alt="Contig View" src=<%= asset_path('Manual/contig_detail_view.png') %> />
       </p>
       <p>To visualize the assembly and get a better impression of overlapping areas the user can move the primer reads up and down. The bottom line will always show the consensus sequence as calculated by the app. If necessary, single reads can be displayed as a more detailed view above the contig view by clicking on their name. This detailed view can be toggled on and off for each individual read. By clicking on a specific base within a read, the app will directly jump to that position when it opens the detailed read view. If you would rather open the view page of a read in a new browser tab where more information is available, you can open it from the context menu.</p>
       <p>Below the contig view all reads that could or should not be assembled (because they have low quality, weren&#39;t appropriately trimmed yet or have been excluded by the user) are listed.</p>

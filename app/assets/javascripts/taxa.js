@@ -414,6 +414,9 @@ function drawTaxonomy(data) {
     }
 
     function selectNode(d, current_circle) {
+        // Clear taxon search field
+        $('#taxon_search').val(null).trigger('change');
+
         // Display taxon info in top left div
         var text = "<b>Scientific name:</b> " + htmlSafe(d.data.scientific_name) + "<br>";
         if (d.data.taxonomic_rank) text += "<b>Taxonomic rank</b>: " + htmlSafe(d.data.taxonomic_rank) + "<br>";
@@ -480,9 +483,11 @@ function drawTaxonomy(data) {
     function open_path(node, ancestor_ids, searched_name) {
         var ancestor_id = ancestor_ids.shift();
 
+        console.log(ancestor_id);
+
         if (parseInt(node.data.id) === parseInt(ancestor_id)) {
             // Avoid endless loop when node is already opened
-            if (ancestor_ids.length !== 1) {
+            if (ancestor_ids.length !== 0) {
                 open_path(node, ancestor_ids, searched_name);
             }
         }
