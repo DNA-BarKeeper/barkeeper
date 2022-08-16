@@ -15,7 +15,7 @@
             </a>
           </div>
           <div class="col-sm">
-            You can find the full source code of the BarKeeper web framework that is used to run this web
+            You can find the full source code of the <em>BarKeeper</em> web framework that is used to run this web
             application on <a href="https://github.com/DNA-BarKeeper/barkeeper" target='_blank'>GitHub.</a>
           </div>
         </div>
@@ -32,7 +32,7 @@
           </a>
           </div>
           <div class="col-sm">
-            The BarKeeper web framework is published under the Affero GPL 3.0 license.
+            The <em>BarKeeper</em> web framework is published under the Affero GPL 3.0 license.
           </div>
         </div>
       </div>
@@ -45,11 +45,11 @@
       <p><em>BarKeeper</em> is free, open-source, and available as a Docker image for easy setup on a server. Once installed, it provides its services for all project members with an internet-capable device, independent of their operating system or location.</p>
       <p>The source code can be found on <a href="https://github.com/DNA-BarKeeper/barkeeper">GitHub</a>.</p>
       <h2 id="general-structure-and-usage">General structure and usage</h2>
-      <p>BarKeeper allows users to store data and metadata related to barcoding or phylogenetics in data tables. These records can then be edited, searched or used for further analyses. </p>
+      <p><em>BarKeeper</em> allows users to store data and metadata related to barcoding or phylogenetics in data tables. These records can then be edited, searched or used for further analyses. </p>
       <p>
         <img alt="Dataflow" class="lightbox-image doc-image" src=<%= asset_path('Manual/BarKeeper_Dataflow.png') %> />
       </p>
-      <p>This diagram shows the simplified dataflow of BarKeeper. Color coding in the figure distinguishes data types (blue boxes) from processes (yellow boxes) of the app. Arrows indicate the direction of interactions.</p>
+      <p>This diagram shows the simplified dataflow of <em>BarKeeper</em>. Color coding in the figure distinguishes data types (blue boxes) from processes (yellow boxes) of the app. Arrows indicate the direction of interactions.</p>
       <p>Users can upload information about markers, primers, DNA isolates, taxa and specimens manually or via spreadsheets. Taxonomic information can also be automatically retrieved from certain databases. The app will automatically attempt to assemble uploaded Sanger sequencing reads to create contigs. These can then be manually edited and verified. Barcode sequences are generated from verified contigs and are regularly checked for potential taxonomic mislabels automatically. Finished sequences can be viewed or downloaded. Raw HTS data will be processed by the app by first splitting it by plate and performing extensive quality filtering, then assigning sample IDs based on barcodes (tags) and primers and finally clustering the sequences and performing a BLAST search to confirm the assigned taxonomic label.</p>
       <p>This manual will describe the different workflows and features of the app in more detail.</p>
       <h3 id="the-main-menu">The main menu</h3>
@@ -72,7 +72,7 @@
       <p>
         <img class="lightbox-image doc-image" alt="Primer Reads Index" src=<%= asset_path('Manual/primer_reads.png') %> />
       </p>
-      <p>To <strong>add new primer reads</strong>, you can upload one or multiple AB1 and SCF files which will then automatically be processed by the app. You can find out more about you options to edit and assemble primer reads in this manual.</p>
+      <p>To <strong>add new primer reads</strong>, you can upload one or multiple AB1 and SCF files which will then automatically be processed by the app. You can find out more about your options to edit and assemble primer reads in this manual.</p>
       <p>Below the specimen data table you will find a button to download the database contents in CSV format. This will contain all information and meta information about all specimens in your currently selected project.</p>
       <h3 id="projects">Projects</h3>
       <p>Records in the app can be assigned to projects. This allows you to group specific records for analyses and display only those that you currently want to work with. Only administrators are able to create new projects. </p>
@@ -104,14 +104,14 @@
       </p>
       <p>Here you can specify multiple search criteria at once and thereby look for specific records or groups of records that fit this description. If you fill in the title field, the search will later be available from the page linked to in your profile as mentioned before. </p>
       <p>The search result will always reflect the current state of the database and not remain as it were when the search was created!</p>
-      <p>You can use the fact that search results always reflect the current state of records to your advantage e. g. by checking if there are still records with unsolved issues or some that remain unverified while you work on these tasks.</p>
+      <p>You can use the fact that search results always reflect the current state of records to your advantage e.g. by checking if there are still records with unsolved issues or some that remain unverified while you work on these tasks.</p>
       <p>You can also download the search results in different formats. Contig search results can be downloaded either as a PDE file that only contains the sequences (primer reads and consensus) or as an archive that contains the raw reads as AB1 or SCF files as well. To download an archive it is necessary to trigger its creation on the server and wait a couple of minutes until it is ready for download. Marker sequence search results can be downloaded as FASTA or PDE files. Specimen search results can be downloaded as CSV tables.</p>
       <h2 id="taxonomy">Taxonomy</h2>
-      <p>To review the hierarchical structure of taxa uploaded to BarKeeper you can view an interactive diagram of their taxonomy in the Taxa menu.</p>
+      <p>To review the hierarchical structure of taxa uploaded to <em>BarKeeper</em> you can view an interactive diagram of their taxonomy in the Taxa menu.</p>
       <p>
         <img class="lightbox-image doc-image" alt="Taxonomy" src=<%= asset_path('Manual/taxonomy.png') %> />
       </p>
-      <p>If multiple root taxa are available you can choose one in the top left drop down menu of the Tree Navigation section. The first root taxon will already be displayed when the page is loaded. To search for a specific taxon in the tree, if if this node is currently not visible, use the search field below. You can drag the tree around and zoom in or out using your mouse. Reset to the original position and zoom factor by clicking the left button in the Tree Navigation section.</p>
+      <p>If multiple root taxa are available you can choose one in the top left drop down menu of the Tree Navigation section. The first root taxon will already be displayed when the page is loaded. To search for a specific taxon in the tree, if this node is currently not visible, use the search field below. You can drag the tree around and zoom in or out using your mouse. Reset to the original position and zoom factor by clicking the left button in the Tree Navigation section.</p>
       <p>Filled grey circles in the tree indicate that this node has children. If they are currently not visible you can click the node to expand them, otherwise clicking a parent node will hide the child nodes again. Clicking on the name of a taxon will select it and display more details about it in a separate section to the left of the tree. If a taxon is selected you can also use the right button in the Tree Navigation section to center it.</p>
       <p>If a selected taxon has associated Specimen records, these will be displayed in a section on the left as well.</p>
       <p>Furthermore, you are able to download a CSV table with all data and metadata concerning all taxa in your currently selected project.</p>
