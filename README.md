@@ -18,15 +18,17 @@ installing anything else.
 Here's what you need to prepare before you can start the setup process:
 - Make sure that you have a stable internet connection during all steps of the setup process.
 - Have a server or Desktop computer running any OS capable of supporting Docker. Setup was tested on machines running 
-Ubuntu 16.04 up to 22.04 and Windows 10 and 11 with WSL enabled. Older versions of Ubuntu will likely work as well but are not getting 
-security updates any longer (this is also true for Ubuntu 16.04 by now) so using those cannot be recommended in a 
-production environment.
+Ubuntu 16.04 up to 22.04 and Windows 10 and 11 with WSL enabled. 
+  - Windows: We recommend running all commands to install BarKeeper from within the WSL Ubuntu instance after installing 
+  Docker Desktop via the executable file provided by Docker. 
+  - Ubuntu versions: Older versions of Ubuntu will likely work as well but are not getting security updates any longer 
+  (this is also true for Ubuntu 16.04 by now) so using those cannot be recommended in a production environment.
 - You will also need a user with superuser or administrative rights during the installation process. 
 - It is highly recommended that you establish suitable server security measures like a properly configured firewall in 
 case you want to make BarKeeper accessible from the internet.
 - Install Docker Engine or Desktop (choose the appropriate tutorial for your OS [here](https://docs.docker.com/install/)). 
 The setup was tested with Docker version 18.06 and higher. Older versions may work but this cannot be guaranteed.
-- Install Docker Compose stand-alone or as part of your Docker installation. You can find detailed instructions 
+- Install Docker Compose (for newer versions of Docker this is already a part of the Docker installation). You can find detailed instructions 
   [here](https://docs.docker.com/compose/gettingstarted/).
   The setup was tested with Docker-Compose version 1.27 and higher. Older versions may work but this cannot be guaranteed.
 - Clone the code from this repository to a suitable location on your computer or server via [Git](https://git-scm.com)
@@ -35,8 +37,8 @@ The setup was tested with Docker version 18.06 and higher. Older versions may wo
 - If you want to run mislabel analyses on the sequences stored in your database on a remote server (SSH address can be 
 specified in .env file) make sure that the SATIVA files are available and the alignment tool MAFFT is installed there. 
 More information about SATIVA can be found [here](https://github.com/amkozlov/sativa).
-- Optional: Install [GNU Make](https://www.gnu.org/software/make/) for an easier setup and running BarKeeper with simple 
-commands.
+- Optional: You can install [GNU Make](https://www.gnu.org/software/make/) for an easier setup and running BarKeeper 
+with simple commands.
 
 ### Setup
 - Find the file *.env-example* and copy it to a new file *.env* in the main directory of the repository you just cloned.
