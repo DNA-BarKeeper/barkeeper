@@ -19,7 +19,7 @@ Here's what you need to prepare before you can start the setup process:
 - Make sure that you have a stable internet connection during all steps of the setup process.
 - Have a server or Desktop computer running any OS capable of supporting Docker. Setup was tested on machines running 
 Ubuntu 16.04 up to 22.04 and Windows 10 and 11 with WSL enabled. 
-  - Windows: We recommend running all commands to install BarKeeper from within the WSL Ubuntu instance after installing 
+  - Windows: We recommend running all commands to install BarKeeper from within a WSL Ubuntu instance after installing 
   Docker Desktop via the executable file provided by Docker. 
   - Ubuntu versions: Older versions of Ubuntu will likely work as well but are not getting security updates any longer 
   (this is also true for Ubuntu 16.04 by now) so using those cannot be recommended in a production environment.
