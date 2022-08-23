@@ -40,6 +40,7 @@ function loadTaxonomy() {
             root_id: $('#taxonomy_root_select option:selected').val()
         },
         success: function (data) {
+            $('#taxon_search').val(null).trigger('change');
             remove_selected_taxon_info();
             deleteVisualization('#taxonomy_tree');
 
@@ -367,7 +368,7 @@ function drawTaxonomy(data) {
     }
 
     function get_child_data(d) {
-        if(d.loaded !== undefined)
+        if((d.loaded !== undefined) || (d.children !== null))
             return;
 
         var newNodes = [];
@@ -482,8 +483,6 @@ function drawTaxonomy(data) {
 
     function open_path(node, ancestor_ids, searched_name) {
         var ancestor_id = ancestor_ids.shift();
-
-        console.log(ancestor_id);
 
         if (parseInt(node.data.id) === parseInt(ancestor_id)) {
             // Avoid endless loop when node is already opened
