@@ -299,7 +299,7 @@ function draw_partial_con(partial_contig, container_name, contig_drawing_width){
 //        20 for consensus_qualities
 //        20 for coordinates
 
-    var h = partial_contig.primer_reads.length*80+80;
+    var h = partial_contig.primer_reads.length*80+85;
 
     // when single page drawing requested (and, thus, requested drawing width [=viewport width] set to null), compute actually needed width:
     if (contig_drawing_width === null) {
