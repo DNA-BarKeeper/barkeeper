@@ -368,7 +368,7 @@ function drawTaxonomy(data) {
     }
 
     function get_child_data(d) {
-        if((d.loaded !== undefined) || (d.children !== null))
+        if((d.loaded !== undefined) || (d._children !== undefined) || (d.children !== undefined))
             return;
 
         var newNodes = [];
