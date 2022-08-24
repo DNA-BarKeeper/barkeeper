@@ -28,17 +28,17 @@
 
 <% if current_user&.admin? || current_user&.supervisor? %>
   <div class="well">
-    Import Contigs from PDE file:<p></p>
+    <p><b>Import Contigs from PDE file:</b></p>
     <%= form_tag import_contigs_path, multipart: true do %>
-      <%= file_field_tag :file %>
+      <%= file_field_tag :file, { class:"form-control" } %>
       <br>
       <%= label_tag 'Verified by'%>
-      <%= collection_select :contig, :verified_by, User.order(name: :asc), :id, :name, {} %>
+      <%= collection_select :contig, :verified_by, User.order(name: :asc), :id, :name, { include_blank: true }, { class:"form-control" } %>
       <br>
       <%= label_tag 'Marker'%>
-      <%= collection_select :contig, :marker_id, Marker.all, :id, :name, {} %>
+      <%= collection_select :contig, :marker_id, Marker.all, :id, :name, { include_blank: true }, { class:"form-control" } %>
       <br>
-      <%= submit_tag "Import" %>
+      <%= submit_tag "Import", { class:"form-control" } %>
     <% end %>
 </div>
 <% end %>

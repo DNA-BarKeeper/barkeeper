@@ -28,6 +28,7 @@ jQuery(function() {
     $('#contig_isolate_id').select2((select2AutocompleteOptions("/isolates/filter", "an isolate")));
     $('#contig_marker_id').select2((select2AutocompleteOptions("/markers/filter", "a marker")));
     $('#contig_marker_sequence_id').select2((select2AutocompleteOptions("/marker_sequences/filter", "a marker sequence")));
+    $('#contig_verified_by').select2(select2SingleSelectOptions('a user'));
     $('#contig_project_ids').select2(select2MultiselectOptions);
 
     // CONTIG SEARCHES
