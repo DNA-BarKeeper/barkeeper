@@ -423,6 +423,8 @@
       </div>
 
       <%= render :partial => 'shared/sativa_warnings', :locals => {:marker_sequence => @contig.marker_sequence} %>
+
+      <%= render :partial => 'shared/issue_details', :locals => { :record => @contig } %>
     </div>
   </div>
 </div>

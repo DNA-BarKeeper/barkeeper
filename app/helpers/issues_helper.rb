@@ -24,7 +24,7 @@
 
 module IssuesHelper
   def issues_present(record)
-
+    true
   end
 
   def issue_warning_color(record)
