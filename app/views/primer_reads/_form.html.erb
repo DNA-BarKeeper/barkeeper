@@ -24,6 +24,7 @@
           <li class="active"><a href="#quality" role="tab" data-toggle="tab">Quality</a></li>
           <li><a href="#files" role="tab" data-toggle="tab">Files</a></li>
           <%= render :partial => 'shared/sativa_nav_tab', :locals => { :marker_sequences => [@primer_read.contig&.marker_sequence] } %>
+          <%= render :partial => 'shared/issue_nav_tab', :locals => { :record => @primer_read } %>
         </ul>
 
         <!-- Tab panes -->
@@ -109,6 +110,50 @@
               <%= f.check_box :overwritten  %>
             </div>
 
+            <br>
+
+            <!-- Chromatogram view -->
+            <div>
+              <% unless @pos %>
+                <% @pos = 0 %>
+              <% end %>
+
+              <%= content_tag 'div', class: 'alignment', id: "chromatogram_container_#{@primer_read.id}", data: {read_id: @primer_read.id} do %>
+                <%= content_tag 'div', class: 'chromatogram', id: "primer_read_#{@primer_read.id}", data: {url: @primer_read, read_id: @primer_read.id, pos: @pos } do %><% end %>
+              <% end %>
+
+              <!--buttons -->
+              <span>
+                <%= content_tag 'button', class: 'scroll-left-button btn btn-default btn-sm', title: 'Go to start', data: {read_id: @primer_read.id } do %>
+                    <span class="grey glyphicon glyphicon-fast-backward"></span>
+                <% end %>
+                        <%= content_tag 'button', class: 'scroll-right-slowly-button btn btn-default btn-sm', title: 'Auto-scroll', data: {read_id: @primer_read.id } do %>
+                    <span class="grey glyphicon glyphicon-play"></span>
+                <% end %>
+                        <%= content_tag 'button', class: 'pause-button btn btn-default btn-sm', title: 'Stop', data: {read_id: @primer_read.id } do %>
+                    <span class="grey glyphicon glyphicon-pause"></span>
+                <% end %>
+                        <%= content_tag 'button', class: 'scroll-right-button btn btn-default btn-sm', title: 'Go to end', data: {read_id: @primer_read.id } do %>
+                    <span class='grey glyphicon glyphicon-fast-forward'></span>
+                <% end %>
+
+                <span style="width: 30px; display: inline-block;">    </span>
+
+                <%= content_tag 'button', class: 'go-to-button_primer_read btn btn-default btn-xs', data: {read_id: @primer_read.id } do %>
+                  <span style="color: #979797">Go to</span>
+                <% end %>
+
+                <%= content_tag 'input', class: 'go-to-pos', id: "go-to-pos_#{@primer_read.id}", type: 'text' do %><% end %>
+                <span style="color: #979797">/ <%= @primer_read.sequence.length %></span>
+
+                <span style="width: 30px; display: inline-block;">    </span>
+
+                <% if @primer_read.contig %>
+                  <span style="color: #979797;"><%= link_to "Go to contig #{@primer_read.contig.name}", edit_contig_path(@primer_read.contig), class: 'btn btn-default btn-sm grey' %></span>
+                <% end %>
+              </span>
+            </div>
+
           </div>
 
           <div class="tab-pane" id="files">
@@ -121,6 +166,8 @@
           </div>
 
           <%= render :partial => 'shared/sativa_associated_warning', :locals => { :contigs => [@primer_read.contig] } %>
+
+          <%= render :partial => 'shared/issue_details', :locals => { :record => @contig } %>
         </div>
 
       <div class="vertical-spacer"></div>
@@ -128,48 +175,6 @@
       <%= f.submit 'Update', :class =>  'btn btn-default' %>
 
     <% end %>
-
-    <!--chromatogram view-->
-
-    <hr>
-
-    <% unless @pos %>
-      <% @pos = 0 %>
-    <% end %>
-
-    <%= content_tag 'div', class: 'alignment', id: "chromatogram_container_#{@primer_read.id}", data: {read_id: @primer_read.id} do %>
-        <%= content_tag 'div', class: 'chromatogram', id: "primer_read_#{@primer_read.id}", data: {url: @primer_read, read_id: @primer_read.id, pos: @pos } do %><% end %>
-    <% end %>
-
-    <!--buttons -->
-    <span>
-      <%= content_tag 'button', class: 'scroll-left-button btn btn-default btn-sm', title: 'Go to start', data: {read_id: @primer_read.id } do %>
-          <span class="grey glyphicon glyphicon-fast-backward"></span>
-      <% end %>
-      <%= content_tag 'button', class: 'scroll-right-slowly-button btn btn-default btn-sm', title: 'Auto-scroll', data: {read_id: @primer_read.id } do %>
-          <span class="grey glyphicon glyphicon-play"></span>
-      <% end %>
-      <%= content_tag 'button', class: 'pause-button btn btn-default btn-sm', title: 'Stop', data: {read_id: @primer_read.id } do %>
-          <span class="grey glyphicon glyphicon-pause"></span>
-      <% end %>
-      <%= content_tag 'button', class: 'scroll-right-button btn btn-default btn-sm', title: 'Go to end', data: {read_id: @primer_read.id } do %>
-          <span class='grey glyphicon glyphicon-fast-forward'></span>
-      <% end %>
-
-      <span style="width: 30px; display: inline-block;">    </span>
-
-      <%= content_tag 'button', class: 'go-to-button_primer_read btn btn-default btn-xs', data: {read_id: @primer_read.id } do %>
-          <span style="color: #979797">Go to</span>
-      <% end %>
-      <%= content_tag 'input', class: 'go-to-pos', id: "go-to-pos_#{@primer_read.id}", type: 'text' do %><% end %>
-      <span style="color: #979797">/ <%= @primer_read.sequence.length %></span>
-
-      <span style="width: 30px; display: inline-block;">    </span>
-
-      <% if @primer_read.contig %>
-          <span style="color: #979797;"><%= link_to "Go to contig #{@primer_read.contig.name}", edit_contig_path(@primer_read.contig), class: 'btn btn-default btn-sm grey' %></span>
-      <% end %>
-    </span>
 
   </div>
 

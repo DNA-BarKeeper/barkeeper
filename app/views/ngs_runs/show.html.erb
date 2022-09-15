@@ -11,7 +11,7 @@
       <li class="active"><a href="#parameters" role="tab" data-toggle="tab">Parameters</a></li>
       <li><a href="#stats" role="tab" data-toggle="tab">Result stats</a></li>
       <li><a href="#results" role="tab" data-toggle="tab">Results</a></li>
-      <li><a href="#ngs_run_issues" role="tab" data-toggle="tab">Issues</a></li>
+      <%= render :partial => 'shared/issue_nav_tab', :locals => { :record => @ngs_run } %>
     </ul>
 
     <!-- Tab panes -->
@@ -110,8 +110,6 @@
 
       </div>
 
-      <br>
-
       <div class="tab-pane" id="results">
         <div class="wideTable">
           <table id="ngs_run_results" data-source="<%= analysis_results_ngs_run_path(format: "json") %>" class="table table-striped table-hover table-bordered">
@@ -133,30 +131,7 @@
         </div>
       </div>
 
-      <div class="tab-pane" id="ngs_run_issues">
-        <br>
-        <table class="table table-striped table-hover table-bordered">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Created at</th>
-              <th></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <% @ngs_run.issues.each do |i| %>
-              <tr>
-                <td><%= i.title %></td>
-                <td><%= i.description %></td>
-                <td><%= i.created_at %></td>
-                <td><%= link_to('Delete', i, method: :delete, data: { confirm: 'Are you sure?' }) %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
+      <%= render :partial => 'shared/issue_details', :locals => { :record => @ngs_run } %>
     </div>
   </div>
 </div>

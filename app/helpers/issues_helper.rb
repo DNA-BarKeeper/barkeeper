@@ -23,11 +23,23 @@
 # frozen_string_literal: true
 
 module IssuesHelper
-  def issues_present(record)
-    true
+  def issue_warning_color(record)
+    "color: #{record.issues.present? ? 'red' : 'grey'}"
   end
 
-  def issue_warning_color(record)
-    "color: #{issues_present(record) ? 'red' : 'grey'}"
+  def issues(record)
+    html = +''.html_safe
+
+    if record
+      record.issues.order(created_at: :desc).each do |issue|
+        html << content_tag(:tr) do
+          content_tag(:td, issue.title) +
+            content_tag(:td, issue.description) +
+            content_tag(:td, issue.created_at)
+        end
+      end
+    end
+
+    html
   end
 end
