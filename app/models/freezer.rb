@@ -27,7 +27,7 @@ class Freezer < ApplicationRecord
   include ProjectRecord
 
   belongs_to :lab
-  has_many :shelves
+  has_many :shelves, dependent: :destroy
 
   validates_presence_of :freezercode
 

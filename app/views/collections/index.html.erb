@@ -1,11 +1,11 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">Herbaria</h3>
+    <h3 class="panel-title">Collections</h3>
   </div>
 
   <div class="panel-body">
     <div class="wideTable">
-      <table id="herbaria" data-source="<%= herbaria_url(format: 'json')%>" class="table table-striped table-hover table-bordered">
+      <table id="collections" data-source="<%= collections_url(format: 'json')%>" class="table table-striped table-hover table-bordered">
         <thead>
         <tr>
           <th>Name</th>
@@ -22,8 +22,8 @@
 </div>
 
 <p>
-  <%= link_to new_herbarium_path, class: 'btn btn-default', target: "_blank", title: 'Create a new herbarium entry' do %>
+  <%= link_to new_collection_path, class: 'btn btn-default', title: 'Create a new collection record' do %>
     <span class="glyphicon glyphicon-unchecked"></span>
   <% end %>
-  Create a new herbarium entry
+  Create a new collection record
 </p>

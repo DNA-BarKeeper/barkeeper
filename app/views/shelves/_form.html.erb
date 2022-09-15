@@ -9,6 +9,11 @@
         <%= f.text_field :name, :autofocus => true, class: 'form-control' %>
       </div>
 
+      <div class="form-group">
+        <%= f.label :freezer %>
+        <%= f.collection_select(:freezer_id, Freezer.all, :id, :freezercode, { include_blank: true }, { class: 'form-control' }) %>
+      </div>
+
       <%= render :partial => 'shared/associated_projects', :locals => { :form => f } %>
 
       <%= f.submit 'Update', :class => 'button right' %>

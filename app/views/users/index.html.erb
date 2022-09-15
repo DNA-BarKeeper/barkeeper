@@ -35,4 +35,8 @@
   </div>
 </div>
 
-<p><%= link_to 'Sign up a new user', new_user_path %></p>
+<p>
+  <%= link_to new_user_path, class: 'btn btn-default', title: 'Sign up a new user' do %>
+    Sign up a new user
+  <% end %>
+</p>

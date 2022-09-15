@@ -102,6 +102,6 @@ class IndividualSearchesController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def individual_search_params
     params.require(:individual_search).permit(:title, :DNA_bank_id, :has_issue, :has_problematic_location,
-                                              :has_taxon, :taxon, :specimen_id, :herbarium)
+                                              :has_taxon, :taxon, :specimen_id, :collection)
   end
 end

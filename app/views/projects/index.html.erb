@@ -63,6 +63,10 @@
 </div>
 
 <% if user_signed_in? && (current_user.admin? || current_user.supervisor?) %>
-  <%= link_to 'New Project', new_project_path %><br>
-  <br>
+  <p>
+    <%= link_to new_project_path, class: 'btn btn-default', title: 'Create a new project' do %>
+      <span class="glyphicon glyphicon-unchecked"></span>
+    <% end %>
+    Create a new project entry
+  </p>
 <% end %>

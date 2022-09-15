@@ -26,7 +26,7 @@ class PlantPlate < ApplicationRecord
   include PgSearch::Model
   include ProjectRecord
 
-  has_many :isolates
+  has_many :isolates, dependent: :nullify
   belongs_to :lab_rack
 
   validates_presence_of :name

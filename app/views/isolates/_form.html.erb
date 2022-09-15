@@ -114,11 +114,13 @@
               </table>
             </div>
 
-            <%= f.add_nested_fields_link :aliquots do %>
-              <span>Add new Aliquot</span>
-            <% end %>
-            (You need to update the isolate to permanently add the aliquot.)
-            <br><br>
+            <p>
+              <%= f.add_nested_fields_link :aliquots, class: 'btn btn-default', title: 'Add new Aliquot' do %>
+                <span>Add new Aliquot</span>
+              <% end %>
+              <br>
+              (You need to update the isolate to permanently add the aliquot.)
+            </p>
           </div>
 
           <div class="tab-pane" id="assigned_clusters">

@@ -23,6 +23,9 @@
 
 </div>
 
-<%= link_to 'New Lab', new_lab_path %>
-
-
+<p>
+  <%= link_to new_lab_path, class: 'btn btn-default', title: 'Create a new lab entry' do %>
+    <span class="glyphicon glyphicon-unchecked"></span>
+  <% end %>
+  Create a new lab entry
+</p>

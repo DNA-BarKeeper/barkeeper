@@ -36,7 +36,6 @@ FactoryBot.define do
     i.exposition { Faker::Lorem.word }
     i.habitat { Faker::Lorem.sentence }
     i.has_issue { Faker::Boolean.boolean }
-    i.herbarium_code { Faker::Lorem.word }
     i.latitude { Faker::Address.latitude }
     i.latitude_original { Faker::Address.latitude.to_s }
     i.longitude { Faker::Address.longitude }

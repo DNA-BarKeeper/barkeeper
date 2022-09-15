@@ -32,11 +32,11 @@ jQuery(function() {
         "order": [ 2, 'desc' ]
     } );
 
-    //HERBARIA
-    $('#herbaria').DataTable( {
+    //COLLECTIONS
+    $('#collections').DataTable( {
         bProcessing: true,
         bServerSide: true,
-        sAjaxSource: $('#herbaria').data('source'),
+        sAjaxSource: $('#collections').data('source'),
         "columnDefs": [
             { "orderable": false, "targets": 3 }
         ],
@@ -81,6 +81,17 @@ jQuery(function() {
         sAjaxSource: $('#lab_racks').data('source'),
         "columnDefs": [
             { "orderable": false, "targets": 5 }
+        ],
+        "order": [ 0, 'desc' ]
+    } );
+
+    // SHELVES
+    $('#shelves').DataTable( {
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#shelves').data('source'),
+        "columnDefs": [
+            { "orderable": false, "targets": 3 }
         ],
         "order": [ 0, 'desc' ]
     } );

@@ -66,7 +66,7 @@ module Import
       results[:genus] = unit.at_xpath('//abcd21:GenusOrMonomial')&.content&.strip
       results[:species_epithet] = unit.at_xpath('//abcd21:FirstEpithet')&.content&.strip
       results[:infraspecific] = unit.at_xpath('//abcd21:InfraspecificEpithet')&.content&.strip
-      results[:herbarium] = unit.at_xpath('//abcd21:SourceInstitutionCode')&.content&.strip
+      results[:collection] = unit.at_xpath('//abcd21:SourceInstitutionCode')&.content&.strip
       results[:collector] = unit.at_xpath('//abcd21:GatheringAgent')&.content&.strip
       results[:locality] = unit.at_xpath('//abcd21:LocalityText')&.content&.strip
       results[:longitude] = unit.at_xpath('//abcd21:LongitudeDecimal')&.content&.strip

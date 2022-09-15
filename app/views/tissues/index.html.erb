@@ -23,5 +23,9 @@
 </table></div>
 </div>
 
-<%= link_to 'New Tissue', new_tissue_path %>
-
+<p>
+  <%= link_to new_tissue_path, class: 'btn btn-default', title: 'Create a new tissue type entry' do %>
+    <span class="glyphicon glyphicon-unchecked"></span>
+  <% end %>
+  Create a new tissue type entry
+</p>

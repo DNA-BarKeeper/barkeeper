@@ -110,12 +110,13 @@ class Contig < ApplicationRecord
       identifier = sequence_comments.keys[index]
       comment = sequence_comments[identifier]
 
-      identifier_components = identifier.match(/[A-Z]{3}_(DB\d+)_.*/)
+      identifier_components = identifier.match(/(.+)_(.+)/) # Identifiers need to follow the pattern <isolate_name>_<sequence_name>
 
-      if identifier_components # Only sequences with a DNA Bank ID and marker info
+      if identifier_components # Only sequences with an isolate name
+        isolate_identifier = identifier_components[1]
         marker = Marker.find(marker_id)
 
-        name = identifier_components[1] + '_' + marker.name
+        name = isolate_identifier + '_' + marker.name
 
         contig = Contig.in_project(project_id).where('contigs.name ILIKE ?', name).first
         unless contig
@@ -154,8 +155,8 @@ class Contig < ApplicationRecord
           new_partial_con.aligned_qualities = []
           new_partial_con.save
 
-          isolate = Isolate.find_by_lab_isolation_nr(identifier_components[1])
-          isolate ||= Isolate.create(lab_isolation_nr: identifier_components[1], dna_bank_id: identifier_components[1])
+          isolate = Isolate.find_by_display_name(isolate_identifier)
+          isolate ||= Isolate.create(lab_isolation_nr: isolate_identifier)
           contig.isolate = isolate
 
           marker_sequence = MarkerSequence.find_or_create_by(name: contig.name)

@@ -25,4 +25,9 @@
   </div>
 </div>
 
-<%= link_to 'New Marker sequence', new_marker_sequence_path %>
+<p>
+  <%= link_to new_marker_sequence_path, class: 'btn btn-default', title: 'Create a new marker sequence entry' do %>
+    <span class="glyphicon glyphicon-unchecked"></span>
+  <% end %>
+  Create a new marker sequence entry
+</p>

@@ -45,9 +45,9 @@ class HomesController < ApplicationController
     authorize! :documentation, :home
   end
 
-  def impressum
+  def legal_disclosure
     @about_page = true
-    authorize! :impressum, :home
+    authorize! :legal_disclosure, :home
   end
 
   def privacy_policy

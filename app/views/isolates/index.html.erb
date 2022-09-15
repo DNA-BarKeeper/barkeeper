@@ -31,7 +31,7 @@
 
     <% if user_signed_in? %>
       <div class="well">
-        <p>Import Isolates / Specimens (Individuals) from Excel file <%= link_to '(Download example / template file)', 'templates/Isolates_Specimen+upload+template.xls' %>:</p>
+        <p>Import isolates and specimens from table file <%= link_to '(Download example / template file)', 'templates/Isolates_Specimen+upload+template.xls' %>:</p>
 
         <%= form_tag import_isolates_path, multipart: true do %>
             <%= file_field_tag :file %>
@@ -46,5 +46,8 @@
 </div>
 
 <p>
-<%= link_to ' New Isolate', new_isolate_path %>
+  <%= link_to new_isolate_path, class: 'btn btn-default', title: 'Create a new isolate entry' do %>
+    <span class="glyphicon glyphicon-unchecked"></span>
+  <% end %>
+  Create a new isolate entry
 </p>

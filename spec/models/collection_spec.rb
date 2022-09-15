@@ -22,8 +22,8 @@
 
 require 'rails_helper'
 
-RSpec.describe Herbarium do
-  subject { FactoryBot.create(:herbarium) }
+RSpec.describe Collection do
+  subject { FactoryBot.create(:collection) }
 
   it "is valid with valid attributes" do
     should be_valid

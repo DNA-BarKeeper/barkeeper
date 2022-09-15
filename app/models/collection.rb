@@ -20,13 +20,14 @@
 # along with BarKeeper.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-class Herbarium < ApplicationRecord
+class Collection < ApplicationRecord
   include PgSearch::Model
 
-  validates_presence_of :acronym
+  validates_presence_of :name
+  validates :name, uniqueness: true
   validates :acronym, uniqueness: true
 
-  has_many :individuals
+  has_many :individuals, dependent: :nullify
 
   multisearchable against: [:acronym, :name]
 end

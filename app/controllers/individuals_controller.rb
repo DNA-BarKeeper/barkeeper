@@ -130,8 +130,8 @@ class IndividualsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def individual_params
-    params.require(:individual).permit(:specimen_id, :DNA_bank_id, :collector, :specimen_id, :herbarium_code,
-                                       :herbarium_id, :country, :state_province, :locality, :latitude, :longitude,
+    params.require(:individual).permit(:specimen_id, :DNA_bank_id, :collector, :specimen_id, :collection_id,
+                                       :country, :state_province, :locality, :latitude, :longitude,
                                        :latitude_original, :longitude_original, :elevation, :exposition, :habitat,
                                        :substrate, :life_form, :collectors_field_number, :collected, :determination,
                                        :revision, :confirmation, :comments, :taxon_id, :taxon_name, :tissue_id,

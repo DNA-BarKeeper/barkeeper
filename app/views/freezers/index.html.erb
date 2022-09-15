@@ -20,5 +20,10 @@
 
 
 </div>
-<%= link_to 'New Freezer', new_freezer_path %>
 
+<p>
+  <%= link_to new_freezer_path, class: 'btn btn-default', title: 'Create a new freezer entry' do %>
+    <span class="glyphicon glyphicon-unchecked"></span>
+  <% end %>
+  Create a new freezer entry
+</p>

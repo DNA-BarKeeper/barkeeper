@@ -24,7 +24,7 @@ namespace :data do
   task update_search_index: :environment do
     PgSearch::Multisearch.rebuild(Contig)
     PgSearch::Multisearch.rebuild(Freezer)
-    PgSearch::Multisearch.rebuild(Herbarium)
+    PgSearch::Multisearch.rebuild(Collection)
     PgSearch::Multisearch.rebuild(Individual)
     PgSearch::Multisearch.rebuild(Isolate)
     PgSearch::Multisearch.rebuild(Lab)

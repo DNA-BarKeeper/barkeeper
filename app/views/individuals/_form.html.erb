@@ -49,11 +49,11 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :herbarium_id, 'Herbarium' %>
-              <% if @individual.herbarium %>
-                <%= link_to '', edit_herbarium_path(@individual.herbarium), { include_blank: true, class: "glyphicon glyphicon-share-alt" } %>
+              <%= f.label :collection_id, 'Collection' %>
+              <% if @individual.collection %>
+                <%= link_to '', edit_collection_path(@individual.collection), { include_blank: true, class: "glyphicon glyphicon-share-alt" } %>
               <% end %>
-              <%= f.collection_select(:herbarium_id, Herbarium.all, :id, :name, { include_blank: true }, { class: 'form-control' }) %>
+              <%= f.collection_select(:collection_id, Collection.all, :id, :name, { include_blank: true }, { class: 'form-control' }) %>
             </div>
 
             <div class="form-group">

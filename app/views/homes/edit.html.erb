@@ -106,13 +106,17 @@
           </div>
 
           <div>
-            <%= f.add_nested_fields_link :logos do %>
-              <span>Add new Logo</span>
-            <% end %>
-            (You need to update to permanently add or remove a logo.)<br>
-            Up to 12 partner logos can be added.
+            <p>
+              <%= f.add_nested_fields_link :logos, class: 'btn btn-default', title: 'Add a new Logo' do %>
+                <span>Add a new Logo</span>
+              <% end %>
+              <br>
+              (You need to update to permanently add or remove a logo.)
+            </p>
+            <p>
+              Up to 12 logos can be added in total.
+            </p>
           </div>
-          <br>
         </div>
       </div>
 

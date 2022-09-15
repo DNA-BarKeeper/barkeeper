@@ -25,8 +25,8 @@
 class Tissue < ApplicationRecord
   include PgSearch::Model
 
-  has_many :isolates
-  has_many :individuals
+  has_many :isolates, dependent: :nullify
+  has_many :individuals, dependent: :nullify
 
   validates_presence_of :name
 

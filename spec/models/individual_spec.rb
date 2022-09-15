@@ -37,8 +37,8 @@ RSpec.describe Individual do
     should belong_to(:taxon)
   end
 
-  it "belongs to a herbarium" do
-    should belong_to(:herbarium)
+  it "belongs to a collection" do
+    should belong_to(:collection)
   end
 
   it "belongs to a tissue" do

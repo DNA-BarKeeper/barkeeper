@@ -1,28 +1,30 @@
 <div class="panel panel-default">
-  <div class="panel-heading"><h4>Shelves</h4></div>
+  <div class="panel-heading">
+    <h3 class="panel-title">Shelves</h3>
+  </div>
 
-  <table class="table">
+  <div class="panel-body">
+    <div class="wideTable">
+      <table id="shelves" data-source="<%= shelves_url(format: 'json')%>" class="table table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Freezer</th>
+          <th>Last updated</th>
+          <th ></th>
+        </tr>
+        </thead>
 
-
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @shelves.each do |shelf| %>
-      <tr>
-        <td><%= shelf.name %></td>
-        <td><%= link_to 'Show', shelf %></td>
-        <td><%= link_to 'Edit', edit_shelf_path(shelf) %></td>
-        <td><%= link_to 'Delete', shelf, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
 </div>
-<%= link_to 'New Shelf', new_shelf_path %>
-
+<p>
+  <%= link_to new_shelf_path, class: 'btn btn-default', title: 'Create a new shelf entry' do %>
+    <span class="glyphicon glyphicon-unchecked"></span>
+  <% end %>
+  Create a new shelf entry
+</p>

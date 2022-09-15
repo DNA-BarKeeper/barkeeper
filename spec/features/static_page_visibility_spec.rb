@@ -27,15 +27,15 @@ RSpec.feature "Public access to static pages", type: :feature do
     visit root_path
 
     within "h1" do
-      expect(page).to have_content "GBOL5"
+      expect(page).to have_content "BarKeeper"
     end
 
-    have_link("Legal disclosure", :href => impressum_url)
+    have_link("Legal disclosure", :href => legal_disclosure_url)
     have_link("Privacy policy", :href => privacy_policy_url)
   end
 
   scenario "visitor sees legal disclosure" do
-    visit impressum_path
+    visit legal_disclosure_path
 
     within "h3" do
       expect(page).to have_content "Legal disclosure"
@@ -54,7 +54,7 @@ RSpec.feature "Public access to static pages", type: :feature do
 
     expect(page).to have_content "1 Collection and processing of personal data"
     expect(page).to have_content "5 Sharing and disclosure of personal data to third parties"
-    expect(page).to have_content "10 Right of appeal at the regulating authority"
+    expect(page).to have_content "9 Right of appeal at the regulating authority"
   end
 
   scenario "visitor sees overview page" do

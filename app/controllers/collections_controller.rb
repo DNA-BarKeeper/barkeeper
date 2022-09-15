@@ -20,80 +20,80 @@
 # along with BarKeeper.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-class HerbariaController < ApplicationController
+class CollectionsController < ApplicationController
   load_and_authorize_resource
 
-  before_action :set_herbarium, only: [:show, :edit, :update, :destroy]
+  before_action :set_collection, only: [:show, :edit, :update, :destroy]
 
-  # GET /herbaria
-  # GET /herbaria.json
+  # GET /collections
+  # GET /collections.json
   def index
     respond_to do |format|
       format.html
-      format.json { render json: HerbariumDatatable.new(view_context) }
+      format.json { render json: CollectionDatatable.new(view_context) }
     end
   end
 
-  # GET /herbaria/1
-  # GET /herbaria/1.json
+  # GET /collections/1
+  # GET /collections/1.json
   def show;end
 
-  # GET /herbaria/new
+  # GET /collections/new
   def new
-    @herbarium = Herbarium.new
+    @collection = Collection.new
   end
 
-  # GET /herbaria/1/edit
+  # GET /collections/1/edit
   def edit;end
 
-  # POST /herbaria
-  # POST /herbaria.json
+  # POST /collections
+  # POST /collections.json
   def create
-    @herbarium = Herbarium.new(herbarium_params)
+    @collection = Collection.new(collection_params)
 
     respond_to do |format|
-      if @herbarium.save
-        format.html { redirect_to @herbarium, notice: 'Herbarium was successfully created.' }
-        format.json { render :show, status: :created, location: @herbarium }
+      if @collection.save
+        format.html { redirect_to collections_path, notice: 'Collection was successfully created.' }
+        format.json { render :show, status: :created, location: @collection }
       else
         format.html { render :new }
-        format.json { render json: @herbarium.errors, status: :unprocessable_entity }
+        format.json { render json: @collection.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # PATCH/PUT /herbaria/1
-  # PATCH/PUT /herbaria/1.json
+  # PATCH/PUT /collections/1
+  # PATCH/PUT /collections/1.json
   def update
     respond_to do |format|
-      if @herbarium.update(herbarium_params)
-        format.html { redirect_to @herbarium, notice: 'Herbarium was successfully updated.' }
-        format.json { render :show, status: :ok, location: @herbarium }
+      if @collection.update(collection_params)
+        format.html { redirect_to collections_path, notice: 'Collection was successfully updated.' }
+        format.json { render :show, status: :ok, location: @collection }
       else
         format.html { render :edit }
-        format.json { render json: @herbarium.errors, status: :unprocessable_entity }
+        format.json { render json: @collection.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /herbaria/1
-  # DELETE /herbaria/1.json
+  # DELETE /collections/1
+  # DELETE /collections/1.json
   def destroy
-    @herbarium.destroy
+    @collection.destroy
     respond_to do |format|
-      format.html { redirect_to herbaria_url, notice: 'Herbarium was successfully destroyed.' }
+      format.html { redirect_to collections_url, notice: 'Collection was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_herbarium
-      @herbarium = Herbarium.find(params[:id])
+    def set_collection
+      @collection = Collection.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
-    def herbarium_params
-      params.require(:herbarium).permit(:name, :acronym)
+    def collection_params
+      params.require(:collection).permit(:name, :acronym)
     end
 end

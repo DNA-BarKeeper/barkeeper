@@ -5,7 +5,7 @@ BarKeeper::Application.routes.draw do
 
   match 'about', to: 'homes#about', via: 'get'
   match 'documentation', to: 'homes#documentation', via: 'get'
-  match 'impressum', to: 'homes#impressum', via: 'get'
+  match 'legal_disclosure', to: 'homes#legal_disclosure', via: 'get'
   match 'privacy_policy', to: 'homes#privacy_policy', via: 'get'
 
   match 'progress', to: 'homes#progress', via: 'get'
@@ -63,7 +63,7 @@ BarKeeper::Application.routes.draw do
 
   resources :clusters
 
-  resources :herbaria
+  resources :collections
 
   resources :contigs do
     collection do

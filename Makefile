@@ -4,13 +4,9 @@ secret:
 
 install:
 	@echo "Installing BarKeeper..."
-	@echo "Creating volumes..."
-	@docker volume create --name barkeeper-redis
-	@docker volume create --name barkeeper-postgres
 
 	@echo "Setting up database..."
 	@docker-compose run --user "$(id -u):$(id -g)" app rails db:reset
-	@docker-compose run --user "$(id -u):$(id -g)" app rails db:seed
 
 	@echo "Precompiling assets..."
 	@docker-compose run --user "$(id -u):$(id -g)" app rails assets:precompile

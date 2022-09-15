@@ -22,56 +22,63 @@
 
 # frozen_string_literal: true
 
-class HerbariumDatatable
+class ShelfDatatable
   include Rails.application.routes.url_helpers
   delegate :url_helpers, to: 'Rails.application.routes'
 
   delegate :params, :link_to, :h, to: :@view
 
-  def initialize(view)
+  def initialize(view, current_default_project)
     @view = view
+    @current_default_project = current_default_project
   end
 
   def as_json(_options = {})
     {
-        sEcho: params[:sEcho].to_i,
-        iTotalRecords: Herbarium.count,
-        iTotalDisplayRecords: herbaria.total_entries,
-        aaData: data
+      sEcho: params[:sEcho].to_i,
+      iTotalRecords: Shelf.in_project(@current_default_project).count,
+      iTotalDisplayRecords: shelves.total_entries,
+      aaData: data
     }
   end
 
   private
 
   def data
-    herbaria.map do |herbarium|
-      name = ''
+    shelves.map do |shelf|
+      shelf_name = link_to shelf.name, edit_shelf_path(shelf)
 
-      name = link_to herbarium.name, edit_herbarium_path(herbarium) if herbarium.name
+      freezer = ''
+
+      if shelf.freezer
+        freezer = link_to shelf.freezer.freezercode, edit_freezer_path(shelf.freezer)
+      end
 
       [
-          name,
-          herbarium.acronym,
-          herbarium.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
-          link_to('Delete', herbarium, method: :delete, data: { confirm: 'Are you sure?' })
+        shelf_name,
+        freezer,
+        shelf.updated_at.in_time_zone('CET').strftime('%Y-%m-%d %H:%M:%S'),
+        link_to('Delete', shelf, method: :delete, data: { confirm: 'Are you sure?' })
       ]
     end
   end
 
-  def herbaria
-    @herbaria ||= fetch_herbaria
+  def shelves
+    @shelves ||= fetch_shelves
   end
 
-  def fetch_herbaria
-    herbaria = Herbarium.all.order("#{sort_column} #{sort_direction}")
+  def fetch_shelves
+    shelves = Shelf.includes(:freezer).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
 
-    herbaria = herbaria.page(page).per_page(per_page)
+    shelves = shelves.page(page).per_page(per_page)
 
     if params[:sSearch].present?
-      herbaria = herbaria.where('herbaria.name ILIKE :search OR herbaria.acronym ILIKE :search', search: "%#{params[:sSearch]}%")
+      shelves = shelves.where('shelves.name ILIKE :search
+OR freezers.freezercode ILIKE :search', search: "%#{params[:sSearch]}%")
+                                       .references(shelf: [freezer: :lab]) if params[:sSearch].present?
     end
 
-    herbaria
+    shelves
   end
 
   def page
@@ -83,7 +90,7 @@ class HerbariumDatatable
   end
 
   def sort_column
-    columns = %w[herbaria.name herbaria.acronym herbaria.updated_at]
+    columns = %w[shelves.name freezers.freezercode shelves.updated_at]
     columns[params[:iSortCol_0].to_i]
   end
 

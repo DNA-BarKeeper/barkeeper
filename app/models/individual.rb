@@ -27,9 +27,9 @@ class Individual < ApplicationRecord
   include ProjectRecord
   include PgSearch::Model
 
-  has_many :isolates
+  has_many :isolates, dependent: :destroy
   belongs_to :taxon
-  belongs_to :herbarium
+  belongs_to :collection
   belongs_to :tissue
 
   has_many_attached :voucher_images
@@ -53,10 +53,10 @@ class Individual < ApplicationRecord
   scope :bad_location, -> { bad_latitude.or(Individual.bad_longitude) }
 
   def self.to_csv(project_id)
-    header = %w{ Database_ID specimen_id taxon_name determination herbarium collectors_field_number collector collection_date
+    header = %w{ Database_ID specimen_id taxon_name determination collection collectors_field_number collector collection_date
 state_province country latitude longitude elevation exposition locality habitat comments }
 
-    attributes = %w{ id specimen_id taxon_name determination herbarium_code collectors_field_number collector collected
+    attributes = %w{ id specimen_id taxon_name determination collection_name collectors_field_number collector collected
 state_province country latitude longitude elevation exposition locality habitat comments }
 
     CSV.generate(headers: true) do |csv|
@@ -70,6 +70,10 @@ state_province country latitude longitude elevation exposition locality habitat 
 
   def taxon_name
     self.try(:taxon)&.scientific_name
+  end
+
+  def collection_name
+    self.try(:collection)&.name
   end
 
   def taxon_name=(scientific_name)
@@ -111,9 +115,9 @@ state_province country latitude longitude elevation exposition locality habitat 
     self.latitude_original = abcd_results[:latitude] if abcd_results[:latitude]
     self.longitude_original = abcd_results[:longitude] if abcd_results[:longitude]
 
-    if abcd_results[:herbarium]
-      herbarium = Herbarium.find_or_create_by(acronym: abcd_results[:herbarium])
-      self.herbarium = herbarium
+    if abcd_results[:collection]
+      collection = Collection.find_or_create_by(acronym: abcd_results[:collection])
+      self.collection = collection
     end
 
     if abcd_results[:higher_taxon_name] && abcd_results[:higher_taxon_rank]

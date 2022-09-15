@@ -26,7 +26,7 @@ class MicronicPlate < ApplicationRecord
   include PgSearch::Model
   include ProjectRecord
 
-  has_many :aliquots
+  has_many :aliquots, dependent: :nullify
   belongs_to :lab_rack
 
   multisearchable against: [:micronic_plate_id, :name]

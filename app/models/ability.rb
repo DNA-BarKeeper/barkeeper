@@ -31,12 +31,12 @@ class Ability
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
     # Permissions for every user, even if not logged in
-    can %i[about progress documentation impressum privacy_policy multisearch_app], :home
+    can %i[about progress documentation legal_disclosure privacy_policy multisearch_app], :home
     can :manage, :progress_overview
 
     can %i[edit index filter taxonomy_tree associated_specimen find_ancestry show_individuals show_children], Taxon
     can %i[edit index filter locality], Individual
-    can %i[edit index], Herbarium
+    can %i[edit index], Collection
 
     can %i[edit index filter change_via_script as_fasq], Contig
     can %i[edit index filter show_clusters], Isolate
