@@ -23,19 +23,40 @@
 # frozen_string_literal: true
 
 module IssuesHelper
+  def has_unsolved_issues(record)
+    record.issues.where(solved: false).present?
+  end
+
   def issue_warning_color(record)
-    "color: #{record.issues.present? ? 'red' : 'grey'}"
+    "color: #{has_unsolved_issues(record) ? 'red' : 'grey'}"
   end
 
   def issues(record)
     html = +''.html_safe
 
     if record
-      record.issues.order(created_at: :desc).each do |issue|
+      record.issues.order(:solved).order(created_at: :desc).each do |issue|
+        if issue.solved
+          begin
+            user = User.find(issue.solved_by).name
+          rescue ActiveRecord::RecordNotFound
+            user = 'unknown user'
+          end
+          user_date = "Solved by #{user} on #{issue.solved_at.in_time_zone('CET').strftime('%Y-%m-%d')} (".html_safe
+          solved_by = user_date + link_to('Mark as unsolved', solve_issue_path(issue)) + ")"
+        else
+          solved = content_tag(:span, '', class: %w(glyphicon glyphicon-exclamation-sign), style: 'color: red;')
+          solved_by = link_to('Mark issue as solved', solve_issue_path(issue))
+        end
+
+        solved ||= ''
+
         html << content_tag(:tr) do
+          content_tag(:td, solved, style: 'text-align: center') +
           content_tag(:td, issue.title) +
-            content_tag(:td, issue.description) +
-            content_tag(:td, issue.created_at)
+          content_tag(:td, issue.description) +
+          content_tag(:td, issue.created_at) +
+          content_tag(:td, solved_by)
         end
       end
     end

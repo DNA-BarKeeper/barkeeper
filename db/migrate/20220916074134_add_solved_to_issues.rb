@@ -22,30 +22,10 @@
 
 # frozen_string_literal: true
 
-class IssuesController < ApplicationController
-  load_and_authorize_resource
-
-  before_action :set_issue, only: :solve
-
-  def solve
-    if @issue.solved_by || @issue.solved
-      @issue.update(solved_by: nil, solved_at: nil, solved: false)
-      redirect_back(fallback_location: root_path, warning: 'Issue marked as unsolved.')
-    else
-      @issue.update(solved_by: current_user.id, solved_at: Time.now, solved: true)
-      redirect_back(fallback_location: root_path, notice: 'Issue marked as solved.')
-    end
-  end
-
-  private
-
-  # Use callbacks to share common setup or constraints between actions.
-  def set_issue
-    @issue = Issue.find(params[:id])
-  end
-
-  # Never trust parameters from the scary internet, only allow the white list through.
-  def issue_params
-    params.require(:issue).permit(:solved, :solved_by, :solved_at)
+class AddSolvedToIssues < ActiveRecord::Migration[5.2]
+  def change
+    add_column :issues, :solved, :boolean, default: false
+    add_column :issues, :solved_by, :integer
+    add_column :issues, :solved_at, :datetime
   end
 end

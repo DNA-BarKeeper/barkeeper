@@ -131,7 +131,11 @@ BarKeeper::Application.routes.draw do
 
   resources :txt_uploaders
 
-  resources :issues
+  resources :issues do
+    member do
+      get :solve
+    end
+  end
 
   resources :taxa do
     member do
