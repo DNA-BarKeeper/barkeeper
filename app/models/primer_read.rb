@@ -58,7 +58,7 @@ class PrimerRead < ApplicationRecord
   scope :unprocessed, -> { where(processed: false) }
   scope :contig_not_verified, -> { joins(:contig).where(contigs: { verified: false, verified_by: nil }) }
 
-  scope :unsolved_issues, -> { joins(:issues).where(issues: { solved: false }) }
+  scope :unsolved_issues, -> { includes(:issues).where(issues: { solved: false }) }
 
   def file_name_id
     name.gsub('.', "_#{id}.")
