@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_05_113213) do
+ActiveRecord::Schema.define(version: 2022_09_16_074134) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -265,6 +265,9 @@ ActiveRecord::Schema.define(version: 2022_08_05_113213) do
     t.integer "primer_read_id"
     t.integer "contig_id"
     t.integer "ngs_run_id"
+    t.boolean "solved", default: false
+    t.integer "solved_by"
+    t.datetime "solved_at"
   end
 
   create_table "issues_projects", id: false, force: :cascade do |t|
