@@ -223,18 +223,6 @@ jQuery(function() {
         "order": [5, 'desc']
     } );
 
-    // ISSUES
-    $('#issues').dataTable( {
-        bProcessing: true,
-        bServerSide: true,
-        sAjaxSource: $('#issues').data('source'),
-        "columnDefs": [
-            { "orderable": false, "targets": 1 },
-            { "orderable": false, "targets": 2 }
-        ],
-        "order": [ 3, 'desc' ]
-    } );
-
     // MARKERS SEQUENCE SEARCHES
     $('#marker_sequence_searches').dataTable( {
         bProcessing: true,

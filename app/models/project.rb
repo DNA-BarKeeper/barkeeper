@@ -28,8 +28,6 @@ class Project < ApplicationRecord
   has_many :marker_sequence_searches, dependent: :nullify
   has_many :individual_searches, dependent: :nullify
 
-  has_and_belongs_to_many :issues
-
   has_and_belongs_to_many :primers
   has_and_belongs_to_many :markers
 
