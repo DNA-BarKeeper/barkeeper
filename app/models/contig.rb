@@ -305,7 +305,7 @@ class Contig < ApplicationRecord
     end
 
     if msg
-      Issue.create(title: msg, contig_id: id)
+      Issue.create(title: 'Assembly failed', description: msg, contig_id: id)
       self.assembled = false
     end
 

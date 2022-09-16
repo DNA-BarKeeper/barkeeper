@@ -162,6 +162,7 @@ class PrimerRead < ApplicationRecord
 
   def auto_assign
     output_message = nil
+    issue_title = ''
     create_issue = false
 
     # Try to find matching primer
@@ -185,6 +186,7 @@ class PrimerRead < ApplicationRecord
         if primer
           primer_name = matches[2] if primer.reverse
         else
+          issue_title = 'No primer assigned'
           output_message = "Cannot find primer with name #{primer_name}."
           create_issue = true
         end
@@ -199,6 +201,7 @@ class PrimerRead < ApplicationRecord
         if primer
           primer_name = matches[1] unless primer.reverse
         else
+          issue_title = 'No primer assigned'
           output_message = "Cannot find primer with name #{primer_name}."
           create_issue = true
         end
@@ -256,20 +259,23 @@ class PrimerRead < ApplicationRecord
             output_message = "Created contig #{contig.name} and assigned primer read to it."
           end
         else
+          issue_title = 'No marker assigned'
           output_message = "No marker assigned to primer #{primer.name}."
           create_issue = true
         end
       else
+        issue_title = 'No primer assigned'
         output_message = "Cannot find primer with name #{primer_name}."
         create_issue = true
       end
     else
+      issue_title = 'File name not properly formatted'
       output_message = "No isolate ID or primer name could be identified from this file name."
       create_issue = true
     end
 
     if create_issue
-      Issue.create(title: output_message, primer_read_id: id) unless issues.find_by(title: output_message).present?
+      Issue.create(title: issue_title, description: output_message, primer_read_id: id) unless issues.find_by(title: output_message).present?
     else # Everything worked
       self.contig.update(assembled: false, assembly_tried: false)
     end
@@ -295,6 +301,7 @@ class PrimerRead < ApplicationRecord
 
   def auto_trim(write_to_db)
     create_issue = false
+    issue_title = ''
 
     begin
       chromatogram_filename = chromatogram.filename.to_s
@@ -340,11 +347,12 @@ class PrimerRead < ApplicationRecord
 
       if se
         if se[0] >= se[1] # trimming has not found any stretch of bases > min_score
+          issue_title = 'Very low read quality'
           msg = 'Quality too low - no stretch of readable bases found.'
           create_issue = true
           update(used_for_con: false)
         elsif se[2] > 0.6
-
+          issue_title = 'Low read quality'
           msg = "Quality too low - #{(se[2] * 100).round}% low-quality base calls in trimmed sequence."
           create_issue = true
 
@@ -358,18 +366,20 @@ class PrimerRead < ApplicationRecord
           msg = 'Sequence trimmed.'
         end
       else
+        issue_title = 'Very low read quality'
         msg = 'Quality too low - no stretch of readable bases found.'
         create_issue = true
         update(used_for_con: false)
       end
     rescue StandardError
+      issue_title = 'Trimming not possible'
       msg = 'Sequence could not be trimmed - no scf/ab1 file or no quality scores?'
       create_issue = true
       update(used_for_con: false)
     end
 
     if create_issue
-      Issue.create(title: msg, primer_read_id: id) unless issues.find_by(title: msg).present?
+      Issue.create(title: issue_title, description: msg, primer_read_id: id) unless issues.find_by(title: msg).present?
       update(used_for_con: false)
     end
 
