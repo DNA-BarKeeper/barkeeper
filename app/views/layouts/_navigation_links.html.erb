@@ -20,12 +20,12 @@
       <li class="divider"></li>
       <li><%= link_to 'SATIVA mislabel analyses', mislabel_analyses_path %></li>
       <li ><%= link_to 'Orphaned taxon entries', orphans_taxa_path %></li>
+      <li class="divider"></li>
       <li ><%= link_to 'Duplicate contigs', duplicates_contigs_path %></li>
-      <li ><%= link_to 'Reads without contig', reads_without_contigs_path %></li>
-      <li ><%= link_to 'Duplicate reads', duplicates_primer_reads_path %></li>
+      <li ><%= link_to 'Primer reads without contig', without_contigs_primer_reads_path %></li>
+      <li ><%= link_to 'Primer reads with issues', with_issues_primer_reads_path %></li>
+      <li ><%= link_to 'Duplicate isolates', duplicates_isolates_path %></li>
       <li ><%= link_to 'Isolates without specimens', no_specimen_isolates_path %></li>
-      <li ><%= link_to 'Duplicate Isolates', duplicates_isolates_path %></li>
-      <li ><%= link_to 'Notifications', issues_path %></li>
     <% end %>
   </ul>
 </li>

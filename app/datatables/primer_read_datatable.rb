@@ -69,13 +69,21 @@ class PrimerReadDatatable
   def fetch_reads
     # TODO: Maybe add find_each (batches!) later - if possible, probably conflicts with sorting
     case @reads_to_show
-    when 'duplicates'
-      files_with_multiple = PrimerRead.select(:chromatogram_fingerprint).group(:chromatogram_fingerprint).having('count(primer_reads.chromatogram_fingerprint) > 1').count.keys
-      primer_reads = PrimerRead.includes(:contig).in_project(@current_default_project).where(chromatogram_fingerprint: files_with_multiple).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).order("#{sort_column} #{sort_direction}")
-    when 'no_contig'
-      primer_reads = PrimerRead.includes(:contig).where(contig: nil).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+    when 'without_contig'
+      primer_reads = PrimerRead.includes(:contig).where(contig: nil)
+                               .select(:name, :processed, :assembled, :updated_at, :contig_id, :id)
+                               .in_project(@current_default_project)
+                               .order("#{sort_column} #{sort_direction}")
+    when 'with_issues'
+      primer_reads = PrimerRead.includes(:contig).unsolved_issues
+                               .select(:name, :processed, :assembled, :updated_at, :contig_id, :id)
+                               .in_project(@current_default_project)
+                               .order("#{sort_column} #{sort_direction}")
     else
-      primer_reads = PrimerRead.includes(:contig).select(:name, :processed, :assembled, :updated_at, :contig_id, :id).in_project(@current_default_project).order("#{sort_column} #{sort_direction}")
+      primer_reads = PrimerRead.includes(:contig)
+                               .select(:name, :processed, :assembled, :updated_at, :contig_id, :id)
+                               .in_project(@current_default_project)
+                               .order("#{sort_column} #{sort_direction}")
     end
 
     primer_reads = primer_reads.page(page).per_page(per_page)

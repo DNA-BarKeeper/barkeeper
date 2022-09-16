@@ -40,17 +40,17 @@ class PrimerReadsController < ApplicationController
     end
   end
 
-  def duplicates
+  def without_contigs
     respond_to do |format|
       format.html
-      format.json { render json: PrimerReadDatatable.new(view_context, 'duplicates', current_project_id) }
+      format.json { render json: PrimerReadDatatable.new(view_context, 'without_contig', current_project_id) }
     end
   end
 
-  def reads_without_contigs
+  def with_issues
     respond_to do |format|
       format.html
-      format.json { render json: PrimerReadDatatable.new(view_context, 'no_contig', current_project_id) }
+      format.json { render json: PrimerReadDatatable.new(view_context, 'with_issues', current_project_id) }
     end
   end
 
@@ -79,7 +79,12 @@ class PrimerReadsController < ApplicationController
     if @primer_read.save
       PherogramProcessing.perform_async(@primer_read.id)
       @primer_read.update(sequence: '') if @primer_read.sequence.nil?
-      @primer_read.update(name: @primer_read.name + '_duplicate') if PrimerRead.where(name: @primer_read.name).size > 1
+      if PrimerRead.where(name: @primer_read.name).size > 1
+        @primer_read.update(name: @primer_read.name + '_duplicate')
+        Issue.create(title: 'Duplicate read',
+                     description: 'At least one primer read with this name has already been uploaded.',
+                     primer_read_id: @primer_read.id)
+      end
     end
   end
 

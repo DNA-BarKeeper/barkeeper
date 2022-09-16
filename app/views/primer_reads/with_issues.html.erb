@@ -1,7 +1,7 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Duplicate Reads</h3>
+    <h3 class="panel-title">Primer Reads with Issues</h3>
   </div>
 
   <div class="panel-body">
@@ -9,7 +9,7 @@
     <div class="wideTable">
 
       <div class="wideTable">
-        <table id="primer_reads-duplicates"  data-source="<%= duplicates_primer_reads_url(format: "json") %>"  class="table table-hover table-bordered">
+        <table id="primer_reads_with_issues"  data-source="<%= with_issues_primer_reads_url(format: "json") %>"  class="table table-hover table-bordered">
 
           <thead>
           <tr>

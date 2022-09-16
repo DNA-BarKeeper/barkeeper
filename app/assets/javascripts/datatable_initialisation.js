@@ -331,6 +331,16 @@ jQuery(function() {
         "order": [ 0, 'asc' ]
     } );
 
+    $('#primer_reads_with_issues').DataTable( {
+        bProcessing: true,
+        bServerSide: true,
+        sAjaxSource: $('#primer_reads_with_issues').data('source'),
+        "columnDefs": [
+            { "orderable": false, "targets": 4 }
+        ],
+        "order": [ 0, 'asc' ]
+    } );
+
     $('#reads_without_contigs').DataTable( {
         bProcessing: true,
         bServerSide: true,

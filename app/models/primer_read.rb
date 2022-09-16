@@ -58,6 +58,8 @@ class PrimerRead < ApplicationRecord
   scope :unprocessed, -> { where(processed: false) }
   scope :contig_not_verified, -> { joins(:contig).where(contigs: { verified: false, verified_by: nil }) }
 
+  scope :unsolved_issues, -> { joins(:issues).where(issues: { solved: false }) }
+
   def file_name_id
     name.gsub('.', "_#{id}.")
   end
@@ -262,12 +264,12 @@ class PrimerRead < ApplicationRecord
         create_issue = true
       end
     else
-      output_message = "No match for #{regex_read_name} in name."
+      output_message = "No isolate ID or primer name could be identified from this file name."
       create_issue = true
     end
 
     if create_issue
-      Issue.create(title: output_message, primer_read_id: id)
+      Issue.create(title: output_message, primer_read_id: id) unless issues.find_by(title: output_message).present?
     else # Everything worked
       self.contig.update(assembled: false, assembly_tried: false)
     end
@@ -367,7 +369,7 @@ class PrimerRead < ApplicationRecord
     end
 
     if create_issue
-      Issue.create(title: msg, primer_read_id: id)
+      Issue.create(title: msg, primer_read_id: id) unless issues.find_by(title: msg).present?
       update(used_for_con: false)
     end
 
