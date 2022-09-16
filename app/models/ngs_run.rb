@@ -35,7 +35,7 @@ class NgsRun < ApplicationRecord
   has_many :ngs_results, dependent: :destroy
   has_many :isolates, through: :clusters
   has_many :markers, through: :ngs_results
-  has_many :issues
+  has_many :issues, dependent: :destroy
 
   has_one_attached :set_tag_map
   validates :set_tag_map, content_type: [:text, 'application/octet-stream']

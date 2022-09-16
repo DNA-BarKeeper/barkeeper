@@ -18,7 +18,7 @@
 
       <div class="form-group">
         <%= f.label 'Marker' %>
-        <%= f.collection_select(:marker_id, Marker.all, :id, :name, {}, { class: 'form-control' }) %>
+        <%= f.collection_select(:marker_id, Marker.all, :id, :name, { include_blank: true }, { class: 'form-control' }) %>
       </div>
 
       <div class="form-group">

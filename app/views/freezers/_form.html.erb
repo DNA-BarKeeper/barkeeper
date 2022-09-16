@@ -12,7 +12,7 @@
 
       <div class="form-group">
         <%= f.label :lab_id, 'Lab' %>
-        <%= f.collection_select(:lab_id, Lab.all, :id, :labcode, {}, { class: 'form-control' }) %>
+        <%= f.collection_select(:lab_id, Lab.all, :id, :labcode, { include_blank: true }, { class: 'form-control' }) %>
       </div>
 
       <%= render :partial => 'shared/associated_projects', :locals => { :form => f } %>
