@@ -32,6 +32,7 @@ class ContigSearch < ApplicationRecord
                                   :scope=> :user_id }
 
   enum has_warnings: %i[both yes no]
+  enum has_issues: %i[all_issue issues no_issues]
 
   has_one_attached :search_result_archive
   validates :search_result_archive, content_type: :zip
@@ -103,6 +104,11 @@ class ContigSearch < ApplicationRecord
     if has_warnings != 'both'
       contigs = contigs.unsolved_warnings if has_warnings == 'yes'
       contigs = contigs.where.not(id: Contig.unsolved_warnings.pluck(:id)) if has_warnings == 'no'
+    end
+
+    if has_issues != 'all_issue'
+      contigs = contigs.unsolved_issues if has_issues == 'issues'
+      contigs = contigs.where.not(id: Contig.unsolved_issues.pluck(:id)) if has_issues == 'no_issues'
     end
 
     contigs = contigs.joins(:marker).where('markers.name ilike ?', "%#{marker}%") if marker.present?

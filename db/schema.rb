@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_16_074134) do
+ActiveRecord::Schema.define(version: 2022_09_16_080129) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 2022_09_16_074134) do
     t.integer "project_id"
     t.integer "has_warnings"
     t.string "verified_by"
+    t.integer "has_issues"
     t.index ["project_id"], name: "index_contig_searches_on_project_id"
   end
 

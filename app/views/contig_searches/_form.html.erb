@@ -51,6 +51,15 @@
             <%= f.radio_button :has_warnings, "both", :checked => radio_checked(@contig_search, 'has_warnings', 'both') %>
             <%= f.label :both, "Search for both" %>
           </div>
+          <div>
+            <%= f.label :has_issues, 'Search for contigs that have unsolved issues:' %><br>
+            <%= f.radio_button :has_issues, "issues" %>
+            <%= f.label :issues, "Yes" %>
+            <%= f.radio_button :has_issues, "no_issues" %>
+            <%= f.label :no_issues, "No" %>
+            <%= f.radio_button :has_issues, "all_issue", :checked => radio_checked(@contig_search, 'has_issues', 'both') %>
+            <%= f.label :all_issue, "Search for both" %>
+          </div>
           <br/>
           <div class="field">
             <%= f.label :marker %><br />

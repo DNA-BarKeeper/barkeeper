@@ -53,6 +53,7 @@ class Contig < ApplicationRecord
   scope :internally_verified, -> { internally_edited.verified }
 
   scope :unsolved_warnings, -> { joins(marker_sequence: :mislabels).where(marker_sequence: { mislabels: { solved: false } }) }
+  scope :unsolved_issues, -> { joins(:issues).where(issues: { solved: false }) }
 
 
   def self.import(file, verified_by, marker_id, project_id)
