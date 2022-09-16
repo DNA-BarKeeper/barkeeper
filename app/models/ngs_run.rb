@@ -199,7 +199,7 @@ class NgsRun < ApplicationRecord
             begin
               import_clusters(marker)
             rescue
-              self.issues << Issue.new(title: "Import error",
+              self.issues << Issue.create(title: "Import error",
                                        description: "Something went wrong when importing clusters for marker #{marker.name}")
             end
           end
@@ -210,7 +210,7 @@ class NgsRun < ApplicationRecord
             begin
               import_results("#{tpm.tag_primer_map.filename.to_s.gsub('.txt', '')}_expanded.txt")
             rescue Exception => e
-              self.issues << Issue.new(title: "Import error",
+              self.issues << Issue.create(title: "Import error",
                                        description: "Importing results for tag primer map #{tpm.tag_primer_map.filename}
                                                      resulted in error:\n#{e.message}")
             end
@@ -224,7 +224,7 @@ class NgsRun < ApplicationRecord
           FileUtils.rm_r("#{Rails.root}/#{self.name}_out.zip")
           FileUtils.rm_r("#{Rails.root}/#{self.name}_out")
         else
-          self.issues << Issue.new(title: "Result file not found",
+          self.issues << Issue.create(title: "Result file not found",
                                    description: "The requested result file could not be found on the server.")
         end
       end

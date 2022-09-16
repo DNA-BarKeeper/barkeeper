@@ -92,9 +92,7 @@ class ContigsController < ApplicationController
     respond_to do |format|
       if @contig.update(contig_params)
         format.html do
-          issue = Issue.create(title: "Contig updated by #{current_user.name}", contig_id: @contig.id)
-          issue.add_projects(@contig.projects.pluck(:id))
-          issue.save
+          Issue.create(title: "Contig updated by #{current_user.name}", contig_id: @contig.id)
           redirect_back(fallback_location: edit_contig_path(@contig), notice: 'Contig was successfully updated.')
         end
         format.json { render :show, status: :ok, location: @contig }

@@ -267,9 +267,7 @@ class PrimerRead < ApplicationRecord
     end
 
     if create_issue
-      i = Issue.create(title: output_message, primer_read_id: id)
-      i.add_projects(projects.pluck(:id))
-      i.save
+      Issue.create(title: output_message, primer_read_id: id)
     else # Everything worked
       self.contig.update(assembled: false, assembly_tried: false)
     end
@@ -369,9 +367,7 @@ class PrimerRead < ApplicationRecord
     end
 
     if create_issue
-      i = Issue.create(title: msg, primer_read_id: id)
-      i.add_projects(projects.pluck(:id))
-      i.save
+      Issue.create(title: msg, primer_read_id: id)
       update(used_for_con: false)
     end
 

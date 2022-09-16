@@ -305,9 +305,7 @@ class Contig < ApplicationRecord
     end
 
     if msg
-      issue = Issue.create(title: msg, contig_id: id)
-      issue.add_projects(projects.pluck(:id))
-      issue.save
+      Issue.create(title: msg, contig_id: id)
       self.assembled = false
     end
 
