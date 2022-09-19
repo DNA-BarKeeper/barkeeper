@@ -482,6 +482,11 @@ function drawTaxonomy(data) {
     }
 
     function open_path(node, ancestor_ids, searched_name) {
+        console.log('Node:' + node.data.scientific_name);
+        console.log('Ancestor IDs:' + ancestor_ids);
+        console.log('Search term:' + searched_name);
+        console.log();
+
         var ancestor_id = ancestor_ids.shift();
 
         if (parseInt(node.data.id) === parseInt(ancestor_id)) {
@@ -489,8 +494,25 @@ function drawTaxonomy(data) {
             if (ancestor_ids.length !== 0) {
                 open_path(node, ancestor_ids, searched_name);
             }
+            else {
+                if (node.children) {
+                    node.children.forEach(function (child_node) {
+                        if (child_node.data.scientific_name === searched_name) {
+                            // Center and select node
+                            centerNode(child_node);
+                            d3.select("#label_" + child_node.data.id).dispatch('click');
+                        }
+                    });
+                }
+            }
         }
         else {
+            if (node.data.scientific_name === searched_name) {
+                // Center and select node
+                centerNode(node);
+                d3.select("#label_" + node.data.id).dispatch('click');
+            }
+
             node.children.forEach(function (child_node) {
                 if (typeof ancestor_id !== 'undefined') {
                     if (parseInt(child_node.data.id) === parseInt(ancestor_id)) {
@@ -502,22 +524,31 @@ function drawTaxonomy(data) {
 
                             if (promise !== undefined) node_circle.classed("spinner", true);
 
-                            promise !== undefined ? $.when(promise).done(function () {
-                                node_circle.classed("spinner", false);
+                            // console.log("Promise:" + promise);
+
+                            if (promise !== undefined) {
+                                $.when(promise).done(function () {
+                                    node_circle.classed("spinner", false);
+                                    toggle(child_node);
+                                    open_path(child_node, ancestor_ids, searched_name);
+                                }.bind(node_circle));
+                            }
+                            else {
                                 toggle(child_node);
                                 open_path(child_node, ancestor_ids, searched_name);
-                            }.bind(node_circle)) : toggle(child_node);
-                        } else {
+                            }
+                        }
+                        else {
                             open_path(child_node, ancestor_ids, searched_name);
                         }
                     }
                 }
                 else {
-                   if (child_node.data.scientific_name === searched_name) {
-                       // Center and select node
-                       centerNode(child_node);
-                       d3.select("#label_" + child_node.data.id).dispatch('click');
-                   }
+                    if (child_node.data.scientific_name === searched_name) {
+                        // Center and select node
+                        centerNode(child_node);
+                        d3.select("#label_" + child_node.data.id).dispatch('click');
+                    }
                 }
             });
         }
