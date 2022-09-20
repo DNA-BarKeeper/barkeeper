@@ -482,75 +482,55 @@ function drawTaxonomy(data) {
     }
 
     function open_path(node, ancestor_ids, searched_name) {
-        console.log('Node:' + node.data.scientific_name);
-        console.log('Ancestor IDs:' + ancestor_ids);
-        console.log('Search term:' + searched_name);
-        console.log();
-
         var ancestor_id = ancestor_ids.shift();
 
-        if (parseInt(node.data.id) === parseInt(ancestor_id)) {
-            // Avoid endless loop when node is already opened
-            if (ancestor_ids.length !== 0) {
+        if (node.data.scientific_name === searched_name) {
+            center_and_select_node(node);
+        } else {
+            if (!node.children) {
+                toggle(node);
+            }
+
+            if (parseInt(node.data.id) === parseInt(ancestor_id)) {
                 open_path(node, ancestor_ids, searched_name);
-            }
-            else {
-                if (node.children) {
-                    node.children.forEach(function (child_node) {
-                        if (child_node.data.scientific_name === searched_name) {
-                            // Center and select node
-                            centerNode(child_node);
-                            d3.select("#label_" + child_node.data.id).dispatch('click');
-                        }
-                    });
-                }
-            }
-        }
-        else {
-            if (node.data.scientific_name === searched_name) {
-                // Center and select node
-                centerNode(node);
-                d3.select("#label_" + node.data.id).dispatch('click');
-            }
+            } else {
+                node.children.forEach(function (child_node) {
+                    if (typeof ancestor_id !== 'undefined') {
+                        if (parseInt(child_node.data.id) === parseInt(ancestor_id)) {
+                            if (!child_node.children) {
+                                // Children were not loaded yet
+                                var node_circle = d3.select("#node_" + ancestor_id);
 
-            node.children.forEach(function (child_node) {
-                if (typeof ancestor_id !== 'undefined') {
-                    if (parseInt(child_node.data.id) === parseInt(ancestor_id)) {
-                        if (!child_node.children) {
-                            // Children were not loaded yet
-                            var node_circle = d3.select("#node_" + ancestor_id);
+                                var promise = get_child_data(child_node);
 
-                            var promise = get_child_data(child_node);
+                                if (promise !== undefined) node_circle.classed("spinner", true);
 
-                            if (promise !== undefined) node_circle.classed("spinner", true);
-
-                            // console.log("Promise:" + promise);
-
-                            if (promise !== undefined) {
-                                $.when(promise).done(function () {
-                                    node_circle.classed("spinner", false);
+                                if (promise !== undefined) {
+                                    $.when(promise).done(function () {
+                                        node_circle.classed("spinner", false);
+                                        toggle(child_node);
+                                        open_path(child_node, ancestor_ids, searched_name);
+                                    }.bind(node_circle));
+                                } else {
                                     toggle(child_node);
                                     open_path(child_node, ancestor_ids, searched_name);
-                                }.bind(node_circle));
-                            }
-                            else {
-                                toggle(child_node);
+                                }
+                            } else {
                                 open_path(child_node, ancestor_ids, searched_name);
                             }
                         }
-                        else {
-                            open_path(child_node, ancestor_ids, searched_name);
+                    } else {
+                        if (child_node.data.scientific_name === searched_name) {
+                            center_and_select_node(child_node);
                         }
                     }
-                }
-                else {
-                    if (child_node.data.scientific_name === searched_name) {
-                        // Center and select node
-                        centerNode(child_node);
-                        d3.select("#label_" + child_node.data.id).dispatch('click');
-                    }
-                }
-            });
+                });
+            }
         }
+    }
+
+    function center_and_select_node(node) {
+        centerNode(node);
+        d3.select("#label_" + node.data.id).dispatch('click');
     }
 }
