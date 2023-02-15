@@ -27,7 +27,7 @@ class MislabelsController < ApplicationController
 
   before_action :set_mislabel, only: :solve
 
-  def solve
+  def solve # Some more test comments
     if @mislabel.solved_by || @mislabel.solved
       @mislabel.update(solved_by: nil, solved_at: nil, solved: false)
       redirect_back(fallback_location: marker_sequences_path, warning: 'Mislabel warning marked as unsolved.')
