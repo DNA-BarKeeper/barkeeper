@@ -31,7 +31,7 @@ class UsersController < ApplicationController
   end
 
   def new
-    @user = User.new
+    @user = User.new # this is a test
   end
 
   def create
