@@ -31,7 +31,8 @@ class UsersController < ApplicationController
   end
 
   def new
-    @user = User.new # this is a test
+    # this is a barkeeper test
+    @user = User.new # this is another barkeeper test
   end
 
   def create
