@@ -13,7 +13,7 @@ gem 'pg_search'
 # Web server and background processing
 gem 'puma'
 gem 'redis-rails'
-gem 'sidekiq'
+gem 'sidekiq', '~> 6.5'
 gem 'sidekiq-client-cli'
 gem 'sidekiq-limit_fetch'
 gem 'sinatra', require: false # Needed to monitor sidekiq jobs
@@ -57,6 +57,7 @@ gem 'net-scp'
 gem 'net-sftp'
 gem 'net-ssh'
 gem 'roo-xls' # Handle excel files
+gem "rack", ">= 2.2.6.3"
 gem 'rubyzip', '~> 2.3.0' # Handle zip files
 gem 'simple_form'
 gem 'sprockets-rails', require: 'sprockets/railtie'
