@@ -90,8 +90,16 @@ class TaxaController < ApplicationController
     authorize! :import_csv, :taxon
 
     file = params[:file]
-    cnt = Taxon.import_from_csv(file, current_project_id)
-    redirect_to taxa_path, notice: "Successfully imported or updated #{cnt} taxon entries."
+    if file
+      cnt = Taxon.import_from_csv(file, current_project_id)
+      if cnt > 0
+        redirect_to taxa_path, notice: "Successfully imported or updated #{cnt} taxon entries."
+      else
+        redirect_to taxa_path, alert: "No new taxon entries could be imported from the file."
+      end
+    else
+      redirect_to taxa_path, alert: "Please provide a file to upload taxon entries."
+    end
   end
 
   def delete_voucher_image
