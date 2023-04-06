@@ -175,11 +175,25 @@ module Export
         name = marker_sequence.name.delete(' ')
 
         if meta_data
-          name << "|#{marker_sequence.isolate&.display_name}" # Isolate
-          name << "|#{marker_sequence.isolate&.individual&.specimen_id}" # Specimen
-          name << "|#{marker_sequence.isolate&.individual&.taxon&.scientific_name&.gsub(' ', '_')}" # Taxon
-          if marker_sequence.isolate&.individual&.taxon&.ancestors
-            name << "|#{marker_sequence.isolate&.individual&.taxon&.ancestors.where(taxonomic_rank: "is_family").first&.scientific_name}" # Family
+          isolate = marker_sequence.isolate
+
+          if isolate
+            name << "|#{isolate.display_name}" # Isolate
+
+            individual = isolate.individual
+
+            if individual
+              name << "|#{individual.specimen_id}" # Specimen
+
+              taxon = individual.taxon
+              if taxon
+                name << "|#{taxon.scientific_name.gsub(' ', '_')}" if taxon.scientific_name # Taxon
+
+                if taxon.ancestors
+                  name << "|#{taxon.ancestors.where(taxonomic_rank: "is_family").first&.scientific_name}" # Family
+                end
+              end
+            end
           end
         else
           name << "_#{marker_sequence.isolate&.individual&.taxon&.scientific_name&.gsub(' ', '_')}" # Taxon
