@@ -178,7 +178,9 @@ module Export
           name << "|#{marker_sequence.isolate&.display_name}" # Isolate
           name << "|#{marker_sequence.isolate&.individual&.specimen_id}" # Specimen
           name << "|#{marker_sequence.isolate&.individual&.taxon&.scientific_name&.gsub(' ', '_')}" # Taxon
-          name << "|#{marker_sequence.isolate&.individual&.taxon&.ancestors&.where(taxonomic_rank: "is_family").first&.scientific_name}" # Family
+          if marker_sequence.isolate&.individual&.taxon&.ancestors
+            name << "|#{marker_sequence.isolate&.individual&.taxon&.ancestors.where(taxonomic_rank: "is_family").first&.scientific_name}" # Family
+          end
         else
           name << "_#{marker_sequence.isolate&.individual&.taxon&.scientific_name&.gsub(' ', '_')}" # Taxon
         end
