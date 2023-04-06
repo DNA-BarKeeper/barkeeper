@@ -133,7 +133,7 @@ class Taxon < ApplicationRecord
       comment = row['Comment']
 
       parent_identifier = row['Parent']
-      if parent_identifier.scan(/\D/).empty?
+      if parent_identifier.is_a?(Float)
         parent = Taxon.find(parent_identifier.to_i)
       else
         parent = Taxon.find_by_sci_name_or_synonym(parent_identifier)
