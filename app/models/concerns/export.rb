@@ -173,28 +173,34 @@ module Export
     def fasta_marker_sequences(sequences, meta_data, warnings=false)
       sequences.each do |marker_sequence|
         name = marker_sequence.name.delete(' ')
+        isolate_name = ''
+        individual_name = ''
+        taxon_name = ''
+        family_name = ''
 
         if meta_data
           isolate = marker_sequence.isolate
 
           if isolate
-            name << "|#{isolate.display_name}" # Isolate
+            isolate_name = isolate.display_name
 
             individual = isolate.individual
 
             if individual
-              name << "|#{individual.specimen_id}" # Specimen
+              individual_name = individual.specimen_id
 
               taxon = individual.taxon
               if taxon
-                name << "|#{taxon.scientific_name.gsub(' ', '_')}" if taxon.scientific_name # Taxon
+                taxon_name = taxon.scientific_name.gsub(' ', '_') if taxon.scientific_name # Taxon
 
                 if taxon.ancestors
-                  name << "|#{taxon.ancestors.where(taxonomic_rank: "is_family").first&.scientific_name}" # Family
+                  family_name = taxon.ancestors.where(taxonomic_rank: "is_family").first&.scientific_name # Family
                 end
               end
             end
           end
+
+          name << "|#{isolate_name}|#{individual_name}|#{taxon_name}|#{family_name}"
         else
           name << "_#{marker_sequence.isolate&.individual&.taxon&.scientific_name&.gsub(' ', '_')}" # Taxon
         end
