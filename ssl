@@ -1,0 +1,4 @@
+listen $SSL_PORT default_server ssl http2;
+
+ssl_certificate /etc/nginx/ssl/live/$PROJECT_DOMAIN/fullchain.pem;
+ssl_certificate_key /etc/nginx/ssl/live/$PROJECT_DOMAIN/privkey.pem;
