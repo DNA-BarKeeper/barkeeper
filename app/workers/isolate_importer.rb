@@ -26,7 +26,7 @@
 class IsolateImporter
   include Sidekiq::Worker
 
-  def perform(file_path, project_id)
-    Isolate.import(file_path, project_id)
+  def perform(file, project_id)
+    Isolate.import(file, project_id)
   end
 end
