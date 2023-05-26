@@ -185,7 +185,7 @@ class NgsRun < ApplicationRecord
           # Download result file
           sftp.download!(results_path, "#{Rails.root}/#{self.name}_out.zip")
 
-          #TODO: Maybe add possibility to use AWS copy here in case of a reimport of data at a later point
+          #TODO: Maybe add possibility to use local/AWS copy here in case of a reimport of data at a later point
 
           # Unzip results
           Zip::File.open("#{Rails.root}/#{self.name}_out.zip") do |zip_file|

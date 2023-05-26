@@ -108,11 +108,22 @@ class Isolate < ApplicationRecord
       collection ||= Collection.find_by(acronym: row['Collection'])
       individual.collection = collection if collection
 
+      if row['Family']
+        family = Taxon.find_or_create_by(scientific_name: row['Family'], taxonomic_rank: :is_family) if row['Family']
+        taxon = family
+      end
+
       if row['Genus'] && row['Species']
+        species = Taxon.find_or_create_by(scientific_name: [row['Genus'], row['Species']].join(' '),
+                                          taxonomic_rank: :is_species)
+        species.update(parent: family)
+
+        taxon = species
+
         if row['Subspecies']
-          taxon = Taxon.find_or_create_by(scientific_name: [row['Genus'], row['Species'], row['Subspecies']].join(' '))
-        else
-          taxon = Taxon.find_or_create_by(scientific_name: [row['Genus'], row['Species']].join(' '))
+          taxon = Taxon.find_or_create_by(scientific_name: [row['Genus'], row['Species'], row['Subspecies']].join(' '),
+                                          taxonomic_rank: :is_subspecies)
+          taxon.update(parent: species)
         end
       end
 

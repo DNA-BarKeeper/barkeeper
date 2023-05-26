@@ -484,6 +484,7 @@ GEM
     yard (0.9.34)
 
 PLATFORMS
+  ruby
   x86_64-linux
 
 DEPENDENCIES
