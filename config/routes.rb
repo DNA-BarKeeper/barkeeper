@@ -238,5 +238,7 @@ BarKeeper::Application.routes.draw do
   delete '/users/:id' => 'users#destroy', :as => :destroy_user
 
   require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq'
+  authenticate :user, lambda { |u| u.admin? } do
+    mount Sidekiq::Web => '/sidekiq'
+  end
 end
